@@ -1,0 +1,28 @@
+{
+  "users" : {
+    "uid" : {
+      "birthdate" : "0/0/2000",
+      "charities" : [ "" ],
+      "city" : "",
+      "donation" : 0,
+      "ein" : "",
+      "email" : "",
+      "filter" : true,
+      "focus" : false,
+      "gender" : "0",
+      "high" : 0,
+      "minrating" : "0",
+      "order" : "",
+      "pages" : "1",
+      "rows" : "20",
+      "sort" : "",
+      "state" : "",
+      "tally" : "0,0,0,0,0,0,0",
+      "term" : "",
+      "theme" : 0,
+      "timestamp" : 0,
+      "today" : 0,
+      "zip" : ""
+    }
+  }
+}

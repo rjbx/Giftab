@@ -1,0 +1,727 @@
+package com.github.rjbx.givetrack.sync;
+
+import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
+import android.preference.PreferenceManager;
+
+import androidx.annotation.NonNull;
+import timber.log.Timber;
+
+import com.firebase.ui.auth.data.model.User;
+import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.UserPreferences;
+import com.github.rjbx.givetrack.ui.AppWidget;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Handles asynchronous task requests in a service on a separate handler thread.
+ */
+public class DataService extends IntentService {
+
+    private static final String ACTION_FETCH_GENERATED = "com.github.rjbx.givetrack.sync.action.FETCH_GENERATED";
+    private static final String ACTION_FETCH_COLLECTED = "com.github.rjbx.givetrack.sync.action.FETCH_COLLECTED";
+    private static final String ACTION_COLLECT_GENERATED = "com.github.rjbx.givetrack.sync.action.COLLECT_GENERATED";
+    private static final String ACTION_REMOVE_GENERATED = "com.github.rjbx.givetrack.sync.action.REMOVE_GENERATED";
+    private static final String ACTION_REMOVE_COLLECTED = "com.github.rjbx.givetrack.sync.action.REMOVE_COLLECTED";
+    private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.sync.action.RESET_GENERATED";
+    private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.sync.action.RESET_COLLECTED";
+    private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.sync.action.UPDATE_FREQUENCY";
+    private static final String ACTION_UPDATE_PROPORTIONS = "com.github.rjbx.givetrack.sync.action.UPDATE_PROPORTIONS";
+    private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.sync.action.RESET_DATA";
+
+    private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.sync.extra.API_REQUEST";
+    private static final String EXTRA_ITEM_ID = "com.github.rjbx.givetrack.sync.extra.ITEM_ID";
+    private static final String EXTRA_ITEM_VALUES = "com.github.rjbx.givetrack.sync.extra.ITEM_VALUES";
+    private static final String EXTRA_LIST_VALUES = "com.github.rjbx.givetrack.sync.extra.LIST_VALUES";
+
+    public static final String DEFAULT_VALUE_STR = "";
+    public static final int DEFAULT_VALUE_INT = -1;
+
+    /**
+     * Creates an {@link IntentService} instance.
+     */
+    public DataService() { super(DataService.class.getSimpleName()); }
+
+    /**
+     * Starts this service to perform action FetchGenerated with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchGenerated(Context context, HashMap<String, String> apiRequest) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_FETCH_GENERATED);
+        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action FetchCollected with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchCollected(Context context) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_FETCH_COLLECTED);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action CollectGenerated with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionCollectGenerated(Context context, String charityId) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_COLLECT_GENERATED);
+        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action RemoveGenerated with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRemoveGenerated(Context context, String charityId) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_REMOVE_GENERATED);
+        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action RemoveCollected with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRemoveCollected(Context context, String charityId) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_REMOVE_COLLECTED);
+        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetGenerated with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetGenerated(Context context) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_RESET_GENERATED);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetCollected with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetCollected(Context context) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_RESET_COLLECTED);
+        context.startService(intent);
+    }
+    
+    /**
+     * Starts this service to perform action UpdateFrequency with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUpdateFrequency(Context context, ContentValues charityValues) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_UPDATE_FREQUENCY);
+        intent.putExtra(EXTRA_ITEM_VALUES, charityValues);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UpdateProportions with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUpdateProportions(Context context, ContentValues... charityValues) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_UPDATE_PROPORTIONS);
+        if (charityValues.length > 1) {
+            ArrayList<ContentValues> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
+            intent.putParcelableArrayListExtra(EXTRA_LIST_VALUES, charityValuesArrayList);
+        } else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetData with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetData(Context context) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(ACTION_RESET_DATA);
+        context.startService(intent);
+    }
+
+    /**
+     * Syncs data inside a worker thread on requests to process {@link Intent}.
+     * @param intent launches this {@link IntentService}.
+     */
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        if (intent == null || intent.getAction() == null) return;
+        final String action = intent.getAction();
+        switch (action) {
+            case ACTION_FETCH_GENERATED:
+                final HashMap fetchGeneratedMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
+                handleActionFetchGenerated(fetchGeneratedMap);
+                break;
+            case ACTION_FETCH_COLLECTED:
+                handleActionFetchCollected();
+                break;
+            case ACTION_COLLECT_GENERATED:
+                final String collectGeneratedString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionCollectGenerated(collectGeneratedString);
+                break;
+            case ACTION_REMOVE_GENERATED:
+                final String removeGeneratedString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveGenerated(removeGeneratedString);
+                break;
+            case ACTION_REMOVE_COLLECTED:
+                final String removeCollectedString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveCollected(removeCollectedString);
+                break;
+            case ACTION_RESET_GENERATED:
+                handleActionResetGenerated();
+                break;
+            case ACTION_RESET_COLLECTED:
+                handleActionResetCollected();
+                break;
+            case ACTION_UPDATE_FREQUENCY:
+                final ContentValues updateFrequencyValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
+                handleActionUpdateFrequency(updateFrequencyValues);
+                break;
+            case ACTION_UPDATE_PROPORTIONS:
+                if (intent.hasExtra(EXTRA_LIST_VALUES)) {
+                    final ArrayList<ContentValues> updateProportionsValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
+                    handleActionUpdateProportions(updateProportionsValuesArray.toArray(new ContentValues[updateProportionsValuesArray.size()]));
+                } else {
+                    ContentValues updateProportionsValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
+                    handleActionUpdateProportions(updateProportionsValues);
+                }
+                break;
+            case ACTION_RESET_DATA: handleActionResetData();
+        }
+    }
+
+    /**
+     * Handles action FetchGenerated in the provided background thread with the provided parameters.
+     */
+    private void handleActionFetchGenerated(HashMap apiRequest) {
+
+        Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+        builder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+
+        // Append required parameters
+        builder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+        builder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+
+        boolean single = apiRequest.containsKey(FetchContract.PARAM_EIN);
+        if (single) builder.appendPath((String) apiRequest.get(FetchContract.PARAM_EIN));
+        else {
+            // Append optional parameters
+            for (String param : FetchContract.OPTIONAL_PARAMS) {
+                if (apiRequest.containsKey(param)) {
+                    String value = (String) apiRequest.get(param);
+                    if (value != null && !value.equals("")) builder.appendQueryParameter(param, value);
+                }
+            }
+        }
+
+        // Retrieve data
+        URL url = getUrl(builder.build());
+        String response = requestResponseFromUrl(url);
+        if (response == null) return;
+        ContentValues[] parsedResponse = parseJsonResponse(response, single);
+
+        // Store data
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+        getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_GENERATION, parsedResponse);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action FetchCollected in the provided background thread.
+     */
+    private void handleActionFetchCollected() {
+
+        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+        Uri template = templateBuilder.build();
+
+        List<String> charities = UserPreferences.getCharities(this);
+        if (charities.get(0).isEmpty()) return;
+
+        int charityCount = charities.size();
+        ContentValues[] contentValuesArray = new ContentValues[charityCount];
+
+        for (int i = 0; i < charityCount; i++) {
+
+            String[] charityData = charities.get(i).split(":");
+            Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
+
+            charityBuilder.appendPath(charityData[0]);
+
+            // Append required parameters
+            charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+            charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+
+            Uri charityUri = charityBuilder.build();
+
+            URL url = getUrl(charityUri);
+            Timber.e("Collection Fetched URL: %s", url);
+            String response = requestResponseFromUrl(url);
+            Timber.e("Collection Fetched Response: %s", response);
+            ContentValues[] parsedResponse = parseJsonResponse(response, true);
+            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, charityData[1]);
+            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[2]);
+            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[3]);
+            contentValuesArray[i] = parsedResponse[0];
+        }
+
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+        getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, contentValuesArray);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action CollectGenerated in the provided background thread with the provided parameters.
+     */
+    private void handleActionCollectGenerated(String charityId) {
+        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
+        Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
+        if (cursor == null || cursor.getCount() == 0) return;
+        cursor.moveToFirst();
+        ContentValues values = new ContentValues();
+        DatabaseUtils.cursorRowToContentValues(cursor, values);
+        boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
+        values.put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, emptyCollection ? 1f : 0f);
+        values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, 0f);
+        values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+        getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+
+        List<String> charities = UserPreferences.getCharities(this);
+        if (charities.get(0).isEmpty()) charities = new ArrayList<>();
+        String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+        charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, 0f, 0f, 0));
+        UserPreferences.setCharities(this, charities);
+        UserPreferences.updateFirebaseUser(this);
+        cursor.close();
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action RemoveGenerated in the provided background thread with the provided parameters.
+     */
+    private void handleActionRemoveGenerated(String charityId) {
+        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
+        getContentResolver().delete(charityUri, null, null);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action RemoveCollected in the provided background thread with the provided parameters.
+     */
+    private void handleActionRemoveCollected(String charityId) {
+
+        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(charityId).build();
+        getContentResolver().delete(charityUri, null, null);
+
+        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+                null, null, null, null);
+        if (cursor == null) return;
+
+        List<String> charities = new ArrayList<>();
+        if (!cursor.moveToFirst()) charities.add("");
+        else {
+            do {
+                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
+                float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
+                int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, proportion, impact, frequency));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        UserPreferences.setCharities(this, charities);
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetGenerated in the provided background thread with the provided parameters.
+     */
+    private void handleActionResetGenerated() {
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetCollected in the provided background thread with the provided parameters.
+     */
+    private void handleActionResetCollected() {
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+    
+    /**
+     * Handles action UpdateProportions in the provided background thread with the provided parameters.
+     */
+    private void handleActionUpdateProportions(ContentValues... charityValues) {
+
+        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+                null, null, null, null);
+        if (cursor == null || !cursor.moveToFirst()) return;
+
+        boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION) == null;
+        if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, 1f / cursor.getCount());
+        int i = 0;
+
+        List<String> charities = new ArrayList<>();
+
+        do {
+            ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
+            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+            float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
+            float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
+            int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
+            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, impact, frequency));
+
+            Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+            getContentResolver().update(uri, values, null, null);
+
+        } while (cursor.moveToNext());
+        cursor.close();
+
+        UserPreferences.setCharities(this, charities);
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action UpdateFrequency in the provided background thread with the provided parameters.
+     */
+    private void handleActionUpdateFrequency(ContentValues charityValues) {
+
+        String affectedColumn;
+        int affectedIndex;
+        if (charityValues.containsKey(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY)) {
+            affectedColumn = GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY;
+            affectedIndex = GivetrackContract.Entry.INDEX_DONATION_FREQUENCY;
+        } else return;
+
+        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null, null, null);
+        if (cursor == null || !cursor.moveToFirst()) return;
+
+        int f = charityValues.getAsInteger(affectedColumn);
+        List<String> charities = new ArrayList<>();
+
+        long currentTime = System.currentTimeMillis();
+        long lastConversionTime = UserPreferences.getTimestamp(this);
+        long timeBetweenConversions = currentTime - lastConversionTime;
+
+        long daysBetweenConversions =
+                TimeUnit.DAYS.convert(
+                        timeBetweenConversions,
+                        TimeUnit.MILLISECONDS
+                );
+
+        float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
+
+        float amount = UserPreferences.getDonation(this) * f;
+        do {
+            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+            float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
+            float transactionImpact = amount / cursor.getCount();
+            float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
+            todaysImpact += transactionImpact;
+
+            int affectedFrequency = cursor.getInt(affectedIndex) + f;
+
+            ContentValues values = new ContentValues();
+            values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
+            values.put(affectedColumn, affectedFrequency);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, totalImpact);
+
+            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, totalImpact, affectedFrequency));
+
+            Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+            getContentResolver().update(uri, values, null, null);
+        } while (cursor.moveToNext());
+        cursor.close();
+
+        String[] tallyArray = UserPreferences.getTally(this).split(":");
+        tallyArray[0] = String.valueOf(todaysImpact);
+        UserPreferences.setToday(this, todaysImpact);
+        UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
+        UserPreferences.setTimestamp(this, System.currentTimeMillis());
+        UserPreferences.setCharities(this, charities);
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetData in the provided background thread.
+     */
+    private void handleActionResetData() {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Builds the proper {@link Uri} for requesting movie data.
+     * Users must register and reference a unique API key.
+     * API keys are available at http://api.charitynavigator.org/
+     * @return {@link Uri} for requesting data from the API service.
+     */
+    private static URL getUrl(Uri uri) {
+        URL url = null;
+        try {
+            String urlStr = URLDecoder.decode(uri.toString(), "UTF-8");
+            url = new URL(urlStr);
+            Timber.v("Fetch URL: %s", url.toString());
+        } catch (MalformedURLException|UnsupportedEncodingException e) {
+            Timber.e("Unable to convert Uri of %s to URL:", e.getMessage());
+        }
+        return url;
+    }
+
+    /**
+     * Returns the result of the HTTP request.
+     * @param url address from which to fetch the HTTP response.
+     * @return the result of the HTTP request; null if none received.
+     * @throws IOException caused by network and stream reading.
+     */
+    private static String requestResponseFromUrl(URL url) {
+
+        HttpURLConnection urlConnection = null;
+        String response = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = urlConnection.getInputStream();
+            Scanner scanner = new Scanner(in);
+            scanner.useDelimiter("\\A");
+            boolean hasInput = scanner.hasNext();
+            if (hasInput) response = scanner.next();
+            scanner.close();
+            Timber.v("Fetched Response: %s", response);
+        } catch (IOException e) {
+            Timber.e(e);
+        } finally {
+            if (urlConnection != null) urlConnection.disconnect();
+        }
+        return response;
+    }
+
+    /**
+     * This method parses JSON String of data API response and returns array of {@link ContentValues}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static ContentValues[] parseJsonResponse(@NonNull String jsonResponse, boolean single) {
+
+        ContentValues[] valuesArray = null;
+        try {
+            if (single) {
+                valuesArray = new ContentValues[1];
+                valuesArray[0] = parseContentValues(new JSONObject(jsonResponse));
+                Timber.v("Parsed Response: %s", valuesArray[0].toString());
+            } else {
+                JSONArray charityArray = new JSONArray(jsonResponse);
+                valuesArray = new ContentValues[charityArray.length()];
+                for (int i = 0; i < charityArray.length(); i++) {
+                    JSONObject charityObject = charityArray.getJSONObject(i);
+                    ContentValues values = parseContentValues(charityObject);
+                    valuesArray[i] = values;
+                    Timber.v("Parsed Response: %s", values.toString());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Timber.e(e);
+        }
+        return valuesArray;
+    }
+
+    /**
+     * This method parses JSONObject of JSONArray and returns {@link ContentValues}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static ContentValues parseContentValues(JSONObject charityObject) throws JSONException {
+
+        JSONObject primaryAddressObject = charityObject.getJSONObject(FetchContract.KEY_PRIMARY_ADDRESS);
+        String ein = charityObject.getString(FetchContract.KEY_EIN);
+        String charityName = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
+        String primaryCity = primaryAddressObject.getString(FetchContract.KEY_CITY);
+        String primaryState = primaryAddressObject.getString(FetchContract.KEY_STATE);
+        String primaryZip = primaryAddressObject.getString(FetchContract.KEY_POSTAL_CODE);
+        String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
+        String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
+
+        ContentValues values = new ContentValues();
+        values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
+        values.put(GivetrackContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
+        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_CITY, nullToDefaultStr(primaryCity));
+        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_STATE, nullToDefaultStr(primaryState));
+        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_ZIP, nullToDefaultStr(primaryZip));
+        values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
+        values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
+
+        return values;
+    }
+
+    /**
+     * Converts a null value returned from API response to default value.
+     */
+    private static String nullToDefaultStr(String str) {
+        return (str.equals("null")) ? DEFAULT_VALUE_STR : str;
+    }
+
+    /**
+     * Defines the request and response path and parameters for the data API service.
+     */
+    public static final class FetchContract {
+
+        private static final String BASE_URL = "https://api.data.charitynavigator.org/v2";
+        static final String API_PATH_ORGANIZATIONS = "Organizations";
+
+        // Query parameters
+        public static final String PARAM_APP_ID = "app_id";
+        public static final String PARAM_APP_KEY = "app_key";
+        public static final String PARAM_EIN = "ein";
+        public static final String PARAM_PAGE_NUM = "pageNum";
+        public static final String PARAM_PAGE_SIZE = "pageSize";
+        public static final String PARAM_SEARCH = "search";
+        public static final String PARAM_SEARCH_TYPE ="searchType";
+        public static final String PARAM_RATED = "rated";
+        public static final String PARAM_CATEGORY_ID = "categoryID";
+        public static final String PARAM_CAUSE_ID = "causeID";
+        public static final String PARAM_FILTER = "fundraisingOrgs";
+        public static final String PARAM_STATE = "state";
+        public static final String PARAM_CITY = "city";
+        public static final String PARAM_ZIP = "zip";
+        public static final String PARAM_MIN_RATING = "minRating";
+        public static final String PARAM_MAX_RATING = "maxRating";
+        public static final String PARAM_SIZE_RANGE = "sizeRange";
+        public static final String PARAM_DONOR_PRIVACY = "donorPrivacy";
+        public static final String PARAM_SCOPE_OF_WORK = "scopeOfWork";
+        public static final String PARAM_CFC_CHARITIES = "cfcCharities";
+        public static final String PARAM_NO_GOV_SUPPORT = "noGovSupport";
+        public static final String PARAM_SORT = "sort";
+
+        // Response keys
+        private static final String KEY_EIN = "ein";
+        private static final String KEY_CHARITY_NAME = "charityName";
+        private static final String KEY_PRIMARY_ADDRESS = "mailingAddress";
+        private static final String KEY_CITY = "city";
+        private static final String KEY_STATE = "stateOrProvince";
+        private static final String KEY_POSTAL_CODE = "postalCode";
+        private static final String KEY_WEBSITE_URL = "websiteURL";
+        private static final String KEY_CURRENT_RATING = "currentRating";
+        private static final String KEY_RATING = "rating";
+        private static final String KEY_ADVISORIES = "advisories";
+        private static final String KEY_SEVERITY = "severity";
+        private static final String KEY_CHARITY_NAVIGATOR_URL = "charityNavigatorURL";
+        private static final String KEY_ERROR_MESSAGE = "errorMessage";
+        
+        private static final String[] OPTIONAL_PARAMS = {
+            PARAM_PAGE_NUM, 
+            PARAM_PAGE_SIZE, 
+            PARAM_SEARCH, 
+            PARAM_SEARCH_TYPE,
+            PARAM_RATED, 
+            PARAM_CATEGORY_ID, 
+            PARAM_CAUSE_ID,
+            PARAM_FILTER,
+            PARAM_STATE, 
+            PARAM_CITY, 
+            PARAM_ZIP, 
+            PARAM_MIN_RATING, 
+            PARAM_MAX_RATING, 
+            PARAM_SIZE_RANGE, 
+            PARAM_DONOR_PRIVACY, 
+            PARAM_SCOPE_OF_WORK, 
+            PARAM_CFC_CHARITIES, 
+            PARAM_NO_GOV_SUPPORT, 
+            PARAM_SORT   
+        };
+    }
+}

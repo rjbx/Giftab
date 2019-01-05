@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/charity_fragment"
+    style="?android:attr/textAppearanceLarge">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/charity_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_gravity="center_vertical|end"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/browser_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:background="@color/colorNeutralDark">
+
+            <ImageButton
+                android:id="@+id/browser_close_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".4"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center"
+                android:layout_margin="6dp"
+                android:background="@color/colorNeutral"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:contentDescription="@string/description_close_button"
+                style="@style/Widget.AppCompat.Button" />
+
+            <ImageButton
+                android:id="@+id/browser_open_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".4"
+                android:layout_gravity="start|center_vertical"
+                android:gravity="center"
+                android:layout_margin="6dp"
+                android:background="@color/colorNeutral"
+                android:src="@android:drawable/btn_plus"
+                android:contentDescription="@string/description_open_button"
+                style="@style/Widget.AppCompat.Button" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/webview_frame"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".8" />
+
+        <ProgressBar
+            android:id="@+id/webview_progress"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="160dp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+</FrameLayout>
+
+

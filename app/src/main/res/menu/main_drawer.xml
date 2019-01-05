@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item android:title="@string/nav_menu_interact">
+
+            <menu>
+
+                <item
+                    android:id="@+id/nav_search"
+                    android:icon="@drawable/menu_search"
+                    android:title="@string/nav_item_search" />
+            </menu>
+
+        </item>
+
+        <item android:title="@string/nav_menu_manage">
+
+            <menu>
+
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/menu_settings"
+                    android:title="@string/nav_item_settings" />
+
+                <item
+                    android:id="@+id/nav_logout"
+                    android:icon="@drawable/menu_logout"
+                    android:title="@string/nav_item_logout" />
+
+            </menu>
+
+        </item>
+
+        <item android:title="@string/nav_menu_learn">
+
+            <menu>
+
+                <item
+                    android:id="@+id/nav_cn"
+                    android:icon="@drawable/baseline_data_usage_24"
+                    android:title="@string/nav_item_cn" />
+
+                <item
+                    android:id="@+id/nav_clearbit"
+                    android:icon="@drawable/baseline_data_usage_24"
+                    android:title="@string/nav_item_clearbit" />
+
+            </menu>
+
+        </item>
+
+    </group>
+
+</menu>

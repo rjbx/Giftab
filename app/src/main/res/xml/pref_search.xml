@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:dependency="@string/pref_focus_key"
+        android:defaultValue="true"
+        android:key="@string/pref_filter_key"
+        android:title="@string/pref_fundraising_label"
+        android:summaryOn="Show approved fundraising organizations"
+        android:summaryOff="Show all organizations"/>
+
+    <EditTextPreference
+        android:dependency="@string/pref_focus_key"
+        android:inputType="textCapWords"
+        android:key="@string/pref_term_key"
+        android:singleLine="true"
+        android:title="@string/pref_term_label"/>
+
+    <EditTextPreference
+        android:dependency="@string/pref_focus_key"
+        android:inputType="textCapWords"
+        android:key="@string/pref_city_key"
+        android:singleLine="true"
+        android:title="@string/pref_city_label"/>
+
+    <ListPreference
+        android:dependency="@string/pref_focus_key"
+        android:entries="@array/list_preference_state"
+        android:entryValues="@array/list_preference_state_values"
+        android:key="@string/pref_state_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_state_label"/>
+
+    <EditTextPreference
+        android:dependency="@string/pref_focus_key"
+        android:inputType="number"
+        android:key="@string/pref_zip_key"
+        android:singleLine="true"
+        android:title="@string/pref_zip_label"/>
+
+    <ListPreference
+        android:dependency="@string/pref_focus_key"
+        android:entries="@array/list_preference_minrating"
+        android:entryValues="@array/list_preference_minrating_values"
+        android:key="@string/pref_minrating_key"
+        android:negativeButtonText="Clear Selection"
+        android:positiveButtonText="OK"
+        android:title="@string/pref_minrating_label"/>
+
+    <ListPreference
+        android:dependency="@string/pref_focus_key"
+        android:entries="@array/list_preference_sort"
+        android:entryValues="@array/list_preference_sort_values"
+        android:key="@string/pref_sort_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_sort_label"/>
+
+    <ListPreference
+        android:dependency="@string/pref_focus_key"
+        android:entries="@array/list_preference_order"
+        android:entryValues="@array/list_preference_order_values"
+        android:key="@string/pref_order_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_order_label"/>
+
+    <EditTextPreference
+        android:dependency="@string/pref_focus_key"
+        android:inputType="number"
+        android:key="@string/pref_pages_key"
+        android:singleLine="true"
+        android:title="@string/pref_start_label"/>
+
+    <EditTextPreference
+        android:dependency="@string/pref_focus_key"
+        android:inputType="number"
+        android:key="@string/pref_size_key"
+        android:singleLine="true"
+        android:title="@string/pref_rows_label"/>
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/pref_ein_key"
+        android:singleLine="true"
+        android:title="@string/pref_ein_label"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="@string/pref_focus_key"
+        android:title="@string/pref_focused_label"
+        android:summaryOn="Search for single charity"
+        android:summaryOff="Search for multiple charities"/>
+
+</PreferenceScreen>

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_fragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.core.widget.NestedScrollView
+        android:fillViewport="true"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".8"
+        tools:context=".ui.MainActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorChalk">
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/proportion_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="24dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:orientation="horizontal"
+                android:layout_marginStart="18dp"
+                android:layout_marginEnd="18dp">
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/usage_chart"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight=".33"/>
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/type_chart"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight=".33"/>
+
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/average_chart"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight=".33"/>
+
+            </LinearLayout>
+
+            <com.github.mikephil.charting.charts.HorizontalBarChart
+                android:id="@+id/activity_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginBottom="50dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/collection_add_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorNeutralDark">
+
+        <Button
+            android:id="@+id/collection_add_button"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:textColor="#555"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:text="@string/symbol_increment_button"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAttentionDark"
+        android:padding="5dp"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/home_amount_label1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:labelFor="@id/home_amount_text1">
+
+            <TextView
+                android:id="@+id/home_amount_text1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:layout_gravity="center"
+                android:background="@color/colorSlate"
+                android:gravity="start"
+                android:textSize="@dimen/text_size_paragraph_title"
+                android:textStyle="bold"
+                android:textColor="#fff"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/home_amount_label2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".3"
+            android:labelFor="@id/home_amount_text2">
+
+            <TextView
+                android:id="@+id/home_amount_text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:layout_gravity="end"
+                android:background="@color/colorSlate"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_paragraph_title"
+                android:textStyle="bold"
+                android:textColor="#fff"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+    
+</LinearLayout>

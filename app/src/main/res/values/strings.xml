@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    
+    <string name="app_name">Givetrack</string>
+    
+    <!-- Errors -->
+    <string name="removal_error_message">An unexpected error occurred; could not remove %s from your search results.</string>
+    <string name="network_error_message">There is a problem with the network. Please check your connection and try again.</string>
+    <string name="provider_error_message">"Unable to establish a connection with %s. Please try again later.</string>
+    <string name="create_error_message">%s: Failed to create file from path</string>
+    <string name="output_error_message">%s: Failed to generate output stream from file directory</string>
+    <string name="location_error_message">Response from location update permission request generated a Security Exception: %s</string>
+    <string name="loader_error_message">Loader Not Implemented: %d</string>
+    <string name="invalid_swipe_message">Unhandled swipe direction</string>
+
+    <!-- Options -->
+    <string name="action_settings">Settings</string>
+    <string name="action_share">Share</string>
+    <string name="action_recalibrate">Recalibrate Donations</string>
+    <string name="action_clear">Clear Charities</string>
+    <string name="action_toggle_on">Toggle overlay on</string>
+    <string name="action_toggle_off">Toggle overlay off</string>
+    <string name="action_overlay">Apply overlay</string>
+    <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_option_erase">ERASE</string>
+    <string name="dialog_option_keep">KEEP</string>
+    <string name="dialog_remove">REMOVE</string>
+    <string name="dialog_later">REMIND ME LATER</string>
+    <string name="dialog_start">GET STARTED</string>
+
+    <!-- Accessibility -->
+    <string name="description_close_button">Press this button to close this view</string>
+    <string name="description_open_button">Press this button to expand this view</string>
+    <string name="description_charity_logo">This is the logo that corresponds to the listed charity</string>
+    <string name="description_refresh_button">Press this button to refresh the list of charities</string>
+    <string name="description_collected_add_button">Press this button to add this charity to your collection</string>
+    <string name="description_collected_remove_button">Press this button to remove this charity from your collection</string>
+    <string name="description_change_button">Press this button to change the color of the ribbon</string>
+    <string name="description_detect_location">Press this button to detect your current location</string>
+    <string name="description_credit_button">Press this button to add to your credit by %s</string>
+    <string name="description_credit_toggle_button">Press this button to change the response of the big circle button. The current response is to add credit by %s</string>
+    <string name="description_payment_text">Your available paid credit is %s</string>
+    <string name="description_donation_text">Press this button to add to your total donation amount. The total amount that will be allocated among your charities on each converted smile or stride is %s</string>
+    <string name="description_decrement_donation_text">Press this button to decrease your total donation amount</string>
+    <string name="description_increment_donation_text">Press this button to increase your total donation amount</string>
+    <string name="description_decrement_proportion_text">Press this button to decrease the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
+    <string name="description_increment_proportion_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
+
+    <!-- Screens -->
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_login">Sign in</string>
+    <string name="title_charity_list">Search Results</string>
+    <string name="title_charity_detail">Charity Detail</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Main -->
+    <string name="nav_header_title">Givetrack</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_subtitle">Menu</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="nav_menu_interact">Interact</string>
+    <string name="nav_menu_manage">Manage</string>
+    <string name="nav_menu_learn">Learn</string>
+    <string name="nav_item_search">Search</string>
+    <string name="nav_item_settings">Settings</string>
+    <string name="nav_item_logout">Logout</string>
+    <string name="nav_item_cn">About Charity Navigator API</string>
+    <string name="nav_item_clearbit">About Clearbit API</string>
+    <string name="url_cn">https://charitynavigator.org/</string>
+    <string name="url_clearbit">https://clearbit.com/</string>
+    <string name="tab_text_1">Give</string>
+    <string name="tab_text_2">Track</string>
+
+    <!-- Auth -->
+    <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s. Charity data and logos powered by Charity Navigator and Clearbit API.</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
+    <string name="account_deletion_alert_dialog">Are you sure you want to delete your account? Your data will be erased and cannot be recovered.</string>
+    <string name="message_logout">You successfully logged out</string>
+    <string name="message_data_erase">Your account data has been erased from our servers</string>
+    <string name="message_login">You successfully logged in</string>
+    <string name="message_password_request">Please confirm your password to proceed.</string>
+
+    <!-- Widget -->
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+
+    <!-- Charity -->
+    <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
+    <string name="dialog_removal_alert">Remove %s from your collection?</string>
+    <string name="snippet_all_charities">all charities</string>
+    <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
+    <string name="message_search_refresh">Your search results have been refreshed.</string>
+    <string name="message_generated_remove">%s has been removed from your search results. </string>
+    <string name="message_collected_add">"%s has been added to your collection"</string>
+    <string name="message_collected_remove">"%s has been removed from your collection"</string>
+    <string name="indicator_donation_frequency">Number of donations: %s</string>
+    <string name="indicator_donation_impact">Your total impact: %s</string>
+    <string name="axis_value_high">All-time high</string>
+    <string name="axis_value_today">Today</string>
+    <string name="axis_value_yesterday">Yesterday</string>
+    <string name="axis_value_days">%d days ago</string>
+    <string name="axis_value_alltime">All-time</string>
+    <string name="axis_value_daily">Daily</string>
+    <string name="axis_value_donation">Donated</string>
+    <string name="chart_title_activity">Recent Conversions</string>
+    <string name="chart_title_average">Average Conversions</string>
+    <string name="chart_title_type">Conversion Types</string>
+    <string name="chart_title_usage">Amount Totals</string>
+    <string name="chart_title_proportion">Your Charities</string>
+    <string name="symbol_increment_button">+</string>
+    <string name="symbol_decrement_button">—</string>
+
+    <!-- SharedPreferences -->
+    <string name="pref_term_key" translatable="false">term</string>
+    <string name="pref_city_key" translatable="false">city</string>
+    <string name="pref_state_key" translatable="false">state</string>
+    <string name="pref_zip_key" translatable="false">zipCode</string>
+    <string name="pref_pages_key" translatable="false">pages</string>
+    <string name="pref_size_key" translatable="false">rows</string>
+    <string name="pref_minrating_key" translatable="false">minrating</string>
+    <string name="pref_filter_key" translatable="false">fundraising</string>
+    <string name="pref_sort_key" translatable="false">sort</string>
+    <string name="pref_order_key" translatable="false">order</string>
+    <string name="pref_focus_key" translatable="false">focus</string>
+    <string name="pref_gender_key" translatable="false">gender</string>
+    <string name="pref_birthdate_key" translatable="false">birthdate</string>
+    <string name="pref_delete_key" translatable="false">deleteAccount</string>
+    <string name="pref_ein_key" translatable="false">ein</string>
+    <string name="pref_term_label">Keywords</string>
+    <string name="pref_city_label">City</string>
+    <string name="pref_state_label">State</string>
+    <string name="pref_zip_label">Postal Code</string>
+    <string name="pref_start_label">Start</string>
+    <string name="pref_rows_label">Rows</string>
+    <string name="pref_minrating_label">Minimum Rating</string>
+    <string name="pref_fundraising_label">Advisory Filter</string>
+    <string name="pref_sort_label">Sort</string>
+    <string name="pref_order_label">Order</string>
+    <string name="pref_focused_label">Focused Search</string>
+    <string name="pref_ein_label">Employer Identification Number</string>
+    <string name="pref_gender_label">Gender</string>
+    <string name="pref_birthdate_label">Birthdate</string>
+    <string name="pref_delete_label">Delete Account</string>
+
+    <!-- General settings -->
+    <string name="pref_header_user">User Attributes</string>
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Search settings -->
+    <string name="pref_header_search">Search Filters</string>
+    <string-array name="list_preference_minrating">
+        <item>★</item>
+        <item>★★</item>
+        <item>★★★</item>
+        <item>★★★★</item>
+        <item>No Preference</item>
+    </string-array>
+    <string-array name="list_preference_minrating_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item></item>
+    </string-array>
+    <string-array name="list_preference_state">
+        <item>Alabama</item>
+        <item>Alaska</item>
+        <item>Arizona</item>
+        <item>Arkansas</item>
+        <item>California</item>
+        <item>Colorado</item>
+        <item>Connecticut</item>
+        <item>Delaware</item>
+        <item>District of Columbia</item>
+        <item>Florida</item>
+        <item>Georgia</item>
+        <item>Hawaii</item>
+        <item>Idaho</item>
+        <item>Illinois</item>
+        <item>Indiana</item>
+        <item>Iowa</item>
+        <item>Kansas</item>
+        <item>Kentucky</item>
+        <item>Louisiana</item>
+        <item>Maine</item>
+        <item>Maryland</item>
+        <item>Massachusetts</item>
+        <item>Michigan</item>
+        <item>Minnesota</item>
+        <item>Mississippi</item>
+        <item>Missouri</item>
+        <item>Montana</item>
+        <item>Nebraska</item>
+        <item>Nevada</item>
+        <item>New Hampshire</item>
+        <item>New Jersey</item>
+        <item>New Mexico</item>
+        <item>New York</item>
+        <item>North Carolina</item>
+        <item>North Dakota</item>
+        <item>Ohio</item>
+        <item>Oklahoma</item>
+        <item>Oregon</item>
+        <item>Pennsylvania</item>
+        <item>Rhode Island</item>
+        <item>South Carolina</item>
+        <item>South Dakota</item>
+        <item>Tennessee</item>
+        <item>Texas</item>
+        <item>Utah</item>
+        <item>Vermont</item>
+        <item>Virginia</item>
+        <item>Washington</item>
+        <item>West Virginia</item>
+        <item>Wisconsin</item>
+        <item>Wyoming</item>
+        <item>No Preference</item>
+    </string-array>
+    <string-array name="list_preference_state_values">
+        <item>AK</item>
+        <item>AL</item>
+        <item>AR</item>
+        <item>AZ</item>
+        <item>CA</item>
+        <item>CO</item>
+        <item>CT</item>
+        <item>DC</item>
+        <item>DE</item>
+        <item>FL</item>
+        <item>GA</item>
+        <item>HI</item>
+        <item>IA</item>
+        <item>ID</item>
+        <item>IL</item>
+        <item>IN</item>
+        <item>KS</item>
+        <item>KY</item>
+        <item>LA</item>
+        <item>MA</item>
+        <item>MD</item>
+        <item>ME</item>
+        <item>MI</item>
+        <item>MN</item>
+        <item>MO</item>
+        <item>MS</item>
+        <item>MT</item>
+        <item>NC</item>
+        <item>ND</item>
+        <item>NE</item>
+        <item>NH</item>
+        <item>NJ</item>
+        <item>NM</item>
+        <item>NV</item>
+        <item>NY</item>
+        <item>OH</item>
+        <item>OK</item>
+        <item>OR</item>
+        <item>PA</item>
+        <item>RI</item>
+        <item>SC</item>
+        <item>SD</item>
+        <item>TN</item>
+        <item>TX</item>
+        <item>UT</item>
+        <item>VA</item>
+        <item>VT</item>
+        <item>WA</item>
+        <item>WI</item>
+        <item>WV</item>
+        <item>WY</item>
+        <item></item>
+    </string-array>
+    <string-array name="list_preference_gender">
+        <item>Female</item>
+        <item>Male</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="list_preference_gender_values">
+        <item>2</item>
+        <item>1</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="list_preference_sort">
+        <item>By rating</item>
+        <item>By relevance</item>
+        <item>By name</item>
+    </string-array>
+    <string-array name="list_preference_sort_values">
+        <item>RATING</item>
+        <item>RELEVANCE</item>
+        <item>NAME</item>
+    </string-array>
+    <string-array name="list_preference_order">
+        <item>Descending</item>
+        <item>Ascending</item>
+    </string-array>
+    <string-array name="list_preference_order_values">
+        <item>DESC</item>
+        <item>ASC</item>
+    </string-array>
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <!-- Notification settings -->
+    <string name="pref_header_notifications">Message Notifications</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+
+    <!-- Advanced settings -->
+    <string name="pref_header_advanced">Advanced Settings</string>
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+        <item>No Preference</item>
+    </string-array>
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item></item>
+    </string-array>
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+    
+</resources>

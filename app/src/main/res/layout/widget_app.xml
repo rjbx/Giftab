@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/widget_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".2"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:textColor="#fff"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:fontFamily="casual"
+        android:textStyle="bold"
+        android:text="@string/app_name"/>
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/widget_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".6"
+        android:background="@color/colorNeutral"
+        tools:listitem="@layout/item_widget"/>
+
+    <Button
+        android:id="@+id/collection_add_button"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:gravity="center"
+        android:textColor="#555"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:text="@string/symbol_increment_button"/>
+
+</LinearLayout>

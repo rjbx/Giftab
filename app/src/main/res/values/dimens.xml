@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_header_vertical_spacing">8dp</dimen>
+    <dimen name="nav_header_height">176dp</dimen>
+    <dimen name="donation_item_height">150dp</dimen>
+    <dimen name="item_horizontal_margins">8dp</dimen>
+    <dimen name="item_initial_top_margin">56dp</dimen>
+    <dimen name="item_default_vertical_margin">4dp</dimen>
+    <dimen name="item_separator">1dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
+    <dimen name="app_bar_height">200dp</dimen>
+    <dimen name="item_width">200dp</dimen>
+    <dimen name="piechart_diameter">300dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="button_padding">32dp</dimen>
+    <dimen name="text_size_description">2sp</dimen>
+    <dimen name="text_size_subtitle">4sp</dimen>
+    <dimen name="text_size_paragraph">16sp</dimen>
+    <dimen name="text_size_paragraph_title">20sp</dimen>
+    <dimen name="text_size_symbol">32sp</dimen>
+    <dimen name="text_size_bitmap_overlay_message">50sp</dimen>
+    <dimen name="text_size_bitmap_overlay_indicator">75sp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+    <dimen name="toggle_padding">10dp</dimen>
+</resources>
