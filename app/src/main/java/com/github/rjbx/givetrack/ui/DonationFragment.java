@@ -58,7 +58,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
     private MainActivity mParentActivity;
     private CharityFragment mCharityFragment;
     private ListAdapter mListAdapter;
-    private ImageButton mSaveButton;
+    private View mBarWrapper;
+    private ImageButton mActionBar;
     private ProgressBar mProgressBar;
     private float mAmountTotal;
     private boolean mDualPane;
@@ -87,11 +88,11 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-
-        mDonationsAdjusted = false;
-
         View rootView = inflater.inflate(R.layout.fragment_donation, container, false);
 
+
+        mAmountTotal = 0f;
+        mDonationsAdjusted = false;
 
         Bundle args = getArguments();
         if (args != null) {
@@ -100,7 +101,6 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                 ContentValues[] valuesArray = (ContentValues[]) parcelableArray;
                 if (mValuesArray != null && mValuesArray.length != valuesArray.length) {
                     mDonationsAdjusted = true;
-                    mProgressBar.setVisibility(View.VISIBLE);
                 }
                 mValuesArray = valuesArray;
             }
@@ -112,9 +112,6 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         final EditText donationTotalText = rootView.findViewById(R.id.donation_amount_text);
         final View donationTotalLabel = rootView.findViewById(R.id.donation_amount_text);
 
-        mSaveButton = rootView.findViewById(R.id.save_button);
-        mProgressBar = rootView.findViewById(R.id.save_progress);
-
         donationTotalText.setText(currencyFormatter.format(mAmountTotal));
         donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
 
@@ -124,8 +121,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                         case EditorInfo.IME_ACTION_DONE:
                             try {
                                 mAmountTotal = currencyFormatter.parse(onEditorActionView.getText().toString()).floatValue();
-                                UserPreferences.setDonation(mParentActivity, mAmountTotal);
-                                UserPreferences.updateFirebaseUser(mParentActivity);
+                                UserPreferences.setDonation(getContext(), mAmountTotal);
+                                UserPreferences.updateFirebaseUser(getContext());
                             } catch (ParseException e) {
                                 Timber.e(e);
                                 return false;
@@ -137,6 +134,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                                     (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
                             if (inputMethodManager == null) return false;
                             inputMethodManager.toggleSoftInput(0, 0);
+                            renderActionBar();
                             return true;
                         default: return false;
                     }
@@ -153,8 +151,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         decrementTotalButton.setOnClickListener(clickedView -> {
             if (mAmountTotal > 0f) {
                 mAmountTotal -= 0.01f;
-                UserPreferences.setDonation(mParentActivity, mAmountTotal);
-                UserPreferences.updateFirebaseUser(mParentActivity);
+                UserPreferences.setDonation(getContext(), mAmountTotal);
+                UserPreferences.updateFirebaseUser(getContext());
             }
             donationTotalText.setText(currencyFormatter.format(mAmountTotal));
             donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
@@ -172,15 +170,25 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         RecyclerView recyclerView = rootView.findViewById(R.id.donation_list);
         recyclerView.setAdapter(mListAdapter);
 
+        mBarWrapper = rootView.findViewById(R.id.action_bar_wrapper);
+        mActionBar = rootView.findViewById(R.id.action_bar);
+        mProgressBar = rootView.findViewById(R.id.save_progress_bar);
+
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
-        mSaveButton.setOnClickListener(clickedView -> {
-                if (mDonationsAdjusted) {
-                    mListAdapter.syncDonations();
-                    mDonationsAdjusted = false;
-                    mSaveButton.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
-                    mProgressBar.setVisibility(View.GONE);
-                }
-            });
+        mActionBar.setOnClickListener(clickedView -> {
+            if (mDonationsAdjusted) {
+                mListAdapter.syncDonations();
+                mDonationsAdjusted = false;
+            } else if (mAmountTotal > 0) {
+                ContentValues values = new ContentValues();
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
+                DataService.startActionUpdateFrequency(getContext(), values);
+                UserPreferences.updateFirebaseUser(mParentActivity);
+            }
+            renderActionBar();
+        });
+        renderActionBar();
+
         return rootView;
     }
 
@@ -301,7 +309,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));
             if (impact > 10)
                 if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
-                else holder.mImpactView.setTextAppearance(mParentActivity, R.style.AppTheme_TextEmphasis);
+                else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
 
             Bundle arguments = new Bundle();
             arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
@@ -314,7 +322,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             holder.mProportionView.setText(percentInstance.format(mProportions[position]));
             holder.mAmountView.setText(currencyInstance.format(mProportions[position] * mAmountTotal));
             holder.mRemoveButton.setOnClickListener(removeButtonclickedView -> {
-                AlertDialog dialog = new AlertDialog.Builder(mParentActivity).create();
+                AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
                 dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
                 dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
                         (neutralButtonOnClickDialog, neutralButtonOnClickPosition) -> dialog.dismiss());
@@ -322,7 +330,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                         (negativeButtonOnClickDialog, negativeButtonOnClickPosition) -> {
                             if (mDualPane) showSinglePane();
 //                                if (mValuesArray.length == 1) onDestroy();
-                            DataService.startActionRemoveCollected(mParentActivity, ein);
+                            DataService.startActionRemoveCollected(getContext(), ein);
                         });
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
@@ -339,6 +347,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                     for (float proportion : mProportions) sum += proportion;
                     Timber.d("List[%s] : Sum[%s]", Arrays.asList(mProportions).toString(), sum);
                     mDonationsAdjusted = true;
+                    renderActionBar();
                     mProgressBar.setVisibility(View.VISIBLE);
                     notifyDataSetChanged();
                 });
@@ -397,7 +406,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                 Timber.d(mProportions[i] + " " + mAmountTotal + " " + i + " " + mProportions.length);
                 valuesArray[i] = values;
             }
-            DataService.startActionUpdateProportions(mParentActivity, valuesArray);
+            DataService.startActionUpdateProportions(getContext(), valuesArray);
         }
     }
 
@@ -434,5 +443,35 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         getChildFragmentManager().beginTransaction().remove(mCharityFragment).commit();
         mParentActivity.findViewById(R.id.donation_list).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDualPane = false;
+    }
+
+    private void renderActionBar() {
+
+        int barWrapperColor;
+        int actionBarColor;
+        int actionBarIcon;
+        int progressBarVisibility;
+
+        if (mDonationsAdjusted) {
+            barWrapperColor = R.color.colorAccentDark;
+            actionBarColor = R.color.colorAccent;
+            actionBarIcon = R.drawable.action_save;
+            progressBarVisibility = View.VISIBLE;
+        } else if (mAmountTotal == 0f) {
+            barWrapperColor = R.color.colorAttention;
+            actionBarColor = R.color.colorAttentionDark;
+            actionBarIcon = R.drawable.action_manage;
+            progressBarVisibility = View.GONE;
+        } else {
+            actionBarColor = R.color.colorConversion;
+            barWrapperColor = R.color.colorConversionDark;
+            actionBarIcon = R.drawable.action_download;
+            progressBarVisibility = View.GONE;
+        }
+
+        mBarWrapper.setBackgroundColor(getResources().getColor(barWrapperColor));
+        mActionBar.setBackgroundColor(getResources().getColor(actionBarColor));
+        mActionBar.setImageResource(actionBarIcon);
+        mProgressBar.setVisibility(progressBarVisibility);
     }
 }
