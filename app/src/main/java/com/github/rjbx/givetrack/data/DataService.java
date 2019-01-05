@@ -514,11 +514,11 @@ public class DataService extends IntentService {
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
                 float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
-                float transactionImpact = amount / cursor.getCount();
+                float transactionImpact = amount * proportion;
                 float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
                 todaysImpact += transactionImpact;
 
-                int affectedFrequency = cursor.getInt(affectedIndex) + f;
+                int affectedFrequency = cursor.getInt(affectedIndex) + proportion == 0 ? 0 : f;
 
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_EIN, ein);

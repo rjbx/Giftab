@@ -181,13 +181,14 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             if (mDonationsAdjusted) {
                 mListAdapter.syncDonations();
                 mDonationsAdjusted = false;
+                mActionBar.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
             } else if (mAmountTotal > 0) {
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
                 DataService.startActionUpdateFrequency(getContext(), values);
                 UserPreferences.updateFirebaseUser(mParentActivity);
+                mActionBar.setBackgroundColor(getResources().getColor(R.color.colorConversionDark));
             }
-            renderActionBar();
         });
         renderActionBar();
 
