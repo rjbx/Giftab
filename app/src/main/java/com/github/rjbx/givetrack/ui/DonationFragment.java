@@ -91,7 +91,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         View rootView = inflater.inflate(R.layout.fragment_donation, container, false);
 
 
-        mAmountTotal = 0f;
+        mAmountTotal = UserPreferences.getDonation(getContext());
         mDonationsAdjusted = false;
 
         Bundle args = getArguments();
@@ -134,7 +134,6 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                                     (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
                             if (inputMethodManager == null) return false;
                             inputMethodManager.toggleSoftInput(0, 0);
-                            renderActionBar();
                             return true;
                         default: return false;
                     }
@@ -142,6 +141,9 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
         Button incrementTotalButton = rootView.findViewById(R.id.donation_increment_button);
         incrementTotalButton.setOnClickListener(clickedView -> {
+            mAmountTotal += 0.01f;
+            UserPreferences.setDonation(getContext(), mAmountTotal);
+            UserPreferences.updateFirebaseUser(getContext());
             donationTotalText.setText(currencyFormatter.format(mAmountTotal));
             donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
             updateAmounts();
@@ -227,8 +229,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
      * of total donation amount.
      */
     private void updateAmounts() {
-        if (mValuesArray == null) return;
-        mListAdapter.notifyDataSetChanged();
+        renderActionBar();
+        if (mValuesArray != null) mListAdapter.notifyDataSetChanged();
     }
 
     public static void resetDonationsAdjusted() { mDonationsAdjusted = false; }
@@ -458,8 +460,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             actionBarIcon = R.drawable.action_save;
             progressBarVisibility = View.VISIBLE;
         } else if (mAmountTotal == 0f) {
-            barWrapperColor = R.color.colorAttention;
-            actionBarColor = R.color.colorAttentionDark;
+            barWrapperColor = R.color.colorAttentionDark;
+            actionBarColor = R.color.colorAttention;
             actionBarIcon = R.drawable.action_manage;
             progressBarVisibility = View.GONE;
         } else {
