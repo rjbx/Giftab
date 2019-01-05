@@ -31,7 +31,7 @@ import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.sync.DataService;
+import com.github.rjbx.givetrack.data.DataService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 

@@ -36,12 +36,12 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/ad_progress"
+        android:id="@+id/save_progress"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="16dp"
         android:indeterminate="true"
         android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/colorChalk"
+        android:indeterminateTint="#00FF00"
         android:visibility="gone"
         app:layout_anchor="@id/conversion_bar"
         app:layout_anchorGravity="top|center_horizontal"
@@ -55,13 +55,14 @@
         android:background="@color/colorAccentDark">
 
         <ImageButton
-            android:id="@+id/conversion_button"
+            android:id="@+id/save_button"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_gravity="start|center_vertical"
             android:gravity="center"
             android:layout_margin="6dp"
             android:background="@color/colorAccent"
+            android:src="@drawable/action_save"
             style="@style/Widget.AppCompat.Button" />
 
     </FrameLayout>

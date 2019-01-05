@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
@@ -26,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.rjbx.calibrater.Calibrater;
@@ -33,7 +33,7 @@ import com.github.rjbx.rateraid.Rateraid;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.sync.DataService;
+import com.github.rjbx.givetrack.data.DataService;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -58,9 +58,10 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
     private MainActivity mParentActivity;
     private CharityFragment mCharityFragment;
     private ListAdapter mListAdapter;
+    private ImageButton mSaveButton;
+    private ProgressBar mProgressBar;
     private float mAmountTotal;
     private boolean mDualPane;
-    private long mAdjustmentTime;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -97,15 +98,22 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
             if (parcelableArray != null) {
                 ContentValues[] valuesArray = (ContentValues[]) parcelableArray;
-                if (mValuesArray != null && mValuesArray.length != valuesArray.length) mDonationsAdjusted = true;
+                if (mValuesArray != null && mValuesArray.length != valuesArray.length) {
+                    mDonationsAdjusted = true;
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
                 mValuesArray = valuesArray;
             }
         }
 
         final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
 
+
         final EditText donationTotalText = rootView.findViewById(R.id.donation_amount_text);
         final View donationTotalLabel = rootView.findViewById(R.id.donation_amount_text);
+
+        mSaveButton = rootView.findViewById(R.id.save_button);
+        mProgressBar = rootView.findViewById(R.id.save_progress);
 
         donationTotalText.setText(currencyFormatter.format(mAmountTotal));
         donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
@@ -165,13 +173,12 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         recyclerView.setAdapter(mListAdapter);
 
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
-        ImageButton conversionBar = rootView.findViewById(R.id.conversion_button);
-            conversionBar.setOnClickListener(clickedView -> {
-                float adjustmentElapsedTime = (float) ((System.currentTimeMillis() - mAdjustmentTime) / 1000.0);
-                if (adjustmentElapsedTime > 1f && mDonationsAdjusted) {
+        mSaveButton.setOnClickListener(clickedView -> {
+                if (mDonationsAdjusted) {
                     mListAdapter.syncDonations();
                     mDonationsAdjusted = false;
-                    conversionBar.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
+                    mSaveButton.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
+                    mProgressBar.setVisibility(View.GONE);
                 }
             });
         return rootView;
@@ -332,7 +339,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                     for (float proportion : mProportions) sum += proportion;
                     Timber.d("List[%s] : Sum[%s]", Arrays.asList(mProportions).toString(), sum);
                     mDonationsAdjusted = true;
-                    mAdjustmentTime = System.currentTimeMillis();
+                    mProgressBar.setVisibility(View.VISIBLE);
                     notifyDataSetChanged();
                 });
             }

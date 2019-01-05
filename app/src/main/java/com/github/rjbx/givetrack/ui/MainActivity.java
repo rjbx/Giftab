@@ -35,7 +35,7 @@ import android.widget.TextView;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.sync.DataService;
+import com.github.rjbx.givetrack.data.DataService;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
         if (mPagerAdapter == null) mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mPagerAdapter);
-        viewPager.arrowScroll(View.FOCUS_RIGHT);
 
         DrawerLayout drawer = findViewById(R.id.main_activity);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

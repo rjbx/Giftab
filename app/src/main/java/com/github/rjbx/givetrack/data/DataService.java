@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.sync;
+package com.github.rjbx.givetrack.data;
 
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
@@ -14,11 +14,9 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import timber.log.Timber;
 
-import com.firebase.ui.auth.data.model.User;
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
-import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.ui.AppWidget;
+import com.github.rjbx.givetrack.AppWidget;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,17 +32,19 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
 public class DataService extends IntentService {
+
+    private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
+    private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
 
     private static final String ACTION_FETCH_GENERATED = "com.github.rjbx.givetrack.sync.action.FETCH_GENERATED";
     private static final String ACTION_FETCH_COLLECTED = "com.github.rjbx.givetrack.sync.action.FETCH_COLLECTED";
@@ -64,6 +64,7 @@ public class DataService extends IntentService {
 
     public static final String DEFAULT_VALUE_STR = "";
     public static final int DEFAULT_VALUE_INT = -1;
+
 
     /**
      * Creates an {@link IntentService} instance.
@@ -269,20 +270,23 @@ public class DataService extends IntentService {
             for (String param : FetchContract.OPTIONAL_PARAMS) {
                 if (apiRequest.containsKey(param)) {
                     String value = (String) apiRequest.get(param);
-                    if (value != null && !value.equals("")) builder.appendQueryParameter(param, value);
+                    if (value != null && !value.equals(""))
+                        builder.appendQueryParameter(param, value);
                 }
             }
         }
 
-        // Retrieve data
         URL url = getUrl(builder.build());
-        String response = requestResponseFromUrl(url);
-        if (response == null) return;
-        ContentValues[] parsedResponse = parseJsonResponse(response, single);
+        NETWORK_IO.execute(() -> {
+            // Retrieve data
+            String response = requestResponseFromUrl(url);
+            if (response == null) return;
+            ContentValues[] parsedResponse = parseJsonResponse(response, single);
 
-        // Store data
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
-        getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_GENERATION, parsedResponse);
+            // Store data
+            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+            getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_GENERATION, parsedResponse);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -304,32 +308,34 @@ public class DataService extends IntentService {
         int charityCount = charities.size();
         ContentValues[] contentValuesArray = new ContentValues[charityCount];
 
-        for (int i = 0; i < charityCount; i++) {
+        NETWORK_IO.execute(() -> {
+            for (int i = 0; i < charityCount; i++) {
 
-            String[] charityData = charities.get(i).split(":");
-            Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
+                String[] charityData = charities.get(i).split(":");
+                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
 
-            charityBuilder.appendPath(charityData[0]);
+                charityBuilder.appendPath(charityData[0]);
 
-            // Append required parameters
-            charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-            charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+                // Append required parameters
+                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
 
-            Uri charityUri = charityBuilder.build();
+                Uri charityUri = charityBuilder.build();
 
-            URL url = getUrl(charityUri);
-            Timber.e("Collection Fetched URL: %s", url);
-            String response = requestResponseFromUrl(url);
-            Timber.e("Collection Fetched Response: %s", response);
-            ContentValues[] parsedResponse = parseJsonResponse(response, true);
-            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, charityData[1]);
-            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[2]);
-            parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[3]);
-            contentValuesArray[i] = parsedResponse[0];
-        }
+                URL url = getUrl(charityUri);
+                Timber.e("Collection Fetched URL: %s", url);
+                String response = requestResponseFromUrl(url);
+                Timber.e("Collection Fetched Response: %s", response);
+                ContentValues[] parsedResponse = parseJsonResponse(response, true);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, charityData[1]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[2]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[3]);
+                contentValuesArray[i] = parsedResponse[0];
+            }
 
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
-        getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, contentValuesArray);
+            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+            getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, contentValuesArray);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -341,24 +347,27 @@ public class DataService extends IntentService {
      */
     private void handleActionCollectGenerated(String charityId) {
         Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
-        Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-        if (cursor == null || cursor.getCount() == 0) return;
-        cursor.moveToFirst();
-        ContentValues values = new ContentValues();
-        DatabaseUtils.cursorRowToContentValues(cursor, values);
-        boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
-        values.put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, emptyCollection ? 1f : 0f);
-        values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, 0f);
-        values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
-        getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
 
-        List<String> charities = UserPreferences.getCharities(this);
-        if (charities.get(0).isEmpty()) charities = new ArrayList<>();
-        String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-        charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, 0f, 0f, 0));
-        UserPreferences.setCharities(this, charities);
-        UserPreferences.updateFirebaseUser(this);
-        cursor.close();
+        DISK_IO.execute(() -> {
+            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
+            if (cursor == null || cursor.getCount() == 0) return;
+            cursor.moveToFirst();
+            ContentValues values = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(cursor, values);
+            boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, emptyCollection ? 1f : 0f);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, 0f);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+            getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+
+            List<String> charities = UserPreferences.getCharities(this);
+            if (charities.get(0).isEmpty()) charities = new ArrayList<>();
+            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, 0f, 0f, 0));
+            UserPreferences.setCharities(this, charities);
+            UserPreferences.updateFirebaseUser(this);
+            cursor.close();
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -370,7 +379,7 @@ public class DataService extends IntentService {
      */
     private void handleActionRemoveGenerated(String charityId) {
         Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
-        getContentResolver().delete(charityUri, null, null);
+        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -383,7 +392,7 @@ public class DataService extends IntentService {
     private void handleActionRemoveCollected(String charityId) {
 
         Uri charityUri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(charityId).build();
-        getContentResolver().delete(charityUri, null, null);
+        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
         Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
                 null, null, null, null);
@@ -414,7 +423,7 @@ public class DataService extends IntentService {
      * Handles action ResetGenerated in the provided background thread with the provided parameters.
      */
     private void handleActionResetGenerated() {
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+        DISK_IO.execute(() -> getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -425,7 +434,7 @@ public class DataService extends IntentService {
      * Handles action ResetCollected in the provided background thread with the provided parameters.
      */
     private void handleActionResetCollected() {
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+        DISK_IO.execute(() -> getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -436,33 +445,34 @@ public class DataService extends IntentService {
      * Handles action UpdateProportions in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateProportions(ContentValues... charityValues) {
+        DISK_IO.execute(() -> {
+            Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+            null, null, null, null);
+            if (cursor == null || !cursor.moveToFirst()) return;
 
-        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
-                null, null, null, null);
-        if (cursor == null || !cursor.moveToFirst()) return;
+            boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION) == null;
+            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, 1f / cursor.getCount());
+            int i = 0;
 
-        boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION) == null;
-        if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, 1f / cursor.getCount());
-        int i = 0;
+            List<String> charities = new ArrayList<>();
 
-        List<String> charities = new ArrayList<>();
+            do {
+                ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
+                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
+                float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
+                int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
+                charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, impact, frequency));
 
-        do {
-            ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
-            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
-            float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
-            int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, impact, frequency));
+                Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+                getContentResolver().update(uri, values, null, null);
 
-            Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
-            getContentResolver().update(uri, values, null, null);
+            } while (cursor.moveToNext());
+            cursor.close();
 
-        } while (cursor.moveToNext());
-        cursor.close();
-
-        UserPreferences.setCharities(this, charities);
-        UserPreferences.updateFirebaseUser(this);
+            UserPreferences.setCharities(this, charities);
+            UserPreferences.updateFirebaseUser(this);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -481,53 +491,55 @@ public class DataService extends IntentService {
             affectedIndex = GivetrackContract.Entry.INDEX_DONATION_FREQUENCY;
         } else return;
 
-        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null, null, null);
-        if (cursor == null || !cursor.moveToFirst()) return;
+        DISK_IO.execute(() -> {
+            Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null, null, null);
+            if (cursor == null || !cursor.moveToFirst()) return;
 
-        int f = charityValues.getAsInteger(affectedColumn);
-        List<String> charities = new ArrayList<>();
+            int f = charityValues.getAsInteger(affectedColumn);
+            List<String> charities = new ArrayList<>();
 
-        long currentTime = System.currentTimeMillis();
-        long lastConversionTime = UserPreferences.getTimestamp(this);
-        long timeBetweenConversions = currentTime - lastConversionTime;
+            long currentTime = System.currentTimeMillis();
+            long lastConversionTime = UserPreferences.getTimestamp(this);
+            long timeBetweenConversions = currentTime - lastConversionTime;
 
-        long daysBetweenConversions =
-                TimeUnit.DAYS.convert(
-                        timeBetweenConversions,
-                        TimeUnit.MILLISECONDS
-                );
+            long daysBetweenConversions =
+                    TimeUnit.DAYS.convert(
+                            timeBetweenConversions,
+                            TimeUnit.MILLISECONDS
+                    );
 
-        float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
+            float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
 
-        float amount = UserPreferences.getDonation(this) * f;
-        do {
-            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
-            float transactionImpact = amount / cursor.getCount();
-            float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
-            todaysImpact += transactionImpact;
+            float amount = UserPreferences.getDonation(this) * f;
+            do {
+                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
+                float transactionImpact = amount / cursor.getCount();
+                float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
+                todaysImpact += transactionImpact;
 
-            int affectedFrequency = cursor.getInt(affectedIndex) + f;
+                int affectedFrequency = cursor.getInt(affectedIndex) + f;
 
-            ContentValues values = new ContentValues();
-            values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
-            values.put(affectedColumn, affectedFrequency);
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, totalImpact);
+                ContentValues values = new ContentValues();
+                values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
+                values.put(affectedColumn, affectedFrequency);
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, totalImpact);
 
-            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, proportion, totalImpact, affectedFrequency));
 
-            Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
-            getContentResolver().update(uri, values, null, null);
-        } while (cursor.moveToNext());
-        cursor.close();
+                Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+                getContentResolver().update(uri, values, null, null);
+            } while (cursor.moveToNext());
+            cursor.close();
 
-        String[] tallyArray = UserPreferences.getTally(this).split(":");
-        tallyArray[0] = String.valueOf(todaysImpact);
-        UserPreferences.setToday(this, todaysImpact);
-        UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
-        UserPreferences.setTimestamp(this, System.currentTimeMillis());
-        UserPreferences.setCharities(this, charities);
-        UserPreferences.updateFirebaseUser(this);
+            String[] tallyArray = UserPreferences.getTally(this).split(":");
+            tallyArray[0] = String.valueOf(todaysImpact);
+            UserPreferences.setToday(this, todaysImpact);
+            UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
+            UserPreferences.setTimestamp(this, System.currentTimeMillis());
+            UserPreferences.setCharities(this, charities);
+            UserPreferences.updateFirebaseUser(this);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -539,9 +551,10 @@ public class DataService extends IntentService {
      */
     private void handleActionResetData() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
-        getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
-
+        DISK_IO.execute(() -> {
+            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
+            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+        });
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);

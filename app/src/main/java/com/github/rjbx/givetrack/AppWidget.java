@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -10,8 +10,9 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.ui.MainActivity;
+import com.github.rjbx.givetrack.ui.SearchActivity;
 
 import java.text.NumberFormat;
 import java.util.Locale;
