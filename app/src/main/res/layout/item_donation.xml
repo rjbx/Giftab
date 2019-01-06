@@ -26,6 +26,44 @@
             android:textStyle="bold"
             android:text="@string/symbol_decrement_button"/>
 
+        <FrameLayout
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="top"
+                android:background="#fff"
+                android:src="@drawable/ic_menu_share"
+                android:contentDescription="@string/description_increment_proportion_text"/>
+
+            <ImageButton
+                android:id="@+id/message_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="top"
+                android:background="#fff"
+                android:src="@drawable/baseline_message_24"
+                android:contentDescription="@string/description_decrement_proportion_text"/>
+
+            <ImageButton
+                android:id="@+id/inspect_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:background="#fff"
+                android:src="@drawable/baseline_search_24"
+                android:contentDescription="@string/description_decrement_proportion_text"/>
+
+        </FrameLayout>
+
         <include layout="@layout/text_charity"
             android:layout_width="0dp"
             android:layout_height="match_parent"

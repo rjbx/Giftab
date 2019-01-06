@@ -3,14 +3,18 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
@@ -341,6 +345,31 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             });
 
+            holder.mShareButton.setOnClickListener(clickedView -> {
+                Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
+                        .setType("text/plain")
+                        .setText(String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
+                                frequency,
+                                currencyInstance.format(impact),
+                                name,
+                                getString(R.string.app_name)))
+                        .getIntent();
+                startActivity(shareIntent);
+            });
+
+            holder.mMessageButton.setOnClickListener(clickedView -> {
+
+            });
+
+            holder.mInspectButton.setOnClickListener(clickedView -> {
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(getResources()
+                                .getColor(R.color.colorPrimaryDark))
+                        .build()
+                        .launchUrl(mParentActivity, Uri.parse(url.toString()));
+                mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+            });
+
             final int adapterPosition = holder.getAdapterPosition();
 
             mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
@@ -388,6 +417,9 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
             @BindView(R.id.donation_increment_button) TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) TextView mDecrementButton;
             @BindView(R.id.collection_remove_button) Button mRemoveButton;
+            @BindView(R.id.share_button) ImageButton mShareButton;
+            @BindView(R.id.message_button) ImageButton mMessageButton;
+            @BindView(R.id.inspect_button) ImageButton mInspectButton;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
