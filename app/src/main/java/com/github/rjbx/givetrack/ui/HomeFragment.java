@@ -93,6 +93,23 @@ public class HomeFragment extends Fragment {
             UserPreferences.setTheme(getContext(), sThemeIndex);
             UserPreferences.updateFirebaseUser(getContext());
         });
+
+        mRootView.findViewById(R.id.home_amount_label).setOnClickListener(clickedView -> {
+
+        });
+
+        mRootView.findViewById(R.id.home_time_button).setOnClickListener(clickedView -> {
+
+        });
+
+        mRootView.findViewById(R.id.home_config_button).setOnClickListener(clickedView -> {
+
+        });
+
+        mRootView.findViewById(R.id.home_share_button).setOnClickListener(clickedView -> {
+
+        });
+
         List<String> charities = UserPreferences.getCharities(getContext());
         float totalImpact = 0f;
         for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
