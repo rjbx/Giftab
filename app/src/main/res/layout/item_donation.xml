@@ -35,7 +35,7 @@
             android:orientation="vertical">
 
             <ImageButton
-                android:id="@+id/message_button"
+                android:id="@+id/inspect_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="top"
@@ -44,7 +44,7 @@
                 android:contentDescription="@string/description_increment_proportion_text"/>
 
             <ImageButton
-                android:id="@+id/inspect_button"
+                android:id="@+id/message_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginBottom="25dp"
