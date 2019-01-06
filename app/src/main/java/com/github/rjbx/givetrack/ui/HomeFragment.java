@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.firebase.ui.auth.data.model.User;
 import com.github.mikephil.charting.charts.BarChart;
@@ -31,6 +32,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -83,6 +85,19 @@ public class HomeFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_home, container, false);
+        TextView amountView = mRootView.findViewById(R.id.home_amount_text);
+        amountView.setOnClickListener(clickedView -> {
+            sThemeIndex++;
+            if (sThemeIndex == 6) sThemeIndex = 0;
+            mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+            UserPreferences.setTheme(getContext(), sThemeIndex);
+            UserPreferences.updateFirebaseUser(getContext());
+        });
+        List<String> charities = UserPreferences.getCharities(getContext());
+        float totalImpact = 0f;
+        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
+        final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+        amountView.setText(String.valueOf(currencyFormatter.format(totalImpact)));
 
         Button addButton = mRootView.findViewById(R.id.collection_add_button);
         addButton.setOnClickListener(clickedView -> {
@@ -92,8 +107,8 @@ public class HomeFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
-        return mRootView;
 
+        return mRootView;
     }
 
     /**
@@ -104,13 +119,6 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
-        mParentActivity.findViewById(R.id.home_amount_text).setOnClickListener(clickedView -> {
-            sThemeIndex++;
-            if (sThemeIndex == 6) sThemeIndex = 0;
-            mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
-            UserPreferences.setTheme(getContext(), sThemeIndex);
-            UserPreferences.updateFirebaseUser(getContext());
-        });
     }
 
     /**
