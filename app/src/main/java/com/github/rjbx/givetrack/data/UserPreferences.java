@@ -20,6 +20,8 @@ public class UserPreferences {
     public static final String KEY_BIRTHDATE = "birthdate";
     public static final String KEY_GENDER = "gender";
     public static final String KEY_THEME = "theme";
+    public static final String KEY_TRACKED = "tracked";
+    public static final String KEY_INCREMENT = "increment";
     public static final String KEY_DONATION = "donation";
     public static final String KEY_PROPORTIONS = "proportions";
     public static final String KEY_CHARITIES = "charities";
@@ -39,6 +41,7 @@ public class UserPreferences {
     public static final String KEY_HIGH = "high";
     public static final String KEY_TODAY = "today";
     public static final String KEY_TIMESTAMP = "timestamp";
+    public static final String KEY_TIMETRACK = "timetrack";
     
     public static List<String> getCharities(Context context) {
         Set<String> defaultValue = new LinkedHashSet<>();
@@ -176,6 +179,26 @@ public class UserPreferences {
         sp.edit().putString(KEY_GENDER, gender).apply();
     }
 
+    public static float getTracked(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getFloat(KEY_TRACKED, 0f);
+    }
+
+    public static void setTracked(Context context, float tracked) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putFloat(KEY_TRACKED, tracked).apply();
+    }
+
+    public static float getIncrement(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getFloat(KEY_INCREMENT, 0f);
+    }
+
+    public static void setIncrement(Context context, float increment) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putFloat(KEY_INCREMENT, increment).apply();
+    }
+
     public static float getDonation(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getFloat(KEY_DONATION, 0f);
@@ -266,6 +289,16 @@ public class UserPreferences {
         sp.edit().putLong(KEY_TIMESTAMP, timestamp).apply();
     }
 
+    public static long getTimetrack(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getLong(KEY_TIMETRACK, System.currentTimeMillis());
+    }
+
+    public static void setTimetrack(Context context, long timetrack) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putLong(KEY_TIMETRACK, timetrack).apply();
+    }
+
     /**
      * Replaces {@link SharedPreferences} with attributes of the given {@link UserProfile}.
      */
@@ -309,6 +342,8 @@ public class UserPreferences {
                 getGender(context),
                 getTheme(context),
                 getDonation(context),
+                getIncrement(context),
+                getDonation(context),
                 getProportions(context),
                 getCharities(context),
                 getTerm(context),
@@ -326,7 +361,8 @@ public class UserPreferences {
                 getTally(context),
                 getHigh(context),
                 getToday(context),
-                getTimestamp(context));
+                getTimestamp(context),
+                getTimetrack(context));
     }
 
     /**

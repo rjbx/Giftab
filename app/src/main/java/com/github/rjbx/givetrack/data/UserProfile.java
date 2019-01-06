@@ -18,7 +18,9 @@ public class UserProfile {
     private String birthdate;
     private String gender;
     private int theme;
+    private float tracked;
     private float donation;
+    private float increment;
     private List<String> proportions;
     private List<String> charities;
     private String term;
@@ -37,6 +39,7 @@ public class UserProfile {
     private float high;
     private float today;
     private long timestamp;
+    private long timetrack;
 
     /**
      * Provides default constructor required for object relational mapping.
@@ -52,6 +55,8 @@ public class UserProfile {
             String birthdate,
             String gender,
             int theme,
+            float tracked,
+            float increment,
             float donation,
             List<String> proportions,
             List<String> charities,
@@ -70,12 +75,15 @@ public class UserProfile {
             String tally,
             float high,
             float today,
-            long timestamp) {
+            long timestamp,
+            long timetrack) {
         this.uid = uid;
         this.email = email;
         this.birthdate = birthdate;
         this.gender = gender;
         this.theme = theme;
+        this.tracked = tracked;
+        this.increment = increment;
         this.donation = donation;
         this.proportions = proportions;
         this.charities = charities;
@@ -95,6 +103,7 @@ public class UserProfile {
         this.high = high;
         this.today = today;
         this.timestamp = timestamp;
+        this.timetrack = timetrack;
     }
 
     @Exclude public String getUid() {
@@ -121,6 +130,10 @@ public class UserProfile {
     public void setGender(String gender) { this.gender = gender; }
     public int getTheme() { return theme; }
     void setTheme(int theme) { this.theme = theme; }
+    public float getTracked() { return tracked; }
+    public void setTracked(float tracked) { this.tracked = tracked; }
+    public float getIncrement() { return increment; }
+    public void setIncrement(float increment) { this.increment = increment; }
     public float getDonation() { return donation; }
     public void setDonation(float donation) { this.donation = donation; }
     public List<String> getProportions() { return proportions; }
@@ -219,6 +232,10 @@ public class UserProfile {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+    public long getTimetrack() { return timetrack; }
+    public void setTimetrack(long timetrack) {
+        this.timetrack = timetrack;
+    }
 
     @Exclude
     public Map<String, Object> toParameterMap() {
@@ -227,6 +244,8 @@ public class UserProfile {
         map.put("birthdate", birthdate);
         map.put("gender", gender);
         map.put("theme", theme);
+        map.put("tracked", tracked);
+        map.put("increment", increment);
         map.put("donation", donation);
         map.put("proportions", proportions);
         map.put("charities", charities);
@@ -246,6 +265,7 @@ public class UserProfile {
         map.put("high", high);
         map.put("today", today);
         map.put("timestamp", timestamp);
+        map.put("tracktime", timetrack);
         return map;
     }
 }
