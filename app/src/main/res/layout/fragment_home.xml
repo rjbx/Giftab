@@ -87,45 +87,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAttentionDark"
-        android:padding="5dp"
         android:orientation="horizontal">
 
         <FrameLayout
-            android:id="@+id/home_amount_label1"
-            android:layout_width="0dp"
+            android:id="@+id/home_amount_wrapper"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:labelFor="@id/home_amount_text1">
+            android:padding="5dp"
+            android:labelFor="@id/home_amount_text">
 
             <TextView
-                android:id="@+id/home_amount_text1"
+                android:id="@+id/home_amount_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"
                 android:layout_gravity="center"
                 android:background="@color/colorSlate"
                 android:gravity="start"
-                android:textSize="@dimen/text_size_paragraph_title"
-                android:textStyle="bold"
-                android:textColor="#fff"/>
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/home_amount_label2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight=".3"
-            android:labelFor="@id/home_amount_text2">
-
-            <TextView
-                android:id="@+id/home_amount_text2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="3dp"
-                android:layout_gravity="end"
-                android:background="@color/colorSlate"
-                android:gravity="center"
                 android:textSize="@dimen/text_size_paragraph_title"
                 android:textStyle="bold"
                 android:textColor="#fff"/>

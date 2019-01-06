@@ -47,6 +47,17 @@ public class HomeFragment extends Fragment {
     private MainActivity mParentActivity;
     View mRootView;
     ContentValues[] mValuesArray;
+    private static final int [] COLORS = new int[] {
+        R.color.colorAttention,
+        R.color.colorAccent,
+        R.color.colorConversion,
+        R.color.colorPrimary,
+        R.color.colorComfort,
+        R.color.colorNeutral
+    };
+
+    private static int sThemeIndex;
+
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -82,6 +93,7 @@ public class HomeFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
         return mRootView;
+
     }
 
     /**
@@ -92,6 +104,13 @@ public class HomeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
+        mParentActivity.findViewById(R.id.home_amount_text).setOnClickListener(clickedView -> {
+            sThemeIndex++;
+            if (sThemeIndex == 6) sThemeIndex = 0;
+            mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+            UserPreferences.setTheme(getContext(), sThemeIndex);
+            UserPreferences.updateFirebaseUser(getContext());
+        });
     }
 
     /**
