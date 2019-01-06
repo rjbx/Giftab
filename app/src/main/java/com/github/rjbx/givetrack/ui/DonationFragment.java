@@ -108,9 +108,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
         final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
 
-
         final EditText donationTotalText = rootView.findViewById(R.id.donation_amount_text);
-        final View donationTotalLabel = rootView.findViewById(R.id.donation_amount_text);
+        final View donationTotalLabel = rootView.findViewById(R.id.donation_amount_label);
 
         donationTotalText.setText(currencyFormatter.format(mAmountTotal));
         donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
@@ -182,12 +181,14 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                 mListAdapter.syncDonations();
                 mDonationsAdjusted = false;
                 mActionBar.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
+                mActionBar.setImageResource(R.drawable.action_sync);
             } else if (mAmountTotal > 0) {
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
                 DataService.startActionUpdateFrequency(getContext(), values);
                 UserPreferences.updateFirebaseUser(mParentActivity);
                 mActionBar.setBackgroundColor(getResources().getColor(R.color.colorConversionDark));
+                mActionBar.setImageResource(R.drawable.action_sync);
             }
         });
         renderActionBar();
