@@ -305,13 +305,16 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
             ContentValues values = mValuesArray[position];
             final String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
-            String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
             String url = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
             final int frequency =
                     values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
             final float impact = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
 
-            holder.mNameView.setText(name);
+            String mutableName = name;
+            if (mutableName.length() > 30) { mutableName = mutableName.substring(0, 30);
+                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("..."); }
+            holder.mNameView.setText(mutableName);
 
             holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
             holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));

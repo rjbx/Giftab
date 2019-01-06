@@ -165,12 +165,12 @@ public class HomeFragment extends Fragment {
 
         if (mValuesArray == null || mValuesArray.length == 0) return;
         for (ContentValues values : mValuesArray) {
-
             float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
+            if (proportion < .01f) continue;
             String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
             if (name.length() > 20) { name = name.substring(0, 20);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
-            if (proportion >= .01f) proportionEntries.add(new PieEntry(proportion, name));
+            proportionEntries.add(new PieEntry(proportion, name));
 
             donationAmount += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
             donationFrequency += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
@@ -188,7 +188,6 @@ public class HomeFragment extends Fragment {
                 getResources().getColor(R.color.colorAccentDark),
                 getResources().getColor(R.color.colorComfortDark),
                 getResources().getColor(R.color.colorSlate),
-
         };
 
         PieDataSet proportionSet = new PieDataSet(proportionEntries, "");
