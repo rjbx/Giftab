@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -19,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +46,8 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,7 +59,8 @@ import butterknife.ButterKnife;
  * Presents a list of collected items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class DonationFragment extends Fragment implements CharityFragment.MasterDetailFlow {
+public class DonationFragment extends Fragment
+        implements CharityFragment.MasterDetailFlow, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String STATE_PANE = "pane_state_donation";
     private static ContentValues[] mValuesArray;
@@ -202,6 +208,8 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         return rootView;
     }
 
+
+
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
@@ -221,6 +229,13 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
     public void onResume() {
         super.onResume();
         if (mListAdapter != null) mListAdapter.swapValues();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -230,6 +245,13 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, mDualPane);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(UserPreferences.KEY_MAGNITUDE)) {
+            mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
+        }
     }
 
     /**
