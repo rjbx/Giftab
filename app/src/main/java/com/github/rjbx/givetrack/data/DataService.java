@@ -509,7 +509,7 @@ public class DataService extends IntentService {
                     );
 
             float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
-
+            float totalTracked = 0;
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
@@ -517,6 +517,7 @@ public class DataService extends IntentService {
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
                 todaysImpact += transactionImpact;
+                totalTracked += totalImpact;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
@@ -535,6 +536,7 @@ public class DataService extends IntentService {
             String[] tallyArray = UserPreferences.getTally(this).split(":");
             tallyArray[0] = String.valueOf(todaysImpact);
             UserPreferences.setToday(this, todaysImpact);
+            UserPreferences.setTracked(this, String.valueOf(totalTracked));
             UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
             UserPreferences.setTimestamp(this, System.currentTimeMillis());
             UserPreferences.setCharities(this, charities);

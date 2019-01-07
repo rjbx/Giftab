@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.rateraid.Rateraid;
 import com.github.rjbx.givetrack.R;
