@@ -23,7 +23,6 @@ public class UserPreferences {
     public static final String KEY_TRACKED = "tracked";
     public static final String KEY_MAGNITUDE = "magnitude";
     public static final String KEY_DONATION = "donation";
-    public static final String KEY_PERCENTAGES = "percentages";
     public static final String KEY_CHARITIES = "charities";
     public static final String KEY_TERM = "term";
     public static final String KEY_CITY = "city";
@@ -35,7 +34,7 @@ public class UserPreferences {
     public static final String KEY_ORDER = "order";
     public static final String KEY_PAGES = "pages";
     public static final String KEY_ROWS = "rows";
-    public static final String KEY_FOCUS= "focus";
+    public static final String KEY_FOCUS = "focus";
     public static final String KEY_EIN = "ein";
     public static final String KEY_TALLY = "tally";
     public static final String KEY_HIGH = "high";
@@ -54,19 +53,6 @@ public class UserPreferences {
         Set<String> value = new LinkedHashSet<>(charities);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putStringSet(KEY_CHARITIES, value).apply();
-    }
-
-    public static List<String> getPercentages(Context context) {
-        Set<String> defaultValue = new LinkedHashSet<>();
-        defaultValue.add("");
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return new ArrayList<>(sp.getStringSet(KEY_PERCENTAGES, defaultValue));
-    }
-
-    public static void setPercentages(Context context, List<String> percentages) {
-        Set<String> value = new LinkedHashSet<>(percentages);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putStringSet(KEY_PERCENTAGES, value).apply();
     }
 
     public static String getTerm(Context context) {
@@ -309,7 +295,6 @@ public class UserPreferences {
         setGender(context, user.getGender());
         setTheme(context, user.getTheme());
         setDonation(context, user.getDonation());
-        setPercentages(context, user.getPercentages());
         setCharities(context, user.getCharities());
         setTerm(context, user.getTerm());
         setCity(context, user.getCity());
@@ -344,7 +329,6 @@ public class UserPreferences {
                 getTracked(context),
                 getDonation(context),
                 getMagnitude(context),
-                getPercentages(context),
                 getCharities(context),
                 getTerm(context),
                 getCity(context),

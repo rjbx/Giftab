@@ -58,7 +58,6 @@ public class UserProfile {
             float tracked,
             String donation,
             String magnitude,
-            List<String> percentages,
             List<String> charities,
             String term,
             String city,
@@ -85,7 +84,6 @@ public class UserProfile {
         this.tracked = tracked;
         this.magnitude = magnitude;
         this.donation = donation;
-        this.percentages = percentages;
         this.charities = charities;
         this.term = term;
         this.city = city;
@@ -136,10 +134,6 @@ public class UserProfile {
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
     public String getDonation() { return donation; }
     public void setDonation(String donation) { this.donation = donation; }
-    public List<String> getPercentages() { return percentages; }
-    public void setPercentages(List<String> percentages) {
-        this.percentages = percentages;
-    }
     public List<String> getCharities() { return charities; }
     public void setCharities(List<String> charities) {
         this.charities = charities;
@@ -247,7 +241,6 @@ public class UserProfile {
         map.put("tracked", tracked);
         map.put("magnitude", magnitude);
         map.put("donation", donation);
-        map.put("percentages", percentages);
         map.put("charities", charities);
         map.put("term", term);
         map.put("city", city);
