@@ -66,6 +66,8 @@ public class HomeFragment extends Fragment {
 
     private static int sThemeIndex;
     private static boolean mViewTracked;
+    TextView mAmountView;
+    TextView mAmountLabel;
 
 
     /**
@@ -92,8 +94,8 @@ public class HomeFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
 
         mRootView = inflater.inflate(R.layout.fragment_home, container, false);
-        TextView amountView = mRootView.findViewById(R.id.home_amount_text);
-        amountView.setOnClickListener(clickedView -> {
+        mAmountView = mRootView.findViewById(R.id.home_amount_text);
+        mAmountView.setOnClickListener(clickedView -> {
             sThemeIndex++;
             if (sThemeIndex == 6) sThemeIndex = 0;
             mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
@@ -101,25 +103,9 @@ public class HomeFragment extends Fragment {
             UserPreferences.updateFirebaseUser(getContext());
         });
 
-        TextView amountLabel = mRootView.findViewById(R.id.home_amount_label);
-        amountLabel.setOnClickListener(clickedView -> {
-            mViewTracked = !mViewTracked;
-            if (mViewTracked) {
-                Date date = new Date(UserPreferences.getTimetrack(getContext()));
-                DateFormat formatter = DateFormat.getDateInstance();
-                formatter.setTimeZone(TimeZone.getDefault());
-                String formattedDate = formatter.format(date);
-                amountLabel.setText(String.format("Since %s", formattedDate));
-                amountView.setText(String.valueOf(UserPreferences.getTracked(getContext())));
-            } else {
-                amountLabel.setText("TOTAL IMPACT");
-                List<String> charities = UserPreferences.getCharities(getContext());
-                float totalImpact = 0f;
-                for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
-                final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-                amountView.setText(String.valueOf(currencyFormatter.format(totalImpact)));
-
-            }
+        mAmountLabel = mRootView.findViewById(R.id.home_amount_label);
+        mAmountLabel.setOnClickListener(clickedView -> {
+            toggleAmountView();
         });
 
         mRootView.findViewById(R.id.home_time_button).setOnClickListener(clickedView -> {
@@ -135,7 +121,7 @@ public class HomeFragment extends Fragment {
                     (onClickDialog, onClickPosition) -> {
                         UserPreferences.setTracked(getContext(), "0");
                         UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
-                        amountView.setText("0");
+                        mAmountView.setText("0");
                     });
             timeDialog.show();
             timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
@@ -150,11 +136,7 @@ public class HomeFragment extends Fragment {
 
         });
 
-        List<String> charities = UserPreferences.getCharities(getContext());
-        float totalImpact = 0f;
-        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
-        final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-        amountView.setText(String.valueOf(currencyFormatter.format(totalImpact)));
+        toggleAmountView();
 
         Button addButton = mRootView.findViewById(R.id.collection_add_button);
         addButton.setOnClickListener(clickedView -> {
@@ -186,6 +168,25 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         if (mRootView != null) createChart();
+    }
+
+    public void toggleAmountView() {
+        mViewTracked = !mViewTracked;
+        if (mViewTracked) {
+            Date date = new Date(UserPreferences.getTimetrack(getContext()));
+            DateFormat formatter = DateFormat.getDateInstance();
+            formatter.setTimeZone(TimeZone.getDefault());
+            String formattedDate = formatter.format(date);
+            mAmountLabel.setText(String.format("Since %s", formattedDate));
+            mAmountView.setText(String.valueOf(UserPreferences.getTracked(getContext())));
+        } else {
+            mAmountLabel.setText("TOTAL IMPACT");
+            List<String> charities = UserPreferences.getCharities(getContext());
+            float totalImpact = 0f;
+            for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
+            final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+            mAmountView.setText(String.valueOf(currencyFormatter.format(totalImpact)));
+        }
     }
 
     /**
