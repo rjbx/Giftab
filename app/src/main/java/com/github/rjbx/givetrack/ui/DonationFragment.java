@@ -330,7 +330,7 @@ public class DonationFragment extends Fragment
             String url = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
             final int frequency =
                     values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
-            final float impact = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
+            final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
 
             String mutableName = name;
             if (mutableName.length() > 30) { mutableName = mutableName.substring(0, 30);
@@ -423,7 +423,7 @@ public class DonationFragment extends Fragment
         void swapValues() {
             if (mPercentages.length != mValuesArray.length) mPercentages = Arrays.copyOf(mPercentages, mValuesArray.length);
             for (int i = 0; i < mPercentages.length; i++) {
-                mPercentages[i] = mValuesArray[i].getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
+                mPercentages[i] = Float.parseFloat(mValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
             Calibrater.resetRatings(mPercentages, false);
             notifyDataSetChanged();
@@ -462,7 +462,7 @@ public class DonationFragment extends Fragment
             ContentValues[] valuesArray = new ContentValues[mPercentages.length];
             for (int i = 0; i < mPercentages.length; i++) {
                 ContentValues values = new ContentValues();
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, mPercentages[i]);
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(mPercentages[i]));
                 Timber.d(mPercentages[i] + " " + mAmountTotal + " " + i + " " + mPercentages.length);
                 valuesArray[i] = values;
             }

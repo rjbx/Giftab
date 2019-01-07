@@ -355,8 +355,8 @@ public class DataService extends IntentService {
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(cursor, values);
             boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, emptyCollection ? 1f : 0f);
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, 0f);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, emptyCollection ? "1" : "0");
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
             getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
 
@@ -403,8 +403,8 @@ public class DataService extends IntentService {
         else {
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float percentage = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE);
-                float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
+                float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
+                float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
                 charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, impact, frequency));
             } while (cursor.moveToNext());
@@ -451,7 +451,7 @@ public class DataService extends IntentService {
             if (cursor == null || !cursor.moveToFirst()) return;
 
             boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
-            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, 1f / cursor.getCount());
+            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(1f / cursor.getCount()));
             int i = 0;
 
             List<String> charities = new ArrayList<>();
@@ -459,8 +459,8 @@ public class DataService extends IntentService {
             do {
                 ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float percentage = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
-                float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
+                float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
+                float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
                 charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, percentage, impact, frequency));
 
@@ -513,9 +513,9 @@ public class DataService extends IntentService {
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float percentage = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE);
+                float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
-                float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
+                float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
                 todaysImpact += transactionImpact;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
@@ -523,7 +523,7 @@ public class DataService extends IntentService {
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, totalImpact);
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.valueOf(totalImpact));
 
                 charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, totalImpact, affectedFrequency));
 

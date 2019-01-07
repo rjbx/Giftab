@@ -165,15 +165,15 @@ public class HomeFragment extends Fragment {
 
         if (mValuesArray == null || mValuesArray.length == 0) return;
         for (ContentValues values : mValuesArray) {
-            float percentage = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
+            float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             if (percentage < .01f) continue;
             String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
             if (name.length() > 20) { name = name.substring(0, 20);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
             percentageEntries.add(new PieEntry(percentage, name));
 
-            donationAmount += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
-            donationFrequency += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
+            donationAmount += Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
+            donationFrequency += values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
         }
 
         int chartColors[] = {

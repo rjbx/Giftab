@@ -43,8 +43,8 @@ public class GivetrackOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_PRIMARY_ZIP            + " TEXT NOT NULL, "                +
                         Entry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_PERCENTAGE    + " REAL NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_IMPACT        + " REAL NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"            +
                         "UNIQUE (" + Entry.COLUMN_EIN +
                         ") ON CONFLICT REPLACE" + ");";
