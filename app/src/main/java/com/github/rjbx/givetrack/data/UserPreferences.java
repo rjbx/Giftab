@@ -189,14 +189,14 @@ public class UserPreferences {
         sp.edit().putFloat(KEY_TRACKED, tracked).apply();
     }
 
-    public static float getMagnitude(Context context) {
+    public static String getMagnitude(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_MAGNITUDE, 0f);
+        return sp.getString(KEY_MAGNITUDE, "0.01");
     }
 
-    public static void setMagnitude(Context context, float magnitude) {
+    public static void setMagnitude(Context context, String magnitude) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_MAGNITUDE, magnitude).apply();
+        sp.edit().putString(KEY_MAGNITUDE, magnitude).apply();
     }
 
     public static float getDonation(Context context) {

@@ -97,7 +97,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
 
         mAmountTotal = UserPreferences.getDonation(getContext());
-        mMagnitude = UserPreferences.getMagnitude(getContext());
+        mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
         mDonationsAdjusted = false;
 
         Bundle args = getArguments();

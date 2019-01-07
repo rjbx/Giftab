@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity
                     @Override public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
 
-                seekBar.setProgress(Math.round(UserPreferences.getMagnitude(this) * 1000f));
+                seekBar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
                 magnitudeDialog.setView(view);
                 magnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
                         (onClickDialog, onClickPosition) -> {
                             float magnitude = seekBar.getProgress() / 1000f;
-                            UserPreferences.setMagnitude(this, magnitude);
+                            UserPreferences.setMagnitude(this, String.format(Locale.getDefault(), "%.2f", magnitude));
                             UserPreferences.updateFirebaseUser(this);
                         });
                 magnitudeDialog.show();
