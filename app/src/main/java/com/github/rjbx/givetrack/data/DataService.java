@@ -509,7 +509,7 @@ public class DataService extends IntentService {
                     );
 
             float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
-            float totalTracked = 0;
+            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this));
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
