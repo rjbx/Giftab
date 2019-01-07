@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.github.rjbx.givetrack.R;
@@ -43,6 +44,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Provides the main screen for this application.
@@ -135,16 +137,30 @@ public class MainActivity extends AppCompatActivity
                 clearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                 return false;
             case R.id.action_magnitude:
+                View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
                 AlertDialog magnitudeDialog = new AlertDialog.Builder(this).create();
-                SeekBar seekBar = new SeekBar(this);
-                seekBar.setProgress((int) UserPreferences.getMagnitude(this) * 100);
-                magnitudeDialog.setView(seekBar);
-                magnitudeDialog.setMessage(this.getString(R.string.account_deletion_alert_dialog));
+                SeekBar seekBar = view.findViewById(R.id.main_seek_bar);
+                TextView textView = view.findViewById(R.id.seek_progress_display);
+                textView.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
+
+                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        textView.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
+                    }
+                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
+
+                seekBar.setProgress(Math.round(UserPreferences.getMagnitude(this) * 1000f));
+                magnitudeDialog.setView(view);
+                magnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
                         (onClickDialog, onClickPosition) -> magnitudeDialog.dismiss());
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
                         (onClickDialog, onClickPosition) -> {
-                            UserPreferences.setMagnitude(this, seekBar.getProgress() / 100f);
+                            float magnitude = seekBar.getProgress() / 1000f;
+                            UserPreferences.setMagnitude(this, magnitude);
                             UserPreferences.updateFirebaseUser(this);
                         });
                 magnitudeDialog.show();

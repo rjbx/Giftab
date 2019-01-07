@@ -295,7 +295,7 @@ public class SettingsActivity extends PreferenceActivity {
             Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
             deletePreference.setOnPreferenceClickListener(clickedPreference -> {
                     AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
-                    dialog.setMessage(getActivity().getString(R.string.account_deletion_alert_dialog));
+                    dialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
                     dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
                         (onClickDialog, onClickPosition) -> dialog.dismiss());
                     dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase),

@@ -66,6 +66,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
     private ImageButton mActionBar;
     private ProgressBar mProgressBar;
     private float mAmountTotal;
+    private float mMagnitude;
     private boolean mDualPane;
 
     /**
@@ -96,6 +97,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
 
         mAmountTotal = UserPreferences.getDonation(getContext());
+        mMagnitude = UserPreferences.getMagnitude(getContext());
         mDonationsAdjusted = false;
 
         Bundle args = getArguments();
@@ -144,7 +146,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
         Button incrementTotalButton = rootView.findViewById(R.id.donation_increment_button);
         incrementTotalButton.setOnClickListener(clickedView -> {
-            mAmountTotal += 0.01f;
+            mAmountTotal += mMagnitude;
             UserPreferences.setDonation(getContext(), mAmountTotal);
             UserPreferences.updateFirebaseUser(getContext());
             donationTotalText.setText(currencyFormatter.format(mAmountTotal));
@@ -155,7 +157,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
         Button decrementTotalButton = rootView.findViewById(R.id.donation_decrement_button);
         decrementTotalButton.setOnClickListener(clickedView -> {
             if (mAmountTotal > 0f) {
-                mAmountTotal -= 0.01f;
+                mAmountTotal -= mMagnitude;
                 UserPreferences.setDonation(getContext(), mAmountTotal);
                 UserPreferences.updateFirebaseUser(getContext());
             }
@@ -267,7 +269,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
 
         public ListAdapter() {
             mProportions = new Float[mValuesArray.length];
-            mWeightsBuilder = Rateraid.with(mProportions, 0.01f);
+            mWeightsBuilder = Rateraid.with(mProportions, mMagnitude);
         }
 
         /**

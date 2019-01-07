@@ -86,7 +86,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
-    <string name="account_deletion_alert_dialog">Are you sure you want to delete your account? Your data will be erased and cannot be recovered.</string>
+    <string name="dialog_description_account_deletion">Are you sure you want to delete your account? Your data will be erased and cannot be recovered.</string>
     <string name="message_logout">You successfully logged out</string>
     <string name="message_data_erase">Your account data has been erased from our servers</string>
     <string name="message_login">You successfully logged in</string>
@@ -97,6 +97,7 @@
     <string name="add_widget">Add widget</string>
 
     <!-- Charity -->
+    <string name="dialog_description_magnitude_adjustment">Set the amount added or subtracted to a decimal number when clicking the related increment or decrement buttons</string>
     <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_alert">Remove %s from your collection?</string>
     <string name="snippet_all_charities">all charities</string>
