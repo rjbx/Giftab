@@ -120,7 +120,7 @@ public class HomeFragment extends Fragment {
             timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
                     (onClickDialog, onClickPosition) -> timeDialog.dismiss());
             timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
-                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+                    (onClickDialog, onClickPosition) -> UserPreferences.setTimetrack(getContext(), System.currentTimeMillis()));
             timeDialog.show();
             timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
             timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
