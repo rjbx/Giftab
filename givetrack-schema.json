@@ -4,14 +4,14 @@
       "birthdate" : "0/0/2000",
       "charities" : [ "" ],
       "city" : "",
-      "donation" : 0,
+      "donation" : "0",
       "ein" : "",
       "email" : "",
       "filter" : true,
       "focus" : false,
       "gender" : "0",
       "high" : 0,
-      "magnitude" : 0,
+      "magnitude" : "0.1",
       "minrating" : "0",
       "order" : "",
       "pages" : "1",
@@ -22,7 +22,9 @@
       "term" : "",
       "theme" : 0,
       "timestamp" : 0,
+      "timetrack" : 0,
       "today" : 0,
+      "tracked" : "0",
       "zip" : ""
     }
   }

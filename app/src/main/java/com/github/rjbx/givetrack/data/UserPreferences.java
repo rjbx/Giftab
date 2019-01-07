@@ -165,14 +165,14 @@ public class UserPreferences {
         sp.edit().putString(KEY_GENDER, gender).apply();
     }
 
-    public static float getTracked(Context context) {
+    public static String getTracked(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_TRACKED, 0f);
+        return sp.getString(KEY_TRACKED, "0");
     }
 
-    public static void setTracked(Context context, float tracked) {
+    public static void setTracked(Context context, String tracked) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_TRACKED, tracked).apply();
+        sp.edit().putString(KEY_TRACKED, tracked).apply();
     }
 
     public static String getMagnitude(Context context) {

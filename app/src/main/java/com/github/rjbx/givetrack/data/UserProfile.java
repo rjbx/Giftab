@@ -18,7 +18,7 @@ public class UserProfile {
     private String birthdate;
     private String gender;
     private int theme;
-    private float tracked;
+    private String tracked;
     private String donation;
     private String magnitude;
     private List<String> percentages;
@@ -55,7 +55,7 @@ public class UserProfile {
             String birthdate,
             String gender,
             int theme,
-            float tracked,
+            String tracked,
             String donation,
             String magnitude,
             List<String> charities,
@@ -128,8 +128,8 @@ public class UserProfile {
     public void setGender(String gender) { this.gender = gender; }
     public int getTheme() { return theme; }
     void setTheme(int theme) { this.theme = theme; }
-    public float getTracked() { return tracked; }
-    public void setTracked(float tracked) { this.tracked = tracked; }
+    public String getTracked() { return tracked; }
+    public void setTracked(String tracked) { this.tracked = tracked; }
     public String getMagnitude() { return magnitude; }
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
     public String getDonation() { return donation; }
