@@ -517,7 +517,7 @@ public class DataService extends IntentService {
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
                 todaysImpact += transactionImpact;
-                totalTracked += totalImpact;
+                totalTracked += transactionImpact;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
