@@ -199,14 +199,14 @@ public class UserPreferences {
         sp.edit().putString(KEY_MAGNITUDE, magnitude).apply();
     }
 
-    public static float getDonation(Context context) {
+    public static String getDonation(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_DONATION, 0f);
+        return sp.getString(KEY_DONATION, "0");
     }
 
-    public static void setDonation(Context context, float donation) {
+    public static void setDonation(Context context, String donation) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_DONATION, donation).apply();
+        sp.edit().putString(KEY_DONATION, donation).apply();
     }
     
     public static float getHigh(Context context) {
@@ -341,9 +341,9 @@ public class UserPreferences {
                 getBirthdate(context),
                 getGender(context),
                 getTheme(context),
+                getTracked(context),
                 getDonation(context),
                 getMagnitude(context),
-                getDonation(context),
                 getProportions(context),
                 getCharities(context),
                 getTerm(context),

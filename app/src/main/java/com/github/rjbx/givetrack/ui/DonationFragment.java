@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import timber.log.Timber;
 
 import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,8 +45,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,7 +99,7 @@ public class DonationFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_donation, container, false);
 
 
-        mAmountTotal = UserPreferences.getDonation(getContext());
+        mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
         mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
         mDonationsAdjusted = false;
 
@@ -132,7 +129,7 @@ public class DonationFragment extends Fragment
                         case EditorInfo.IME_ACTION_DONE:
                             try {
                                 mAmountTotal = currencyFormatter.parse(onEditorActionView.getText().toString()).floatValue();
-                                UserPreferences.setDonation(getContext(), mAmountTotal);
+                                UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
                                 UserPreferences.updateFirebaseUser(getContext());
                             } catch (ParseException e) {
                                 Timber.e(e);
@@ -153,7 +150,7 @@ public class DonationFragment extends Fragment
         Button incrementTotalButton = rootView.findViewById(R.id.donation_increment_button);
         incrementTotalButton.setOnClickListener(clickedView -> {
             mAmountTotal += mMagnitude;
-            UserPreferences.setDonation(getContext(), mAmountTotal);
+            UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
             UserPreferences.updateFirebaseUser(getContext());
             donationTotalText.setText(currencyFormatter.format(mAmountTotal));
             donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, currencyFormatter.format(mAmountTotal)));
@@ -164,7 +161,7 @@ public class DonationFragment extends Fragment
         decrementTotalButton.setOnClickListener(clickedView -> {
             if (mAmountTotal > 0f) {
                 mAmountTotal -= mMagnitude;
-                UserPreferences.setDonation(getContext(), mAmountTotal);
+                UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
                 UserPreferences.updateFirebaseUser(getContext());
             }
             donationTotalText.setText(currencyFormatter.format(mAmountTotal));

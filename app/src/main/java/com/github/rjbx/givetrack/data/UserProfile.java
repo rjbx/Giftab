@@ -19,7 +19,7 @@ public class UserProfile {
     private String gender;
     private int theme;
     private float tracked;
-    private float donation;
+    private String donation;
     private String magnitude;
     private List<String> proportions;
     private List<String> charities;
@@ -56,8 +56,8 @@ public class UserProfile {
             String gender,
             int theme,
             float tracked,
+            String donation,
             String magnitude,
-            float donation,
             List<String> proportions,
             List<String> charities,
             String term,
@@ -134,8 +134,8 @@ public class UserProfile {
     public void setTracked(float tracked) { this.tracked = tracked; }
     public String getMagnitude() { return magnitude; }
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
-    public float getDonation() { return donation; }
-    public void setDonation(float donation) { this.donation = donation; }
+    public String getDonation() { return donation; }
+    public void setDonation(String donation) { this.donation = donation; }
     public List<String> getProportions() { return proportions; }
     public void setProportions(List<String> proportions) {
         this.proportions = proportions;
