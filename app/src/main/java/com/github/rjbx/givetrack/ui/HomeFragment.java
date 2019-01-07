@@ -159,18 +159,18 @@ public class HomeFragment extends Fragment {
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
         int backgroundColor = getResources().getColor(R.color.colorChalk);
 
-        List<PieEntry> proportionEntries = new ArrayList<>();
+        List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
         int donationFrequency = 0;
 
         if (mValuesArray == null || mValuesArray.length == 0) return;
         for (ContentValues values : mValuesArray) {
-            float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
-            if (proportion < .01f) continue;
+            float percentage = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
+            if (percentage < .01f) continue;
             String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
             if (name.length() > 20) { name = name.substring(0, 20);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
-            proportionEntries.add(new PieEntry(proportion, name));
+            percentageEntries.add(new PieEntry(percentage, name));
 
             donationAmount += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
             donationFrequency += values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
@@ -190,34 +190,34 @@ public class HomeFragment extends Fragment {
                 getResources().getColor(R.color.colorSlate),
         };
 
-        PieDataSet proportionSet = new PieDataSet(proportionEntries, "");
-        proportionSet.setColors(chartColors);
+        PieDataSet percentageSet = new PieDataSet(percentageEntries, "");
+        percentageSet.setColors(chartColors);
 
-        PieData proportionData = new PieData(proportionSet);
-        Description proportionDesc = new Description();
-        proportionDesc.setText(getString(R.string.chart_title_proportion));
-        proportionDesc.setTextSize(fontSize);
+        PieData percentageData = new PieData(percentageSet);
+        Description percentageDesc = new Description();
+        percentageDesc.setText(getString(R.string.chart_title_percentage));
+        percentageDesc.setTextSize(fontSize);
 
         int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
-        PieChart proportionChart = mRootView.findViewById(R.id.proportion_chart);
+        PieChart percentageChart = mRootView.findViewById(R.id.percentage_chart);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
-            proportionChart.setLayoutParams(params);
+            percentageChart.setLayoutParams(params);
         }
-//        proportionChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
-        proportionChart.setData(proportionData);
-        proportionChart.setDescription(proportionDesc);
-        proportionChart.setEntryLabelTextSize(fontSize * 1.25f);
-        proportionChart.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-        proportionChart.setHoleRadius(20f);
-        proportionChart.setTransparentCircleRadius(50f);
-        proportionChart.setBackgroundColor(backgroundColor);
-        proportionChart.setTransparentCircleColor(backgroundColor);
-        proportionChart.setHoleColor(backgroundColor);
-        proportionChart.setRotationEnabled(false);
-        proportionChart.getLegend().setEnabled(false);
-        proportionChart.invalidate();
+//        percentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
+        percentageChart.setData(percentageData);
+        percentageChart.setDescription(percentageDesc);
+        percentageChart.setEntryLabelTextSize(fontSize * 1.25f);
+        percentageChart.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+        percentageChart.setHoleRadius(20f);
+        percentageChart.setTransparentCircleRadius(50f);
+        percentageChart.setBackgroundColor(backgroundColor);
+        percentageChart.setTransparentCircleColor(backgroundColor);
+        percentageChart.setHoleColor(backgroundColor);
+        percentageChart.setRotationEnabled(false);
+        percentageChart.getLegend().setEnabled(false);
+        percentageChart.invalidate();
 
         float amountTotal = donationAmount;
         List<PieEntry> usageEntries = new ArrayList<>();

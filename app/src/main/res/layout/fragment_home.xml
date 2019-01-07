@@ -22,7 +22,7 @@
             android:background="@color/colorChalk">
 
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/proportion_chart"
+                android:id="@+id/percentage_chart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginTop="24dp"/>
@@ -139,7 +139,7 @@
                 android:layout_gravity="start"
                 android:src="@android:drawable/ic_menu_recent_history"
                 android:background="@color/colorSlate"
-                android:contentDescription="@string/description_increment_proportion_text"/>
+                android:contentDescription="@string/description_increment_percentage_text"/>
 
             <ImageButton
                 android:id="@+id/home_config_button"
@@ -148,7 +148,7 @@
                 android:layout_gravity="center"
                 android:src="@drawable/action_manage"
                 android:background="@color/colorSlate"
-                android:contentDescription="@string/description_decrement_proportion_text"/>
+                android:contentDescription="@string/description_decrement_percentage_text"/>
 
             <ImageButton
                 android:id="@+id/home_share_button"
@@ -157,7 +157,7 @@
                 android:layout_gravity="end"
                 android:src="@android:drawable/ic_menu_share"
                 android:background="@color/colorSlate"
-                android:contentDescription="@string/description_decrement_proportion_text"/>
+                android:contentDescription="@string/description_decrement_percentage_text"/>
 
         </FrameLayout>
 

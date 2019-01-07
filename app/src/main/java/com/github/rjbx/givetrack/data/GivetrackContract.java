@@ -32,7 +32,7 @@ public final class GivetrackContract {
         public static final String COLUMN_PRIMARY_ZIP = "primaryZip";
         public static final String COLUMN_HOMEPAGE_URL = "homepageUrl";
         public static final String COLUMN_NAVIGATOR_URL = "navigatorUrl";
-        public static final String COLUMN_DONATION_PROPORTION = "donationProportion";
+        public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
         public static final String COLUMN_DONATION_IMPACT = "donationTotal";
         public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
 
@@ -43,7 +43,7 @@ public final class GivetrackContract {
         public static final int INDEX_PRIMARY_ZIP = 4;
         public static final int INDEX_HOMEPAGE_URL = 5;
         public static final int INDEX_NAVIGATOR_URL = 6;
-        public static final int INDEX_DONATION_PROPORTION = 7;
+        public static final int INDEX_DONATION_PERCENTAGE = 7;
         public static final int INDEX_DONATION_IMPACT = 8;
         public static final int INDEX_DONATION_FREQUENCY = 9;
     }

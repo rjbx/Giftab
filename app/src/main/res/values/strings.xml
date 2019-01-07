@@ -46,8 +46,8 @@
     <string name="description_donation_text">Press this button to add to your total donation amount. The total amount that will be allocated among your charities on each converted smile or stride is %s</string>
     <string name="description_decrement_donation_text">Press this button to decrease your total donation amount</string>
     <string name="description_increment_donation_text">Press this button to increase your total donation amount</string>
-    <string name="description_decrement_proportion_text">Press this button to decrease the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
-    <string name="description_increment_proportion_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
+    <string name="description_decrement_percentage_text">Press this button to decrease the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
+    <string name="description_increment_percentage_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
 
     <!-- Screens -->
     <string name="title_activity_main">MainActivity</string>
@@ -119,7 +119,7 @@
     <string name="chart_title_average">Average Conversions</string>
     <string name="chart_title_type">Conversion Types</string>
     <string name="chart_title_usage">Amount Totals</string>
-    <string name="chart_title_proportion">Your Charities</string>
+    <string name="chart_title_percentage">Your Charities</string>
     <string name="symbol_increment_button">+</string>
     <string name="symbol_decrement_button">—</string>
 

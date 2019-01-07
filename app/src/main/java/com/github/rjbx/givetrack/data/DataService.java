@@ -54,7 +54,7 @@ public class DataService extends IntentService {
     private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.sync.action.RESET_GENERATED";
     private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.sync.action.RESET_COLLECTED";
     private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.sync.action.UPDATE_FREQUENCY";
-    private static final String ACTION_UPDATE_PROPORTIONS = "com.github.rjbx.givetrack.sync.action.UPDATE_PROPORTIONS";
+    private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.sync.action.UPDATE_PERCENTAGES";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.sync.action.RESET_DATA";
 
     private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.sync.extra.API_REQUEST";
@@ -173,14 +173,14 @@ public class DataService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdateProportions with the given parameters.
+     * Starts this service to perform action UpdatePercentages with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionUpdateProportions(Context context, ContentValues... charityValues) {
+    public static void startActionUpdatePercentages(Context context, ContentValues... charityValues) {
         Intent intent = new Intent(context, DataService.class);
-        intent.setAction(ACTION_UPDATE_PROPORTIONS);
+        intent.setAction(ACTION_UPDATE_PERCENTAGES);
         if (charityValues.length > 1) {
             ArrayList<ContentValues> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
             intent.putParcelableArrayListExtra(EXTRA_LIST_VALUES, charityValuesArrayList);
@@ -238,13 +238,13 @@ public class DataService extends IntentService {
                 final ContentValues updateFrequencyValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                 handleActionUpdateFrequency(updateFrequencyValues);
                 break;
-            case ACTION_UPDATE_PROPORTIONS:
+            case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    final ArrayList<ContentValues> updateProportionsValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
-                    handleActionUpdateProportions(updateProportionsValuesArray.toArray(new ContentValues[updateProportionsValuesArray.size()]));
+                    final ArrayList<ContentValues> updatePercentagesValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
+                    handleActionUpdatePercentages(updatePercentagesValuesArray.toArray(new ContentValues[updatePercentagesValuesArray.size()]));
                 } else {
-                    ContentValues updateProportionsValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
-                    handleActionUpdateProportions(updateProportionsValues);
+                    ContentValues updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
+                    handleActionUpdatePercentages(updatePercentagesValues);
                 }
                 break;
             case ACTION_RESET_DATA: handleActionResetData();
@@ -327,7 +327,7 @@ public class DataService extends IntentService {
                 String response = requestResponseFromUrl(url);
                 Timber.e("Collection Fetched Response: %s", response);
                 ContentValues[] parsedResponse = parseJsonResponse(response, true);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, charityData[1]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[1]);
                 parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[2]);
                 parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[3]);
                 contentValuesArray[i] = parsedResponse[0];
@@ -355,7 +355,7 @@ public class DataService extends IntentService {
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(cursor, values);
             boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, emptyCollection ? 1f : 0f);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, emptyCollection ? 1f : 0f);
             values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, 0f);
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
             getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
@@ -403,10 +403,10 @@ public class DataService extends IntentService {
         else {
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
+                float percentage = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE);
                 float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, proportion, impact, frequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, impact, frequency));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -442,16 +442,16 @@ public class DataService extends IntentService {
     }
     
     /**
-     * Handles action UpdateProportions in the provided background thread with the provided parameters.
+     * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdateProportions(ContentValues... charityValues) {
+    private void handleActionUpdatePercentages(ContentValues... charityValues) {
         DISK_IO.execute(() -> {
             Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
             null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
-            boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION) == null;
-            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, 1f / cursor.getCount());
+            boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
+            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, 1f / cursor.getCount());
             int i = 0;
 
             List<String> charities = new ArrayList<>();
@@ -459,10 +459,10 @@ public class DataService extends IntentService {
             do {
                 ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float proportion = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
+                float percentage = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
                 float impact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT);
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, proportion, impact, frequency));
+                charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, percentage, impact, frequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
@@ -513,19 +513,19 @@ public class DataService extends IntentService {
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                float proportion = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
-                float transactionImpact = amount * proportion;
+                float percentage = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE);
+                float transactionImpact = amount * percentage;
                 float totalImpact = cursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_IMPACT) + transactionImpact;
                 todaysImpact += transactionImpact;
 
-                int affectedFrequency = cursor.getInt(affectedIndex) + (proportion == 0f ? 0 : f);
+                int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, totalImpact);
 
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, proportion, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, totalImpact, affectedFrequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);

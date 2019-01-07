@@ -122,8 +122,8 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_recalibrate:
                 DonationFragment.resetDonationsAdjusted();
                 ContentValues values = new ContentValues();
-                values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
-                DataService.startActionUpdateProportions(this, values);
+                values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
+                DataService.startActionUpdatePercentages(this, values);
                 return true;
             case R.id.action_clear:
                 AlertDialog clearDialog = new AlertDialog.Builder(this).create();

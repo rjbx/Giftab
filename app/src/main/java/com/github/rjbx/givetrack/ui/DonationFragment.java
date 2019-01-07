@@ -267,7 +267,7 @@ public class DonationFragment extends Fragment
      */
     public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        private Float[] mProportions;
+        private Float[] mPercentages;
         private View mLastClicked;
         private Rateraid.Builder mWeightsBuilder;
 
@@ -287,8 +287,8 @@ public class DonationFragment extends Fragment
         };
 
         public ListAdapter() {
-            mProportions = new Float[mValuesArray.length];
-            mWeightsBuilder = Rateraid.with(mProportions, mMagnitude);
+            mPercentages = new Float[mValuesArray.length];
+            mWeightsBuilder = Rateraid.with(mPercentages, mMagnitude);
         }
 
         /**
@@ -309,7 +309,7 @@ public class DonationFragment extends Fragment
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
             if (mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
-             || mProportions == null || mProportions.length == 0 || mProportions[position] == null) return;
+             || mPercentages == null || mPercentages.length == 0 || mPercentages[position] == null) return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.donation_item_height));
@@ -351,8 +351,8 @@ public class DonationFragment extends Fragment
             holder.itemView.setTag(arguments);
             holder.itemView.setOnClickListener(mOnClickListener);
 
-            holder.mProportionView.setText(percentInstance.format(mProportions[position]));
-            holder.mAmountView.setText(currencyInstance.format(mProportions[position] * mAmountTotal));
+            holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
+            holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
             holder.mRemoveButton.setOnClickListener(removeButtonclickedView -> {
                 AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
                 dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
@@ -397,12 +397,12 @@ public class DonationFragment extends Fragment
             final int adapterPosition = holder.getAdapterPosition();
 
             mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
-            mWeightsBuilder.addValueEditor(holder.mProportionView, adapterPosition);
+            mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
             if (adapterPosition == getItemCount() - 1) {
                 mWeightsBuilder.build().setOnClickListener(clickedView -> {
                     float sum = 0;
-                    for (float proportion : mProportions) sum += proportion;
-                    Timber.d("List[%s] : Sum[%s]", Arrays.asList(mProportions).toString(), sum);
+                    for (float percentage : mPercentages) sum += percentage;
+                    Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
                     mDonationsAdjusted = true;
                     renderActionBar();
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -421,11 +421,11 @@ public class DonationFragment extends Fragment
          * Swaps the Cursor after completing a load or resetting Loader.
          */
         void swapValues() {
-            if (mProportions.length != mValuesArray.length) mProportions = Arrays.copyOf(mProportions, mValuesArray.length);
-            for (int i = 0; i < mProportions.length; i++) {
-                mProportions[i] = mValuesArray[i].getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION);
+            if (mPercentages.length != mValuesArray.length) mPercentages = Arrays.copyOf(mPercentages, mValuesArray.length);
+            for (int i = 0; i < mPercentages.length; i++) {
+                mPercentages[i] = mValuesArray[i].getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
             }
-            Calibrater.resetRatings(mProportions, false);
+            Calibrater.resetRatings(mPercentages, false);
             notifyDataSetChanged();
         }
 
@@ -436,7 +436,7 @@ public class DonationFragment extends Fragment
             @BindView(R.id.charity_primary) TextView mNameView;
             @BindView(R.id.charity_secondary) TextView mFrequencyView;
             @BindView(R.id.charity_tertiary) TextView mImpactView;
-            @BindView(R.id.donation_proportion_text) EditText mProportionView;
+            @BindView(R.id.donation_percentage_text) EditText mPercentageView;
             @BindView(R.id.donation_amount_text) TextView mAmountView;
             @BindView(R.id.donation_increment_button) TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) TextView mDecrementButton;
@@ -455,18 +455,18 @@ public class DonationFragment extends Fragment
         }
 
         /**
-         * Syncs donation proportion and amount values to table.
+         * Syncs donation percentage and amount values to table.
          */
         private void syncDonations() {
-            if (mProportions == null || mProportions.length == 0) return;
-            ContentValues[] valuesArray = new ContentValues[mProportions.length];
-            for (int i = 0; i < mProportions.length; i++) {
+            if (mPercentages == null || mPercentages.length == 0) return;
+            ContentValues[] valuesArray = new ContentValues[mPercentages.length];
+            for (int i = 0; i < mPercentages.length; i++) {
                 ContentValues values = new ContentValues();
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_PROPORTION, mProportions[i]);
-                Timber.d(mProportions[i] + " " + mAmountTotal + " " + i + " " + mProportions.length);
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, mPercentages[i]);
+                Timber.d(mPercentages[i] + " " + mAmountTotal + " " + i + " " + mPercentages.length);
                 valuesArray[i] = values;
             }
-            DataService.startActionUpdateProportions(getContext(), valuesArray);
+            DataService.startActionUpdatePercentages(getContext(), valuesArray);
         }
     }
 

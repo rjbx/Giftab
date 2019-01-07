@@ -98,11 +98,11 @@ public class AppWidget extends AppWidgetProvider {
             mCursor.moveToPosition(position);
 
             String name = mCursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
-            Float proportion = mCursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PROPORTION);
+            Float percentage = mCursor.getFloat(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE);
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
-            remoteViews.setTextViewText(R.id.widget_item_proportion, NumberFormat.getPercentInstance(Locale.US).format(proportion));
+            remoteViews.setTextViewText(R.id.widget_item_percentage, NumberFormat.getPercentInstance(Locale.US).format(percentage));
             remoteViews.setOnClickFillInIntent(R.id.widget_item, new Intent());
 
             return remoteViews;
