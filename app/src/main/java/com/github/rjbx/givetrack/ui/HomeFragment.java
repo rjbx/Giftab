@@ -4,10 +4,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -29,15 +31,19 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Stack;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -94,12 +100,30 @@ public class HomeFragment extends Fragment {
             UserPreferences.updateFirebaseUser(getContext());
         });
 
-        mRootView.findViewById(R.id.home_amount_label).setOnClickListener(clickedView -> {
-
+        TextView amountLabel = mRootView.findViewById(R.id.home_amount_label);
+        amountLabel.setOnClickListener(clickedView -> {
+            Date date = new Date(UserPreferences.getTimetrack(getContext()));
+            DateFormat formatter = DateFormat.getDateInstance();
+            formatter.setTimeZone(TimeZone.getDefault());
+            String formattedDate = formatter.format(date);
+            amountLabel.setText(String.format("Since %s", formattedDate));
+            amountView.setText(String.valueOf(UserPreferences.getTracked(getContext())));
         });
 
         mRootView.findViewById(R.id.home_time_button).setOnClickListener(clickedView -> {
-
+            AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
+            Date date = new Date(UserPreferences.getTimetrack(getContext()));
+            DateFormat formatter = DateFormat.getDateInstance();
+            formatter.setTimeZone(TimeZone.getDefault());
+            String formattedDate = formatter.format(date);
+            timeDialog.setMessage(String.format("Your tracked data since %s will be lost. Do you want to start tracking from today instead?", formattedDate));
+            timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
+                    (onClickDialog, onClickPosition) -> timeDialog.dismiss());
+            timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
+                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+            timeDialog.show();
+            timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+            timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
         });
 
         mRootView.findViewById(R.id.home_config_button).setOnClickListener(clickedView -> {
