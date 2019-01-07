@@ -10,6 +10,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_magnitude"
+        android:orderInCategory="200"
+        android:title="@string/action_magnitude_label"
+        app:showAsAction="never"/>
+    <item
         android:id="@+id/action_recalibrate"
         android:orderInCategory="200"
         android:title="@string/action_recalibrate"

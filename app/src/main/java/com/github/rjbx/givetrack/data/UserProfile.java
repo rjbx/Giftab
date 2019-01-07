@@ -20,7 +20,7 @@ public class UserProfile {
     private int theme;
     private float tracked;
     private float donation;
-    private float increment;
+    private float magnitude;
     private List<String> proportions;
     private List<String> charities;
     private String term;
@@ -56,7 +56,7 @@ public class UserProfile {
             String gender,
             int theme,
             float tracked,
-            float increment,
+            float magnitude,
             float donation,
             List<String> proportions,
             List<String> charities,
@@ -83,7 +83,7 @@ public class UserProfile {
         this.gender = gender;
         this.theme = theme;
         this.tracked = tracked;
-        this.increment = increment;
+        this.magnitude = magnitude;
         this.donation = donation;
         this.proportions = proportions;
         this.charities = charities;
@@ -132,8 +132,8 @@ public class UserProfile {
     void setTheme(int theme) { this.theme = theme; }
     public float getTracked() { return tracked; }
     public void setTracked(float tracked) { this.tracked = tracked; }
-    public float getIncrement() { return increment; }
-    public void setIncrement(float increment) { this.increment = increment; }
+    public float getMagnitude() { return magnitude; }
+    public void setMagnitude(float magnitude) { this.magnitude = magnitude; }
     public float getDonation() { return donation; }
     public void setDonation(float donation) { this.donation = donation; }
     public List<String> getProportions() { return proportions; }
@@ -245,7 +245,7 @@ public class UserProfile {
         map.put("gender", gender);
         map.put("theme", theme);
         map.put("tracked", tracked);
-        map.put("increment", increment);
+        map.put("magnitude", magnitude);
         map.put("donation", donation);
         map.put("proportions", proportions);
         map.put("charities", charities);

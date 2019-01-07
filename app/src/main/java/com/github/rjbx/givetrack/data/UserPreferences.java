@@ -21,7 +21,7 @@ public class UserPreferences {
     public static final String KEY_GENDER = "gender";
     public static final String KEY_THEME = "theme";
     public static final String KEY_TRACKED = "tracked";
-    public static final String KEY_INCREMENT = "increment";
+    public static final String KEY_MAGNITUDE = "magnitude";
     public static final String KEY_DONATION = "donation";
     public static final String KEY_PROPORTIONS = "proportions";
     public static final String KEY_CHARITIES = "charities";
@@ -189,14 +189,14 @@ public class UserPreferences {
         sp.edit().putFloat(KEY_TRACKED, tracked).apply();
     }
 
-    public static float getIncrement(Context context) {
+    public static float getMagnitude(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_INCREMENT, 0f);
+        return sp.getFloat(KEY_MAGNITUDE, 0f);
     }
 
-    public static void setIncrement(Context context, float increment) {
+    public static void setMagnitude(Context context, float magnitude) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_INCREMENT, increment).apply();
+        sp.edit().putFloat(KEY_MAGNITUDE, magnitude).apply();
     }
 
     public static float getDonation(Context context) {
@@ -342,7 +342,7 @@ public class UserPreferences {
                 getGender(context),
                 getTheme(context),
                 getDonation(context),
-                getIncrement(context),
+                getMagnitude(context),
                 getDonation(context),
                 getProportions(context),
                 getCharities(context),

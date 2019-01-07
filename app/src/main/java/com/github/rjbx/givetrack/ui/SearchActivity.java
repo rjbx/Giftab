@@ -77,12 +77,12 @@ public class SearchActivity extends AppCompatActivity
 
         mDialog = new AlertDialog.Builder(this).create();
         mDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
+        mDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start),
                 (onClickDialog, onClickPosition) -> {
                     sDialogShown = true;
                     startActivity(new Intent(this, SettingsActivity.class));
         });
-        mDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_later),
+        mDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later),
                 (onClickDialog, onClickPosition) -> mDialog.dismiss());
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);

@@ -19,15 +19,17 @@
     <string name="action_share">Share</string>
     <string name="action_recalibrate">Recalibrate Donations</string>
     <string name="action_clear">Clear Charities</string>
+    <string name="action_magnitude_label">Adjustment Magnitude</string>
     <string name="action_toggle_on">Toggle overlay on</string>
     <string name="action_toggle_off">Toggle overlay off</string>
     <string name="action_overlay">Apply overlay</string>
-    <string name="dialog_cancel">CANCEL</string>
+    <string name="dialog_option_cancel">CANCEL</string>
     <string name="dialog_option_erase">ERASE</string>
     <string name="dialog_option_keep">KEEP</string>
-    <string name="dialog_remove">REMOVE</string>
-    <string name="dialog_later">REMIND ME LATER</string>
-    <string name="dialog_start">GET STARTED</string>
+    <string name="dialog_option_confirm">OK</string>
+    <string name="dialog_option_remove">REMOVE</string>
+    <string name="dialog_option_later">REMIND ME LATER</string>
+    <string name="dialog_option_start">GET STARTED</string>
 
     <!-- Accessibility -->
     <string name="description_close_button">Press this button to close this view</string>

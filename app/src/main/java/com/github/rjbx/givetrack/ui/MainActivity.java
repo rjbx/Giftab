@@ -31,6 +31,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
@@ -123,16 +124,32 @@ public class MainActivity extends AppCompatActivity
                 DataService.startActionUpdateProportions(this, values);
                 return true;
             case R.id.action_clear:
-                AlertDialog dialog = new AlertDialog.Builder(this).create();
-                dialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
-                dialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
-                        (onClickDialog, onClickPosition) -> dialog.dismiss());
-                dialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase),
+                AlertDialog clearDialog = new AlertDialog.Builder(this).create();
+                clearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                clearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
+                        (onClickDialog, onClickPosition) -> clearDialog.dismiss());
+                clearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase),
                         (onClickDialog, onClickPosition) -> DataService.startActionResetCollected(this));
-                dialog.show();
-                dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                clearDialog.show();
+                clearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                clearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                 return false;
+            case R.id.action_magnitude:
+                AlertDialog magnitudeDialog = new AlertDialog.Builder(this).create();
+                SeekBar seekBar = new SeekBar(this);
+                seekBar.setProgress((int) UserPreferences.getMagnitude(this) * 100);
+                magnitudeDialog.setView(seekBar);
+                magnitudeDialog.setMessage(this.getString(R.string.account_deletion_alert_dialog));
+                magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
+                        (onClickDialog, onClickPosition) -> magnitudeDialog.dismiss());
+                magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
+                        (onClickDialog, onClickPosition) -> {
+                            UserPreferences.setMagnitude(this, seekBar.getProgress() / 100f);
+                            UserPreferences.updateFirebaseUser(this);
+                        });
+                magnitudeDialog.show();
+                magnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                magnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -337,7 +337,7 @@ public class DonationFragment extends Fragment implements CharityFragment.Master
                 dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
                 dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
                         (neutralButtonOnClickDialog, neutralButtonOnClickPosition) -> dialog.dismiss());
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_remove),
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove),
                         (negativeButtonOnClickDialog, negativeButtonOnClickPosition) -> {
                             if (mDualPane) showSinglePane();
 //                                if (mValuesArray.length == 1) onDestroy();
