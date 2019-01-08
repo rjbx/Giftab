@@ -17,7 +17,7 @@
 
         <Button
             android:id="@+id/collection_remove_button"
-            android:layout_width="30dp"
+            android:layout_width="34dp"
             android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
@@ -27,11 +27,12 @@
             android:text="@string/symbol_decrement_button"/>
 
         <FrameLayout
-            android:layout_width="30dp"
+            android:layout_width="44dp"
             android:layout_height="match_parent"
             android:paddingTop="15dp"
             android:paddingBottom="15dp"
-            android:layout_marginStart="10dp"
+            android:paddingStart="10dp"
+            android:background="@color/colorChalk"
             android:orientation="vertical">
 
             <ImageButton
@@ -39,7 +40,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="top"
-                android:background="#fff"
+                android:background="@color/colorChalk"
                 android:src="@drawable/baseline_search_24"
                 android:contentDescription="@string/description_increment_percentage_text"/>
 
@@ -49,7 +50,7 @@
                 android:layout_height="25dp"
                 android:layout_marginBottom="25dp"
                 android:layout_gravity="bottom"
-                android:background="#fff"
+                android:background="@color/colorChalk"
                 android:src="@drawable/baseline_message_24"
                 android:contentDescription="@string/description_decrement_percentage_text"/>
 
@@ -58,7 +59,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="bottom"
-                android:background="#fff"
+                android:background="@color/colorChalk"
                 android:src="@drawable/ic_menu_share"
                 android:contentDescription="@string/description_decrement_percentage_text"/>
 

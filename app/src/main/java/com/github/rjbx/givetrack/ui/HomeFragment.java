@@ -138,12 +138,6 @@ public class HomeFragment extends Fragment {
 
         toggleAmountView();
 
-        Button addButton = mRootView.findViewById(R.id.collection_add_button);
-        addButton.setOnClickListener(clickedView -> {
-                Intent searchIntent = new Intent(inflater.getContext(), SearchActivity.class);
-                startActivity(searchIntent);
-            });
-
         Bundle args = getArguments();
         if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
 

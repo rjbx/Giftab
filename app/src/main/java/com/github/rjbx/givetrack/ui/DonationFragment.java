@@ -181,6 +181,13 @@ public class DonationFragment extends Fragment
         RecyclerView recyclerView = rootView.findViewById(R.id.donation_list);
         recyclerView.setAdapter(mListAdapter);
 
+//        Button addButton = rootView.findViewById(R.id.collection_add_button);
+//        addButton.setOnClickListener(clickedView -> {
+//            Intent searchIntent = new Intent(inflater.getContext(), SearchActivity.class);
+//            startActivity(searchIntent);
+//        });
+
+
         mBarWrapper = rootView.findViewById(R.id.action_bar_wrapper);
         mActionBar = rootView.findViewById(R.id.action_bar);
         mProgressBar = rootView.findViewById(R.id.save_progress_bar);
@@ -268,6 +275,9 @@ public class DonationFragment extends Fragment
      */
     public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
+        private static final int VIEW_TYPE_CHARITY = 0;
+        private static final int VIEW_TYPE_BUTTON = 1;
+
         private Float[] mPercentages;
         private View mLastClicked;
         private Rateraid.Builder mWeightsBuilder;
@@ -306,9 +316,18 @@ public class DonationFragment extends Fragment
         @Override
         public @NonNull
         ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
+            View view;
+            if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_donation, parent, false);
+            else view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.collection_add, parent, false);
             return new ViewHolder(view);
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
+            else return VIEW_TYPE_CHARITY;
         }
 
         /**
@@ -317,7 +336,8 @@ public class DonationFragment extends Fragment
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-            if (mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
+            if (position == getItemCount() - 1
+             || mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
              || mPercentages == null || mPercentages.length == 0 || mPercentages[position] == null) return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
@@ -413,7 +433,7 @@ public class DonationFragment extends Fragment
          * Returns the number of items to display.
          */
         @Override
-        public int getItemCount() { return mValuesArray != null ? mValuesArray.length : 0; }
+        public int getItemCount() { return mValuesArray != null ? mValuesArray.length + 1: 1; }
 
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
@@ -431,17 +451,17 @@ public class DonationFragment extends Fragment
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.charity_primary) TextView mNameView;
-            @BindView(R.id.charity_secondary) TextView mFrequencyView;
-            @BindView(R.id.charity_tertiary) TextView mImpactView;
-            @BindView(R.id.donation_percentage_text) EditText mPercentageView;
-            @BindView(R.id.donation_amount_text) TextView mAmountView;
-            @BindView(R.id.donation_increment_button) TextView mIncrementButton;
-            @BindView(R.id.donation_decrement_button) TextView mDecrementButton;
-            @BindView(R.id.collection_remove_button) Button mRemoveButton;
-            @BindView(R.id.share_button) ImageButton mShareButton;
-            @BindView(R.id.message_button) ImageButton mMessageButton;
-            @BindView(R.id.inspect_button) ImageButton mInspectButton;
+            @BindView(R.id.charity_primary) @Nullable TextView mNameView;
+            @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
+            @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
+            @BindView(R.id.donation_percentage_text) @Nullable EditText mPercentageView;
+            @BindView(R.id.donation_amount_text) @Nullable TextView mAmountView;
+            @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
+            @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
+            @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
+            @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
+            @BindView(R.id.message_button) @Nullable ImageButton mMessageButton;
+            @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
