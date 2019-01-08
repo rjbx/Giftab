@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -197,14 +198,14 @@ public class DonationFragment extends Fragment
             if (mDonationsAdjusted) {
                 mListAdapter.syncDonations();
                 mDonationsAdjusted = false;
-                mActionBar.setBackgroundColor(getResources().getColor(R.color.colorAccentDark));
+                mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark)));
                 mActionBar.setImageResource(R.drawable.action_sync);
             } else if (mAmountTotal > 0) {
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
                 DataService.startActionUpdateFrequency(getContext(), values);
                 UserPreferences.updateFirebaseUser(mParentActivity);
-                mActionBar.setBackgroundColor(getResources().getColor(R.color.colorConversionDark));
+                mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark)));
                 mActionBar.setImageResource(R.drawable.action_sync);
             }
         });
@@ -556,7 +557,7 @@ public class DonationFragment extends Fragment
         }
 
         mBarWrapper.setBackgroundColor(getResources().getColor(barWrapperColor));
-        mActionBar.setBackgroundColor(getResources().getColor(actionBarColor));
+        mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(actionBarColor)));
         mActionBar.setImageResource(actionBarIcon);
         mProgressBar.setVisibility(progressBarVisibility);
     }
