@@ -10,17 +10,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.data.model.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Description;
@@ -31,7 +29,6 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
@@ -42,7 +39,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -65,9 +61,13 @@ public class HomeFragment extends Fragment {
     };
 
     private static int sThemeIndex;
-    private static boolean mViewTracked;
-    TextView mAmountView;
-    TextView mAmountLabel;
+    private static boolean mShowTracked;
+    private TextView mAmountView;
+    private TextView mAmountLabel;
+    private String mTotal;
+    private String mTracked;
+    private String mTrackedTime;
+    private String mTotalTime;
 
 
     /**
@@ -93,6 +93,27 @@ public class HomeFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
+
+        Bundle args = getArguments();
+        if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
+
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
+
+        float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
+        mTracked = currencyFormatter.format(tracked);
+
+        List<String> charities = UserPreferences.getCharities(getContext());
+        float totalImpact = 0f;
+        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
+        mTotal = currencyFormatter.format(totalImpact);
+
+        Date date = new Date(UserPreferences.getTimetrack(getContext()));
+        DateFormat dateFormatter = DateFormat.getDateInstance();
+        dateFormatter.setTimeZone(TimeZone.getDefault());
+        String formattedDate = dateFormatter.format(date);
+        mTrackedTime = String.format("since %s", formattedDate);
+        mTotalTime = "all-time";
+
         mRootView = inflater.inflate(R.layout.fragment_home, container, false);
         mAmountView = mRootView.findViewById(R.id.home_amount_text);
         mAmountView.setOnClickListener(clickedView -> {
@@ -104,17 +125,11 @@ public class HomeFragment extends Fragment {
         });
 
         mAmountLabel = mRootView.findViewById(R.id.home_amount_label);
-        mAmountLabel.setOnClickListener(clickedView -> {
-            toggleAmountView();
-        });
+        mAmountLabel.setOnClickListener(clickedView -> toggleAmountView());
 
         mRootView.findViewById(R.id.home_time_button).setOnClickListener(clickedView -> {
             AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
-            Date date = new Date(UserPreferences.getTimetrack(getContext()));
-            DateFormat formatter = DateFormat.getDateInstance();
-            formatter.setTimeZone(TimeZone.getDefault());
-            String formattedDate = formatter.format(date);
-            timeDialog.setMessage(String.format("Your tracked data since %s will be lost. Do you want to start tracking from today instead?", formattedDate));
+            timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
             timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
                     (onClickDialog, onClickPosition) -> timeDialog.dismiss());
             timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
@@ -133,13 +148,19 @@ public class HomeFragment extends Fragment {
         });
 
         mRootView.findViewById(R.id.home_share_button).setOnClickListener(clickedView -> {
-
+            String amount = mShowTracked ? mTracked : mTotal;
+            String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
+            Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
+                    .setType("text/plain")
+                    .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
+                            amount,
+                            timeframe,
+                            getString(R.string.app_name)))
+                    .getIntent();
+            startActivity(shareIntent);
         });
 
         toggleAmountView();
-
-        Bundle args = getArguments();
-        if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
 
         return mRootView;
     }
@@ -165,21 +186,13 @@ public class HomeFragment extends Fragment {
     }
 
     public void toggleAmountView() {
-        mViewTracked = !mViewTracked;
-        if (mViewTracked) {
-            Date date = new Date(UserPreferences.getTimetrack(getContext()));
-            DateFormat formatter = DateFormat.getDateInstance();
-            formatter.setTimeZone(TimeZone.getDefault());
-            String formattedDate = formatter.format(date);
-            mAmountLabel.setText(String.format("Since %s", formattedDate));
-            mAmountView.setText(String.valueOf(UserPreferences.getTracked(getContext())));
+        mShowTracked = !mShowTracked;
+        if (mShowTracked) {
+            mAmountLabel.setText(mTrackedTime.toUpperCase());
+            mAmountView.setText(String.valueOf(mTracked));
         } else {
-            mAmountLabel.setText("TOTAL IMPACT");
-            List<String> charities = UserPreferences.getCharities(getContext());
-            float totalImpact = 0f;
-            for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
-            final NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-            mAmountView.setText(String.valueOf(currencyFormatter.format(totalImpact)));
+            mAmountLabel.setText(mTotalTime.toUpperCase());
+            mAmountView.setText(String.valueOf(mTotal));
         }
     }
 
