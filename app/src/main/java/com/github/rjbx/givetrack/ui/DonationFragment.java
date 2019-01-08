@@ -36,11 +36,11 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.calibrater.Calibrater;
-import com.github.rjbx.rateraid.Rateraid;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -289,7 +289,15 @@ public class DonationFragment extends Fragment
 
         public ListAdapter() {
             mPercentages = new Float[mValuesArray.length];
-            mWeightsBuilder = Rateraid.with(mPercentages, mMagnitude);
+            mWeightsBuilder = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
+                    float sum = 0;
+                    for (float percentage : mPercentages) sum += percentage;
+                    Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
+                    mDonationsAdjusted = true;
+                    renderActionBar();
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    notifyDataSetChanged();
+            });
         }
 
         /**
@@ -399,17 +407,6 @@ public class DonationFragment extends Fragment
 
             mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
-            if (adapterPosition == getItemCount() - 1) {
-                mWeightsBuilder.build().setOnClickListener(clickedView -> {
-                    float sum = 0;
-                    for (float percentage : mPercentages) sum += percentage;
-                    Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
-                    mDonationsAdjusted = true;
-                    renderActionBar();
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    notifyDataSetChanged();
-                });
-            }
         }
 
         /**
