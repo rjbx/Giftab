@@ -405,6 +405,5 @@ public class HomeFragment extends Fragment {
         activityChart.setPinchZoom(true);
         activityChart.notifyDataSetChanged();
         activityChart.invalidate();
-
     }
 }

@@ -524,7 +524,7 @@ public class DataService extends IntentService {
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), ".%2f", totalImpact));
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
 
                 charities.add(String.format(Locale.getDefault(), "%s:%f:%.2f:%d", ein, percentage, totalImpact, affectedFrequency));
 
@@ -535,8 +535,8 @@ public class DataService extends IntentService {
 
             String[] tallyArray = UserPreferences.getTally(this).split(":");
             tallyArray[0] = String.valueOf(todaysImpact);
-            UserPreferences.setToday(this, String.format(Locale.getDefault(), ".%2f", todaysImpact));
-            UserPreferences.setTracked(this, String.format(Locale.getDefault(), ".%2f", totalTracked));
+            UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+            UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
             UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
             UserPreferences.setTimestamp(this, System.currentTimeMillis());
             UserPreferences.setCharities(this, charities);
