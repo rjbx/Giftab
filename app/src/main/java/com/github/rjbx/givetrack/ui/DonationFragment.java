@@ -336,8 +336,15 @@ public class DonationFragment extends Fragment
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-            if (position == getItemCount() - 1
-             || mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
+            if (position == getItemCount() - 1) {
+               holder.mAddButton.setOnClickListener(clickedView -> {
+                    Intent searchIntent = new Intent(getContext(), SearchActivity.class);
+                    startActivity(searchIntent);
+                });
+                return;
+            }
+
+            if (mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
              || mPercentages == null || mPercentages.length == 0 || mPercentages[position] == null) return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
@@ -459,6 +466,7 @@ public class DonationFragment extends Fragment
             @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
             @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
+            @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.message_button) @Nullable ImageButton mMessageButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
