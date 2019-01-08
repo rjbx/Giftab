@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -344,7 +345,7 @@ public class HomeFragment extends Fragment {
 
         float today = Float.parseFloat(tallyArray[0]);
         float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
-        UserPreferences.setHigh(context, String.valueOf(high));
+        UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
         UserPreferences.updateFirebaseUser(mParentActivity);
 
         List<PieEntry> averageEntries = new ArrayList<>();
@@ -355,7 +356,6 @@ public class HomeFragment extends Fragment {
         averageSet.setColors(gaugeColors);
         Description averageDesc = new Description();
         averageDesc.setText(getString(R.string.chart_title_average));
-
         averageDesc.setTextSize(fontSize / 1.1f);
         PieData averageData = new PieData(averageSet);
         PieChart averageChart = mRootView.findViewById(R.id.average_chart);
@@ -373,6 +373,7 @@ public class HomeFragment extends Fragment {
         activityEntries.add(new BarEntry(0f, high));
         activityEntries.add(new BarEntry(1f, days[0]));
         activityEntries.add(new BarEntry(2f, days[1]));
+
         activityEntries.add(new BarEntry(3f, days[2]));
         activityEntries.add(new BarEntry(4f, days[3]));
         activityEntries.add(new BarEntry(5f, days[4]));

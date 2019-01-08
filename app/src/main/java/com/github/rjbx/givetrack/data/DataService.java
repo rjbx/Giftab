@@ -534,7 +534,7 @@ public class DataService extends IntentService {
             cursor.close();
 
             String[] tallyArray = UserPreferences.getTally(this).split(":");
-            tallyArray[0] = String.valueOf(todaysImpact);
+            tallyArray[0] = String.format(Locale.getDefault(), "%.2f", todaysImpact);
             UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
             UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
