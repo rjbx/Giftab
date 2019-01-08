@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.ui;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +32,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,14 +45,17 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Provides the main screen for this application.
  */
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity implements
+        NavigationView.OnNavigationItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor>,
+        DatePickerDialog.OnDateSetListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ARGS_VALUES_ARRAY = "values_array";
@@ -73,7 +78,8 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = findViewById(R.id.main_tabs);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-        if (mPagerAdapter == null) mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        if (mPagerAdapter == null)
+            mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(mPagerAdapter);
 
         DrawerLayout drawer = findViewById(R.id.main_activity);
@@ -148,8 +154,14 @@ public class MainActivity extends AppCompatActivity
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         textView.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
                     }
-                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                    }
                 });
 
                 seekBar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
@@ -166,9 +178,26 @@ public class MainActivity extends AppCompatActivity
                 magnitudeDialog.show();
                 magnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                 magnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+            case R.id.action_date:
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        this,
+                        this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.show();
+                break;
             default:
                 return super.onOptionsItemSelected(item);
-        }
+        } return false;
+    }
+
+    /**
+     * Updates the DatePicker with the date selected from the Dialog.
+     */
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
     }
 
     /**
