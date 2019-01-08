@@ -516,17 +516,17 @@ public class DataService extends IntentService {
                 float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
-                todaysImpact += transactionImpact;
-                totalTracked += transactionImpact;
+                todaysImpact += transactionImpact * 100f / 100f;
+                totalTracked += transactionImpact * 100f / 100f;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
                 ContentValues values = new ContentValues();
                 values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.valueOf(totalImpact));
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), ".%2f", totalImpact));
 
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%.2f:%d", ein, percentage, totalImpact, affectedFrequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
@@ -535,8 +535,8 @@ public class DataService extends IntentService {
 
             String[] tallyArray = UserPreferences.getTally(this).split(":");
             tallyArray[0] = String.valueOf(todaysImpact);
-            UserPreferences.setToday(this, String.valueOf(todaysImpact));
-            UserPreferences.setTracked(this, String.valueOf(totalTracked));
+            UserPreferences.setToday(this, String.format(Locale.getDefault(), ".%2f", todaysImpact));
+            UserPreferences.setTracked(this, String.format(Locale.getDefault(), ".%2f", totalTracked));
             UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
             UserPreferences.setTimestamp(this, System.currentTimeMillis());
             UserPreferences.setCharities(this, charities);

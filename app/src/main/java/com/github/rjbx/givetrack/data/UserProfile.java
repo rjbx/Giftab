@@ -258,7 +258,7 @@ public class UserProfile {
         map.put("high", high);
         map.put("today", today);
         map.put("timestamp", timestamp);
-        map.put("tracktime", timetrack);
+        map.put("timetrack", timetrack);
         return map;
     }
 }
