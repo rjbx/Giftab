@@ -330,8 +330,8 @@ public class HomeFragment extends Fragment {
         }
 
         float today = Float.parseFloat(tallyArray[0]);
-        float high = Math.max(UserPreferences.getHigh(context), today);
-        UserPreferences.setHigh(context, high);
+        float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
+        UserPreferences.setHigh(context, String.valueOf(high));
         UserPreferences.updateFirebaseUser(mParentActivity);
 
         List<PieEntry> averageEntries = new ArrayList<>();

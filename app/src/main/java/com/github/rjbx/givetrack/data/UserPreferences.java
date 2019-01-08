@@ -195,24 +195,24 @@ public class UserPreferences {
         sp.edit().putString(KEY_DONATION, donation).apply();
     }
     
-    public static float getHigh(Context context) {
+    public static String getHigh(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_HIGH, 0f);
+        return sp.getString(KEY_HIGH, "0");
     }
 
-    public static void setHigh(Context context, float high) {
+    public static void setHigh(Context context, String high) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_HIGH, high).apply();
+        sp.edit().putString(KEY_HIGH, high).apply();
     }
 
-    public static float getToday(Context context) {
+    public static String getToday(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getFloat(KEY_TODAY, 0f);
+        return sp.getString(KEY_TODAY, "0");
     }
 
-    public static void setToday(Context context, float today) {
+    public static void setToday(Context context, String today) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putFloat(KEY_TODAY, today).apply();
+        sp.edit().putString(KEY_TODAY, today).apply();
     }
 
     public static String getBirthdate(Context context) {

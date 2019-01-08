@@ -36,8 +36,8 @@ public class UserProfile {
     private boolean focus;
     private String ein;
     private String tally;
-    private float high;
-    private float today;
+    private String high;
+    private String today;
     private long timestamp;
     private long timetrack;
 
@@ -72,8 +72,8 @@ public class UserProfile {
             boolean focus,
             String ein,
             String tally,
-            float high,
-            float today,
+            String high,
+            String today,
             long timestamp,
             long timetrack) {
         this.uid = uid;
@@ -216,10 +216,10 @@ public class UserProfile {
     public void setTally(String tally) {
         this.tally = tally;
     }
-    public float getHigh() { return high; }
-    public void setHigh(float high) { this.high = high; }
-    public float getToday() { return today; }
-    public void setToday(float today) { this.today = today; }
+    public String getHigh() { return high; }
+    public void setHigh(String high) { this.high = high; }
+    public String getToday() { return today; }
+    public void setToday(String today) { this.today = today; }
     public long getTimestamp() {
         return timestamp;
     }

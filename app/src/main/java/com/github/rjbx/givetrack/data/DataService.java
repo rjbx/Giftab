@@ -508,7 +508,7 @@ public class DataService extends IntentService {
                             TimeUnit.MILLISECONDS
                     );
 
-            float todaysImpact = daysBetweenConversions > 0 ? 0 : UserPreferences.getToday(this);
+            float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this));
             float totalTracked = Float.parseFloat(UserPreferences.getTracked(this));
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
@@ -535,7 +535,7 @@ public class DataService extends IntentService {
 
             String[] tallyArray = UserPreferences.getTally(this).split(":");
             tallyArray[0] = String.valueOf(todaysImpact);
-            UserPreferences.setToday(this, todaysImpact);
+            UserPreferences.setToday(this, String.valueOf(todaysImpact));
             UserPreferences.setTracked(this, String.valueOf(totalTracked));
             UserPreferences.setTally(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
             UserPreferences.setTimestamp(this, System.currentTimeMillis());
