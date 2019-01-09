@@ -514,7 +514,7 @@ public class DonationFragment extends Fragment
                                 }
                             }
                             for (int i = 0; i < size; i++) {
-                                Element homeAnchor = homeInfo.get(j);
+                                Element homeAnchor = homeInfo.get(i);
                                 if (!homeAnchor.hasAttr("href")) return;
                                 else if (homeAnchor.attr("href").contains("mailto")) {
                                     parsedEmail = homeAnchor.attr("href");
