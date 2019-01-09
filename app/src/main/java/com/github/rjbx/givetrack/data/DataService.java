@@ -650,8 +650,8 @@ public class DataService extends IntentService {
         String city = locationObject.getString(FetchContract.KEY_CITY);
         String state = locationObject.getString(FetchContract.KEY_STATE);
         String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
-        String emailAddress = charityObject.getString(FetchContract.KEY_EMAIL_ADDRESS);
-        String phoneNumber = charityObject.getString(FetchContract.KEY_PHONE_NUMBER);
+        String emailAddress = charityObject.has(FetchContract.KEY_EMAIL_ADDRESS) ? charityObject.getString(FetchContract.KEY_EMAIL_ADDRESS) : "";
+        String phoneNumber = charityObject.has(FetchContract.KEY_PHONE_NUMBER) ? charityObject.getString(FetchContract.KEY_PHONE_NUMBER) : "";
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 

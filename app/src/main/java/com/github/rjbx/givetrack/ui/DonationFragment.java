@@ -36,16 +36,36 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.rjbx.calibrater.Calibrater;
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.rateraid.Rateraid;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Scanner;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -425,23 +445,40 @@ public class DonationFragment extends Fragment
                 startActivity(shareIntent);
             });
 
-            holder.mContectButton.setOnClickListener(clickedView -> {
+            holder.mContactButton.setOnClickListener(clickedView -> {
 
                 View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
                 
-                Button phoneButton = view.findViewById(R.id.phone_button);
-                if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
-                else phoneButton.setOnClickListener(phoneClickedView -> {});
-                
-                Button emailButton = view.findViewById(R.id.email_button);
+                ImageButton phoneButton = view.findViewById(R.id.phone_button);
+                /*if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
+                else*/ phoneButton.setOnClickListener(phoneClickedView -> {
+                    AppExecutors.getInstance().getNetworkIO().execute(() -> {
+                        try {
+                            Document webpage = Jsoup.connect(navUrl).get();
+                            Elements info = webpage.select("div[class=cn-appear]");
+                            int size = info.size();
+
+                            for (int i = 0; i < size; i++) {
+                                String text = info.select("p").text();
+                                if (text.contains("tel: ")) {
+                                    String parsedPhone = text.split("tel: ")[1].substring(0, 13);
+                                    Timber.d("Phone: %s", parsedPhone);
+                                }
+                            }
+                        } catch (IOException e) { Timber.e(e.getMessage()); }
+                    });
+                });
+
+                ImageButton emailButton = view.findViewById(R.id.email_button);
                 if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else emailButton.setOnClickListener(emailClickedView -> {});
-                
-                Button websiteButton = view.findViewById(R.id.website_button);
+
+                ImageButton websiteButton = view.findViewById(R.id.website_button);
                 if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
-                websiteButton.setOnClickListener(websiteClickedView -> {});
+                else websiteButton.setOnClickListener(websiteClickedView -> {
+                });
                 
-                Button addressButton = view.findViewById(R.id.address_button);
+                ImageButton addressButton = view.findViewById(R.id.address_button);
                 if (street.isEmpty()) addressButton.setVisibility(View.GONE);
                 else addressButton.setOnClickListener(addressClickedView -> {});
 
@@ -497,7 +534,7 @@ public class DonationFragment extends Fragment
             @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
-            @BindView(R.id.contact_button) @Nullable ImageButton mContectButton;
+            @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
 
             /**

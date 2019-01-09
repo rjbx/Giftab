@@ -38,16 +38,19 @@ public class GivetrackOpener extends SQLiteOpenHelper {
 
                         Entry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
                         Entry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATION_CITY + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATION_STATE + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATOIN_ZIP + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_STATE         + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATOIN_ZIP           + " TEXT NOT NULL, "                +
                         Entry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"            +
+                        Entry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"              +
+
                         "UNIQUE (" + Entry.COLUMN_EIN +
                         ") ON CONFLICT REPLACE" + ");";
 
@@ -58,9 +61,11 @@ public class GivetrackOpener extends SQLiteOpenHelper {
 
                         Entry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
                         Entry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATION_CITY + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATION_STATE + " TEXT NOT NULL, "                +
-                        Entry.COLUMN_LOCATOIN_ZIP + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATION_STATE         + " TEXT NOT NULL, "                +
+                        Entry.COLUMN_LOCATOIN_ZIP           + " TEXT NOT NULL, "                +
                         Entry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
