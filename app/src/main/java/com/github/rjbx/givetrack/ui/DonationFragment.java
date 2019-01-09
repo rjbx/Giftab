@@ -459,7 +459,7 @@ public class DonationFragment extends Fragment
                             int size = info.size();
 
                             for (int i = 0; i < size; i++) {
-                                String text = info.select("p").text();
+                                String text = info.get(i).select("p").text();
                                 if (text.contains("tel: ")) {
                                     String parsedPhone = text.split("tel: ")[1].substring(0, 13);
                                     Timber.d("Phone: %s", parsedPhone);
@@ -470,8 +470,59 @@ public class DonationFragment extends Fragment
                 });
 
                 ImageButton emailButton = view.findViewById(R.id.email_button);
-                if (email.isEmpty()) emailButton.setVisibility(View.GONE);
-                else emailButton.setOnClickListener(emailClickedView -> {});
+                /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
+                else */emailButton.setOnClickListener(emailClickedView -> {
+                    AppExecutors.getInstance().getNetworkIO().execute(() -> {
+                        try {
+                            String parsedEmail;
+                            Document homepage = Jsoup.connect(orgUrl).get();
+                            Elements homeInfo = homepage.select("a");
+                            int size = homeInfo.size();
+
+                            for (int i = 0; i < size; i++) {
+                                Element homeAnchor = homeInfo.get(i);
+                                if (homeAnchor.text().contains("donate")) {
+                                    String donateLink = homeInfo.get(i).attr("link");
+                                    Document donatePage = Jsoup.connect(donateLink).get();
+                                    Elements donateInfo = donatePage.select("a");
+
+                                    for (int j = 0; j < donateInfo.size(); i++) {
+                                        Element donateAnchor = donateInfo.get(i);
+                                        if (donateAnchor.text().contains("mailto")) {
+                                            if (!donateInfo.get(i).hasAttr("link")) return;
+                                            else parsedEmail = donateInfo.get(i).attr("link");
+                                            Timber.d("Phone: %s", parsedEmail);
+                                        }
+                                    }
+                                }
+                            }
+                            for (int i = 0; i < size; i++) {
+                                Element homeAnchor = homeInfo.get(i);
+                                if (homeAnchor.text().contains("contact")) {
+                                    String donateLink = homeInfo.get(i).attr("link");
+                                    Document donatePage = Jsoup.connect(donateLink).get();
+                                    Elements donateInfo = donatePage.select("a");
+
+                                    for (int j = 0; j < donateInfo.size(); i++) {
+                                        Element donateAnchor = donateInfo.get(i);
+                                        if (donateAnchor.text().contains("mailto")) {
+                                            if (!donateInfo.get(i).hasAttr("link")) return;
+                                            else parsedEmail = donateInfo.get(i).attr("link");
+                                            Timber.d("Phone: %s", parsedEmail);
+                                        }
+                                    }
+                                }
+                            }
+                            for (int i = 0; i < size; i++) {
+                                Element homeAnchor = homeInfo.get(i);
+                                if (homeAnchor.hasAttr("link"))) {
+                                    parsedEmail = homeAnchor.attr("link");
+                                    Timber.d("Phone: %s", parsedEmail);
+                                }
+                            }
+                        } catch (IOException e) { Timber.e(e.getMessage()); }
+                    });
+                });
 
                 ImageButton websiteButton = view.findViewById(R.id.website_button);
                 if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
