@@ -488,9 +488,9 @@ public class DonationFragment extends Fragment
 
                                     for (int j = 0; j < donateInfo.size(); j++) {
                                         Element donateAnchor = donateInfo.get(j);
-                                        if (donateAnchor.text().contains("mailto")) {
-                                            if (!donateInfo.get(j).hasAttr("href")) return;
-                                            else parsedEmail = donateInfo.get(j).attr("href");
+                                        if (!donateAnchor.hasAttr("href")) return;
+                                        else if (donateAnchor.attr("href").contains("mailto")) {
+                                            parsedEmail = donateAnchor.attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
@@ -505,18 +505,18 @@ public class DonationFragment extends Fragment
 
                                     for (int j = 0; j < contactInfo.size(); j++) {
                                         Element contactAnchor = contactInfo.get(j);
-                                        if (contactAnchor.text().contains("mailto")) {
-                                            if (!contactInfo.get(j).hasAttr("href")) return;
-                                            else parsedEmail = contactInfo.get(j).attr("href");
+                                        if (!contactAnchor.hasAttr("href")) return;
+                                        else if (contactAnchor.attr("href").contains("mailto")) {
+                                            parsedEmail = contactAnchor.attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
                                 }
                             }
                             for (int i = 0; i < size; i++) {
-                                Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.text().contains("mailto")) {
-                                    if (!homeAnchor.hasAttr("href")) return;
+                                Element homeAnchor = homeInfo.get(j);
+                                if (!homeAnchor.hasAttr("href")) return;
+                                else if (homeAnchor.attr("href").contains("mailto")) {
                                     parsedEmail = homeAnchor.attr("href");
                                     Timber.d("Email: %s", parsedEmail);
                                 }
