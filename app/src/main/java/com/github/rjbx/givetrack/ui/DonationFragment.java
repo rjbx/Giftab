@@ -491,7 +491,7 @@ public class DonationFragment extends Fragment
                                         if (donateAnchor.text().contains("mailto")) {
                                             if (!donateInfo.get(i).hasAttr("link")) return;
                                             else parsedEmail = donateInfo.get(i).attr("link");
-                                            Timber.d("Phone: %s", parsedEmail);
+                                            Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
                                 }
@@ -508,16 +508,17 @@ public class DonationFragment extends Fragment
                                         if (donateAnchor.text().contains("mailto")) {
                                             if (!donateInfo.get(i).hasAttr("link")) return;
                                             else parsedEmail = donateInfo.get(i).attr("link");
-                                            Timber.d("Phone: %s", parsedEmail);
+                                            Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
                                 }
                             }
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.hasAttr("link"))) {
+                                if (homeAnchor.text().contains("mailto")) {
+                                    if (!homeAnchor.hasAttr("link")) return;
                                     parsedEmail = homeAnchor.attr("link");
-                                    Timber.d("Phone: %s", parsedEmail);
+                                    Timber.d("Email: %s", parsedEmail);
                                 }
                             }
                         } catch (IOException e) { Timber.e(e.getMessage()); }
