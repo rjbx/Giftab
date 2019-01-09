@@ -642,12 +642,14 @@ public class DataService extends IntentService {
      */
     private static ContentValues parseContentValues(JSONObject charityObject) throws JSONException {
 
-        JSONObject primaryAddressObject = charityObject.getJSONObject(FetchContract.KEY_PRIMARY_ADDRESS);
+        JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
         String ein = charityObject.getString(FetchContract.KEY_EIN);
         String charityName = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
-        String primaryCity = primaryAddressObject.getString(FetchContract.KEY_CITY);
-        String primaryState = primaryAddressObject.getString(FetchContract.KEY_STATE);
-        String primaryZip = primaryAddressObject.getString(FetchContract.KEY_POSTAL_CODE);
+        String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
+        String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
+        String city = locationObject.getString(FetchContract.KEY_CITY);
+        String state = locationObject.getString(FetchContract.KEY_STATE);
+        String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
         String emailAddress = charityObject.getString(FetchContract.KEY_EMAIL_ADDRESS);
         String phoneNumber = charityObject.getString(FetchContract.KEY_PHONE_NUMBER);
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
@@ -656,11 +658,13 @@ public class DataService extends IntentService {
         ContentValues values = new ContentValues();
         values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
         values.put(GivetrackContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
-        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_CITY, nullToDefaultStr(primaryCity));
-        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_STATE, nullToDefaultStr(primaryState));
-        values.put(GivetrackContract.Entry.COLUMN_PRIMARY_ZIP, nullToDefaultStr(primaryZip));
-        values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
-        values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+        values.put(GivetrackContract.Entry.COLUMN_LOCATION_STREET, nullToDefaultStr(street));
+        values.put(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
+        values.put(GivetrackContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
+        values.put(GivetrackContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
+        values.put(GivetrackContract.Entry.COLUMN_LOCATOIN_ZIP, nullToDefaultStr(zip));
+        values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, nullToDefaultStr(emailAddress));
+        values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, nullToDefaultStr(phoneNumber));
         values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
         values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
 
@@ -709,7 +713,9 @@ public class DataService extends IntentService {
         // Response keys
         private static final String KEY_EIN = "ein";
         private static final String KEY_CHARITY_NAME = "charityName";
-        private static final String KEY_PRIMARY_ADDRESS = "mailingAddress";
+        private static final String KEY_LOCATION = "mailingAddress";
+        private static final String KEY_STREET_ADDRESS = "streetAddress1";
+        private static final String KEY_ADDRESS_DETAIL = "streetAddress2";
         private static final String KEY_CITY = "city";
         private static final String KEY_STATE = "stateOrProvince";
         private static final String KEY_POSTAL_CODE = "postalCode";

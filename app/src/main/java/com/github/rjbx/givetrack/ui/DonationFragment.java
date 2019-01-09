@@ -363,6 +363,11 @@ public class DonationFragment extends Fragment
             ContentValues values = mValuesArray[position];
             final String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
             final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            String street = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STREET);
+            String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
+            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATOIN_ZIP);
             String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
             String orgUrl = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
             String phone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
@@ -421,11 +426,25 @@ public class DonationFragment extends Fragment
             });
 
             holder.mContectButton.setOnClickListener(clickedView -> {
+
                 View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
-                view.findViewById(R.id.phone_button).setOnClickListener(phoneClickedView -> {});
-                view.findViewById(R.id.email_button).setOnClickListener(emailClickedView -> {});
-                view.findViewById(R.id.website_button).setOnClickListener(websiteClickedView -> {});
-                view.findViewById(R.id.address_button).setOnClickListener(addressClickedView -> {});
+                
+                Button phoneButton = view.findViewById(R.id.phone_button);
+                if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
+                else phoneButton.setOnClickListener(phoneClickedView -> {});
+                
+                Button emailButton = view.findViewById(R.id.email_button);
+                if (email.isEmpty()) emailButton.setVisibility(View.GONE);
+                else emailButton.setOnClickListener(emailClickedView -> {});
+                
+                Button websiteButton = view.findViewById(R.id.website_button);
+                if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
+                websiteButton.setOnClickListener(websiteClickedView -> {});
+                
+                Button addressButton = view.findViewById(R.id.address_button);
+                if (street.isEmpty()) addressButton.setVisibility(View.GONE);
+                else addressButton.setOnClickListener(addressClickedView -> {});
+
                 AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
                 contactDialog.setView(view);
                 contactDialog.show();

@@ -260,9 +260,9 @@ public class SearchActivity extends AppCompatActivity
             mCursor.moveToPosition(position);
             String ein = mCursor.getString(GivetrackContract.Entry.INDEX_EIN);
             String name = mCursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
-            String city = mCursor.getString(GivetrackContract.Entry.INDEX_PRIMARY_CITY);
-            String state = mCursor.getString(GivetrackContract.Entry.INDEX_PRIMARY_STATE);
-            String zip = mCursor.getString(GivetrackContract.Entry.INDEX_PRIMARY_ZIP);
+            String city = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_CITY);
+            String state = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_STATE);
+            String zip = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_ZIP);
             String homepage = mCursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
             String url = mCursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
 
