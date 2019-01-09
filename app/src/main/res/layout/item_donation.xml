@@ -45,7 +45,7 @@
                 android:contentDescription="@string/description_increment_percentage_text"/>
 
             <ImageButton
-                android:id="@+id/message_button"
+                android:id="@+id/contact_button"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginBottom="25dp"

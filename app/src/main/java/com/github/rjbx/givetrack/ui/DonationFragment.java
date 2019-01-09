@@ -35,7 +35,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
@@ -321,7 +320,7 @@ public class DonationFragment extends Fragment
             if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_donation, parent, false);
             else view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.collection_add, parent, false);
+                    .inflate(R.layout.button_collect, parent, false);
             return new ViewHolder(view);
         }
 
@@ -364,7 +363,10 @@ public class DonationFragment extends Fragment
             ContentValues values = mValuesArray[position];
             final String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
             final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-            String url = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+            String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+            String orgUrl = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
+            String phone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
+            String email = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS);
             final int frequency =
                     values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
             final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
@@ -383,7 +385,7 @@ public class DonationFragment extends Fragment
             Bundle arguments = new Bundle();
             arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
             arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
-            arguments.putString(CharityFragment.ARG_ITEM_URL, url);
+            arguments.putString(CharityFragment.ARG_ITEM_URL, navUrl);
 
             holder.itemView.setTag(arguments);
             holder.itemView.setOnClickListener(mOnClickListener);
@@ -418,8 +420,15 @@ public class DonationFragment extends Fragment
                 startActivity(shareIntent);
             });
 
-            holder.mMessageButton.setOnClickListener(clickedView -> {
-
+            holder.mContectButton.setOnClickListener(clickedView -> {
+                View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
+                view.findViewById(R.id.phone_button).setOnClickListener(phoneClickedView -> {});
+                view.findViewById(R.id.email_button).setOnClickListener(emailClickedView -> {});
+                view.findViewById(R.id.website_button).setOnClickListener(websiteClickedView -> {});
+                view.findViewById(R.id.address_button).setOnClickListener(addressClickedView -> {});
+                AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
+                contactDialog.setView(view);
+                contactDialog.show();
             });
 
             holder.mInspectButton.setOnClickListener(clickedView -> {
@@ -427,7 +436,7 @@ public class DonationFragment extends Fragment
                         .setToolbarColor(getResources()
                                 .getColor(R.color.colorPrimaryDark))
                         .build()
-                        .launchUrl(mParentActivity, Uri.parse(url.toString()));
+                        .launchUrl(mParentActivity, Uri.parse(navUrl.toString()));
                 mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
             });
 
@@ -469,7 +478,7 @@ public class DonationFragment extends Fragment
             @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
-            @BindView(R.id.message_button) @Nullable ImageButton mMessageButton;
+            @BindView(R.id.contact_button) @Nullable ImageButton mContectButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
 
             /**

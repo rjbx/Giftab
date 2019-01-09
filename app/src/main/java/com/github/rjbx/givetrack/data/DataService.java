@@ -648,6 +648,8 @@ public class DataService extends IntentService {
         String primaryCity = primaryAddressObject.getString(FetchContract.KEY_CITY);
         String primaryState = primaryAddressObject.getString(FetchContract.KEY_STATE);
         String primaryZip = primaryAddressObject.getString(FetchContract.KEY_POSTAL_CODE);
+        String emailAddress = charityObject.getString(FetchContract.KEY_EMAIL_ADDRESS);
+        String phoneNumber = charityObject.getString(FetchContract.KEY_PHONE_NUMBER);
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
@@ -657,6 +659,8 @@ public class DataService extends IntentService {
         values.put(GivetrackContract.Entry.COLUMN_PRIMARY_CITY, nullToDefaultStr(primaryCity));
         values.put(GivetrackContract.Entry.COLUMN_PRIMARY_STATE, nullToDefaultStr(primaryState));
         values.put(GivetrackContract.Entry.COLUMN_PRIMARY_ZIP, nullToDefaultStr(primaryZip));
+        values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+        values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
         values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
         values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
 
@@ -710,6 +714,8 @@ public class DataService extends IntentService {
         private static final String KEY_STATE = "stateOrProvince";
         private static final String KEY_POSTAL_CODE = "postalCode";
         private static final String KEY_WEBSITE_URL = "websiteURL";
+        private static final String KEY_PHONE_NUMBER = "phoneNumber";
+        private static final String KEY_EMAIL_ADDRESS = "generalEmail";
         private static final String KEY_CURRENT_RATING = "currentRating";
         private static final String KEY_RATING = "rating";
         private static final String KEY_ADVISORIES = "advisories";

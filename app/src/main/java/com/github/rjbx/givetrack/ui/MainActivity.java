@@ -154,14 +154,8 @@ public class MainActivity extends AppCompatActivity implements
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         textView.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
                     }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                    }
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                    }
+                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
 
                 seekBar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
