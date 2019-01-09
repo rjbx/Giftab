@@ -13,6 +13,17 @@
     android:background="@color/colorNeutralDark">
 
     <ImageButton
+        android:id="@+id/email_button"
+        android:src="@android:drawable/ic_dialog_email"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:textColor="#555"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:padding="0dp"/>
+
+    <ImageButton
         android:id="@+id/phone_button"
         android:src="@android:drawable/stat_sys_phone_call"
         android:layout_width="25dp"
@@ -23,16 +34,6 @@
         android:textSize="@dimen/text_size_paragraph_title"
         android:padding="0dp"/>
 
-    <ImageButton
-        android:id="@+id/email_button"
-        android:src="@android:drawable/ic_dialog_email"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:padding="0dp"/>
 
     <ImageButton
         android:id="@+id/website_button"

@@ -481,16 +481,16 @@ public class DonationFragment extends Fragment
 
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.text().contains("donate")) {
-                                    String donateLink = homeInfo.get(i).attr("link");
+                                if (homeAnchor.text().contains("Donate")) {
+                                    String donateLink = homeInfo.get(i).attr("href");
                                     Document donatePage = Jsoup.connect(donateLink).get();
                                     Elements donateInfo = donatePage.select("a");
 
                                     for (int j = 0; j < donateInfo.size(); i++) {
                                         Element donateAnchor = donateInfo.get(i);
                                         if (donateAnchor.text().contains("mailto")) {
-                                            if (!donateInfo.get(i).hasAttr("link")) return;
-                                            else parsedEmail = donateInfo.get(i).attr("link");
+                                            if (!donateInfo.get(i).hasAttr("href")) return;
+                                            else parsedEmail = donateInfo.get(i).attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
@@ -498,16 +498,16 @@ public class DonationFragment extends Fragment
                             }
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.text().contains("contact")) {
-                                    String donateLink = homeInfo.get(i).attr("link");
-                                    Document donatePage = Jsoup.connect(donateLink).get();
-                                    Elements donateInfo = donatePage.select("a");
+                                if (homeAnchor.text().contains("Contact")) {
+                                    String contactLink = homeInfo.get(i).attr("href");
+                                    Document contactPage = Jsoup.connect(contactLink).get();
+                                    Elements contactInfo = contactPage.select("a");
 
-                                    for (int j = 0; j < donateInfo.size(); i++) {
-                                        Element donateAnchor = donateInfo.get(i);
+                                    for (int j = 0; j < contactInfo.size(); i++) {
+                                        Element donateAnchor = contactInfo.get(i);
                                         if (donateAnchor.text().contains("mailto")) {
-                                            if (!donateInfo.get(i).hasAttr("link")) return;
-                                            else parsedEmail = donateInfo.get(i).attr("link");
+                                            if (!contactInfo.get(i).hasAttr("href")) return;
+                                            else parsedEmail = contactInfo.get(i).attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
@@ -516,8 +516,8 @@ public class DonationFragment extends Fragment
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.text().contains("mailto")) {
-                                    if (!homeAnchor.hasAttr("link")) return;
-                                    parsedEmail = homeAnchor.attr("link");
+                                    if (!homeAnchor.hasAttr("href")) return;
+                                    parsedEmail = homeAnchor.attr("href");
                                     Timber.d("Email: %s", parsedEmail);
                                 }
                             }
