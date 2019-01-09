@@ -486,11 +486,11 @@ public class DonationFragment extends Fragment
                                     Document donatePage = Jsoup.connect(donateLink).get();
                                     Elements donateInfo = donatePage.select("a");
 
-                                    for (int j = 0; j < donateInfo.size(); i++) {
-                                        Element donateAnchor = donateInfo.get(i);
+                                    for (int j = 0; j < donateInfo.size(); j++) {
+                                        Element donateAnchor = donateInfo.get(j);
                                         if (donateAnchor.text().contains("mailto")) {
-                                            if (!donateInfo.get(i).hasAttr("href")) return;
-                                            else parsedEmail = donateInfo.get(i).attr("href");
+                                            if (!donateInfo.get(j).hasAttr("href")) return;
+                                            else parsedEmail = donateInfo.get(j).attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
@@ -503,11 +503,11 @@ public class DonationFragment extends Fragment
                                     Document contactPage = Jsoup.connect(contactLink).get();
                                     Elements contactInfo = contactPage.select("a");
 
-                                    for (int j = 0; j < contactInfo.size(); i++) {
-                                        Element donateAnchor = contactInfo.get(i);
-                                        if (donateAnchor.text().contains("mailto")) {
-                                            if (!contactInfo.get(i).hasAttr("href")) return;
-                                            else parsedEmail = contactInfo.get(i).attr("href");
+                                    for (int j = 0; j < contactInfo.size(); j++) {
+                                        Element contactAnchor = contactInfo.get(j);
+                                        if (contactAnchor.text().contains("mailto")) {
+                                            if (!contactInfo.get(j).hasAttr("href")) return;
+                                            else parsedEmail = contactInfo.get(j).attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
                                     }
