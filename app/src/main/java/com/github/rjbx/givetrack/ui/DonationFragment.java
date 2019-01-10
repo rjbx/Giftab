@@ -464,7 +464,7 @@ public class DonationFragment extends Fragment
 
                             emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Donate", visitedLinks, "mailto:");
                             if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Contact", visitedLinks, "mailto:");
-                            else if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
+                            if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
                             if (!emailAddresses.isEmpty()) for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
                         } catch (IOException e) { Timber.e(e); }
                     });
