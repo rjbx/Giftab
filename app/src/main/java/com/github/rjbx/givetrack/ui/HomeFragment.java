@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
         mTotal = currencyFormatter.format(totalImpact);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
-        DateFormat dateFormatter = DateFormat.getDateInstance();
+        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
         dateFormatter.setTimeZone(TimeZone.getDefault());
         String formattedDate = dateFormatter.format(date);
         mTrackedTime = String.format("since %s", formattedDate);
