@@ -447,8 +447,8 @@ public class DonationFragment extends Fragment
                             Elements info = webpage.select("div[class=cn-appear]");
                             List<String> phoneNumbers;
                             phoneNumbers = parseKeys(info, "tel:");
-                            for (String phoneNumber : phoneNumbers) Timber.v(phoneNumber);
-                        } catch (IOException e) { Timber.e(e.getMessage()); }
+                            for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
+                        } catch (IOException e) { Timber.e(e); }
                     });
                 });
 
@@ -456,17 +456,17 @@ public class DonationFragment extends Fragment
                 /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else */emailButton.setOnClickListener(emailClickedView -> {
                     AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        List<String> parsedEmail;
+                        List<String> emailAddresses;
                         List<String> visitedLinks = new ArrayList<>();
                         try {
                             Document homepage = Jsoup.connect(orgUrl).get();
                             Elements homeInfo = homepage.select("a");
 
-                            parsedEmail = parseKeysFromPages(homeInfo, "Donate", visitedLinks, "mailto:");
-                            if (parsedEmail.isEmpty()) parsedEmail = parseKeysFromPages(homeInfo, "Contact", visitedLinks, "mailto:");
-                            else if (parsedEmail.isEmpty()) parsedEmail = parseKeys(homeInfo, "mailto:");
-
-                        } catch (IOException e) { Timber.e(e.getMessage()); }
+                            emailAddresses = parseKeysFromPages(homeInfo, "Donate", visitedLinks, "mailto:");
+                            if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(homeInfo, "Contact", visitedLinks, "mailto:");
+                            else if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:");
+                            for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
+                        } catch (IOException e) { Timber.e(e); }
                     });
                 });
 
@@ -521,15 +521,13 @@ public class DonationFragment extends Fragment
             List<String> values = new ArrayList<>();
             for (int j = 0; j < anchors.size(); j++) {
                 Element anchor = anchors.get(j);
-                if (anchor.hasAttr("p")) {
-                    if (anchor.attr("p").contains(key))
+                if (anchor.hasAttr("href")) {
+                    if (anchor.attr("href").contains(key))
                         values.add(anchor.attr("href").split(key)[1].trim());
-                    else if (anchor.text().contains(key)) {
-                        String text = anchor.select("p").text();
-                        values.add(text.split(key)[1].trim());
-                    }
+                } else if (anchor.text().contains(key)) {
+                    String text = anchor.text();
+                    values.add(text.split(key)[1].trim());
                 }
-
             }
             return values;
         }
