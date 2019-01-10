@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ARGS_VALUES_ARRAY = "values_array";
     private static final int ID_MAIN_LOADER = 444;
     private SectionsPagerAdapter mPagerAdapter;
-    private Cursor mCursor;
+    private ContentValues[] mValuesArray;
 
     /**
      * Populates the TabLayout with a SectionsPagerAdapter and the NavigationView with a DrawerLayout.
@@ -215,8 +215,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case ID_MAIN_LOADER:
-                mCursor = cursor;
-                new StatusAsyncTask(this).execute(mCursor);
+                if (cursor == null|| !cursor.moveToFirst()) return;
+                mValuesArray = new ContentValues[cursor.getCount()];
+                int i = 0;
+                do {
+                    ContentValues values = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cursor, values);
+                    mValuesArray[i++] = values;
+                } while (cursor.moveToNext());
+                new StatusAsyncTask(this).execute(mValuesArray);
                 Intent intent = getIntent();
                 if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
                     mPagerAdapter.notifyDataSetChanged();
@@ -228,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) { mCursor = null;}
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) { mValuesArray = null;}
 
     /**
      * Defines behavior onClick of each Navigation MenuItem.
@@ -305,17 +312,11 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public Fragment getItem(int position) {
 
-            if (mCursor == null || !mCursor.moveToFirst()) return PlaceholderFragment.newInstance(null);
+            if (mValuesArray == null || mValuesArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
                 int i = 0;
                 Bundle args = new Bundle();
-                ContentValues[] valuesArray = new ContentValues[mCursor.getCount()];
-                do {
-                    ContentValues values = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(mCursor, values);
-                    valuesArray[i++] = values;
-                } while (mCursor.moveToNext());
-                args.putParcelableArray(ARGS_VALUES_ARRAY, valuesArray);
+                args.putParcelableArray(ARGS_VALUES_ARRAY, mValuesArray);
                 switch (position) {
                     case 0: return DonationFragment.newInstance(args);
                     case 1: return HomeFragment.newInstance(args);
@@ -356,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Confirms whether item exists in collection table and updates status accordingly.
      */
-    public static class StatusAsyncTask extends AsyncTask<Cursor, Void, Boolean> {
+    public static class StatusAsyncTask extends AsyncTask<ContentValues[], Void, Boolean> {
 
         WeakReference<MainActivity> mActivity;
 
@@ -371,20 +372,19 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Retrieves the item collection status.
          */
-        @Override protected Boolean doInBackground(Cursor... cursors) {
+        @Override protected Boolean doInBackground(ContentValues[]... valueArrays) {
 
             Context context = mActivity.get().getBaseContext();
             List<String> charities = UserPreferences.getCharities(context);
             List<String> eins = new ArrayList<>();
             for (String charity : charities) eins.add(charity.split(":")[0]);
             if (context == null) return false;
-            Cursor collectionCursor = cursors[0];
-            if (collectionCursor == null || !collectionCursor.moveToFirst()) return false;
+            ContentValues[] valuesArray = valueArrays[0];
+            if (valuesArray == null || valuesArray.length == 0) return false;
             Boolean isCurrent = true;
-            do {
-               isCurrent = -1 != eins.indexOf(collectionCursor.getString(GivetrackContract.Entry.INDEX_EIN));
-            } while (collectionCursor.moveToNext());
-            collectionCursor.moveToFirst();
+            for (ContentValues values : valuesArray) {
+               isCurrent = eins.contains(values.getAsString(GivetrackContract.Entry.COLUMN_EIN));
+            }
             return isCurrent;
         }
 
