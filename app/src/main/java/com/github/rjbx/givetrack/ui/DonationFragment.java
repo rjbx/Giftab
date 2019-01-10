@@ -446,7 +446,7 @@ public class DonationFragment extends Fragment
                             Document webpage = Jsoup.connect(navUrl).get();
                             Elements info = webpage.select("div[class=cn-appear]");
                             List<String> phoneNumbers;
-                            phoneNumbers = parseKeys(info, "tel:");
+                            phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
                             for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
                         } catch (IOException e) { Timber.e(e); }
                     });
@@ -464,7 +464,7 @@ public class DonationFragment extends Fragment
 
                             emailAddresses = parseKeysFromPages(homeInfo, "Donate", visitedLinks, "mailto:");
                             if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(homeInfo, "Contact", visitedLinks, "mailto:");
-                            else if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:");
+                            else if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
                             for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
                         } catch (IOException e) { Timber.e(e); }
                     });
@@ -511,13 +511,13 @@ public class DonationFragment extends Fragment
                     Document page = Jsoup.connect(pageLink).get();
                     Elements pageAnchors = page.select("a");
 
-                    emails.addAll(parseKeys(pageAnchors, key));
+                    emails.addAll(parseKeys(pageAnchors, key, null, " "));
                 }
             }
             return emails;
         }
 
-        private List<String> parseKeys(Elements anchors, String key) {
+        private List<String> parseKeys(Elements anchors, String key, @Nullable Integer endIndex, @Nullable String removeRegex) {
             List<String> values = new ArrayList<>();
             for (int j = 0; j < anchors.size(); j++) {
                 Element anchor = anchors.get(j);
@@ -526,7 +526,10 @@ public class DonationFragment extends Fragment
                         values.add(anchor.attr("href").split(key)[1].trim());
                 } else if (anchor.text().contains(key)) {
                     String text = anchor.text();
-                    values.add(text.split(key)[1].trim());
+                    String value = text.split(key)[1].trim();
+                    if (endIndex != null) value = value.substring(0, endIndex);
+                    if (removeRegex != null) value = value.replaceAll(removeRegex, "");
+                    values.add(value);
                 }
             }
             return values;
