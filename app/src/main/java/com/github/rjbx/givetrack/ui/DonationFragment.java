@@ -447,7 +447,7 @@ public class DonationFragment extends Fragment
                             Elements info = webpage.select("div[class=cn-appear]");
                             List<String> phoneNumbers;
                             phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
-                            for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
+                            if (!phoneNumbers.isEmpty()) for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
                         } catch (IOException e) { Timber.e(e); }
                     });
                 });
@@ -462,10 +462,10 @@ public class DonationFragment extends Fragment
                             Document homepage = Jsoup.connect(orgUrl).get();
                             Elements homeInfo = homepage.select("a");
 
-                            emailAddresses = parseKeysFromPages(homeInfo, "Donate", visitedLinks, "mailto:");
-                            if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(homeInfo, "Contact", visitedLinks, "mailto:");
+                            emailAddresses = parseKeysFromPages(navUrl, homeInfo, "Donate", visitedLinks, "mailto:");
+                            if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(navUrl, homeInfo, "Contact", visitedLinks, "mailto:");
                             else if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
-                            for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
+                            if (!emailAddresses.isEmpty()) for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
                         } catch (IOException e) { Timber.e(e); }
                     });
                 });
@@ -499,13 +499,14 @@ public class DonationFragment extends Fragment
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
         }
 
-        private List<String> parseKeysFromPages(Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
+        private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
             List<String> emails = new ArrayList<>();
             for (int i = 0; i < anchors.size(); i++) {
                 Element anchor = anchors.get(i);
                 if (anchor.text().contains(pageName)) {
                     if (!anchor.hasAttr("href")) continue;
                     String pageLink = anchors.get(i).attr("href");
+                    if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
                     if (visitedLinks.contains(pageLink)) continue;
                     else visitedLinks.add(pageLink);
                     Document page = Jsoup.connect(pageLink).get();
