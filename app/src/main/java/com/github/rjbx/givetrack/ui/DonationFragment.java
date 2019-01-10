@@ -47,27 +47,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathFactory;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -458,15 +445,9 @@ public class DonationFragment extends Fragment
                         try {
                             Document webpage = Jsoup.connect(navUrl).get();
                             Elements info = webpage.select("div[class=cn-appear]");
-                            int size = info.size();
-
-                            for (int i = 0; i < size; i++) {
-                                String text = info.get(i).select("p").text();
-                                if (text.contains("tel: ")) {
-                                    String parsedPhone = text.split("tel: ")[1].substring(0, 13);
-                                    Timber.d("Phone: %s", parsedPhone);
-                                }
-                            }
+                            List<String> phoneNumbers;
+                            phoneNumbers = parseKeys(info, "tel:");
+                            for (String phoneNumber : phoneNumbers) Timber.v(phoneNumber);
                         } catch (IOException e) { Timber.e(e.getMessage()); }
                     });
                 });
@@ -475,15 +456,15 @@ public class DonationFragment extends Fragment
                 /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else */emailButton.setOnClickListener(emailClickedView -> {
                     AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        List<String> parsedEmail = new ArrayList<>();
+                        List<String> parsedEmail;
                         List<String> visitedLinks = new ArrayList<>();
                         try {
                             Document homepage = Jsoup.connect(orgUrl).get();
                             Elements homeInfo = homepage.select("a");
 
-                            parsedEmail = parseEmailsFromPage(homeInfo, "Donate", visitedLinks);
-                            if (parsedEmail.isEmpty()) parsedEmail = parseEmailsFromPage(homeInfo, "Contact", visitedLinks);
-                            else if (parsedEmail.isEmpty()) parsedEmail = parseEmails(homeInfo);
+                            parsedEmail = parseKeysFromPages(homeInfo, "Donate", visitedLinks, "mailto:");
+                            if (parsedEmail.isEmpty()) parsedEmail = parseKeysFromPages(homeInfo, "Contact", visitedLinks, "mailto:");
+                            else if (parsedEmail.isEmpty()) parsedEmail = parseKeys(homeInfo, "mailto:");
 
                         } catch (IOException e) { Timber.e(e.getMessage()); }
                     });
@@ -518,7 +499,7 @@ public class DonationFragment extends Fragment
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
         }
 
-        private List<String> parseEmailsFromPage(Elements anchors, String pageName, List<String> visitedLinks) throws IOException {
+        private List<String> parseKeysFromPages(Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
             List<String> emails = new ArrayList<>();
             for (int i = 0; i < anchors.size(); i++) {
                 Element anchor = anchors.get(i);
@@ -530,22 +511,27 @@ public class DonationFragment extends Fragment
                     Document page = Jsoup.connect(pageLink).get();
                     Elements pageAnchors = page.select("a");
 
-                    emails.addAll(parseEmails(pageAnchors));
+                    emails.addAll(parseKeys(pageAnchors, key));
                 }
             }
             return emails;
         }
 
-        private List<String> parseEmails(Elements anchors) {
-            List<String> emails = new ArrayList<>();
+        private List<String> parseKeys(Elements anchors, String key) {
+            List<String> values = new ArrayList<>();
             for (int j = 0; j < anchors.size(); j++) {
-                Element donateAnchor = anchors.get(j);
-                if (donateAnchor.hasAttr("href")
-                        && donateAnchor.attr("href").contains("mailto")) {
-                    emails.add(donateAnchor.attr("href"));
+                Element anchor = anchors.get(j);
+                if (anchor.hasAttr("p")) {
+                    if (anchor.attr("p").contains(key))
+                        values.add(anchor.attr("href"));
+                    else if (anchor.text().contains(key)) {
+                        String text = anchor.select("p").text();
+                        values.add(text.split(key)[1].substring(0, 13).replace(" ", ""));
+                    }
                 }
+
             }
-            return emails;
+            return values;
         }
 
         /**
