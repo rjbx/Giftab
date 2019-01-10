@@ -437,47 +437,22 @@ public class DonationFragment extends Fragment
             holder.mContactButton.setOnClickListener(clickedView -> {
 
                 View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
-                
+
                 ImageButton phoneButton = view.findViewById(R.id.phone_button);
-                /*if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
-                else*/ phoneButton.setOnClickListener(phoneClickedView -> {
-                    AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        try {
-                            Document webpage = Jsoup.connect(navUrl).get();
-                            Elements info = webpage.select("div[class=cn-appear]");
-                            List<String> phoneNumbers;
-                            phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
-                            if (!phoneNumbers.isEmpty()) for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
-                        } catch (IOException e) { Timber.e(e); }
-                    });
-                });
+                if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
+                else phoneButton.setOnClickListener(websiteClickedView -> Timber.d(phone));
 
                 ImageButton emailButton = view.findViewById(R.id.email_button);
-                /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
-                else */emailButton.setOnClickListener(emailClickedView -> {
-                    AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        List<String> emailAddresses;
-                        List<String> visitedLinks = new ArrayList<>();
-                        try {
-                            Document homepage = Jsoup.connect(orgUrl).get();
-                            Elements homeInfo = homepage.select("a");
-
-                            emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Donate", visitedLinks, "mailto:");
-                            if (emailAddresses.isEmpty()) emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Contact", visitedLinks, "mailto:");
-                            if (emailAddresses.isEmpty()) emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
-                            if (!emailAddresses.isEmpty()) for (String emailAddress : emailAddresses) Timber.v("Email: %s", emailAddress);
-                        } catch (IOException e) { Timber.e(e); }
-                    });
-                });
+                if (email.isEmpty()) emailButton.setVisibility(View.GONE);
+                else emailButton.setOnClickListener(websiteClickedView -> Timber.d(email));
 
                 ImageButton websiteButton = view.findViewById(R.id.website_button);
                 if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
-                else websiteButton.setOnClickListener(websiteClickedView -> {
-                });
-                
+                else websiteButton.setOnClickListener(websiteClickedView -> Timber.d(orgUrl));
+
                 ImageButton addressButton = view.findViewById(R.id.address_button);
                 if (street.isEmpty()) addressButton.setVisibility(View.GONE);
-                else addressButton.setOnClickListener(addressClickedView -> {});
+                else addressButton.setOnClickListener(websiteClickedView -> Timber.d(street + detail + city + state));
 
                 AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
                 contactDialog.setView(view);
@@ -497,43 +472,6 @@ public class DonationFragment extends Fragment
 
             mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
-        }
-
-        private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
-            List<String> emails = new ArrayList<>();
-            for (int i = 0; i < anchors.size(); i++) {
-                Element anchor = anchors.get(i);
-                if (anchor.text().contains(pageName)) {
-                    if (!anchor.hasAttr("href")) continue;
-                    String pageLink = anchors.get(i).attr("href");
-                    if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
-                    if (visitedLinks.contains(pageLink)) continue;
-                    else visitedLinks.add(pageLink);
-                    Document page = Jsoup.connect(pageLink).get();
-                    Elements pageAnchors = page.select("a");
-
-                    emails.addAll(parseKeys(pageAnchors, key, null, " "));
-                }
-            }
-            return emails;
-        }
-
-        private List<String> parseKeys(Elements anchors, String key, @Nullable Integer endIndex, @Nullable String removeRegex) {
-            List<String> values = new ArrayList<>();
-            for (int j = 0; j < anchors.size(); j++) {
-                Element anchor = anchors.get(j);
-                if (anchor.hasAttr("href")) {
-                    if (anchor.attr("href").contains(key))
-                        values.add(anchor.attr("href").split(key)[1].trim());
-                } else if (anchor.text().contains(key)) {
-                    String text = anchor.text();
-                    String value = text.split(key)[1].trim();
-                    if (endIndex != null) value = value.substring(0, endIndex);
-                    if (removeRegex != null) value = value.replaceAll(removeRegex, "");
-                    values.add(value);
-                }
-            }
-            return values;
         }
 
         /**

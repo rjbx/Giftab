@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
@@ -21,6 +22,10 @@ import com.github.rjbx.givetrack.AppWidget;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -358,16 +363,60 @@ public class DataService extends IntentService {
             values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, emptyCollection ? "1" : "0");
             values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+
+            NETWORK_IO.execute(() -> {
+                AppExecutors.getInstance().getNetworkIO().execute(() -> {
+                    try {
+                        String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
+                        Document webpage = Jsoup.connect(navUrl).get();
+                        Elements info = webpage.select("div[class=cn-appear]");
+                        List<String> phoneNumbers;
+                        phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
+                        if (!phoneNumbers.isEmpty()) {
+                            for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
+                            values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, phoneNumbers.get(0));
+                        }
+                    } catch (IOException e) {
+                        Timber.e(e);
+                    }
+                });
+                AppExecutors.getInstance().getNetworkIO().execute(() -> {
+                    List<String> emailAddresses;
+                    List<String> visitedLinks = new ArrayList<>();
+                    try {
+                        String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
+                        Document homepage = Jsoup.connect(orgUrl).get();
+                        Elements homeInfo = homepage.select("a");
+
+                        emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Donate", visitedLinks, "mailto:");
+                        if (emailAddresses.isEmpty()) {
+                            emailAddresses = parseKeysFromPages(orgUrl, homeInfo, "Contact", visitedLinks, "mailto:");
+                        }
+                        if (emailAddresses.isEmpty()) {
+                            emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
+                        }
+                        if (!emailAddresses.isEmpty()) {
+                            for (String emailAddress : emailAddresses)
+                                Timber.v("Email: %s", emailAddress);
+                            values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, emailAddresses.get(0));
+                        }
+                    } catch (IOException e) {
+                        Timber.e(e);
+                    }
+                });
+            });
             getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
 
             List<String> charities = UserPreferences.getCharities(this);
             if (charities.get(0).isEmpty()) charities = new ArrayList<>();
             String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
             charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, 0f, 0f, 0));
+
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
             cursor.close();
         });
+
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -560,6 +609,43 @@ public class DataService extends IntentService {
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
+        List<String> emails = new ArrayList<>();
+        for (int i = 0; i < anchors.size(); i++) {
+            Element anchor = anchors.get(i);
+            if (anchor.text().contains(pageName)) {
+                if (!anchor.hasAttr("href")) continue;
+                String pageLink = anchors.get(i).attr("href");
+                if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
+                if (visitedLinks.contains(pageLink)) continue;
+                else visitedLinks.add(pageLink);
+                Document page = Jsoup.connect(pageLink).get();
+                Elements pageAnchors = page.select("a");
+
+                emails.addAll(parseKeys(pageAnchors, key, null, " "));
+            }
+        }
+        return emails;
+    }
+
+    private List<String> parseKeys(Elements anchors, String key, @Nullable Integer endIndex, @Nullable String removeRegex) {
+        List<String> values = new ArrayList<>();
+        for (int j = 0; j < anchors.size(); j++) {
+            Element anchor = anchors.get(j);
+            if (anchor.hasAttr("href")) {
+                if (anchor.attr("href").contains(key))
+                    values.add(anchor.attr("href").split(key)[1].trim());
+            } else if (anchor.text().contains(key)) {
+                String text = anchor.text();
+                String value = text.split(key)[1].trim();
+                if (endIndex != null) value = value.substring(0, endIndex);
+                if (removeRegex != null) value = value.replaceAll(removeRegex, "");
+                values.add(value);
+            }
+        }
+        return values;
     }
 
     /**
