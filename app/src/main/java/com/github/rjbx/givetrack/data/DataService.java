@@ -369,11 +369,11 @@ public class DataService extends IntentService {
                 try {
                     String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
                     String phoneNumber = urlToPhoneNumber(navUrl);
-                    values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, phoneNumber);
+                    values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
 
                     String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
                     String emailAddress = urlToEmailAddress(orgUrl);
-                    values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, emailAddress);
+                    values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
                 } catch (IOException e) {
                     Timber.e(e);
                 }
