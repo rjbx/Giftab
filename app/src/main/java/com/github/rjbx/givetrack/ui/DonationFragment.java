@@ -475,60 +475,16 @@ public class DonationFragment extends Fragment
                 /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else */emailButton.setOnClickListener(emailClickedView -> {
                     AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        String parsedEmail;
+                        List<String> parsedEmail;
                         List<String> visitedLinks = new ArrayList<>();
                         try {
                             Document homepage = Jsoup.connect(orgUrl).get();
                             Elements homeInfo = homepage.select("a");
 
-                            for (int i = 0; i < homeInfo.size(); i++) {
-                                Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.text().contains("Donate")) {
-                                    if (!homeAnchor.hasAttr("href")) continue;
-                                    String donateLink = homeInfo.get(i).attr("href");
-                                    if (visitedLinks.contains(donateLink)) continue;
-                                    else visitedLinks.add(donateLink);
-                                    Document donatePage = Jsoup.connect(donateLink).get();
-                                    Elements donateInfo = donatePage.select("a");
+                            parsedEmail = parseEmailsFromPage(homeInfo, "Donate", visitedLinks);
+                            if (parsedEmail.isEmpty()) parsedEmail = parseEmailsFromPage(homeInfo, "Contact", visitedLinks);
+                            if (parsedEmail.isEmpty()) parsedEmail = parseEmails(homeInfo);
 
-                                    for (int j = 0; j < donateInfo.size(); j++) {
-                                        Element donateAnchor = donateInfo.get(j);
-                                        if (donateAnchor.hasAttr("href")
-                                        && donateAnchor.attr("href").contains("mailto")) {
-                                            parsedEmail = donateAnchor.attr("href");
-                                            Timber.d("Email: %s", parsedEmail);
-                                        }
-                                    }
-                                }
-                            }
-                            for (int i = 0; i < homeInfo.size(); i++) {
-                                Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.text().contains("Contact")) {
-                                    if (!homeAnchor.hasAttr("href")) continue;
-                                    String contactLink = homeInfo.get(i).attr("href");
-                                    if (visitedLinks.contains(contactLink)) continue;
-                                    else visitedLinks.add(contactLink);
-                                    Document contactPage = Jsoup.connect(contactLink).get();
-                                    Elements contactInfo = contactPage.select("a");
-
-                                    for (int j = 0; j < contactInfo.size(); j++) {
-                                        Element contactAnchor = contactInfo.get(j);
-                                        if (!contactAnchor.hasAttr("href")
-                                        && contactAnchor.attr("href").contains("mailto")) {
-                                            parsedEmail = contactAnchor.attr("href");
-                                            Timber.d("Email: %s", parsedEmail);
-                                        }
-                                    }
-                                }
-                            }
-                            for (int i = 0; i < homeInfo.size(); i++) {
-                                Element homeAnchor = homeInfo.get(i);
-                                if (homeAnchor.hasAttr("href") &&
-                                homeAnchor.attr("href").contains("mailto")) {
-                                    parsedEmail = homeAnchor.attr("href");
-                                    Timber.d("Email: %s", parsedEmail);
-                                }
-                            }
                         } catch (IOException e) { Timber.e(e.getMessage()); }
                     });
                 });
@@ -560,6 +516,34 @@ public class DonationFragment extends Fragment
 
             mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
+        }
+
+        private List<String> parseEmailsFromPage(Elements anchors, String pageName, List<String> visitedLinks) {
+            for (int i = 0; i < anchors.size(); i++) {
+                Element homeAnchor = anchors.get(i);
+                if (homeAnchor.text().contains(pageName)) {
+                    if (!homeAnchor.hasAttr("href")) continue;
+                    String donateLink = anchors.get(i).attr("href");
+                    if (visitedLinks.contains(donateLink)) continue;
+                    else visitedLinks.add(donateLink);
+                    Document donatePage = Jsoup.connect(donateLink).get();
+                    Elements donateInfo = donatePage.select("a");
+
+                    return parseEmails(donateInfo);
+                }
+            }
+        }
+
+        private List<String> parseEmails(Elements anchors) {
+            List<String> emails = new ArrayList<>();
+            for (int j = 0; j < anchors.size(); j++) {
+                Element donateAnchor = anchors.get(j);
+                if (donateAnchor.hasAttr("href")
+                        && donateAnchor.attr("href").contains("mailto")) {
+                    emails.add(donateAnchor.attr("href"));
+                }
+            }
+            return emails;
         }
 
         /**
