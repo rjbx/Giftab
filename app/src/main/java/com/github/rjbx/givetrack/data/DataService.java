@@ -365,7 +365,6 @@ public class DataService extends IntentService {
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
 
             NETWORK_IO.execute(() -> {
-                AppExecutors.getInstance().getNetworkIO().execute(() -> {
                     try {
                         String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
                         Document webpage = Jsoup.connect(navUrl).get();
@@ -379,8 +378,6 @@ public class DataService extends IntentService {
                     } catch (IOException e) {
                         Timber.e(e);
                     }
-                });
-                AppExecutors.getInstance().getNetworkIO().execute(() -> {
                     List<String> emailAddresses;
                     List<String> visitedLinks = new ArrayList<>();
                     try {
@@ -403,7 +400,6 @@ public class DataService extends IntentService {
                     } catch (IOException e) {
                         Timber.e(e);
                     }
-                });
             });
             getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
 
