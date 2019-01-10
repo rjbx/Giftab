@@ -523,10 +523,10 @@ public class DonationFragment extends Fragment
                 Element anchor = anchors.get(j);
                 if (anchor.hasAttr("p")) {
                     if (anchor.attr("p").contains(key))
-                        values.add(anchor.attr("href"));
+                        values.add(anchor.attr("href").split(key)[1].trim());
                     else if (anchor.text().contains(key)) {
                         String text = anchor.select("p").text();
-                        values.add(text.split(key)[1].substring(0, 13).replace(" ", ""));
+                        values.add(text.split(key)[1].trim());
                     }
                 }
 
