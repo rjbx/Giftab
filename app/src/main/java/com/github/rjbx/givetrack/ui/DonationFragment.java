@@ -58,7 +58,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -473,17 +475,19 @@ public class DonationFragment extends Fragment
                 /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else */emailButton.setOnClickListener(emailClickedView -> {
                     AppExecutors.getInstance().getNetworkIO().execute(() -> {
+                        String parsedEmail;
+                        List<String> visitedLinks = new ArrayList<>();
                         try {
-                            String parsedEmail;
                             Document homepage = Jsoup.connect(orgUrl).get();
                             Elements homeInfo = homepage.select("a");
-                            int size = homeInfo.size();
 
-                            for (int i = 0; i < size; i++) {
+                            for (int i = 0; i < homeInfo.size(); i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.text().contains("Donate")) {
                                     if (!homeAnchor.hasAttr("href")) continue;
                                     String donateLink = homeInfo.get(i).attr("href");
+                                    if (visitedLinks.contains(donateLink)) continue;
+                                    else visitedLinks.add(donateLink);
                                     Document donatePage = Jsoup.connect(donateLink).get();
                                     Elements donateInfo = donatePage.select("a");
 
@@ -497,11 +501,13 @@ public class DonationFragment extends Fragment
                                     }
                                 }
                             }
-                            for (int i = 0; i < size; i++) {
+                            for (int i = 0; i < homeInfo.size(); i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.text().contains("Contact")) {
                                     if (!homeAnchor.hasAttr("href")) continue;
                                     String contactLink = homeInfo.get(i).attr("href");
+                                    if (visitedLinks.contains(contactLink)) continue;
+                                    else visitedLinks.add(contactLink);
                                     Document contactPage = Jsoup.connect(contactLink).get();
                                     Elements contactInfo = contactPage.select("a");
 
@@ -515,7 +521,7 @@ public class DonationFragment extends Fragment
                                     }
                                 }
                             }
-                            for (int i = 0; i < size; i++) {
+                            for (int i = 0; i < homeInfo.size(); i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.hasAttr("href") &&
                                 homeAnchor.attr("href").contains("mailto")) {
