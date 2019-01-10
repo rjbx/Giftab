@@ -475,7 +475,7 @@ public class DonationFragment extends Fragment
                 /*if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else */emailButton.setOnClickListener(emailClickedView -> {
                     AppExecutors.getInstance().getNetworkIO().execute(() -> {
-                        List<String> parsedEmail;
+                        List<String> parsedEmail = new ArrayList<>();
                         List<String> visitedLinks = new ArrayList<>();
                         try {
                             Document homepage = Jsoup.connect(orgUrl).get();
@@ -483,7 +483,7 @@ public class DonationFragment extends Fragment
 
                             parsedEmail = parseEmailsFromPage(homeInfo, "Donate", visitedLinks);
                             if (parsedEmail.isEmpty()) parsedEmail = parseEmailsFromPage(homeInfo, "Contact", visitedLinks);
-                            if (parsedEmail.isEmpty()) parsedEmail = parseEmails(homeInfo);
+                            else if (parsedEmail.isEmpty()) parsedEmail = parseEmails(homeInfo);
 
                         } catch (IOException e) { Timber.e(e.getMessage()); }
                     });
@@ -518,20 +518,22 @@ public class DonationFragment extends Fragment
             mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
         }
 
-        private List<String> parseEmailsFromPage(Elements anchors, String pageName, List<String> visitedLinks) {
+        private List<String> parseEmailsFromPage(Elements anchors, String pageName, List<String> visitedLinks) throws IOException {
+            List<String> emails = new ArrayList<>();
             for (int i = 0; i < anchors.size(); i++) {
-                Element homeAnchor = anchors.get(i);
-                if (homeAnchor.text().contains(pageName)) {
-                    if (!homeAnchor.hasAttr("href")) continue;
-                    String donateLink = anchors.get(i).attr("href");
-                    if (visitedLinks.contains(donateLink)) continue;
-                    else visitedLinks.add(donateLink);
-                    Document donatePage = Jsoup.connect(donateLink).get();
-                    Elements donateInfo = donatePage.select("a");
+                Element anchor = anchors.get(i);
+                if (anchor.text().contains(pageName)) {
+                    if (!anchor.hasAttr("href")) continue;
+                    String pageLink = anchors.get(i).attr("href");
+                    if (visitedLinks.contains(pageLink)) continue;
+                    else visitedLinks.add(pageLink);
+                    Document page = Jsoup.connect(pageLink).get();
+                    Elements pageAnchors = page.select("a");
 
-                    return parseEmails(donateInfo);
+                    emails.addAll(parseEmails(pageAnchors));
                 }
             }
+            return emails;
         }
 
         private List<String> parseEmails(Elements anchors) {
