@@ -482,14 +482,15 @@ public class DonationFragment extends Fragment
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.text().contains("Donate")) {
+                                    if (!homeAnchor.hasAttr("href")) continue;
                                     String donateLink = homeInfo.get(i).attr("href");
                                     Document donatePage = Jsoup.connect(donateLink).get();
                                     Elements donateInfo = donatePage.select("a");
 
                                     for (int j = 0; j < donateInfo.size(); j++) {
                                         Element donateAnchor = donateInfo.get(j);
-                                        if (!donateAnchor.hasAttr("href")) return;
-                                        else if (donateAnchor.attr("href").contains("mailto")) {
+                                        if (donateAnchor.hasAttr("href")
+                                        && donateAnchor.attr("href").contains("mailto")) {
                                             parsedEmail = donateAnchor.attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
@@ -499,14 +500,15 @@ public class DonationFragment extends Fragment
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
                                 if (homeAnchor.text().contains("Contact")) {
+                                    if (!homeAnchor.hasAttr("href")) continue;
                                     String contactLink = homeInfo.get(i).attr("href");
                                     Document contactPage = Jsoup.connect(contactLink).get();
                                     Elements contactInfo = contactPage.select("a");
 
                                     for (int j = 0; j < contactInfo.size(); j++) {
                                         Element contactAnchor = contactInfo.get(j);
-                                        if (!contactAnchor.hasAttr("href")) return;
-                                        else if (contactAnchor.attr("href").contains("mailto")) {
+                                        if (!contactAnchor.hasAttr("href")
+                                        && contactAnchor.attr("href").contains("mailto")) {
                                             parsedEmail = contactAnchor.attr("href");
                                             Timber.d("Email: %s", parsedEmail);
                                         }
@@ -515,8 +517,8 @@ public class DonationFragment extends Fragment
                             }
                             for (int i = 0; i < size; i++) {
                                 Element homeAnchor = homeInfo.get(i);
-                                if (!homeAnchor.hasAttr("href")) return;
-                                else if (homeAnchor.attr("href").contains("mailto")) {
+                                if (homeAnchor.hasAttr("href") &&
+                                homeAnchor.attr("href").contains("mailto")) {
                                     parsedEmail = homeAnchor.attr("href");
                                     Timber.d("Email: %s", parsedEmail);
                                 }
