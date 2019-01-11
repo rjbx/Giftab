@@ -280,7 +280,7 @@ public class DonationFragment extends Fragment
         private static final int VIEW_TYPE_BUTTON = 1;
 
         private Float[] mPercentages;
-        private View mLastClicked;
+        private ImageButton mLastClicked;
         private Rateraid.Builder mWeightsBuilder;
 
         /**
@@ -293,11 +293,13 @@ public class DonationFragment extends Fragment
                 if (mLastClicked != null && mLastClicked.equals(view)) mDualPane = !mDualPane;
                 else mDualPane = true;
 
-                int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
-                ((ImageButton) view).setImageResource(resId);
-                view.invalidate();
+                if (mLastClicked != null) mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+                mLastClicked = (ImageButton) view;
 
-                mLastClicked = view;
+                int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
+                mLastClicked.setImageResource(resId);
+                mLastClicked.invalidate();
+
                 if (mDualPane) showDualPane((Bundle) view.getTag());
                 else showSinglePane();
             }
