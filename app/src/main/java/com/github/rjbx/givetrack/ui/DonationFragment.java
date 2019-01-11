@@ -433,6 +433,9 @@ public class DonationFragment extends Fragment
             holder.mContactButton.setOnClickListener(clickedView -> {
 
                 View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
+                AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
+                contactDialog.setView(view);
+                contactDialog.show();
 
                 Button phoneButton = view.findViewById(R.id.phone_button);
                 if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
@@ -441,8 +444,10 @@ public class DonationFragment extends Fragment
                     phoneButton.setOnClickListener(websiteClickedView -> {
                         Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
                         phoneIntent.setData(Uri.parse("tel:" + phone));
-                        if (phoneIntent.resolveActivity(mParentActivity.getPackageManager()) != null)
+                        if (phoneIntent.resolveActivity(mParentActivity.getPackageManager()) != null) {
+                            contactDialog.dismiss();
                             startActivity(phoneIntent);
+                        }
                     });
                 }
 
@@ -454,8 +459,10 @@ public class DonationFragment extends Fragment
                         Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
                         mailIntent.setData(Uri.parse("mailto:"));
                         mailIntent.putExtra(Intent.EXTRA_EMAIL, email);
-                        if (mailIntent.resolveActivity(mParentActivity.getPackageManager()) != null)
+                        if (mailIntent.resolveActivity(mParentActivity.getPackageManager()) != null) {
+                            contactDialog.dismiss();
                             startActivity(mailIntent);
+                        }
                     });
                 }
 
@@ -469,6 +476,7 @@ public class DonationFragment extends Fragment
                                         .getColor(R.color.colorPrimaryDark))
                                 .build()
                                 .launchUrl(mParentActivity, Uri.parse(orgUrl));
+                        contactDialog.dismiss();
                         mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
                     });
                 }
@@ -482,13 +490,11 @@ public class DonationFragment extends Fragment
                         Uri intentUri = Uri.parse("geo:0,0?q=" + location);
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
                         mapIntent.setPackage("com.google.android.apps.maps");
+                        contactDialog.dismiss();
                         startActivity(mapIntent);
                     });
                 }
 
-                AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
-                contactDialog.setView(view);
-                contactDialog.show();
             });
 
             if (!mDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
