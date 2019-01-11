@@ -397,8 +397,6 @@ public class DonationFragment extends Fragment
             arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
             arguments.putString(CharityFragment.ARG_ITEM_URL, navUrl);
 
-            holder.itemView.setTag(arguments);
-
             holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
             holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
             holder.mRemoveButton.setOnClickListener(removeButtonclickedView -> {
@@ -468,6 +466,7 @@ public class DonationFragment extends Fragment
             });
 
             if (!mDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+            holder.mInspectButton.setTag(arguments);
             holder.mInspectButton.setOnClickListener(mOnClickListener);
 
             final int adapterPosition = holder.getAdapterPosition();
