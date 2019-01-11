@@ -16,6 +16,8 @@ import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,7 +82,7 @@ public class SearchActivity extends AppCompatActivity
         mDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start),
                 (onClickDialog, onClickPosition) -> {
                     sDialogShown = true;
-                    startActivity(new Intent(this, SettingsActivity.class));
+                    launchFilterPreferences(this);
         });
         mDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later),
                 (onClickDialog, onClickPosition) -> mDialog.dismiss());
@@ -164,6 +166,8 @@ public class SearchActivity extends AppCompatActivity
             case (R.id.action_clear):
                 DataService.startActionResetGenerated(this);
                 return true;
+            case (R.id.action_filter):
+                launchFilterPreferences(this);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -215,6 +219,13 @@ public class SearchActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    private static void launchFilterPreferences(Context context) {
+        Intent filterIntent = new Intent(context, SettingsActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
+        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        context.startActivity(filterIntent);
     }
 
     /**

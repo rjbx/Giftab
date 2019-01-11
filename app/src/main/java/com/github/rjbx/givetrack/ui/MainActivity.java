@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements
                         calendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
                 break;
+            case R.id.action_add: startActivity(new Intent(this, SearchActivity.class)); break;
             default:
                 return super.onOptionsItemSelected(item);
         } return false;
