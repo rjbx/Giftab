@@ -357,39 +357,35 @@ public class DataService extends IntentService {
 
         NETWORK_IO.execute(() -> {
 
-            try {
-                Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-                if (cursor == null || cursor.getCount() == 0) return;
-                cursor.moveToFirst();
-                ContentValues values = new ContentValues();
-                DatabaseUtils.cursorRowToContentValues(cursor, values);
+            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
+            if (cursor == null || cursor.getCount() == 0) return;
+            cursor.moveToFirst();
+            ContentValues values = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(cursor, values);
 
-                List<String> charities = UserPreferences.getCharities(this);
+            List<String> charities = UserPreferences.getCharities(this);
 
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charities.isEmpty() ? "1" : "0");
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charities.isEmpty() ? "1" : "0");
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
 
-                String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
-                String phoneNumber = urlToPhoneNumber(navUrl);
-                values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+            String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
+            String phoneNumber = urlToPhoneNumber(navUrl);
+            values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
 
-                String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
-                String emailAddress = urlToEmailAddress(orgUrl);
-                values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+            String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
+            String emailAddress = urlToEmailAddress(orgUrl);
+            values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
 
-                if (charities.get(0).isEmpty()) charities = new ArrayList<>();
-                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, 0f, 0f, 0));
+            if (charities.get(0).isEmpty()) charities = new ArrayList<>();
+            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, 0f, 0f, 0));
 
-                UserPreferences.setCharities(this, charities);
-                UserPreferences.updateFirebaseUser(this);
-                getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
-                cursor.close();
+            UserPreferences.setCharities(this, charities);
+            UserPreferences.updateFirebaseUser(this);
+            getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+            cursor.close();
 
-            } catch (IOException e) {
-                Timber.e(e);
-            }
         });
 
 
@@ -592,34 +588,40 @@ public class DataService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    private String urlToEmailAddress(String url) throws IOException {
-        Document homepage = Jsoup.connect(url).get();
-        Elements homeInfo = homepage.select("a");
-        List<String> emailAddresses;
-        List<String> visitedLinks = new ArrayList<>();
-        emailAddresses = parseKeysFromPages(url, homeInfo, "Donate", visitedLinks, "mailto:");
-        if (emailAddresses.isEmpty()) {
-            emailAddresses = parseKeysFromPages(url, homeInfo, "Contact", visitedLinks, "mailto:");
-        }
-        if (emailAddresses.isEmpty()) {
-            emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
-        }
-        if (!emailAddresses.isEmpty()) {
-            for (String emailAddress : emailAddresses)
-                Timber.v("Email: %s", emailAddress);
-            return emailAddresses.get(0);
-        } else return DEFAULT_VALUE_STR;
+    private String urlToEmailAddress(String url) {
+        String emailAddress = DEFAULT_VALUE_STR;
+        try {
+            if (url.isEmpty()) return DEFAULT_VALUE_STR;
+            Document homepage = Jsoup.connect(url).get();
+            Elements homeInfo = homepage.select("a");
+            List<String> emailAddresses;
+            List<String> visitedLinks = new ArrayList<>();
+            emailAddresses = parseKeysFromPages(url, homeInfo, "Donate", visitedLinks, "mailto:");
+            if (emailAddresses.isEmpty())
+                emailAddresses = parseKeysFromPages(url, homeInfo, "Contact", visitedLinks, "mailto:");
+            if (emailAddresses.isEmpty())
+                emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
+            if (!emailAddresses.isEmpty()) {
+                for (String address : emailAddresses) Timber.v("Email: %s", address);
+                emailAddress = emailAddresses.get(0);
+            }
+        } catch (IOException e) { Timber.e(e);
+        } return emailAddress;
     }
 
-    private String urlToPhoneNumber(String url) throws IOException {
-        Document webpage = Jsoup.connect(url).get();
-        Elements info = webpage.select("div[class=cn-appear]");
-        List<String> phoneNumbers;
-        phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
-        if (!phoneNumbers.isEmpty()) {
-            for (String phoneNumber : phoneNumbers) Timber.v("Phone: %s", phoneNumber);
-            return phoneNumbers.get(0);
-        } else return DEFAULT_VALUE_STR;
+    private String urlToPhoneNumber(String url) {
+        String phoneNumber = DEFAULT_VALUE_STR;
+        try {
+            Document webpage = Jsoup.connect(url).get();
+            Elements info = webpage.select("div[class=cn-appear]");
+            List<String> phoneNumbers;
+            phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
+            if (!phoneNumbers.isEmpty()) {
+                for (String number : phoneNumbers) Timber.v("Phone: %s", number);
+                phoneNumber = phoneNumbers.get(0);
+            }
+        } catch (IOException e) { Timber.e(e);
+        } return phoneNumber;
     }
 
     private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
