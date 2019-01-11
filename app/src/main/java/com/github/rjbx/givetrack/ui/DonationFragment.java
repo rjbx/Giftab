@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -435,21 +436,39 @@ public class DonationFragment extends Fragment
                 if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
                 else {
                     phoneButton.setText(String.format("+%s", phone.toLowerCase()));
-                    phoneButton.setOnClickListener(websiteClickedView -> {});
+                    phoneButton.setOnClickListener(websiteClickedView -> {
+                        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+                        phoneIntent.setData(Uri.parse("tel:" + phone));
+                        if (phoneIntent.resolveActivity(mParentActivity.getPackageManager()) != null)
+                            startActivity(phoneIntent);
+                    });
                 }
 
                 Button emailButton = view.findViewById(R.id.email_button);
                 if (email.isEmpty()) emailButton.setVisibility(View.GONE);
                 else {
                     emailButton.setText(email.toLowerCase());
-                    emailButton.setOnClickListener(websiteClickedView -> {});
+                    emailButton.setOnClickListener(websiteClickedView -> {
+                        Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
+                        mailIntent.setType("*/*");
+                        mailIntent.putExtra(Intent.EXTRA_EMAIL, email);
+                        if (mailIntent.resolveActivity(mParentActivity.getPackageManager()) != null)
+                            startActivity(mailIntent);
+                    });
                 }
 
                 Button websiteButton = view.findViewById(R.id.website_button);
                 if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
                 else {
                     websiteButton.setText(orgUrl.toLowerCase());
-                    websiteButton.setOnClickListener(websiteClickedView -> {});
+                    websiteButton.setOnClickListener(websiteClickedView -> {
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(getResources()
+                                        .getColor(R.color.colorPrimaryDark))
+                                .build()
+                                .launchUrl(mParentActivity, Uri.parse(orgUrl));
+                        mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                    });
                 }
 
                 Button addressButton = view.findViewById(R.id.address_button);
@@ -457,7 +476,12 @@ public class DonationFragment extends Fragment
                 else {
                     String location = street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
                     addressButton.setText(location);
-                    addressButton.setOnClickListener(websiteClickedView -> {});
+                    addressButton.setOnClickListener(websiteClickedView -> {
+                        Uri intentUri = Uri.parse("geo:0,0?q=" + location);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+                        startActivity(mapIntent);
+                    });
                 }
 
                 AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
