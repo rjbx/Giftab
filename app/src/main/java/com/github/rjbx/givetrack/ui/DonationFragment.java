@@ -288,8 +288,13 @@ public class DonationFragment extends Fragment
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (mLastClicked != null && mLastClicked.equals(view)) mDualPane = !mDualPane;
                 else mDualPane = true;
+
+                int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
+                ((ImageButton) view.findViewById(R.id.inspect_button)).setImageResource(resId);
+                view.invalidate();
 
                 mLastClicked = view;
                 if (mDualPane) showDualPane((Bundle) view.getTag());
@@ -393,7 +398,6 @@ public class DonationFragment extends Fragment
             arguments.putString(CharityFragment.ARG_ITEM_URL, navUrl);
 
             holder.itemView.setTag(arguments);
-            holder.itemView.setOnClickListener(mOnClickListener);
 
             holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
             holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
@@ -453,7 +457,7 @@ public class DonationFragment extends Fragment
                 Button addressButton = view.findViewById(R.id.address_button);
                 if (street.isEmpty()) addressButton.setVisibility(View.GONE);
                 else {
-                    String location = street + '\n' + detail + '\n' + city + ", " + state.toUpperCase() + " " + zip;
+                    String location = street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
                     addressButton.setText(location);
                     addressButton.setOnClickListener(websiteClickedView -> {});
                 }
@@ -463,14 +467,8 @@ public class DonationFragment extends Fragment
                 contactDialog.show();
             });
 
-            holder.mInspectButton.setOnClickListener(clickedView -> {
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(getResources()
-                                .getColor(R.color.colorPrimaryDark))
-                        .build()
-                        .launchUrl(mParentActivity, Uri.parse(navUrl.toString()));
-                mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
-            });
+            if (!mDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+            holder.mInspectButton.setOnClickListener(mOnClickListener);
 
             final int adapterPosition = holder.getAdapterPosition();
 
@@ -571,6 +569,7 @@ public class DonationFragment extends Fragment
         getChildFragmentManager().beginTransaction().remove(mCharityFragment).commit();
         mParentActivity.findViewById(R.id.donation_list).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDualPane = false;
+        mListAdapter.notifyDataSetChanged();
     }
 
     private void renderActionBar() {

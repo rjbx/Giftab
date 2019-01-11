@@ -14,7 +14,7 @@
 
     <Button
         android:id="@+id/email_button"
-        android:drawableStart="@android:drawable/ic_dialog_email"
+        android:drawableStart="@drawable/ic_baseline_email_24px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -24,7 +24,7 @@
 
     <Button
         android:id="@+id/phone_button"
-        android:drawableStart="@android:drawable/stat_sys_phone_call"
+        android:drawableStart="@drawable/ic_baseline_call_24px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
@@ -44,7 +44,7 @@
 
     <Button
         android:id="@+id/address_button"
-        android:drawableStart="@android:drawable/ic_menu_mapmode"
+        android:drawableStart="@drawable/menu_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"
