@@ -450,7 +450,7 @@ public class DonationFragment extends Fragment
                     emailButton.setText(email.toLowerCase());
                     emailButton.setOnClickListener(websiteClickedView -> {
                         Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
-                        mailIntent.setType("*/*");
+                        mailIntent.setData(Uri.parse("mailto:"));
                         mailIntent.putExtra(Intent.EXTRA_EMAIL, email);
                         if (mailIntent.resolveActivity(mParentActivity.getPackageManager()) != null)
                             startActivity(mailIntent);
