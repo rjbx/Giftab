@@ -293,7 +293,7 @@ public class DonationFragment extends Fragment
                 else mDualPane = true;
 
                 int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
-                ((ImageButton) view.findViewById(R.id.inspect_button)).setImageResource(resId);
+                ((ImageButton) view).setImageResource(resId);
                 view.invalidate();
 
                 mLastClicked = view;
