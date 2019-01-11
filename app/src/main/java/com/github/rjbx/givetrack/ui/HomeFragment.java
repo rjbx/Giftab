@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
 
         List<String> charities = UserPreferences.getCharities(getContext());
         float totalImpact = 0f;
-        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[2]);
+        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[4]);
         mTotal = currencyFormatter.format(totalImpact);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));

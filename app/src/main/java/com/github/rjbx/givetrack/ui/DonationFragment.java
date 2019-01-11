@@ -36,24 +36,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.rjbx.calibrater.Calibrater;
-import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.rateraid.Rateraid;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -376,7 +367,7 @@ public class DonationFragment extends Fragment
             String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
             String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
             String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATOIN_ZIP);
+            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
             String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
             String orgUrl = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
             String phone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);

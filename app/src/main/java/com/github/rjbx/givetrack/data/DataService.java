@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.net.ParseException;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
@@ -333,9 +332,11 @@ public class DataService extends IntentService {
                 String response = requestResponseFromUrl(url);
                 Timber.e("Collection Fetched Response: %s", response);
                 ContentValues[] parsedResponse = parseJsonResponse(response, true);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[1]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[2]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[3]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
+                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
                 contentValuesArray[i] = parsedResponse[0];
             }
 
@@ -354,40 +355,41 @@ public class DataService extends IntentService {
     private void handleActionCollectGenerated(String charityId) {
         Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
 
-        DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-            if (cursor == null || cursor.getCount() == 0) return;
-            cursor.moveToFirst();
-            ContentValues values = new ContentValues();
-            DatabaseUtils.cursorRowToContentValues(cursor, values);
-            boolean emptyCollection = UserPreferences.getCharities(this).get(0).isEmpty();
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, emptyCollection ? "1" : "0");
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+        NETWORK_IO.execute(() -> {
 
-            NETWORK_IO.execute(() -> {
-                try {
-                    String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
-                    String phoneNumber = urlToPhoneNumber(navUrl);
-                    values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+            try {
+                Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
+                if (cursor == null || cursor.getCount() == 0) return;
+                cursor.moveToFirst();
+                ContentValues values = new ContentValues();
+                DatabaseUtils.cursorRowToContentValues(cursor, values);
 
-                    String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
-                    String emailAddress = urlToEmailAddress(orgUrl);
-                    values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
-                } catch (IOException e) {
-                    Timber.e(e);
-                }
-            });
-            getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+                List<String> charities = UserPreferences.getCharities(this);
 
-            List<String> charities = UserPreferences.getCharities(this);
-            if (charities.get(0).isEmpty()) charities = new ArrayList<>();
-            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, 0f, 0f, 0));
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charities.isEmpty() ? "1" : "0");
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
 
-            UserPreferences.setCharities(this, charities);
-            UserPreferences.updateFirebaseUser(this);
-            cursor.close();
+                String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
+                String phoneNumber = urlToPhoneNumber(navUrl);
+                values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+
+                String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
+                String emailAddress = urlToEmailAddress(orgUrl);
+                values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+
+                if (charities.get(0).isEmpty()) charities = new ArrayList<>();
+                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, 0f, 0f, 0));
+
+                UserPreferences.setCharities(this, charities);
+                UserPreferences.updateFirebaseUser(this);
+                getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+                cursor.close();
+
+            } catch (IOException e) {
+                Timber.e(e);
+            }
         });
 
 
@@ -425,10 +427,12 @@ public class DataService extends IntentService {
         else {
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%f:%d", ein, percentage, impact, frequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -481,10 +485,12 @@ public class DataService extends IntentService {
             do {
                 ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
                 float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(),"%s:%f:%f:%d", ein, percentage, impact, frequency));
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
@@ -535,6 +541,8 @@ public class DataService extends IntentService {
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
@@ -548,7 +556,7 @@ public class DataService extends IntentService {
                 values.put(affectedColumn, affectedFrequency);
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
 
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%.2f:%d", ein, percentage, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
@@ -739,8 +747,6 @@ public class DataService extends IntentService {
         String city = locationObject.getString(FetchContract.KEY_CITY);
         String state = locationObject.getString(FetchContract.KEY_STATE);
         String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
-        String emailAddress = charityObject.has(FetchContract.KEY_EMAIL_ADDRESS) ? charityObject.getString(FetchContract.KEY_EMAIL_ADDRESS) : "";
-        String phoneNumber = charityObject.has(FetchContract.KEY_PHONE_NUMBER) ? charityObject.getString(FetchContract.KEY_PHONE_NUMBER) : "";
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
@@ -751,9 +757,7 @@ public class DataService extends IntentService {
         values.put(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
         values.put(GivetrackContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
         values.put(GivetrackContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATOIN_ZIP, nullToDefaultStr(zip));
-        values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, nullToDefaultStr(emailAddress));
-        values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, nullToDefaultStr(phoneNumber));
+        values.put(GivetrackContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
         values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
         values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
 

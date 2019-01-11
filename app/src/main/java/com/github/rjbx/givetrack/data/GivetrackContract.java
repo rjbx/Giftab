@@ -31,7 +31,7 @@ public final class GivetrackContract {
         public static final String COLUMN_LOCATION_DETAIL = "locationDetail";
         public static final String COLUMN_LOCATION_CITY = "locationCity";
         public static final String COLUMN_LOCATION_STATE = "locationState";
-        public static final String COLUMN_LOCATOIN_ZIP = "locationZip";
+        public static final String COLUMN_LOCATION_ZIP = "locationZip";
         public static final String COLUMN_PHONE_NUMBER = "phoneNumber";
         public static final String COLUMN_EMAIL_ADDRESS = "emailAddress";
         public static final String COLUMN_HOMEPAGE_URL = "homepageUrl";
@@ -47,10 +47,10 @@ public final class GivetrackContract {
         public static final int INDEX_LOCATION_CITY = 4;
         public static final int INDEX_LOCATION_STATE = 5;
         public static final int INDEX_LOCATION_ZIP = 6;
-        public static final int INDEX_PHONE_NUMBER = 7;
-        public static final int INDEX_EMAIL_ADDRESS = 8;
-        public static final int INDEX_HOMEPAGE_URL = 9;
-        public static final int INDEX_NAVIGATOR_URL = 10;
+        public static final int INDEX_HOMEPAGE_URL = 7;
+        public static final int INDEX_NAVIGATOR_URL = 8;
+        public static final int INDEX_PHONE_NUMBER = 9;
+        public static final int INDEX_EMAIL_ADDRESS = 10;
         public static final int INDEX_DONATION_PERCENTAGE = 11;
         public static final int INDEX_DONATION_IMPACT = 12;
         public static final int INDEX_DONATION_FREQUENCY = 13;
