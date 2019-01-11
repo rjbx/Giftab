@@ -610,7 +610,7 @@ public class DonationFragment extends Fragment
         } else if (mAmountTotal == 0f) {
             barWrapperColor = R.color.colorAttentionDark;
             actionBarColor = R.color.colorAttention;
-            actionBarIcon = R.drawable.action_manage;
+            actionBarIcon = android.R.drawable.stat_sys_warning;
             progressBarVisibility = View.GONE;
         } else {
             actionBarColor = R.color.colorConversion;

@@ -27,8 +27,15 @@
 
     <item
         android:id="@+id/action_date"
-        android:orderInCategory="0"
+        android:orderInCategory="50"
         android:title="Set Date"
-        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:icon="@drawable/ic_baseline_date_range_24px"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_add"
+        android:orderInCategory="0"
+        android:title="Add"
+        android:icon="@drawable/ic_baseline_add_24px"
         app:showAsAction="always"/>
 </menu>
