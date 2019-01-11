@@ -62,6 +62,7 @@ public class DonationFragment extends Fragment
         implements CharityFragment.MasterDetailFlow, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String STATE_PANE = "pane_state_donation";
+    private static final String STATE_ADJUST = "adjust_state_donation";
     private static ContentValues[] mValuesArray;
     private static boolean mDonationsAdjusted;
     private MainActivity mParentActivity;
@@ -171,7 +172,10 @@ public class DonationFragment extends Fragment
             updateAmounts();
         });
 
-        if (savedInstanceState != null) mDualPane = savedInstanceState.getBoolean(STATE_PANE);
+        if (savedInstanceState != null) {
+            mDualPane = savedInstanceState.getBoolean(STATE_PANE);
+            mDonationsAdjusted = savedInstanceState.getBoolean(STATE_ADJUST);
+        }
         else mDualPane = rootView.findViewById(R.id.donation_detail_container).getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && mDualPane) showDualPane(getArguments());
@@ -251,6 +255,7 @@ public class DonationFragment extends Fragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, mDualPane);
+        outState.putBoolean(STATE_ADJUST, mDonationsAdjusted);
     }
 
     @Override
@@ -498,6 +503,7 @@ public class DonationFragment extends Fragment
             });
 
             if (!mDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+            else if (mDualPane) mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
             holder.mInspectButton.setTag(arguments);
             holder.mInspectButton.setOnClickListener(mOnClickListener);
 
