@@ -12,49 +12,44 @@
     android:padding="0dp"
     android:background="@color/colorNeutralDark">
 
-    <ImageButton
+    <Button
         android:id="@+id/email_button"
-        android:src="@android:drawable/ic_dialog_email"
+        android:drawableStart="@android:drawable/ic_dialog_email"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/colorSlate"
         android:textSize="@dimen/text_size_paragraph_title"
-        android:padding="0dp"/>
+        android:textAllCaps="false"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/phone_button"
-        android:src="@android:drawable/stat_sys_phone_call"
-        android:layout_width="25dp"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
+        android:drawableStart="@android:drawable/stat_sys_phone_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/colorSlate"
         android:textSize="@dimen/text_size_paragraph_title"
-        android:padding="0dp"/>
+        android:textAllCaps="false"/>
 
-
-    <ImageButton
+    <Button
         android:id="@+id/website_button"
-        android:src="@drawable/web"
+        android:drawableStart="@drawable/web"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/colorSlate"
         android:textSize="@dimen/text_size_paragraph_title"
-        android:padding="0dp"/>
+        android:textAllCaps="false"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/address_button"
-        android:src="@android:drawable/ic_dialog_map"
+        android:drawableStart="@android:drawable/ic_menu_mapmode"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/colorSlate"
         android:textSize="@dimen/text_size_paragraph_title"
-        android:padding="0dp"/>
+        android:textAllCaps="false"/>
 
 </LinearLayout>

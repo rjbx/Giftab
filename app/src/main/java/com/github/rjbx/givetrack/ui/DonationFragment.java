@@ -429,21 +429,34 @@ public class DonationFragment extends Fragment
 
                 View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
 
-                ImageButton phoneButton = view.findViewById(R.id.phone_button);
+                Button phoneButton = view.findViewById(R.id.phone_button);
                 if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
-                else phoneButton.setOnClickListener(websiteClickedView -> Timber.d(phone));
+                else {
+                    phoneButton.setText(String.format("+%s", phone.toLowerCase()));
+                    phoneButton.setOnClickListener(websiteClickedView -> {});
+                }
 
-                ImageButton emailButton = view.findViewById(R.id.email_button);
+                Button emailButton = view.findViewById(R.id.email_button);
                 if (email.isEmpty()) emailButton.setVisibility(View.GONE);
-                else emailButton.setOnClickListener(websiteClickedView -> Timber.d(email));
+                else {
+                    emailButton.setText(email.toLowerCase());
+                    emailButton.setOnClickListener(websiteClickedView -> {});
+                }
 
-                ImageButton websiteButton = view.findViewById(R.id.website_button);
+                Button websiteButton = view.findViewById(R.id.website_button);
                 if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
-                else websiteButton.setOnClickListener(websiteClickedView -> Timber.d(orgUrl));
+                else {
+                    websiteButton.setText(orgUrl.toLowerCase());
+                    websiteButton.setOnClickListener(websiteClickedView -> {});
+                }
 
-                ImageButton addressButton = view.findViewById(R.id.address_button);
+                Button addressButton = view.findViewById(R.id.address_button);
                 if (street.isEmpty()) addressButton.setVisibility(View.GONE);
-                else addressButton.setOnClickListener(websiteClickedView -> Timber.d(street + detail + city + state));
+                else {
+                    String location = street + '\n' + detail + '\n' + city + ", " + state.toUpperCase() + " " + zip;
+                    addressButton.setText(location);
+                    addressButton.setOnClickListener(websiteClickedView -> {});
+                }
 
                 AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
                 contactDialog.setView(view);
