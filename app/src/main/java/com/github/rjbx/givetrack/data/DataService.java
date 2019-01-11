@@ -552,7 +552,7 @@ public class DataService extends IntentService {
                 values.put(affectedColumn, affectedFrequency);
                 values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
 
-                charities.add(String.format(Locale.getDefault(), "%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
