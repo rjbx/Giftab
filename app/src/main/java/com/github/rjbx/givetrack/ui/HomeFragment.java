@@ -14,6 +14,7 @@ import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import android.view.LayoutInflater;
@@ -49,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment {
 
 
     private MainActivity mParentActivity;
@@ -66,64 +67,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private static int sThemeIndex;
     private static boolean mShowTracked;
+    private String mTotal;
+    private String mTracked;
+    private String mTrackedTime;
+    private String mTotalTime;
+    private Unbinder unbinder;
     @BindView(R.id.home_amount_text) TextView mAmountView;
-    @BindView(R.id.home_amount_label) TextView mAmountLabel;
     @BindView(R.id.percentage_chart) PieChart percentageChart;
     @BindView(R.id.usage_chart) PieChart usageChart;
     @BindView(R.id.type_chart) PieChart typeChart;
     @BindView(R.id.average_chart) PieChart averageChart;
     @BindView(R.id.activity_chart) BarChart activityChart;
-    private String mTotal;
-    private String mTracked;
-    private String mTrackedTime;
-    private String mTotalTime;
-    Unbinder unbinder;
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.home_amount_label: toggleAmountView();break;
-            case R.id.home_amount_text:
-                sThemeIndex++;
-                if (sThemeIndex == 6) sThemeIndex = 0;
-                mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
-                UserPreferences.setTheme(getContext(), sThemeIndex);
-                UserPreferences.updateFirebaseUser(getContext());
-                break;
-            case R.id.home_time_button:
-
-                AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
-                timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
-                timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
-                        (onClickDialog, onClickPosition) -> timeDialog.dismiss());
-                timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
-                        (onClickDialog, onClickPosition) -> {
-                            UserPreferences.setTracked(getContext(), "0");
-                            UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
-                            mAmountView.setText("0");
-                        });
-                timeDialog.show();
-                timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-
-                break;
-            case R.id.home_config_button:
-
-                break;
-            case R.id.share_button:
-                String amount = mShowTracked ? mTracked : mTotal;
-                String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
-                Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                        .setType("text/plain")
-                        .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
-                                amount,
-                                timeframe,
-                                getString(R.string.app_name)))
-                        .getIntent();
-                startActivity(shareIntent);
-                break;
-        }
-    }
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -148,7 +102,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         Bundle args = getArguments();
         if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
@@ -162,6 +117,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         float totalImpact = 0f;
         for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[4]);
         mTotal = currencyFormatter.format(totalImpact);
+        mAmountView.setText(mTotalTime);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -169,13 +125,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         String formattedDate = dateFormatter.format(date);
         mTrackedTime = String.format("since %s", formattedDate);
         mTotalTime = "all-time";
-
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
-
-        toggleAmountView();
-
-        for (View v : rootView.getTouchables()) v.setOnClickListener(this);
 
         return rootView;
     }
@@ -206,15 +155,52 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         unbinder.unbind();
     }
 
-    public void toggleAmountView() {
+    @OnClick(R.id.home_amount_text) void toggleColor() {
+        sThemeIndex++;
+        if (sThemeIndex == 6) sThemeIndex = 0;
+        mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+        UserPreferences.setTheme(getContext(), sThemeIndex);
+        UserPreferences.updateFirebaseUser(getContext());
+    }
+
+    @OnClick(R.id.home_amount_label) void toggleAmount(TextView label) {
         mShowTracked = !mShowTracked;
         if (mShowTracked) {
-            mAmountLabel.setText(mTrackedTime.toUpperCase());
+            label.setText(mTrackedTime.toUpperCase());
             mAmountView.setText(String.valueOf(mTracked));
         } else {
-            mAmountLabel.setText(mTotalTime.toUpperCase());
+            label.setText(mTotalTime.toUpperCase());
             mAmountView.setText(String.valueOf(mTotal));
         }
+    }
+
+    @OnClick(R.id.home_time_button) void trackAmount() {
+        AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
+        timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
+        timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
+                (onClickDialog, onClickPosition) -> timeDialog.dismiss());
+        timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
+                (onClickDialog, onClickPosition) -> {
+                    UserPreferences.setTracked(getContext(), "0");
+                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+                    mAmountView.setText("0");
+                });
+        timeDialog.show();
+        timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+        timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+    }
+
+    @OnClick(R.id.home_share_button) void shareText() {
+        String amount = mShowTracked ? mTracked : mTotal;
+        String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
+        Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
+                .setType("text/plain")
+                .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
+                        amount,
+                        timeframe,
+                        getString(R.string.app_name)))
+                .getIntent();
+        startActivity(shareIntent);
     }
 
     /**
