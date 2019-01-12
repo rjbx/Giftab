@@ -95,6 +95,8 @@
             android:textSize="@dimen/text_size_paragraph_caps"
             android:textStyle="bold"
             android:textColor="#fff"
+            android:clickable="true"
+            android:focusable="true"
             android:text="TOTAL IMPACT"/>
 
         <TextView
@@ -108,7 +110,9 @@
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
             android:textStyle="bold"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:clickable="true"
+            android:focusable="true"/>
 
         <FrameLayout
             android:layout_width="0dp"

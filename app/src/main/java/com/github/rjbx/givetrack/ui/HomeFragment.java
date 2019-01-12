@@ -12,6 +12,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +49,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     private MainActivity mParentActivity;
@@ -63,13 +66,64 @@ public class HomeFragment extends Fragment {
 
     private static int sThemeIndex;
     private static boolean mShowTracked;
-    private TextView mAmountView;
-    private TextView mAmountLabel;
+    @BindView(R.id.home_amount_text) TextView mAmountView;
+    @BindView(R.id.home_amount_label) TextView mAmountLabel;
+    @BindView(R.id.percentage_chart) PieChart percentageChart;
+    @BindView(R.id.usage_chart) PieChart usageChart;
+    @BindView(R.id.type_chart) PieChart typeChart;
+    @BindView(R.id.average_chart) PieChart averageChart;
+    @BindView(R.id.activity_chart) BarChart activityChart;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
+    Unbinder unbinder;
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.home_amount_label: toggleAmountView();break;
+            case R.id.home_amount_text:
+                sThemeIndex++;
+                if (sThemeIndex == 6) sThemeIndex = 0;
+                mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+                UserPreferences.setTheme(getContext(), sThemeIndex);
+                UserPreferences.updateFirebaseUser(getContext());
+                break;
+            case R.id.home_time_button:
+
+                AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
+                timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
+                timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
+                        (onClickDialog, onClickPosition) -> timeDialog.dismiss());
+                timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
+                        (onClickDialog, onClickPosition) -> {
+                            UserPreferences.setTracked(getContext(), "0");
+                            UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+                            mAmountView.setText("0");
+                        });
+                timeDialog.show();
+                timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+
+                break;
+            case R.id.home_config_button:
+
+                break;
+            case R.id.share_button:
+                String amount = mShowTracked ? mTracked : mTotal;
+                String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
+                Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
+                        .setType("text/plain")
+                        .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
+                                amount,
+                                timeframe,
+                                getString(R.string.app_name)))
+                        .getIntent();
+                startActivity(shareIntent);
+                break;
+        }
+    }
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -95,6 +149,7 @@ public class HomeFragment extends Fragment {
             @Nullable Bundle savedInstanceState) {
 
 
+
         Bundle args = getArguments();
         if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
 
@@ -115,55 +170,14 @@ public class HomeFragment extends Fragment {
         mTrackedTime = String.format("since %s", formattedDate);
         mTotalTime = "all-time";
 
-        mRootView = inflater.inflate(R.layout.fragment_home, container, false);
-        mAmountView = mRootView.findViewById(R.id.home_amount_text);
-        mAmountView.setOnClickListener(clickedView -> {
-            sThemeIndex++;
-            if (sThemeIndex == 6) sThemeIndex = 0;
-            mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
-            UserPreferences.setTheme(getContext(), sThemeIndex);
-            UserPreferences.updateFirebaseUser(getContext());
-        });
-
-        mAmountLabel = mRootView.findViewById(R.id.home_amount_label);
-        mAmountLabel.setOnClickListener(clickedView -> toggleAmountView());
-
-        mRootView.findViewById(R.id.home_time_button).setOnClickListener(clickedView -> {
-            AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
-            timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
-            timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
-                    (onClickDialog, onClickPosition) -> timeDialog.dismiss());
-            timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
-                    (onClickDialog, onClickPosition) -> {
-                        UserPreferences.setTracked(getContext(), "0");
-                        UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
-                        mAmountView.setText("0");
-                    });
-            timeDialog.show();
-            timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-            timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-        });
-
-        mRootView.findViewById(R.id.home_config_button).setOnClickListener(clickedView -> {
-
-        });
-
-        mRootView.findViewById(R.id.home_share_button).setOnClickListener(clickedView -> {
-            String amount = mShowTracked ? mTracked : mTotal;
-            String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
-            Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                    .setType("text/plain")
-                    .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
-                            amount,
-                            timeframe,
-                            getString(R.string.app_name)))
-                    .getIntent();
-            startActivity(shareIntent);
-        });
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         toggleAmountView();
 
-        return mRootView;
+        for (View v : rootView.getTouchables()) v.setOnClickListener(this);
+
+        return rootView;
     }
 
     /**
@@ -183,7 +197,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (mRootView != null) createChart();
+        createChart();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     public void toggleAmountView() {
@@ -248,7 +268,6 @@ public class HomeFragment extends Fragment {
         percentageDesc.setTextSize(fontSize);
 
         int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
-        PieChart percentageChart = mRootView.findViewById(R.id.percentage_chart);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
@@ -284,7 +303,6 @@ public class HomeFragment extends Fragment {
         usageEntries.add(new PieEntry(donationAmount / amountTotal, getString(R.string.axis_value_donation)));
 
         PieData usageData = new PieData(usageSet);
-        PieChart usageChart = mRootView.findViewById(R.id.usage_chart);
         usageChart.setData(usageData);
         usageChart.setDescription(usageDesc);
         usageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
@@ -306,7 +324,6 @@ public class HomeFragment extends Fragment {
         typeDesc.setTextSize(fontSize / 1.1f);
 
         PieData typeData = new PieData(typeSet);
-        PieChart typeChart = mRootView.findViewById(R.id.type_chart);
         typeChart.setData(typeData);
         typeChart.setDescription(typeDesc);
         typeChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
@@ -358,7 +375,6 @@ public class HomeFragment extends Fragment {
         averageDesc.setText(getString(R.string.chart_title_average));
         averageDesc.setTextSize(fontSize / 1.1f);
         PieData averageData = new PieData(averageSet);
-        PieChart averageChart = mRootView.findViewById(R.id.average_chart);
         averageChart.setData(averageData);
         averageChart.setDescription(averageDesc);
         averageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
@@ -389,7 +405,6 @@ public class HomeFragment extends Fragment {
         activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
 
-        BarChart activityChart = mRootView.findViewById(R.id.activity_chart);
         activityChart.setData(activityData);
         activityChart.setDescription(activityDesc);
         activityChart.getXAxis().setValueFormatter((axisValue, axis) -> {

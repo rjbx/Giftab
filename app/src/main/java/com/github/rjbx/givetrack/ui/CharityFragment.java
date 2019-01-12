@@ -178,7 +178,6 @@ public class CharityFragment extends Fragment implements View.OnClickListener {
 
         if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
-        mFab.setOnClickListener(this);
         for (View v : rootView.getTouchables()) v.setOnClickListener(this);
 
         return rootView;
