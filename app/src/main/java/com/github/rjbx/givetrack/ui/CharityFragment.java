@@ -13,6 +13,10 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
@@ -34,7 +39,7 @@ import java.lang.ref.WeakReference;
 /**
  * Provides the logic and views for a single Charity detail screen.
  */
-public class CharityFragment extends Fragment {
+public class CharityFragment extends Fragment implements View.OnClickListener {
 
     public static final String ARG_ITEM_NAME = "item_name";
     public static final String ARG_ITEM_EIN = "item_ein";
@@ -51,7 +56,24 @@ public class CharityFragment extends Fragment {
     private AppCompatActivity mParentActivity;
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebView;
-    private FloatingActionButton mFab;
+    private Unbinder unbinder;
+    @BindView(R.id.charity_fab) FloatingActionButton mFab;
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.browser_close_button: mMasterDetailFlow.showSinglePane(); break;
+            case R.id.browser_open_button:
+                new CustomTabsIntent.Builder()
+                        .setToolbarColor(getResources()
+                                .getColor(R.color.colorPrimaryDark))
+                        .build()
+                        .launchUrl(mParentActivity, Uri.parse(mUrl));
+                mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                break;
+            case R.id.charity_fab: onClickActionButton();
+        }
+    }
 
     /**
      * Provides callback interface for updating parent Layout on interaction with this Fragment.
@@ -101,18 +123,13 @@ public class CharityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_charity, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         if (getActivity() != null) {
             mParentActivity = (AppCompatActivity) getActivity();
 
             Fragment parentFragment = getParentFragment();
             mMasterDetailFlow = parentFragment == null ? (MasterDetailFlow) mParentActivity : (MasterDetailFlow) parentFragment;
-        }
-
-        mFab = rootView.findViewById(R.id.charity_fab);
-        if (mFab != null) {
-            if (mMasterDetailFlow == mParentActivity) mFab.setOnClickListener(clickedView -> onClickActionButton());
-            else ((View) mFab).setVisibility(View.GONE);
         }
 
         if (savedInstanceState != null) {
@@ -159,17 +176,10 @@ public class CharityFragment extends Fragment {
         ((FrameLayout) rootView.findViewById(R.id.webview_frame)).addView(mWebView);
         mWebView.loadUrl(mUrl);
 
-        rootView.findViewById(R.id.browser_open_button).setOnClickListener(clickedView -> {
-            new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources()
-                    .getColor(R.color.colorPrimaryDark))
-                    .build()
-                    .launchUrl(mParentActivity, Uri.parse(mUrl));
-            mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
-        });
+        if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
-        rootView.findViewById(R.id.browser_close_button).setOnClickListener(clickedView ->
-            mMasterDetailFlow.showSinglePane());
+        mFab.setOnClickListener(this);
+        for (View v : rootView.getTouchables()) v.setOnClickListener(this);
 
         return rootView;
     }
@@ -241,6 +251,7 @@ public class CharityFragment extends Fragment {
             else DataService.startActionRemoveCollected(mParentActivity, mEin);
         }
         super.onDestroy();
+        unbinder.unbind();
     }
 
     /**
