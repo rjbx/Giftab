@@ -2,7 +2,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/collection_add_bar"
+    android:id="@+id/contact_dialog"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="8dp"
@@ -43,7 +43,7 @@
         android:textAllCaps="false"/>
 
     <Button
-        android:id="@+id/address_button"
+        android:id="@+id/location_button"
         android:drawableStart="@drawable/menu_place"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

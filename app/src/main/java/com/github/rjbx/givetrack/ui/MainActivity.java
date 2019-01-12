@@ -28,6 +28,9 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.viewpager.widget.ViewPager;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -269,6 +273,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static class PlaceholderFragment extends Fragment {
 
+        private Unbinder unbinder;
+
         /**
          * Provides default constructor required for the {@link FragmentManager}
          * to instantiate this Fragment.
@@ -291,10 +297,18 @@ public class MainActivity extends AppCompatActivity implements
         @Override
         public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
-            ((TextView) rootView.findViewById(R.id.placeholder_message)).setText(R.string.message_empty_collection);
-            rootView.findViewById(R.id.placeholder_button).setOnClickListener(clickedView -> startActivity(new Intent(getActivity(), SearchActivity.class)));
+            unbinder = ButterKnife.bind(this, rootView);
             return rootView;
         }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            unbinder.unbind();
+        }
+
+        @OnClick(R.id.placeholder_button) void launchSearch()  { startActivity(new Intent(getActivity(), SearchActivity.class)); }
+
     }
 
     /**

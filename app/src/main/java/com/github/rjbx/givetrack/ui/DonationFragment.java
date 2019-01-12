@@ -19,6 +19,8 @@ import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.OnClick;
+import butterknife.Optional;
 import butterknife.Unbinder;
 import timber.log.Timber;
 
@@ -52,6 +54,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.github.rjbx.givetrack.ui.DonationFragment.ContactDialogLayout.mLocation;
+import static com.github.rjbx.givetrack.ui.DonationFragment.ContactDialogLayout.mWebsite;
+
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
 
 /**
@@ -62,7 +67,6 @@ import butterknife.ButterKnife;
 public class DonationFragment extends Fragment
         implements CharityFragment.MasterDetailFlow,
         SharedPreferences.OnSharedPreferenceChangeListener,
-        View.OnClickListener,
         TextView.OnEditorActionListener {
 
     private static final String STATE_PANE = "pane_state_donation";
@@ -77,88 +81,23 @@ public class DonationFragment extends Fragment
     private float mAmountTotal;
     private float mMagnitude;
     private boolean mDualPane;
-    @BindView(R.id.action_bar_wrapper)  View mBarWrapper;
-    @BindView(R.id.action_bar)  ImageButton mActionBar;
-    @BindView(R.id.save_progress_bar)  ProgressBar mProgressBar;
-    @BindView(R.id.donation_amount_text)  EditText donationTotalText;
-    @BindView(R.id.donation_amount_label)  View donationTotalLabel;
-    @BindView(R.id.donation_increment_button)  Button incrementTotalButton;
-    @BindView(R.id.donation_decrement_button)  Button decrementTotalButton;
-
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if (v != donationTotalText) return false;
-
-        else switch (actionId) {
-            case EditorInfo.IME_ACTION_DONE:
-                try {
-                    mAmountTotal = CURRENCY_FORMATTER.parse(donationTotalText.getText().toString()).floatValue();
-                    UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-                    UserPreferences.updateFirebaseUser(getContext());
-                } catch (ParseException e) {
-                    Timber.e(e);
-                    return false;
-                }
-                donationTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
-                donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
-                updateAmounts();
-                InputMethodManager inputMethodManager = mParentActivity != null ?
-                        (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
-                if (inputMethodManager == null) return false;
-                inputMethodManager.toggleSoftInput(0, 0);
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.donation_increment_button:
-                mAmountTotal += mMagnitude;
-                UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-                UserPreferences.updateFirebaseUser(getContext());
-                donationTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
-                donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
-                updateAmounts();
-                break;
-
-            case R.id.donation_decrement_button:
-                if (mAmountTotal > 0f) {
-                    mAmountTotal -= mMagnitude;
-                    UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-                    UserPreferences.updateFirebaseUser(getContext());
-                }
-                donationTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
-                donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
-                updateAmounts();
-                break;
-
-            case R.id.action_bar:
-                // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
-                if (mDonationsAdjusted) {
-                    mListAdapter.syncDonations();
-                    mDonationsAdjusted = false;
-                    mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark)));
-                    mActionBar.setImageResource(R.drawable.action_sync);
-                } else if (mAmountTotal > 0) {
-                    ContentValues values = new ContentValues();
-                    values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
-                    DataService.startActionUpdateFrequency(getContext(), values);
-                    UserPreferences.updateFirebaseUser(mParentActivity);
-                    mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark)));
-                    mActionBar.setImageResource(R.drawable.action_sync);
-                }
-        }
-    }
+    @BindView(R.id.action_bar)
+    ImageButton mActionBar;
+    @BindView(R.id.action_bar_wrapper)
+    View mBarWrapper;
+    @BindView(R.id.save_progress_bar)
+    ProgressBar mProgressBar;
+    @BindView(R.id.donation_amount_text)
+    EditText donationTotalText;
+    @BindView(R.id.donation_amount_label)
+    View donationTotalLabel;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public DonationFragment() {}
+    public DonationFragment() {
+    }
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
@@ -173,15 +112,14 @@ public class DonationFragment extends Fragment
      * Generates a Layout for the Fragment.
      */
     @Override
-    public @Nullable View onCreateView(
+    public @Nullable
+    View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_donation, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-
-        for (View v : rootView.getTouchables()) v.setOnClickListener(this);
 
         mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
         mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
@@ -208,8 +146,8 @@ public class DonationFragment extends Fragment
         if (savedInstanceState != null) {
             mDualPane = savedInstanceState.getBoolean(STATE_PANE);
             mDonationsAdjusted = savedInstanceState.getBoolean(STATE_ADJUST);
-        }
-        else mDualPane = rootView.findViewById(R.id.donation_detail_container).getVisibility() == View.VISIBLE;
+        } else
+            mDualPane = rootView.findViewById(R.id.donation_detail_container).getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && mDualPane) showDualPane(getArguments());
 
@@ -312,6 +250,73 @@ public class DonationFragment extends Fragment
         mListAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        switch (actionId) {
+            case EditorInfo.IME_ACTION_DONE:
+                try {
+                    mAmountTotal = CURRENCY_FORMATTER.parse(donationTotalText.getText().toString()).floatValue();
+                    UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
+                    UserPreferences.updateFirebaseUser(getContext());
+                } catch (ParseException e) {
+                    Timber.e(e);
+                    return false;
+                }
+                donationTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
+                donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
+                updateAmounts();
+                InputMethodManager inputMethodManager = mParentActivity != null ?
+                        (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
+                if (inputMethodManager == null) return false;
+                inputMethodManager.toggleSoftInput(0, 0);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @OnClick(R.id.donation_decrement_button)
+    void decrementPercentage() {
+        mAmountTotal += mMagnitude;
+        UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
+        UserPreferences.updateFirebaseUser(getContext());
+        String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
+        donationTotalText.setText(formattedTotal);
+        donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
+        updateAmounts();
+    }
+
+    @OnClick(R.id.donation_increment_button)
+    void incrementPercentage() {
+        if (mAmountTotal > 0f) {
+            mAmountTotal -= mMagnitude;
+            UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
+            UserPreferences.updateFirebaseUser(getContext());
+        }
+        String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
+        donationTotalText.setText(formattedTotal);
+        donationTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
+        updateAmounts();
+    }
+
+    @OnClick(R.id.action_bar)
+    void syncAdjustments() {
+        // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
+        if (mDonationsAdjusted) {
+            mListAdapter.syncDonations();
+            mDonationsAdjusted = false;
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark)));
+            mActionBar.setImageResource(R.drawable.action_sync);
+        } else if (mAmountTotal > 0) {
+            ContentValues values = new ContentValues();
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
+            DataService.startActionUpdateFrequency(getContext(), values);
+            UserPreferences.updateFirebaseUser(mParentActivity);
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark)));
+            mActionBar.setImageResource(R.drawable.action_sync);
+        }
+    }
+
     /**
      * Updates the amounts allocated to each charity on increment or decrement
      * of total donation amount.
@@ -324,9 +329,13 @@ public class DonationFragment extends Fragment
     /**
      * Indicates whether the MasterDetailFlow is in dual pane mode.
      */
-    public boolean isDualPane() { return mDualPane; }
+    public boolean isDualPane() {
+        return mDualPane;
+    }
 
-    public static void resetDonationsAdjusted() { mDonationsAdjusted = false; }
+    public static void resetDonationsAdjusted() {
+        mDonationsAdjusted = false;
+    }
 
     private void renderActionBar() {
 
@@ -362,8 +371,7 @@ public class DonationFragment extends Fragment
      * Populates {@link DonationFragment} {@link RecyclerView}.
      */
     public class ListAdapter
-            extends RecyclerView.Adapter<ListAdapter.ViewHolder>
-            implements View.OnClickListener {
+            extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
@@ -376,18 +384,40 @@ public class DonationFragment extends Fragment
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.charity_primary) @Nullable TextView mNameView;
-            @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
-            @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
-            @BindView(R.id.donation_percentage_text) @Nullable EditText mPercentageView;
-            @BindView(R.id.donation_amount_text) @Nullable TextView mAmountView;
-            @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
-            @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
-            @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
-            @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
-            @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
-            @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
-            @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
+            @BindView(R.id.charity_primary)
+            @Nullable
+            TextView mNameView;
+            @BindView(R.id.charity_secondary)
+            @Nullable
+            TextView mFrequencyView;
+            @BindView(R.id.charity_tertiary)
+            @Nullable
+            TextView mImpactView;
+            @BindView(R.id.donation_percentage_text)
+            @Nullable
+            EditText mPercentageView;
+            @BindView(R.id.donation_amount_text)
+            @Nullable
+            TextView mAmountView;
+            @BindView(R.id.donation_increment_button)
+            @Nullable
+            TextView mIncrementButton;
+            @BindView(R.id.donation_decrement_button)
+            @Nullable
+            TextView mDecrementButton;
+            @BindView(R.id.collection_add_button)
+            @Nullable
+            Button mAddButton;
+            @BindView(R.id.share_button)
+            @Nullable
+            ImageButton mShareButton;
+            @BindView(R.id.contact_button)
+            @Nullable
+            ImageButton mContactButton;
+            @BindView(R.id.inspect_button)
+            @Nullable
+            ImageButton mInspectButton;
+            private AlertDialog mAlertDialog;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -396,161 +426,91 @@ public class DonationFragment extends Fragment
                 super(view);
                 ButterKnife.bind(this, view);
             }
-        }
 
-        @Override
-        public void onClick(View v) {
-
-            ContentValues values = mValuesArray[(int) v.getTag()];
-            final String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
-            final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-            String street = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STREET);
-            String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
-            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
-            String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
-            String orgUrl = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
-            String phone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
-            String email = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS);
-            final int frequency =
-                    values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
-            final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
-
-            switch (v.getId()) {
-
-                case R.id.inspect_button:
-
-                    if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
-                    else mDualPane = true;
-
-                    if (mLastClicked != null)
-                        mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-                    mLastClicked = (ImageButton) v;
-
-                    int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
-                    mLastClicked.setImageResource(resId);
-                    mLastClicked.invalidate();
-
-                    Bundle arguments = new Bundle();
-                    arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
-                    arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
-                    arguments.putString(CharityFragment.ARG_ITEM_URL, navUrl);
-                    if (mDualPane) showDualPane(arguments);
-                    else showSinglePane();
-
-                    break;
-
-                case R.id.collection_remove_button:
-
-                    AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
-                    dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
-                    dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
-                            (neutralButtonOnClickDialog, neutralButtonOnClickPosition) -> dialog.dismiss());
-                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove),
-                            (negativeButtonOnClickDialog, negativeButtonOnClickPosition) -> {
-                                if (mDualPane) showSinglePane();
+            @Optional @OnClick(R.id.collection_remove_button)
+            void removeCollected(View v) {
+                ContentValues values = mValuesArray[(int) v.getTag()];
+                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+                String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+                AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
+                dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
+                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
+                        (neutralButtonOnClickDialog, neutralButtonOnClickPosition) -> dialog.dismiss());
+                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove),
+                        (negativeButtonOnClickDialog, negativeButtonOnClickPosition) -> {
+                            if (mDualPane) showSinglePane();
 //                                if (mValuesArray.length == 1) onDestroy();
-                                DataService.startActionRemoveCollected(getContext(), ein);
-                            });
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-
-                    break;
-
-                case R.id.share_button:
-
-                    Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                            .setType("text/plain")
-                            .setText(String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
-                                    frequency,
-                                    CURRENCY_FORMATTER.format(impact),
-                                    name,
-                                    getString(R.string.app_name)))
-                            .getIntent();
-                    startActivity(shareIntent);
-
-                    break;
-
-                case R.id.contact_button:
-
-                    View view = getLayoutInflater().inflate(R.layout.dialog_contact, null);
-                    AlertDialog contactDialog = new AlertDialog.Builder(getContext()).create();
-                    contactDialog.setView(view);
-                    contactDialog.show();
-
-                    Button phoneButton = view.findViewById(R.id.phone_button);
-                    if (phone.isEmpty()) phoneButton.setVisibility(View.GONE);
-                    else {
-                        phoneButton.setText(String.format("+%s", phone.toLowerCase()));
-                        phoneButton.setOnClickListener(websiteClickedView -> {
-                            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-                            phoneIntent.setData(Uri.parse("tel:" + phone));
-                            if (phoneIntent.resolveActivity(mParentActivity.getPackageManager()) != null) {
-                                contactDialog.dismiss();
-                                startActivity(phoneIntent);
-                            }
+                            DataService.startActionRemoveCollected(getContext(), ein);
                         });
-                    }
-
-                    Button emailButton = view.findViewById(R.id.email_button);
-                    if (email.isEmpty()) emailButton.setVisibility(View.GONE);
-                    else {
-                        emailButton.setText(email.toLowerCase());
-                        emailButton.setOnClickListener(websiteClickedView -> {
-                            Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
-                            mailIntent.setData(Uri.parse("mailto:"));
-                            mailIntent.putExtra(Intent.EXTRA_EMAIL, email);
-                            if (mailIntent.resolveActivity(mParentActivity.getPackageManager()) != null) {
-                                contactDialog.dismiss();
-                                startActivity(mailIntent);
-                            }
-                        });
-                    }
-
-                    Button websiteButton = view.findViewById(R.id.website_button);
-                    if (orgUrl.isEmpty()) websiteButton.setVisibility(View.GONE);
-                    else {
-                        websiteButton.setText(orgUrl.toLowerCase());
-                        websiteButton.setOnClickListener(websiteClickedView -> {
-                            new CustomTabsIntent.Builder()
-                                    .setToolbarColor(getResources()
-                                            .getColor(R.color.colorPrimaryDark))
-                                    .build()
-                                    .launchUrl(mParentActivity, Uri.parse(orgUrl));
-                            contactDialog.dismiss();
-                            mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
-                        });
-                    }
-
-                    Button addressButton = view.findViewById(R.id.address_button);
-                    if (street.isEmpty()) addressButton.setVisibility(View.GONE);
-                    else {
-                        String location = street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
-                        addressButton.setText(location);
-                        addressButton.setOnClickListener(websiteClickedView -> {
-                            Uri intentUri = Uri.parse("geo:0,0?q=" + location);
-                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
-                            mapIntent.setPackage("com.google.android.apps.maps");
-                            contactDialog.dismiss();
-                            startActivity(mapIntent);
-                        });
-                    }
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
-        }
 
+            @Optional @OnClick(R.id.inspect_button)
+            void inspectCollected(View v) {
+
+                ContentValues values = mValuesArray[(int) v.getTag()];
+                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+                String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+                String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+                if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
+                else mDualPane = true;
+
+                if (mLastClicked != null)
+                    mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+                mLastClicked = (ImageButton) v;
+
+                int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
+                mLastClicked.setImageResource(resId);
+                mLastClicked.invalidate();
+
+                Bundle arguments = new Bundle();
+                arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
+                arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
+                arguments.putString(CharityFragment.ARG_ITEM_URL, navUrl);
+                if (mDualPane) showDualPane(arguments);
+                else showSinglePane();
+            }
+
+            @Optional @OnClick(R.id.share_button)
+            void shareCollected(View v) {
+
+                ContentValues values = mValuesArray[(int) v.getTag()];
+                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+                int frequency = values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
+                float impact = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
+                Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
+                        .setType("text/plain")
+                        .setText(String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
+                                frequency,
+                                CURRENCY_FORMATTER.format(impact),
+                                name,
+                                getString(R.string.app_name)))
+                        .getIntent();
+                startActivity(shareIntent);
+            }
+
+            @Optional @OnClick(R.id.contact_button)
+            void viewContacts(View v) {
+                mAlertDialog = new AlertDialog.Builder(getContext()).create();
+                ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mAlertDialog, mValuesArray[(int) v.getTag()]);
+                mAlertDialog.setView(alertLayout);
+                mAlertDialog.show();
+            }
+
+        }
 
         public ListAdapter() {
             mPercentages = new Float[mValuesArray.length];
             mWeightsBuilder = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
-                    float sum = 0;
-                    for (float percentage : mPercentages) sum += percentage;
-                    Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
-                    mDonationsAdjusted = true;
-                    renderActionBar();
-                    mProgressBar.setVisibility(View.VISIBLE);
-                    notifyDataSetChanged();
+                float sum = 0;
+                for (float percentage : mPercentages) sum += percentage;
+                Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
+                mDonationsAdjusted = true;
+                renderActionBar();
+                mProgressBar.setVisibility(View.VISIBLE);
+                notifyDataSetChanged();
             });
         }
 
@@ -581,7 +541,7 @@ public class DonationFragment extends Fragment
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
             if (position == getItemCount() - 1) {
-               holder.mAddButton.setOnClickListener(clickedView -> {
+                holder.mAddButton.setOnClickListener(clickedView -> {
                     Intent searchIntent = new Intent(getContext(), SearchActivity.class);
                     startActivity(searchIntent);
                 });
@@ -589,7 +549,8 @@ public class DonationFragment extends Fragment
             }
 
             if (mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
-             || mPercentages == null || mPercentages.length == 0 || mPercentages[position] == null) return;
+                    || mPercentages == null || mPercentages.length == 0 || mPercentages[position] == null)
+                return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.donation_item_height));
@@ -605,42 +566,35 @@ public class DonationFragment extends Fragment
             final NumberFormat percentInstance = NumberFormat.getPercentInstance();
 
             ContentValues values = mValuesArray[position];
-            final String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
             final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-            String street = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STREET);
-            String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
-            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
-            String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
-            String orgUrl = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
-            String phone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
-            String email = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS);
             final int frequency =
                     values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
             final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
 
             String mutableName = name;
-            if (mutableName.length() > 30) { mutableName = mutableName.substring(0, 30);
-                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("..."); }
+            if (mutableName.length() > 30) {
+                mutableName = mutableName.substring(0, 30);
+                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("...");
+            }
             holder.mNameView.setText(mutableName);
 
             holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
             holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));
             if (impact > 10)
-                if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
-                else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
+                if (Build.VERSION.SDK_INT > 23)
+                    holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+                else
+                    holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
 
-            for (View view : holder.itemView.getTouchables()) {
-                view.setOnClickListener(this);
-                view.setTag(position);
-            }
+            for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
             holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
             holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
 
-            if (!mDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-            else if (mDualPane && mLastClicked != null) mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
+            if (!mDualPane)
+                holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+            else if (mDualPane && mLastClicked != null)
+                mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
 
             final int adapterPosition = holder.getAdapterPosition();
 
@@ -652,13 +606,16 @@ public class DonationFragment extends Fragment
          * Returns the number of items to display.
          */
         @Override
-        public int getItemCount() { return mValuesArray != null ? mValuesArray.length + 1: 1; }
+        public int getItemCount() {
+            return mValuesArray != null ? mValuesArray.length + 1 : 1;
+        }
 
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
         void swapValues() {
-            if (mPercentages.length != mValuesArray.length) mPercentages = Arrays.copyOf(mPercentages, mValuesArray.length);
+            if (mPercentages.length != mValuesArray.length)
+                mPercentages = Arrays.copyOf(mPercentages, mValuesArray.length);
             for (int i = 0; i < mPercentages.length; i++) {
                 mPercentages[i] = Float.parseFloat(mValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
@@ -667,7 +624,7 @@ public class DonationFragment extends Fragment
         }
 
         /**
-         * Syncs donation percentage and amount values to table.
+         * Syncs donation percentage and amount mValues to table.
          */
         private void syncDonations() {
             if (mPercentages == null || mPercentages.length == 0) return;
@@ -680,6 +637,94 @@ public class DonationFragment extends Fragment
             }
             DataService.startActionUpdatePercentages(getContext(), valuesArray);
         }
+    }
+    
+    public static class ContactDialogLayout extends LinearLayout {
 
+        Context mContext;
+        static AlertDialog mAlertDialog;
+        static String mPhone;
+        static String mEmail;
+        static String mWebsite;
+        static String mLocation;
+        @BindView(R.id.email_button) @Nullable Button emailButton;
+        @BindView(R.id.phone_button) @Nullable Button phoneButton;
+        @BindView(R.id.location_button) @Nullable Button locationButton;
+        @BindView(R.id.website_button) @Nullable Button websiteButton;
+
+        ContactDialogLayout(Context context) {
+            super(context);
+            mContext = context;
+            LayoutInflater.from(mContext).inflate(R.layout.dialog_contact, this, true);
+            ButterKnife.bind(this);
+
+            if (emailButton != null)
+                if (mEmail.isEmpty()) emailButton.setVisibility(View.GONE);
+                else emailButton.setText(mEmail.toLowerCase());
+
+            if (phoneButton != null)
+                if (mEmail.isEmpty()) phoneButton.setVisibility(View.GONE);
+                else phoneButton.setText(mPhone.toLowerCase());
+
+            if (websiteButton != null)
+                if (mWebsite.isEmpty()) websiteButton.setVisibility(View.GONE);
+                else websiteButton.setText(mWebsite.toLowerCase());
+
+            if (locationButton != null)
+                if (mLocation.isEmpty()) locationButton.setVisibility(View.GONE);
+                else locationButton.setText(mLocation.toLowerCase());
+        }
+
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
+            mAlertDialog = alertDialog;
+            mEmail = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS).toLowerCase();
+            mPhone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
+            mWebsite = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL).toLowerCase();
+            mLocation = valuesToAddress(values);
+            return new ContactDialogLayout(mAlertDialog.getContext());
+        }
+
+        private static String valuesToAddress(ContentValues values) {
+            String street = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STREET);
+            String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
+            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
+
+            return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
+        }
+
+        @Optional @OnClick(R.id.email_button) void launchEmail() {
+            Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
+            mailIntent.setData(Uri.parse("mailto:"));
+            mailIntent.putExtra(Intent.EXTRA_EMAIL, mEmail);
+            if (mailIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                mContext.startActivity(mailIntent);
+            }
+        }
+
+        @Optional @OnClick(R.id.phone_button) void launchPhone() {
+
+            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+            phoneIntent.setData(Uri.parse("tel:" + mPhone));
+            if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                mContext.startActivity(phoneIntent);
+            }
+        }
+
+        @Optional @OnClick(R.id.website_button) void launchWebsite() {
+            new CustomTabsIntent.Builder()
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .build()
+                    .launchUrl(mContext, Uri.parse(mWebsite));
+        }
+
+        @Optional @OnClick(R.id.location_button) void launchMap() {
+
+            Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            mContext.startActivity(mapIntent);
+        }
     }
 }

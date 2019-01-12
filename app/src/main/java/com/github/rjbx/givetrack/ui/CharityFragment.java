@@ -39,7 +39,7 @@ import java.lang.ref.WeakReference;
 /**
  * Provides the logic and views for a single Charity detail screen.
  */
-public class CharityFragment extends Fragment implements View.OnClickListener {
+public class CharityFragment extends Fragment {
 
     public static final String ARG_ITEM_NAME = "item_name";
     public static final String ARG_ITEM_EIN = "item_ein";
@@ -59,31 +59,15 @@ public class CharityFragment extends Fragment implements View.OnClickListener {
     private Unbinder unbinder;
     @BindView(R.id.charity_fab) FloatingActionButton mFab;
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.browser_close_button: mMasterDetailFlow.showSinglePane(); break;
-            case R.id.browser_open_button:
-                new CustomTabsIntent.Builder()
-                        .setToolbarColor(getResources()
-                                .getColor(R.color.colorPrimaryDark))
-                        .build()
-                        .launchUrl(mParentActivity, Uri.parse(mUrl));
-                mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
-                break;
-            case R.id.charity_fab: onClickActionButton();
-        }
-    }
-
     /**
      * Provides callback interface for updating parent Layout on interaction with this Fragment.
      */
     public interface MasterDetailFlow {
+
         boolean isDualPane();
         void showDualPane(Bundle args);
         void showSinglePane();
     }
-
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
@@ -178,8 +162,6 @@ public class CharityFragment extends Fragment implements View.OnClickListener {
 
         if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
-        for (View v : rootView.getTouchables()) v.setOnClickListener(this);
-
         return rootView;
     }
 
@@ -190,6 +172,19 @@ public class CharityFragment extends Fragment implements View.OnClickListener {
     public void onDestroyView() {
         mWebView.destroy();
         super.onDestroyView();
+    }
+
+    /**
+     * Syncs item collection status only onDestroy in order to prevent multithreading issues on
+     * simultaneous sync operations due to repetitive toggling of item collection status.
+     */
+    @Override public void onDestroy() {
+        if (mInitialSaveState != mCurrentSaveState) {
+            if (mCurrentSaveState) DataService.startActionCollectGenerated(mParentActivity, mEin);
+            else DataService.startActionRemoveCollected(mParentActivity, mEin);
+        }
+        super.onDestroy();
+        unbinder.unbind();
     }
 
     /**
@@ -240,17 +235,21 @@ public class CharityFragment extends Fragment implements View.OnClickListener {
         drawSnackbar();
     }
 
-    /**
-     * Syncs item collection status only onDestroy in order to prevent multithreading issues on
-     * simultaneous sync operations due to repetitive toggling of item collection status.
-     */
-    @Override public void onDestroy() {
-        if (mInitialSaveState != mCurrentSaveState) {
-            if (mCurrentSaveState) DataService.startActionCollectGenerated(mParentActivity, mEin);
-            else DataService.startActionRemoveCollected(mParentActivity, mEin);
-        }
-        super.onDestroy();
-        unbinder.unbind();
+    @OnClick(R.id.browser_close_button) void closeBrowser() {
+        mMasterDetailFlow.showSinglePane();
+    }
+
+    @OnClick(R.id.browser_open_button) void openBrowser() {
+        new CustomTabsIntent.Builder()
+                .setToolbarColor(getResources()
+                        .getColor(R.color.colorPrimaryDark))
+                .build()
+                .launchUrl(mParentActivity, Uri.parse(mUrl));
+        mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+    }
+
+    @OnClick(R.id.charity_fab) void toggleSaved() {
+        onClickActionButton();
     }
 
     /**

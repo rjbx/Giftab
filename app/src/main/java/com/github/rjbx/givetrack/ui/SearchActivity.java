@@ -43,6 +43,7 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -50,8 +51,7 @@ import butterknife.Unbinder;
  * item details side-by-side using two vertical panes.
  */
 public class SearchActivity extends AppCompatActivity
-        implements CharityFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
-        View.OnClickListener {
+        implements CharityFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int ID_GENERATION_LOADER = 123;
     private static final String STATE_PANE = "state_pane";
@@ -60,34 +60,11 @@ public class SearchActivity extends AppCompatActivity
     private AlertDialog mDialog;
     private String mSnackbarMessage;
     private boolean mDualPane;
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.search_fab:
-                Context context = SearchActivity.this;
-                HashMap<String, String> hashMap = new HashMap<>();
-                if (UserPreferences.getFocus(context)) hashMap.put(DataService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
-                else {
-                    hashMap.put(DataService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
-                    hashMap.put(DataService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
-                    hashMap.put(DataService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
-                    hashMap.put(DataService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
-                    hashMap.put(DataService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
-                    hashMap.put(DataService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-                    hashMap.put(DataService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
-                    hashMap.put(DataService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
-                    hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
-                }
-                DataService.startActionFetchGenerated(getBaseContext(), hashMap);
-                mSnackbarMessage = getString(R.string.message_search_refresh);
-        }
-    }
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
@@ -124,27 +101,22 @@ public class SearchActivity extends AppCompatActivity
                 ItemTouchHelper.ACTION_STATE_IDLE,
                 ItemTouchHelper.LEFT) {
 
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView,
+            @Override public boolean onMove(@NonNull RecyclerView recyclerView,
                                   @NonNull RecyclerView.ViewHolder viewHolder,
                                   @NonNull RecyclerView.ViewHolder target) { return false; }
 
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
                 final String ein =  bundle.getString(CharityFragment.ARG_ITEM_EIN);
                 if (direction == ItemTouchHelper.LEFT) DataService.startActionRemoveGenerated(getBaseContext(), ein);
             }
         }).attachToRecyclerView(recyclerView);
-
-        findViewById(R.id.search_fab).setOnClickListener(this);
     }
 
     /**
      * Saves Layout configuration state.
      */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, mDualPane);
     }
@@ -152,8 +124,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Generates an options Menu.
      */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.search, menu);
         return true;
@@ -162,8 +133,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Defines behavior onClick of each MenuItem.
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
@@ -184,9 +154,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Instantiates and returns a new {@link Loader} for the given ID.
      */
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
             case ID_GENERATION_LOADER:
                 Uri ratingUri = GivetrackContract.Entry.CONTENT_URI_GENERATION;
@@ -201,8 +169,7 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
             mDialog.show();
             mDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
@@ -233,27 +200,19 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.swapValues(null);
-    }
-
-    private static void launchFilterPreferences(Context context) {
-        Intent filterIntent = new Intent(context, SettingsActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        context.startActivity(filterIntent);
     }
 
     /**
      * Indicates whether the MasterDetailFlow is in dual pane mode.
      */
-    public boolean isDualPane() { return mDualPane; }
+    @Override public boolean isDualPane() { return mDualPane; }
 
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    public void showDualPane(Bundle args) {
+    @Override public void showDualPane(Bundle args) {
         if (args != null) SearchActivity.this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.search_item_container, CharityFragment.newInstance(args))
                 .commit();
@@ -272,29 +231,51 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
-    public void showSinglePane() {
+    @Override public void showSinglePane() {
         findViewById(R.id.search_list_container).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDualPane = false;
     }
+
+    private static void launchFilterPreferences(Context context) {
+        Intent filterIntent = new Intent(context, SettingsActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
+        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        context.startActivity(filterIntent);
+    }
+
     /**
      * Populates {@link SearchActivity} {@link RecyclerView}.
      */
-    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> implements View.OnClickListener {
+    @OnClick(R.id.search_fab) public void refreshResults() {
+        Context context = SearchActivity.this;
+        HashMap<String, String> hashMap = new HashMap<>();
+        if (UserPreferences.getFocus(context)) hashMap.put(DataService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
+        else {
+            hashMap.put(DataService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
+            hashMap.put(DataService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
+            hashMap.put(DataService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
+            hashMap.put(DataService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
+            hashMap.put(DataService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
+            hashMap.put(DataService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
+            hashMap.put(DataService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
+            hashMap.put(DataService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
+            hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
+        }
+        DataService.startActionFetchGenerated(getBaseContext(), hashMap);
+        mSnackbarMessage = getString(R.string.message_search_refresh);
+    }
 
-
-
+    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         private ContentValues[] mValuesArray;
 
         private View mLastClicked;
-        /**
-         * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
-         */
+
         class ViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.search_item_primary) TextView mNameView;
             @BindView(R.id.search_item_secondary) TextView mIdView;
             @BindView(R.id.search_item_tertiary) TextView mAddressView;
-
             @BindView(R.id.search_item_logo) ImageView mLogoView;
+
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
              */
@@ -303,18 +284,17 @@ public class SearchActivity extends AppCompatActivity
                 ButterKnife.bind(this, view);
             }
 
-        }
+            /**
+             * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+             */
+            @OnClick(R.id.search_item_view)
+            void togglePane(View v) {
+                if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
+                else mDualPane = true;
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case (R.id.search_item_view):
-                    if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
-                    else mDualPane = true;
-
-                    mLastClicked = v;
-                    if (mDualPane) showDualPane((Bundle) v.getTag());
-                    else showSinglePane();
+                mLastClicked = v;
+                if (mDualPane) showDualPane((Bundle) v.getTag());
+                else showSinglePane();
             }
         }
 
@@ -357,7 +337,6 @@ public class SearchActivity extends AppCompatActivity
             arguments.putString(CharityFragment.ARG_ITEM_URL, url);
 
             holder.itemView.setTag(arguments);
-            holder.itemView.setOnClickListener(this);
         }
 
         /**
@@ -367,6 +346,7 @@ public class SearchActivity extends AppCompatActivity
         public int getItemCount() {
             return mValuesArray != null ? mValuesArray.length : 0;
         }
+
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
