@@ -1,8 +1,10 @@
 package com.github.rjbx.givetrack.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -41,21 +43,45 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
 public class SearchActivity extends AppCompatActivity
-        implements CharityFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor> {
+        implements CharityFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
+        View.OnClickListener {
 
     private static final int ID_GENERATION_LOADER = 123;
     private static final String STATE_PANE = "state_pane";
-    private ListAdapter mAdapter;
-    private String mSnackbarMessage;
-    private AlertDialog mDialog;
     private static boolean sDialogShown;
+    private ListAdapter mAdapter;
+    private AlertDialog mDialog;
+    private String mSnackbarMessage;
     private boolean mDualPane;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.search_fab:
+                Context context = SearchActivity.this;
+                HashMap<String, String> hashMap = new HashMap<>();
+                if (UserPreferences.getFocus(context)) hashMap.put(DataService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
+                else {
+                    hashMap.put(DataService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
+                    hashMap.put(DataService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
+                    hashMap.put(DataService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
+                    hashMap.put(DataService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
+                    hashMap.put(DataService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
+                    hashMap.put(DataService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
+                    hashMap.put(DataService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
+                    hashMap.put(DataService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
+                    hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
+                }
+                DataService.startActionFetchGenerated(getBaseContext(), hashMap);
+                mSnackbarMessage = getString(R.string.message_search_refresh);
+        }
+    }
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -64,6 +90,7 @@ public class SearchActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(ID_GENERATION_LOADER, null, this);
         if (savedInstanceState != null) {
@@ -89,26 +116,6 @@ public class SearchActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        FloatingActionButton fab = findViewById(R.id.search_fab);
-        fab.setOnClickListener(clickedView -> {
-            Context context = SearchActivity.this;
-            HashMap<String, String> hashMap = new HashMap<>();
-            if (UserPreferences.getFocus(context)) hashMap.put(DataService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
-            else {
-                hashMap.put(DataService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
-                hashMap.put(DataService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
-                hashMap.put(DataService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
-                hashMap.put(DataService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
-                hashMap.put(DataService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
-                hashMap.put(DataService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-                hashMap.put(DataService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
-                hashMap.put(DataService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
-                hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
-            }
-            DataService.startActionFetchGenerated(getBaseContext(), hashMap);
-            mSnackbarMessage = getString(R.string.message_search_refresh);
-        });
-
         RecyclerView recyclerView = findViewById(R.id.search_list);
         assert recyclerView != null;
         mAdapter = new ListAdapter();
@@ -129,6 +136,8 @@ public class SearchActivity extends AppCompatActivity
                 if (direction == ItemTouchHelper.LEFT) DataService.startActionRemoveGenerated(getBaseContext(), ein);
             }
         }).attachToRecyclerView(recyclerView);
+
+        findViewById(R.id.search_fab).setOnClickListener(this);
     }
 
     /**
@@ -202,7 +211,15 @@ public class SearchActivity extends AppCompatActivity
         int id = loader.getId();
         switch (id) {
             case ID_GENERATION_LOADER:
-                mAdapter.swapCursor(cursor);
+                if (cursor == null|| !cursor.moveToFirst()) return;
+                ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
+                int i = 0;
+                do {
+                    ContentValues values = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cursor, values);
+                    valuesArray[i++] = values;
+                } while (cursor.moveToNext());
+                mAdapter.swapValues(valuesArray);
                 if (mSnackbarMessage == null || mSnackbarMessage.isEmpty()) mSnackbarMessage = getString(R.string.message_search_refresh);
                 Snackbar sb = Snackbar.make(findViewById(R.id.search_fab), mSnackbarMessage, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -218,7 +235,7 @@ public class SearchActivity extends AppCompatActivity
      */
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
+        mAdapter.swapValues(null);
     }
 
     private static void launchFilterPreferences(Context context) {
@@ -226,106 +243,6 @@ public class SearchActivity extends AppCompatActivity
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
         context.startActivity(filterIntent);
-    }
-
-    /**
-     * Populates {@link SearchActivity} {@link RecyclerView}.
-     */
-    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
-
-        private Cursor mCursor;
-        private View mLastClicked;
-
-        /**
-         * Augments {@code ViewHolder} {@code onClick} behavior.
-         */
-        private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mLastClicked != null && mLastClicked.equals(view)) mDualPane = !mDualPane;
-                else mDualPane = true;
-
-                mLastClicked = view;
-                if (mDualPane) showDualPane((Bundle) view.getTag());
-                else showSinglePane();
-            }
-        };
-
-        /**
-         * Generates a Layout for the ViewHolder based on its Adapter position and orientation
-         */
-        @Override public @NonNull ViewHolder onCreateViewHolder(
-                @NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_search, parent, false);
-            return new ViewHolder(view);
-        }
-
-        /**
-         * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
-         */
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-            if (mCursor == null || mCursor.getCount() == 0) return;
-
-            mCursor.moveToPosition(position);
-            String ein = mCursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            String name = mCursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
-            String city = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_CITY);
-            String state = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_STATE);
-            String zip = mCursor.getString(GivetrackContract.Entry.INDEX_LOCATION_ZIP);
-            String homepage = mCursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
-            String url = mCursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
-
-            holder.mNameView.setText(name);
-            holder.mIdView.setText(String.format("EIN: %s", ein));
-            holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
-
-            Glide.with(SearchActivity.this).load("https://logo.clearbit.com/" + homepage)
-                    .into(holder.mLogoView);
-
-            Bundle arguments = new Bundle();
-            arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
-            arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
-            arguments.putString(CharityFragment.ARG_ITEM_URL, url);
-
-            holder.itemView.setTag(arguments);
-            holder.itemView.setOnClickListener(mOnClickListener);
-        }
-
-        /**
-         * Returns the number of items to display.
-         */
-        @Override
-        public int getItemCount() {
-            return mCursor != null ? mCursor.getCount() : 0;
-        }
-
-        /**
-         * Swaps the Cursor after completing a load or resetting Loader.
-         */
-        void swapCursor(Cursor newCursor) {
-            mCursor = newCursor;
-            notifyDataSetChanged();
-        }
-
-        /**
-         * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
-         */
-        class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.search_item_primary) TextView mNameView;
-            @BindView(R.id.search_item_secondary) TextView mIdView;
-            @BindView(R.id.search_item_tertiary) TextView mAddressView;
-            @BindView(R.id.search_item_logo) ImageView mLogoView;
-
-            /**
-             * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
-             */
-            ViewHolder(View view) {
-                super(view);
-                ButterKnife.bind(this, view);
-            }
-        }
     }
 
     /**
@@ -358,5 +275,105 @@ public class SearchActivity extends AppCompatActivity
     public void showSinglePane() {
         findViewById(R.id.search_list_container).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDualPane = false;
+    }
+    /**
+     * Populates {@link SearchActivity} {@link RecyclerView}.
+     */
+    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> implements View.OnClickListener {
+
+
+
+        private ContentValues[] mValuesArray;
+
+        private View mLastClicked;
+        /**
+         * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+         */
+        class ViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.search_item_primary) TextView mNameView;
+            @BindView(R.id.search_item_secondary) TextView mIdView;
+            @BindView(R.id.search_item_tertiary) TextView mAddressView;
+
+            @BindView(R.id.search_item_logo) ImageView mLogoView;
+            /**
+             * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
+             */
+            ViewHolder(View view) {
+                super(view);
+                ButterKnife.bind(this, view);
+            }
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case (R.id.search_item_view):
+                    if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
+                    else mDualPane = true;
+
+                    mLastClicked = v;
+                    if (mDualPane) showDualPane((Bundle) v.getTag());
+                    else showSinglePane();
+            }
+        }
+
+        /**
+         * Generates a Layout for the ViewHolder based on its Adapter position and orientation
+         */
+        @Override public @NonNull ViewHolder onCreateViewHolder(
+                @NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_search, parent, false);
+            return new ViewHolder(view);
+        }
+
+        /**
+         * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
+         */
+        @Override
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+            if (mValuesArray == null || mValuesArray.length == 0) return;
+
+            ContentValues values = mValuesArray[position];
+            String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+            String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
+            String homepage = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
+            String url = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+
+            holder.mNameView.setText(name);
+            holder.mIdView.setText(String.format("EIN: %s", ein));
+            holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
+
+            Glide.with(SearchActivity.this).load("https://logo.clearbit.com/" + homepage)
+                    .into(holder.mLogoView);
+
+            Bundle arguments = new Bundle();
+            arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
+            arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
+            arguments.putString(CharityFragment.ARG_ITEM_URL, url);
+
+            holder.itemView.setTag(arguments);
+            holder.itemView.setOnClickListener(this);
+        }
+
+        /**
+         * Returns the number of items to display.
+         */
+        @Override
+        public int getItemCount() {
+            return mValuesArray != null ? mValuesArray.length : 0;
+        }
+        /**
+         * Swaps the Cursor after completing a load or resetting Loader.
+         */
+        void swapValues(ContentValues[] valuesArray) {
+            mValuesArray = valuesArray;
+            notifyDataSetChanged();
+        }
+
     }
 }
