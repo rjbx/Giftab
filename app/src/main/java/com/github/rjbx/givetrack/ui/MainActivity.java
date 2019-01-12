@@ -220,14 +220,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case ID_MAIN_LOADER:
-                if (cursor == null|| !cursor.moveToFirst()) return;
                 mValuesArray = new ContentValues[cursor.getCount()];
-                int i = 0;
-                do {
-                    ContentValues values = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cursor, values);
-                    mValuesArray[i++] = values;
-                } while (cursor.moveToNext());
+                if (cursor.moveToFirst()) {
+                    int i = 0;
+                    do {
+                        ContentValues values = new ContentValues();
+                        DatabaseUtils.cursorRowToContentValues(cursor, values);
+                        mValuesArray[i++] = values;
+                    } while (cursor.moveToNext());
+                }
                 new StatusAsyncTask(this).execute(mValuesArray);
                 Intent intent = getIntent();
                 if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
