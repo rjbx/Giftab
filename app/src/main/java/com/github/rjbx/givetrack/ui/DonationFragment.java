@@ -663,8 +663,8 @@ public class DonationFragment extends Fragment
                 else emailButton.setText(mEmail.toLowerCase());
 
             if (phoneButton != null)
-                if (mEmail.isEmpty()) phoneButton.setVisibility(View.GONE);
-                else phoneButton.setText(mPhone.toLowerCase());
+                if (mPhone.isEmpty()) phoneButton.setVisibility(View.GONE);
+                else phoneButton.setText(mPhone);
 
             if (websiteButton != null)
                 if (mWebsite.isEmpty()) websiteButton.setVisibility(View.GONE);
@@ -672,14 +672,14 @@ public class DonationFragment extends Fragment
 
             if (locationButton != null)
                 if (mLocation.isEmpty()) locationButton.setVisibility(View.GONE);
-                else locationButton.setText(mLocation.toLowerCase());
+                else locationButton.setText(mLocation);
         }
 
         public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
             mAlertDialog = alertDialog;
-            mEmail = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS).toLowerCase();
+            mEmail = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS);
             mPhone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
-            mWebsite = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL).toLowerCase();
+            mWebsite = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
             mLocation = valuesToAddress(values);
             return new ContactDialogLayout(mAlertDialog.getContext());
         }
