@@ -664,7 +664,7 @@ public class DonationFragment extends Fragment
 
             if (phoneButton != null)
                 if (mPhone.isEmpty()) phoneButton.setVisibility(View.GONE);
-                else phoneButton.setText(mPhone);
+                else phoneButton.setText(String.format("+%s", mPhone);
 
             if (websiteButton != null)
                 if (mWebsite.isEmpty()) websiteButton.setVisibility(View.GONE);
