@@ -54,9 +54,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.github.rjbx.givetrack.ui.DonationFragment.ContactDialogLayout.mLocation;
-import static com.github.rjbx.givetrack.ui.DonationFragment.ContactDialogLayout.mWebsite;
-
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
 
 /**
@@ -71,6 +68,7 @@ public class DonationFragment extends Fragment
 
     private static final String STATE_PANE = "pane_state_donation";
     private static final String STATE_ADJUST = "adjust_state_donation";
+    private static final String STATE_POSITION = "position_state_donation";
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static ContentValues[] mValuesArray;
     private static boolean mDonationsAdjusted;
@@ -81,16 +79,12 @@ public class DonationFragment extends Fragment
     private float mAmountTotal;
     private float mMagnitude;
     private boolean mDualPane;
-    @BindView(R.id.action_bar)
-    ImageButton mActionBar;
-    @BindView(R.id.action_bar_wrapper)
-    View mBarWrapper;
-    @BindView(R.id.save_progress_bar)
-    ProgressBar mProgressBar;
-    @BindView(R.id.donation_amount_text)
-    EditText donationTotalText;
-    @BindView(R.id.donation_amount_label)
-    View donationTotalLabel;
+    private int mPanePosition;
+    @BindView(R.id.action_bar) ImageButton mActionBar;
+    @BindView(R.id.action_bar_wrapper) View mBarWrapper;
+    @BindView(R.id.save_progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.donation_amount_text) EditText donationTotalText;
+    @BindView(R.id.donation_amount_label) View donationTotalLabel;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -111,9 +105,7 @@ public class DonationFragment extends Fragment
     /**
      * Generates a Layout for the Fragment.
      */
-    @Override
-    public @Nullable
-    View onCreateView(
+    @Override public @Nullable View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
@@ -146,6 +138,7 @@ public class DonationFragment extends Fragment
         if (savedInstanceState != null) {
             mDualPane = savedInstanceState.getBoolean(STATE_PANE);
             mDonationsAdjusted = savedInstanceState.getBoolean(STATE_ADJUST);
+            mPanePosition = savedInstanceState.getInt(STATE_POSITION);
         } else
             mDualPane = rootView.findViewById(R.id.donation_detail_container).getVisibility() == View.VISIBLE;
 
@@ -169,8 +162,7 @@ public class DonationFragment extends Fragment
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
@@ -181,21 +173,18 @@ public class DonationFragment extends Fragment
      * Ensures the parent Activity has been created and data has been retrieved before
      * invoking the method that references them in order to populate the UI.
      */
-    @Override
-    public void onResume() {
+    @Override public void onResume() {
         super.onResume();
         if (mListAdapter != null) mListAdapter.swapValues();
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onPause() {
+    @Override public void onPause() {
         super.onPause();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onDestroy() {
+    @Override public void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
     }
@@ -203,15 +192,14 @@ public class DonationFragment extends Fragment
     /**
      * Saves Layout configuration state.
      */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, mDualPane);
         outState.putBoolean(STATE_ADJUST, mDonationsAdjusted);
+        outState.putInt(STATE_POSITION, mPanePosition);
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(UserPreferences.KEY_MAGNITUDE)) {
             mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
         }
@@ -220,8 +208,7 @@ public class DonationFragment extends Fragment
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override
-    public void showDualPane(Bundle args) {
+    @Override public void showDualPane(Bundle args) {
 
         mCharityFragment = CharityFragment.newInstance(args);
         getChildFragmentManager().beginTransaction()
@@ -242,16 +229,14 @@ public class DonationFragment extends Fragment
     /**
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
-    @Override
-    public void showSinglePane() {
+    @Override public void showSinglePane() {
         getChildFragmentManager().beginTransaction().remove(mCharityFragment).commit();
         mParentActivity.findViewById(R.id.donation_list).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         mDualPane = false;
         mListAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         switch (actionId) {
             case EditorInfo.IME_ACTION_DONE:
                 try {
@@ -275,8 +260,7 @@ public class DonationFragment extends Fragment
         }
     }
 
-    @OnClick(R.id.donation_decrement_button)
-    void decrementPercentage() {
+    @OnClick(R.id.donation_decrement_button) void decrementPercentage() {
         mAmountTotal += mMagnitude;
         UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
         UserPreferences.updateFirebaseUser(getContext());
@@ -286,8 +270,7 @@ public class DonationFragment extends Fragment
         updateAmounts();
     }
 
-    @OnClick(R.id.donation_increment_button)
-    void incrementPercentage() {
+    @OnClick(R.id.donation_increment_button) void incrementPercentage() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
@@ -299,8 +282,7 @@ public class DonationFragment extends Fragment
         updateAmounts();
     }
 
-    @OnClick(R.id.action_bar)
-    void syncAdjustments() {
+    @OnClick(R.id.action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (mDonationsAdjusted) {
             mListAdapter.syncDonations();
@@ -370,8 +352,7 @@ public class DonationFragment extends Fragment
     /**
      * Populates {@link DonationFragment} {@link RecyclerView}.
      */
-    public class ListAdapter
-            extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
@@ -384,39 +365,17 @@ public class DonationFragment extends Fragment
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.charity_primary)
-            @Nullable
-            TextView mNameView;
-            @BindView(R.id.charity_secondary)
-            @Nullable
-            TextView mFrequencyView;
-            @BindView(R.id.charity_tertiary)
-            @Nullable
-            TextView mImpactView;
-            @BindView(R.id.donation_percentage_text)
-            @Nullable
-            EditText mPercentageView;
-            @BindView(R.id.donation_amount_text)
-            @Nullable
-            TextView mAmountView;
-            @BindView(R.id.donation_increment_button)
-            @Nullable
-            TextView mIncrementButton;
-            @BindView(R.id.donation_decrement_button)
-            @Nullable
-            TextView mDecrementButton;
-            @BindView(R.id.collection_add_button)
-            @Nullable
-            Button mAddButton;
-            @BindView(R.id.share_button)
-            @Nullable
-            ImageButton mShareButton;
-            @BindView(R.id.contact_button)
-            @Nullable
-            ImageButton mContactButton;
-            @BindView(R.id.inspect_button)
-            @Nullable
-            ImageButton mInspectButton;
+            @BindView(R.id.charity_primary) @Nullable TextView mNameView;
+            @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
+            @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
+            @BindView(R.id.donation_percentage_text) @Nullable EditText mPercentageView;
+            @BindView(R.id.donation_amount_text) @Nullable TextView mAmountView;
+            @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
+            @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
+            @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
+            @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
+            @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
+            @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
             private AlertDialog mAlertDialog;
 
             /**
@@ -427,11 +386,12 @@ public class DonationFragment extends Fragment
                 ButterKnife.bind(this, view);
             }
 
-            @Optional @OnClick(R.id.collection_remove_button)
-            void removeCollected(View v) {
+            @Optional @OnClick(R.id.collection_remove_button) void removeCollected(View v) {
+
                 ContentValues values = mValuesArray[(int) v.getTag()];
                 String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
                 String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+
                 AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
                 dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
                 dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
@@ -447,10 +407,10 @@ public class DonationFragment extends Fragment
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
 
-            @Optional @OnClick(R.id.inspect_button)
-            void inspectCollected(View v) {
+            @Optional @OnClick(R.id.inspect_button) void inspectCollected(View v) {
 
-                ContentValues values = mValuesArray[(int) v.getTag()];
+                int position = (int) v.getTag();
+                ContentValues values = mValuesArray[position];
                 String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
                 String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
                 String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
@@ -460,6 +420,7 @@ public class DonationFragment extends Fragment
                 if (mLastClicked != null)
                     mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
                 mLastClicked = (ImageButton) v;
+                mPanePosition = position;
 
                 int resId = mDualPane ? R.drawable.ic_baseline_expand_less_24px : R.drawable.ic_baseline_expand_more_24px;
                 mLastClicked.setImageResource(resId);
@@ -473,13 +434,13 @@ public class DonationFragment extends Fragment
                 else showSinglePane();
             }
 
-            @Optional @OnClick(R.id.share_button)
-            void shareCollected(View v) {
+            @Optional @OnClick(R.id.share_button) void shareCollected(View v) {
 
                 ContentValues values = mValuesArray[(int) v.getTag()];
                 String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
                 int frequency = values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
                 float impact = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
+
                 Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                         .setType("text/plain")
                         .setText(String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
@@ -491,8 +452,7 @@ public class DonationFragment extends Fragment
                 startActivity(shareIntent);
             }
 
-            @Optional @OnClick(R.id.contact_button)
-            void viewContacts(View v) {
+            @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
                 mAlertDialog = new AlertDialog.Builder(getContext()).create();
                 ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mAlertDialog, mValuesArray[(int) v.getTag()]);
                 mAlertDialog.setView(alertLayout);
@@ -517,9 +477,7 @@ public class DonationFragment extends Fragment
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation
          */
-        @Override
-        public @NonNull
-        ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_donation, parent, false);
@@ -528,8 +486,7 @@ public class DonationFragment extends Fragment
             return new ViewHolder(view);
         }
 
-        @Override
-        public int getItemViewType(int position) {
+        @Override public int getItemViewType(int position) {
             if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
             else return VIEW_TYPE_CHARITY;
         }
@@ -593,8 +550,10 @@ public class DonationFragment extends Fragment
 
             if (!mDualPane)
                 holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-            else if (mDualPane && mLastClicked != null)
+            else if (mDualPane && mPanePosition == position) {
+                mLastClicked = holder.mInspectButton;
                 mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
+            }
 
             final int adapterPosition = holder.getAdapterPosition();
 
@@ -704,7 +663,6 @@ public class DonationFragment extends Fragment
         }
 
         @Optional @OnClick(R.id.phone_button) void launchPhone() {
-
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
             phoneIntent.setData(Uri.parse("tel:" + mPhone));
             if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
@@ -720,7 +678,6 @@ public class DonationFragment extends Fragment
         }
 
         @Optional @OnClick(R.id.location_button) void launchMap() {
-
             Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
