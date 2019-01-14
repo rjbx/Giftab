@@ -63,13 +63,15 @@ import com.github.rjbx.givetrack.data.DataService;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor>,
-        DatePickerDialog.OnDateSetListener {
+        DatePickerDialog.OnDateSetListener,
+        SeekBar.OnSeekBarChangeListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
     private static final int ID_MAIN_LOADER = 444;
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mValuesArray;
+    private TextView mReadout;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
@@ -147,16 +149,9 @@ public class MainActivity extends AppCompatActivity implements
                 View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 AlertDialog magnitudeDialog = new AlertDialog.Builder(this).create();
-                TextView readout = view.findViewById(R.id.main_readout);
-                readout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
-                seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        readout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
-                    }
-                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-                });
+                mReadout = view.findViewById(R.id.main_readout);
+                mReadout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
+                seekbar.setOnSeekBarChangeListener(this);
                 seekbar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
                 magnitudeDialog.setView(view);
                 magnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
@@ -248,6 +243,14 @@ public class MainActivity extends AppCompatActivity implements
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            mReadout.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
+            mReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
+    }
+    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
 
     private void launchCustomTabs(String url) {
         new CustomTabsIntent.Builder()
