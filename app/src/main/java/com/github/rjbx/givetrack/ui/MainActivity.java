@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_recalibrate:
-                RecordFragment.resetDonationsAdjusted();
+
                 ContentValues values = new ContentValues();
                 values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
                 DataService.startActionUpdatePercentages(this, values);

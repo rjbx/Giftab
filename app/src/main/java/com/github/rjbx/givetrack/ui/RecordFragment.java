@@ -306,10 +306,6 @@ public class RecordFragment extends Fragment implements
         return sDualPane;
     }
 
-    public static void resetDonationsAdjusted() {
-        sDonationsAdjusted = false;
-    }
-
     private void renderActionBar() {
 
         int barWrapperColor;
