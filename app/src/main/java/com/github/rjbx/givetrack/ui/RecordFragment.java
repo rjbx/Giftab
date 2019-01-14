@@ -252,9 +252,11 @@ public class RecordFragment extends Fragment implements
     }
 
     @OnClick(R.id.donation_decrement_button) void decrementPercentage() {
-        mAmountTotal += mMagnitude;
-        UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-        UserPreferences.updateFirebaseUser(getContext());
+        if (mAmountTotal > 0f) {
+            mAmountTotal -= mMagnitude;
+            UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
+            UserPreferences.updateFirebaseUser(getContext());
+        }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
@@ -262,11 +264,9 @@ public class RecordFragment extends Fragment implements
     }
 
     @OnClick(R.id.donation_increment_button) void incrementPercentage() {
-        if (mAmountTotal > 0f) {
-            mAmountTotal -= mMagnitude;
-            UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-            UserPreferences.updateFirebaseUser(getContext());
-        }
+        mAmountTotal += mMagnitude;
+        UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
+        UserPreferences.updateFirebaseUser(getContext());
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
