@@ -18,19 +18,17 @@ import timber.log.Timber;
 public class GivetrackProvider extends ContentProvider {
 
     private static final int CODE_COLLECTION = 100;
-    private static final int CODE_COLLECTION_WITH_ID = 200;
     private static final int CODE_GENERATION = 101;
+    private static final int CODE_COLLECTION_WITH_ID = 200;
     private static final int CODE_GENERATION_WITH_ID = 201;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    
-    private GivetrackOpener mOpenHelper;
 
     /**
      * Builds a {@link UriMatcher} for identifying distinct {@link Uri} and defining corresponding behaviors.
      * @return {@link UriMatcher}
      */
     private static UriMatcher buildUriMatcher() {
-        
+
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = GivetrackContract.AUTHORITY;
 
@@ -41,6 +39,8 @@ public class GivetrackProvider extends ContentProvider {
 
         return matcher;
     }
+
+    private GivetrackOpener mOpenHelper;
 
     /**
      * Initializes all registered {@link ContentProvider}s on the application glance thread at launch time.

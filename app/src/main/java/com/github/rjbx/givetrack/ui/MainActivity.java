@@ -1,48 +1,48 @@
 package com.github.rjbx.givetrack.ui;
 
-import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
+import android.app.DatePickerDialog;
+import android.graphics.Color;
+import android.net.Uri;
+
 import androidx.appcompat.app.AlertDialog;
-import android.view.LayoutInflater;
-import android.view.View;
-import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+import androidx.core.view.GravityCompat;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
-import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.data.DataService;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import butterknife.BindView;
+import butterknife.OnClick;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -51,6 +51,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.UserPreferences;
+import com.github.rjbx.givetrack.data.DataService;
 
 /**
  * Provides the main screen for this application.
@@ -61,59 +66,53 @@ public class MainActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
-    public static final String ARGS_VALUES_ARRAY = "values_array";
+    public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
     private static final int ID_MAIN_LOADER = 444;
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mValuesArray;
+    @BindView(R.id.main_navigation) NavigationView mNavigation;
+    @BindView(R.id.main_drawer) DrawerLayout mDrawer;
+    @BindView(R.id.main_toolbar) Toolbar mToolbar;
+    @BindView(R.id.main_readout) TextView mReadout;
+    @BindView(R.id.main_pager) ViewPager mPager;
+    @BindView(R.id.main_tabs) TabLayout mTabs;
 
     /**
      * Populates the TabLayout with a SectionsPagerAdapter and the NavigationView with a DrawerLayout.
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        Toolbar toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
-        ViewPager viewPager = findViewById(R.id.main_pager);
+        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
+        mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPager));
+        if (mPagerAdapter == null) mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mPager.setAdapter(mPagerAdapter);
 
-        TabLayout tabLayout = findViewById(R.id.main_tabs);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
-        if (mPagerAdapter == null)
-            mPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(mPagerAdapter);
-
-        DrawerLayout drawer = findViewById(R.id.main_activity);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.main_navigation);
-        navigationView.setNavigationItemSelectedListener(this);
-
+        mNavigation.setNavigationItemSelectedListener(this);
         getSupportLoaderManager().initLoader(ID_MAIN_LOADER, null, this);
     }
 
     /**
      * Closes an open NavigationDrawer when back navigating.
      */
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.main_activity);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+    @Override public void onBackPressed() {
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         } else super.onBackPressed();
     }
 
     /**
      * Generates an options Menu.
      */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -121,8 +120,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Defines behavior onClick of each MenuItem.
      */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         switch (id) {
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case R.id.action_recalibrate:
-                DonationFragment.resetDonationsAdjusted();
+                RecordFragment.resetDonationsAdjusted();
                 ContentValues values = new ContentValues();
                 values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
                 DataService.startActionUpdatePercentages(this, values);
@@ -148,28 +146,25 @@ public class MainActivity extends AppCompatActivity implements
                 return false;
             case R.id.action_magnitude:
                 View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
+                SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 AlertDialog magnitudeDialog = new AlertDialog.Builder(this).create();
-                SeekBar seekBar = view.findViewById(R.id.main_seek_bar);
-                TextView textView = view.findViewById(R.id.seek_progress_display);
-                textView.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
-
-                seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                mReadout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
+                seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        textView.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
+                        mReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
                     }
                     @Override public void onStartTrackingTouch(SeekBar seekBar) {}
                     @Override public void onStopTrackingTouch(SeekBar seekBar) {}
                 });
-
-                seekBar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
+                seekbar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
                 magnitudeDialog.setView(view);
                 magnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
                         (onClickDialog, onClickPosition) -> magnitudeDialog.dismiss());
                 magnitudeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
                         (onClickDialog, onClickPosition) -> {
-                            float magnitude = seekBar.getProgress() / 1000f;
+                            float magnitude = seekbar.getProgress() / 1000f;
                             UserPreferences.setMagnitude(this, String.format(Locale.getDefault(), "%.2f", magnitude));
                             UserPreferences.updateFirebaseUser(this);
                         });
@@ -187,24 +182,19 @@ public class MainActivity extends AppCompatActivity implements
                 datePicker.show();
                 break;
             case R.id.action_add: startActivity(new Intent(this, SearchActivity.class)); break;
-            default:
-                return super.onOptionsItemSelected(item);
+            default: return super.onOptionsItemSelected(item);
         } return false;
     }
 
     /**
      * Updates the DatePicker with the date selected from the Dialog.
      */
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-    }
+    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {}
 
     /**
      * Instantiates and returns a new {@link Loader} for the given ID.
      */
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
             case ID_MAIN_LOADER:
                 return new CursorLoader(this, GivetrackContract.Entry.CONTENT_URI_COLLECTION,
@@ -216,8 +206,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case ID_MAIN_LOADER:
                 mValuesArray = new ContentValues[cursor.getCount()];
@@ -240,15 +229,12 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) { mValuesArray = null;}
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mValuesArray = null;}
 
     /**
      * Defines behavior onClick of each Navigation MenuItem.
      */
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    @Override public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
         switch (id) {
@@ -259,8 +245,7 @@ public class MainActivity extends AppCompatActivity implements
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
         }
 
-        DrawerLayout drawer = findViewById(R.id.main_activity);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -274,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static class PlaceholderFragment extends Fragment {
 
-        private Unbinder unbinder;
+        private Unbinder mUnbinder;
 
         /**
          * Provides default constructor required for the {@link FragmentManager}
@@ -294,22 +279,18 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Generates a Layout for the Fragment.
          */
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
-            unbinder = ButterKnife.bind(this, rootView);
+            mUnbinder = ButterKnife.bind(this, rootView);
             return rootView;
         }
 
-        @Override
-        public void onDestroy() {
+        @Override public void onDestroy() {
             super.onDestroy();
-            unbinder.unbind();
+            mUnbinder.unbind();
         }
 
         @OnClick(R.id.placeholder_button) void launchSearch()  { startActivity(new Intent(getActivity(), SearchActivity.class)); }
-
     }
 
     /**
@@ -325,24 +306,22 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Instantiates the Fragment for a given section.
          */
-        @Override
-        public Fragment getItem(int position) {
+        @Override public Fragment getItem(int position) {
 
             if (mValuesArray == null || mValuesArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
                 int i = 0;
                 Bundle args = new Bundle();
-                args.putParcelableArray(ARGS_VALUES_ARRAY, mValuesArray);
+                args.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mValuesArray);
                 switch (position) {
-                    case 0: return DonationFragment.newInstance(args);
-                    case 1: return HomeFragment.newInstance(args);
+                    case 0: return RecordFragment.newInstance(args);
+                    case 1: return ReviewFragment.newInstance(args);
                     default: return PlaceholderFragment.newInstance(null);
                 }
             }
         }
 
-        @Override
-        public void notifyDataSetChanged() {
+        @Override public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
         }
 
@@ -361,11 +340,10 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Prevents persisting child past parent when navigating away from Fragment
          */
-        @Override
-        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-            if (object instanceof CharityFragment.MasterDetailFlow
-                    && ((CharityFragment.MasterDetailFlow) object).isDualPane())
-                ((CharityFragment.MasterDetailFlow) object).showSinglePane();
+        @Override public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            if (object instanceof DetailFragment.MasterDetailFlow
+                    && ((DetailFragment.MasterDetailFlow) object).isDualPane())
+                ((DetailFragment.MasterDetailFlow) object).showSinglePane();
             super.destroyItem(container, position, object);
         }
     }

@@ -1,33 +1,35 @@
 package com.github.rjbx.givetrack.ui;
 
-import android.content.Context;
-import android.content.res.ColorStateList;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.AsyncTask;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.database.Cursor;
+import android.net.Uri;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import butterknife.BindView;
+import butterknife.OnClick;
+
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.DataService;
@@ -39,25 +41,27 @@ import java.lang.ref.WeakReference;
 /**
  * Provides the logic and views for a single Charity detail screen.
  */
-public class CharityFragment extends Fragment {
+public class DetailFragment extends Fragment {
 
-    public static final String ARG_ITEM_NAME = "item_name";
-    public static final String ARG_ITEM_EIN = "item_ein";
-    public static final String ARG_ITEM_URL= "item_url";
-    private static final String SCROLL_STATE = "state_scroll";
-    private static final String INITIAL_STATE = "state_initial";
-    private static final String CURRENT_STATE = "state_current";
-    private static String mName;
-    private static String mEin;
-    private static String mUrl;
-    private static int mScrollState = 0;
-    private static boolean mInitialSaveState;
-    private static boolean mCurrentSaveState;
+    public static final String ARG_ITEM_NAME = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
+    public static final String ARG_ITEM_EIN = "com.github.rjbx.givetrack.ui.arg.ITEM_EIN";
+    public static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
+    private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
+    private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
+    private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
+    private static String sName;
+    private static String sEin;
+    private static String sUrl;
+    private static boolean sInitialState;
+    private static boolean sCurrentState;
+    private static int sScrollState = 0;
     private AppCompatActivity mParentActivity;
     private MasterDetailFlow mMasterDetailFlow;
-    private WebView mWebView;
-    private Unbinder unbinder;
-    @BindView(R.id.charity_fab) FloatingActionButton mFab;
+    private WebView mWebview;
+    private Unbinder mUnbinder;
+    @BindView(R.id.detail_fab) FloatingActionButton mFab;
+    @BindView(R.id.detail_progress) ProgressBar mProgress;
+    @BindView(R.id.detail_frame) FrameLayout mFrame;
 
     /**
      * Provides callback interface for updating parent Layout on interaction with this Fragment.
@@ -72,13 +76,13 @@ public class CharityFragment extends Fragment {
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public CharityFragment() {}
+    public DetailFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static CharityFragment newInstance(@Nullable Bundle args) {
-        CharityFragment fragment = new CharityFragment();
+    public static DetailFragment newInstance(@Nullable Bundle args) {
+        DetailFragment fragment = new DetailFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
     }
@@ -106,8 +110,8 @@ public class CharityFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_charity, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+        mUnbinder = ButterKnife.bind(this, rootView);
 
         if (getActivity() != null) {
             mParentActivity = (AppCompatActivity) getActivity();
@@ -117,48 +121,47 @@ public class CharityFragment extends Fragment {
         }
 
         if (savedInstanceState != null) {
-            mScrollState = savedInstanceState.getInt(SCROLL_STATE);
-            mInitialSaveState = savedInstanceState.getBoolean(INITIAL_STATE);
-            mCurrentSaveState = savedInstanceState.getBoolean(CURRENT_STATE);
-            mName = savedInstanceState.getString(ARG_ITEM_NAME);
-            mEin = savedInstanceState.getString(ARG_ITEM_EIN);
-            mUrl = savedInstanceState.getString(ARG_ITEM_URL);
+            sScrollState = savedInstanceState.getInt(SCROLL_STATE);
+            sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
+            sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
+            sName = savedInstanceState.getString(ARG_ITEM_NAME);
+            sEin = savedInstanceState.getString(ARG_ITEM_EIN);
+            sUrl = savedInstanceState.getString(ARG_ITEM_URL);
             drawActionButton();
         } else if (getArguments() != null && getArguments().getString(ARG_ITEM_EIN) != null) {
 
-            mName = getArguments().getString(ARG_ITEM_NAME);
-            mEin = getArguments().getString(ARG_ITEM_EIN);
-            mUrl = getArguments().getString(ARG_ITEM_URL);
-            mScrollState = 0;
+            sName = getArguments().getString(ARG_ITEM_NAME);
+            sEin = getArguments().getString(ARG_ITEM_EIN);
+            sUrl = getArguments().getString(ARG_ITEM_URL);
+            sScrollState = 0;
             Uri collectionUri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon()
-                    .appendPath(mEin).build();
+                    .appendPath(sEin).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }
 
-
-        mWebView = new WebView(inflater.getContext().getApplicationContext());
-        mWebView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mWebview = new WebView(inflater.getContext().getApplicationContext());
+        mWebview.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         int padding = (int) getResources().getDimension(R.dimen.text_margin);
-        mWebView.setPadding(padding, padding, padding, padding);
-        mWebView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        mWebView.setWebViewClient(new WebViewClient() {
+        mWebview.setPadding(padding, padding, padding, padding);
+        mWebview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        mWebview.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                rootView.findViewById(R.id.webview_progress).setVisibility(View.VISIBLE);
+                mProgress.setVisibility(View.VISIBLE);
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                if (mWebView == null) return;
-                rootView.findViewById(R.id.webview_progress).setVisibility(View.GONE);
-                mWebView.setScrollY(mScrollState);
+                if (mWebview == null) return;
+                mProgress.setVisibility(View.GONE);
+                mWebview.setScrollY(sScrollState);
                 super.onPageFinished(view, url);
             }
         });
-        mWebView.setWebChromeClient(new WebChromeClient());
+        mWebview.setWebChromeClient(new WebChromeClient());
 
-        ((FrameLayout) rootView.findViewById(R.id.webview_frame)).addView(mWebView);
-        mWebView.loadUrl(mUrl);
+        mFrame.addView(mWebview);
+        mWebview.loadUrl(sUrl);
 
         if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
@@ -170,7 +173,7 @@ public class CharityFragment extends Fragment {
      */
     @Override
     public void onDestroyView() {
-        mWebView.destroy();
+        mWebview.destroy();
         super.onDestroyView();
     }
 
@@ -179,12 +182,12 @@ public class CharityFragment extends Fragment {
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
     @Override public void onDestroy() {
-        if (mInitialSaveState != mCurrentSaveState) {
-            if (mCurrentSaveState) DataService.startActionCollectGenerated(mParentActivity, mEin);
-            else DataService.startActionRemoveCollected(mParentActivity, mEin);
+        if (sInitialState != sCurrentState) {
+            if (sCurrentState) DataService.startActionCollectGenerated(mParentActivity, sEin);
+            else DataService.startActionRemoveCollected(mParentActivity, sEin);
         }
         super.onDestroy();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     /**
@@ -193,18 +196,18 @@ public class CharityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mWebView != null) outState.putInt(SCROLL_STATE, mWebView.getScrollY());
-        outState.putString(ARG_ITEM_EIN, mEin);
-        outState.putString(ARG_ITEM_URL, mUrl);
-        outState.putBoolean(INITIAL_STATE, mInitialSaveState);
-        outState.putBoolean(CURRENT_STATE, mCurrentSaveState);
+        if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
+        outState.putString(ARG_ITEM_EIN, sEin);
+        outState.putString(ARG_ITEM_URL, sUrl);
+        outState.putBoolean(INITIAL_STATE, sInitialState);
+        outState.putBoolean(CURRENT_STATE, sCurrentState);
     }
 
     /**
      * Generates {@link Snackbar} based on item collection status.
      */
     public void drawSnackbar() {
-        String message = String.format(getString(mCurrentSaveState ? R.string.message_collected_add : R.string.message_collected_remove), mName);
+        String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sName);
         Snackbar sb = Snackbar.make(mFab, message, Snackbar.LENGTH_LONG);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         sb.show();
@@ -216,12 +219,12 @@ public class CharityFragment extends Fragment {
      */
     public void drawActionButton() {
         if (getContext() == null || mFab == null) return;
-        mFab.setImageResource(mCurrentSaveState ?
+        mFab.setImageResource(sCurrentState ?
                 R.drawable.action_remove: R.drawable.action_download);
-        mFab.setBackgroundTintList(mCurrentSaveState ?
+        mFab.setBackgroundTintList(sCurrentState ?
                 ColorStateList.valueOf(Color.WHITE) :
                 ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorAccent)));
-        mFab.setContentDescription(mCurrentSaveState ? getContext().getString(R.string.description_collected_remove_button) :
+        mFab.setContentDescription(sCurrentState ? getContext().getString(R.string.description_collected_remove_button) :
                 mParentActivity.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
     }
@@ -230,7 +233,7 @@ public class CharityFragment extends Fragment {
      * Defines behavior onClick of item collection status toggle Button.
      */
     public void onClickActionButton() {
-        mCurrentSaveState = !mCurrentSaveState;
+        sCurrentState = !sCurrentState;
         drawActionButton();
         drawSnackbar();
     }
@@ -244,11 +247,11 @@ public class CharityFragment extends Fragment {
                 .setToolbarColor(getResources()
                         .getColor(R.color.colorPrimaryDark))
                 .build()
-                .launchUrl(mParentActivity, Uri.parse(mUrl));
+                .launchUrl(mParentActivity, Uri.parse(sUrl));
         mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
     }
 
-    @OnClick(R.id.charity_fab) void toggleSaved() {
+    @OnClick(R.id.detail_fab) void toggleSaved() {
         onClickActionButton();
     }
 
@@ -257,14 +260,14 @@ public class CharityFragment extends Fragment {
      */
     public static class StatusAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
-        WeakReference<CharityFragment> mFragment;
+        WeakReference<DetailFragment> mFragment;
 
         /**
          * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order
          * to prevent memory leak.
          */
-        StatusAsyncTask(CharityFragment charityFragment) {
-            mFragment = new WeakReference<>(charityFragment);
+        StatusAsyncTask(DetailFragment detailFragment) {
+            mFragment = new WeakReference<>(detailFragment);
         }
 
         /**
@@ -285,8 +288,8 @@ public class CharityFragment extends Fragment {
          * Updates the Fragment field corresponding to the item collection status.
          */
         @Override protected void onPostExecute(Boolean isSaved) {
-            mInitialSaveState = isSaved;
-            mCurrentSaveState = mInitialSaveState;
+            sInitialState = isSaved;
+            sCurrentState = sInitialState;
             mFragment.get().drawActionButton();
         }
     }

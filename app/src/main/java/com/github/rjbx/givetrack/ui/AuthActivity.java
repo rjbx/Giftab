@@ -12,15 +12,18 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import butterknife.BindView;
 import timber.log.Timber;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.UserProfile;
 import com.github.rjbx.givetrack.data.DataService;
+
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,8 +47,8 @@ public class AuthActivity extends AppCompatActivity {
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
     private FirebaseAuth mFirebaseAuth;
-    private ProgressBar mLoadingIndicator;
     private FirebaseDatabase mFirebaseDatabase;
+    @BindView(R.id.auth_progress) ProgressBar mProgressbar;
 
     /**
      * Handles sign in, sign out, and account deletion launch Intent actions.
@@ -55,8 +58,6 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-
-        mLoadingIndicator = findViewById(R.id.auth_progress);
 
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
@@ -130,7 +131,7 @@ public class AuthActivity extends AppCompatActivity {
      */
     @Override
     protected void onStop() {
-        mLoadingIndicator.setVisibility(View.GONE);
+        mProgressbar.setVisibility(View.GONE);
         super.onStop();
     }
 
@@ -162,7 +163,7 @@ public class AuthActivity extends AppCompatActivity {
                 });
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
-                mLoadingIndicator.setVisibility(View.VISIBLE);
+                mProgressbar.setVisibility(View.VISIBLE);
                 String message;
                 if (response == null) message = getString(R.string.network_error_message);
                 else message = getString(R.string.provider_error_message, response.getProviderType());

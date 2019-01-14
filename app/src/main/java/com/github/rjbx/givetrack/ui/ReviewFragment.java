@@ -7,21 +7,23 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+import butterknife.BindView;
+import butterknife.OnClick;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -50,12 +52,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class HomeFragment extends Fragment {
+public class ReviewFragment extends Fragment {
 
-
-    private MainActivity mParentActivity;
-    View mRootView;
-    ContentValues[] mValuesArray;
     private static final int [] COLORS = new int[] {
         R.color.colorAttention,
         R.color.colorAccent,
@@ -64,32 +62,34 @@ public class HomeFragment extends Fragment {
         R.color.colorComfort,
         R.color.colorNeutral
     };
-
-    private static int sThemeIndex;
+    private static ContentValues[] sValuesArray;
     private static boolean mShowTracked;
+    private static int sThemeIndex;
+    private MainActivity mParentActivity;
+    private Unbinder mUnbinder;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
-    private Unbinder unbinder;
     @BindView(R.id.home_amount_text) TextView mAmountView;
-    @BindView(R.id.percentage_chart) PieChart percentageChart;
-    @BindView(R.id.usage_chart) PieChart usageChart;
-    @BindView(R.id.type_chart) PieChart typeChart;
-    @BindView(R.id.average_chart) PieChart averageChart;
-    @BindView(R.id.activity_chart) BarChart activityChart;
+    @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
+    @BindView(R.id.percentage_chart) PieChart mPercentageChart;
+    @BindView(R.id.usage_chart) PieChart mUsageChart;
+    @BindView(R.id.type_chart) PieChart mTypeChart;
+    @BindView(R.id.average_chart) PieChart mAverageChart;
+    @BindView(R.id.activity_chart) BarChart mActivityChart;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public HomeFragment() {}
+    public ReviewFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static HomeFragment newInstance(@Nullable Bundle args) {
-        HomeFragment fragment = new HomeFragment();
+    public static ReviewFragment newInstance(@Nullable Bundle args) {
+        ReviewFragment fragment = new ReviewFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
     }
@@ -102,11 +102,11 @@ public class HomeFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        View rootView = inflater.inflate(R.layout.fragment_review, container, false);
+        mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle args = getArguments();
-        if (args != null) mValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_VALUES_ARRAY);
+        if (args != null) sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_ITEM_ATTRIBUTES);
 
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
 
@@ -152,13 +152,13 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unbinder.unbind();
+        mUnbinder.unbind();
     }
 
     @OnClick(R.id.home_amount_text) void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 6) sThemeIndex = 0;
-        mParentActivity.findViewById(R.id.home_amount_wrapper).setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+        mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
         UserPreferences.setTheme(getContext(), sThemeIndex);
         UserPreferences.updateFirebaseUser(getContext());
     }
@@ -218,8 +218,8 @@ public class HomeFragment extends Fragment {
         float donationAmount = 0f;
         int donationFrequency = 0;
 
-        if (mValuesArray == null || mValuesArray.length == 0) return;
-        for (ContentValues values : mValuesArray) {
+        if (sValuesArray == null || sValuesArray.length == 0) return;
+        for (ContentValues values : sValuesArray) {
             float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             if (percentage < .01f) continue;
             String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
@@ -257,21 +257,21 @@ public class HomeFragment extends Fragment {
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
-            percentageChart.setLayoutParams(params);
+            mPercentageChart.setLayoutParams(params);
         }
-//        percentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
-        percentageChart.setData(percentageData);
-        percentageChart.setDescription(percentageDesc);
-        percentageChart.setEntryLabelTextSize(fontSize * 1.25f);
-        percentageChart.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
-        percentageChart.setHoleRadius(20f);
-        percentageChart.setTransparentCircleRadius(50f);
-        percentageChart.setBackgroundColor(backgroundColor);
-        percentageChart.setTransparentCircleColor(backgroundColor);
-        percentageChart.setHoleColor(backgroundColor);
-        percentageChart.setRotationEnabled(false);
-        percentageChart.getLegend().setEnabled(false);
-        percentageChart.invalidate();
+//        mPercentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
+        mPercentageChart.setData(percentageData);
+        mPercentageChart.setDescription(percentageDesc);
+        mPercentageChart.setEntryLabelTextSize(fontSize * 1.25f);
+        mPercentageChart.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
+        mPercentageChart.setHoleRadius(20f);
+        mPercentageChart.setTransparentCircleRadius(50f);
+        mPercentageChart.setBackgroundColor(backgroundColor);
+        mPercentageChart.setTransparentCircleColor(backgroundColor);
+        mPercentageChart.setHoleColor(backgroundColor);
+        mPercentageChart.setRotationEnabled(false);
+        mPercentageChart.getLegend().setEnabled(false);
+        mPercentageChart.invalidate();
 
         float amountTotal = donationAmount;
         List<PieEntry> usageEntries = new ArrayList<>();
@@ -289,15 +289,15 @@ public class HomeFragment extends Fragment {
         usageEntries.add(new PieEntry(donationAmount / amountTotal, getString(R.string.axis_value_donation)));
 
         PieData usageData = new PieData(usageSet);
-        usageChart.setData(usageData);
-        usageChart.setDescription(usageDesc);
-        usageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        usageChart.setHoleRadius(15f);
-        usageChart.setBackgroundColor(backgroundColor);
-        usageChart.setTransparentCircleColor(backgroundColor);
-        usageChart.setHoleColor(backgroundColor);
-        usageChart.getLegend().setEnabled(false);
-        usageChart.invalidate();
+        mUsageChart.setData(usageData);
+        mUsageChart.setDescription(usageDesc);
+        mUsageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mUsageChart.setHoleRadius(15f);
+        mUsageChart.setBackgroundColor(backgroundColor);
+        mUsageChart.setTransparentCircleColor(backgroundColor);
+        mUsageChart.setHoleColor(backgroundColor);
+        mUsageChart.getLegend().setEnabled(false);
+        mUsageChart.invalidate();
 
         float conversionsTotal = donationFrequency;
         List<PieEntry> typeEntries = new ArrayList<>();
@@ -310,15 +310,15 @@ public class HomeFragment extends Fragment {
         typeDesc.setTextSize(fontSize / 1.1f);
 
         PieData typeData = new PieData(typeSet);
-        typeChart.setData(typeData);
-        typeChart.setDescription(typeDesc);
-        typeChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        typeChart.setHoleRadius(15f);
-        typeChart.setBackgroundColor(backgroundColor);
-        typeChart.setTransparentCircleColor(backgroundColor);
-        typeChart.setHoleColor(backgroundColor);
-        typeChart.getLegend().setEnabled(false);
-        typeChart.invalidate();
+        mTypeChart.setData(typeData);
+        mTypeChart.setDescription(typeDesc);
+        mTypeChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mTypeChart.setHoleRadius(15f);
+        mTypeChart.setBackgroundColor(backgroundColor);
+        mTypeChart.setTransparentCircleColor(backgroundColor);
+        mTypeChart.setHoleColor(backgroundColor);
+        mTypeChart.getLegend().setEnabled(false);
+        mTypeChart.invalidate();
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
         String[] tallyArray =
@@ -361,15 +361,15 @@ public class HomeFragment extends Fragment {
         averageDesc.setText(getString(R.string.chart_title_average));
         averageDesc.setTextSize(fontSize / 1.1f);
         PieData averageData = new PieData(averageSet);
-        averageChart.setData(averageData);
-        averageChart.setDescription(averageDesc);
-        averageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        averageChart.setHoleRadius(15f);
-        averageChart.setBackgroundColor(backgroundColor);
-        averageChart.setTransparentCircleColor(backgroundColor);
-        averageChart.setHoleColor(backgroundColor);
-        averageChart.getLegend().setEnabled(false);
-        averageChart.invalidate();
+        mAverageChart.setData(averageData);
+        mAverageChart.setDescription(averageDesc);
+        mAverageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mAverageChart.setHoleRadius(15f);
+        mAverageChart.setBackgroundColor(backgroundColor);
+        mAverageChart.setTransparentCircleColor(backgroundColor);
+        mAverageChart.setHoleColor(backgroundColor);
+        mAverageChart.getLegend().setEnabled(false);
+        mAverageChart.invalidate();
 
         List<BarEntry> activityEntries = new ArrayList<>();
         activityEntries.add(new BarEntry(0f, high));
@@ -391,9 +391,9 @@ public class HomeFragment extends Fragment {
         activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
 
-        activityChart.setData(activityData);
-        activityChart.setDescription(activityDesc);
-        activityChart.getXAxis().setValueFormatter((axisValue, axis) -> {
+        mActivityChart.setData(activityData);
+        mActivityChart.setDescription(activityDesc);
+        mActivityChart.getXAxis().setValueFormatter((axisValue, axis) -> {
             switch ((int) axisValue) {
                 case 0: return getString(R.string.axis_value_high);
                 case 1: return getString(R.string.axis_value_today);
@@ -401,11 +401,11 @@ public class HomeFragment extends Fragment {
                 default: return getString(R.string.axis_value_days, (int) axisValue);
             }
         });
-        activityChart.getXAxis().setTextSize(fontSize / 1.1f);
-        activityChart.setFitBars(true);
-        activityChart.getLegend().setEnabled(false);
-        activityChart.setPinchZoom(true);
-        activityChart.notifyDataSetChanged();
-        activityChart.invalidate();
+        mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
+        mActivityChart.setFitBars(true);
+        mActivityChart.getLegend().setEnabled(false);
+        mActivityChart.setPinchZoom(true);
+        mActivityChart.notifyDataSetChanged();
+        mActivityChart.invalidate();
     }
 }

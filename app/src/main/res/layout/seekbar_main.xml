@@ -23,7 +23,7 @@
            android:text="0.0"/>
 
        <SeekBar
-           android:id="@+id/main_seek_bar"
+           android:id="@+id/main_seekbar"
            android:layout_width="0dp"
            android:layout_height="match_parent"
            android:layout_weight=".8"
@@ -41,7 +41,7 @@
    </LinearLayout>
 
     <TextView
-        android:id="@+id/seek_progress_display"
+        android:id="@+id/main_readout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:textSize="@dimen/text_size_paragraph_title"

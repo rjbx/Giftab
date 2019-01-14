@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -30,6 +31,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
@@ -41,25 +46,25 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
-
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
 public class SearchActivity extends AppCompatActivity
-        implements CharityFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor> {
+        implements DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int ID_GENERATION_LOADER = 123;
-    private static final String STATE_PANE = "state_pane";
+    private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
+    private static boolean sDualPane;
     private ListAdapter mAdapter;
     private AlertDialog mDialog;
-    private String mSnackbarMessage;
-    private boolean mDualPane;
+    private String mSnackbar;
+    @BindView(R.id.search_fab) FloatingActionButton mFab;
+    @BindView(R.id.search_toolbar) Toolbar mToolbar;
+    @BindView(R.id.search_list) RecyclerView mRecyclerView;
+    @BindView(R.id.search_list_container) View mListContainer;
+    @BindView(R.id.search_item_container) View mItemContainer;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -71,15 +76,14 @@ public class SearchActivity extends AppCompatActivity
 
         getSupportLoaderManager().initLoader(ID_GENERATION_LOADER, null, this);
         if (savedInstanceState != null) {
-            mDualPane = savedInstanceState.getBoolean(STATE_PANE);
-        } else mDualPane = findViewById(R.id.search_item_container).getVisibility() == View.VISIBLE;
+            sDualPane = savedInstanceState.getBoolean(STATE_PANE);
+        } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
         Bundle bundle = getIntent().getExtras();
-        if (mDualPane) showDualPane(bundle);
+        if (sDualPane) showDualPane(bundle);
 
-        Toolbar toolbar = findViewById(R.id.search_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getTitle());
 
         mDialog = new AlertDialog.Builder(this).create();
         mDialog.setMessage(getString(R.string.dialog_filter_setup));
@@ -93,10 +97,9 @@ public class SearchActivity extends AppCompatActivity
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        RecyclerView recyclerView = findViewById(R.id.search_list);
-        assert recyclerView != null;
+        assert mRecyclerView != null;
         mAdapter = new ListAdapter();
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.ACTION_STATE_IDLE,
                 ItemTouchHelper.LEFT) {
@@ -107,10 +110,10 @@ public class SearchActivity extends AppCompatActivity
 
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
-                final String ein =  bundle.getString(CharityFragment.ARG_ITEM_EIN);
+                final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
                 if (direction == ItemTouchHelper.LEFT) DataService.startActionRemoveGenerated(getBaseContext(), ein);
             }
-        }).attachToRecyclerView(recyclerView);
+        }).attachToRecyclerView(mRecyclerView);
     }
 
     /**
@@ -118,7 +121,7 @@ public class SearchActivity extends AppCompatActivity
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(STATE_PANE, mDualPane);
+        outState.putBoolean(STATE_PANE, sDualPane);
     }
 
     /**
@@ -187,8 +190,8 @@ public class SearchActivity extends AppCompatActivity
                     valuesArray[i++] = values;
                 } while (cursor.moveToNext());
                 mAdapter.swapValues(valuesArray);
-                if (mSnackbarMessage == null || mSnackbarMessage.isEmpty()) mSnackbarMessage = getString(R.string.message_search_refresh);
-                Snackbar sb = Snackbar.make(findViewById(R.id.search_fab), mSnackbarMessage, Snackbar.LENGTH_LONG);
+                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
+                Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 sb.show();
                 break;
@@ -207,14 +210,14 @@ public class SearchActivity extends AppCompatActivity
     /**
      * Indicates whether the MasterDetailFlow is in dual pane mode.
      */
-    @Override public boolean isDualPane() { return mDualPane; }
+    @Override public boolean isDualPane() { return sDualPane; }
 
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
     @Override public void showDualPane(Bundle args) {
         if (args != null) SearchActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.search_item_container, CharityFragment.newInstance(args))
+                .replace(R.id.search_item_container, DetailFragment.newInstance(args))
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -222,18 +225,17 @@ public class SearchActivity extends AppCompatActivity
         int width = metrics.widthPixels;
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
-        findViewById(R.id.search_list_container).setLayoutParams(params);
-        View container = findViewById(R.id.search_item_container);
-        container.setVisibility(View.VISIBLE);
-        container.setLayoutParams(params);
+        mListContainer.setLayoutParams(params);
+        mItemContainer.setVisibility(View.VISIBLE);
+        mItemContainer.setLayoutParams(params);
     }
 
     /**
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
-        findViewById(R.id.search_list_container).setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        mDualPane = false;
+        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        sDualPane = false;
     }
 
     private static void launchFilterPreferences(Context context) {
@@ -262,7 +264,7 @@ public class SearchActivity extends AppCompatActivity
             hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
         }
         DataService.startActionFetchGenerated(getBaseContext(), hashMap);
-        mSnackbarMessage = getString(R.string.message_search_refresh);
+        mSnackbar = getString(R.string.message_search_refresh);
     }
 
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
@@ -289,11 +291,11 @@ public class SearchActivity extends AppCompatActivity
              */
             @OnClick(R.id.search_item_view)
             void togglePane(View v) {
-                if (mLastClicked != null && mLastClicked.equals(v)) mDualPane = !mDualPane;
-                else mDualPane = true;
+                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
+                else sDualPane = true;
 
                 mLastClicked = v;
-                if (mDualPane) showDualPane((Bundle) v.getTag());
+                if (sDualPane) showDualPane((Bundle) v.getTag());
                 else showSinglePane();
             }
         }
@@ -332,9 +334,9 @@ public class SearchActivity extends AppCompatActivity
                     .into(holder.mLogoView);
 
             Bundle arguments = new Bundle();
-            arguments.putString(CharityFragment.ARG_ITEM_NAME, name);
-            arguments.putString(CharityFragment.ARG_ITEM_EIN, ein);
-            arguments.putString(CharityFragment.ARG_ITEM_URL, url);
+            arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
+            arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
+            arguments.putString(DetailFragment.ARG_ITEM_URL, url);
 
             holder.itemView.setTag(arguments);
         }
@@ -354,6 +356,5 @@ public class SearchActivity extends AppCompatActivity
             mValuesArray = valuesArray;
             notifyDataSetChanged();
         }
-
     }
 }

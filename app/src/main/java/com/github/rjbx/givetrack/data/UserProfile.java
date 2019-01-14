@@ -21,7 +21,6 @@ public class UserProfile {
     private String tracked;
     private String donation;
     private String magnitude;
-    private List<String> percentages;
     private List<String> charities;
     private String term;
     private String city;

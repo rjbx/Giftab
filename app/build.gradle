@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:4.7.1'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-    implementation 'com.github.rjbx.rateraid:rateraid:0.2.0'
+    implementation 'com.github.rjbx.rateraid:rateraid:0.2.5'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-all:1.10.19'
     testImplementation 'org.hamcrest:hamcrest-all:1.3'

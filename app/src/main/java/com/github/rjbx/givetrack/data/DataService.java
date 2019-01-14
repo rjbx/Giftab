@@ -51,25 +51,24 @@ public class DataService extends IntentService {
     private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
 
-    private static final String ACTION_FETCH_GENERATED = "com.github.rjbx.givetrack.sync.action.FETCH_GENERATED";
-    private static final String ACTION_FETCH_COLLECTED = "com.github.rjbx.givetrack.sync.action.FETCH_COLLECTED";
-    private static final String ACTION_COLLECT_GENERATED = "com.github.rjbx.givetrack.sync.action.COLLECT_GENERATED";
-    private static final String ACTION_REMOVE_GENERATED = "com.github.rjbx.givetrack.sync.action.REMOVE_GENERATED";
-    private static final String ACTION_REMOVE_COLLECTED = "com.github.rjbx.givetrack.sync.action.REMOVE_COLLECTED";
-    private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.sync.action.RESET_GENERATED";
-    private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.sync.action.RESET_COLLECTED";
-    private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.sync.action.UPDATE_FREQUENCY";
-    private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.sync.action.UPDATE_PERCENTAGES";
-    private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.sync.action.RESET_DATA";
+    private static final String ACTION_FETCH_GENERATED = "com.github.rjbx.givetrack.data.action.FETCH_GENERATED";
+    private static final String ACTION_FETCH_COLLECTED = "com.github.rjbx.givetrack.data.action.FETCH_COLLECTED";
+    private static final String ACTION_COLLECT_GENERATED = "com.github.rjbx.givetrack.data.action.COLLECT_GENERATED";
+    private static final String ACTION_REMOVE_GENERATED = "com.github.rjbx.givetrack.data.action.REMOVE_GENERATED";
+    private static final String ACTION_REMOVE_COLLECTED = "com.github.rjbx.givetrack.data.action.REMOVE_COLLECTED";
+    private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.data.action.RESET_GENERATED";
+    private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.data.action.RESET_COLLECTED";
+    private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
+    private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
+    private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
 
-    private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.sync.extra.API_REQUEST";
-    private static final String EXTRA_ITEM_ID = "com.github.rjbx.givetrack.sync.extra.ITEM_ID";
-    private static final String EXTRA_ITEM_VALUES = "com.github.rjbx.givetrack.sync.extra.ITEM_VALUES";
-    private static final String EXTRA_LIST_VALUES = "com.github.rjbx.givetrack.sync.extra.LIST_VALUES";
+    private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.data.extra.API_REQUEST";
+    private static final String EXTRA_ITEM_VALUES = "com.github.rjbx.givetrack.data.extra.ITEM_VALUES";
+    private static final String EXTRA_LIST_VALUES = "com.github.rjbx.givetrack.data.extra.LIST_VALUES";
+    private static final String EXTRA_ITEM_ID = "com.github.rjbx.givetrack.data.extra.ITEM_ID";
 
     public static final String DEFAULT_VALUE_STR = "";
     public static final int DEFAULT_VALUE_INT = -1;
-
 
     /**
      * Creates an {@link IntentService} instance.
@@ -387,7 +386,6 @@ public class DataService extends IntentService {
             cursor.close();
 
         });
-
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
