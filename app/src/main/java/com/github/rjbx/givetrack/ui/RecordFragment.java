@@ -340,7 +340,7 @@ public class RecordFragment extends Fragment implements
     /**
      * Populates {@link RecordFragment} {@link RecyclerView}.
      */
-    private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
@@ -595,7 +595,7 @@ public class RecordFragment extends Fragment implements
         }
     }
     
-    private static class ContactDialogLayout extends LinearLayout {
+    static class ContactDialogLayout extends LinearLayout {
 
         private Context mContext;
         private static AlertDialog mAlertDialog;

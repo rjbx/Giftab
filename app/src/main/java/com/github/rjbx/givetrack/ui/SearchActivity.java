@@ -279,7 +279,7 @@ public class SearchActivity extends AppCompatActivity implements
         context.startActivity(filterIntent);
     }
 
-    private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private ContentValues[] mValuesArray;
 
