@@ -251,7 +251,7 @@ public class RecordFragment extends Fragment implements
         }
     }
 
-    @OnClick(R.id.donation_decrement_button) void decrementPercentage() {
+    @OnClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
@@ -263,7 +263,7 @@ public class RecordFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnClick(R.id.donation_increment_button) void incrementPercentage() {
+    @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
         UserPreferences.updateFirebaseUser(getContext());
