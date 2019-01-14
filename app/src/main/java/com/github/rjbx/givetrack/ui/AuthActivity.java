@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import com.firebase.ui.auth.AuthUI;
@@ -58,6 +59,7 @@ public class AuthActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
+        ButterKnife.bind(this);
 
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
