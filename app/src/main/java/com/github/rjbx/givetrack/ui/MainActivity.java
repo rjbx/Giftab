@@ -244,10 +244,10 @@ public class MainActivity extends AppCompatActivity implements
         if (dialog == mClearDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    DataService.startActionResetCollected(this);
+                    dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_NEGATIVE:
-                    dialog.dismiss();
+                    DataService.startActionResetCollected(this);
                     break;
                 default:
             }
