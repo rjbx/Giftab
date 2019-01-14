@@ -307,7 +307,7 @@ public class DataService extends IntentService {
         Uri template = templateBuilder.build();
 
         List<String> charities = UserPreferences.getCharities(this);
-        if (charities.get(0).isEmpty()) return;
+        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
 
         int charityCount = charities.size();
         ContentValues[] contentValuesArray = new ContentValues[charityCount];
@@ -376,7 +376,7 @@ public class DataService extends IntentService {
             String emailAddress = urlToEmailAddress(orgUrl);
             values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
 
-            if (charities.get(0).isEmpty()) charities = new ArrayList<>();
+            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
             String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
             charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, 0f, 0f, 0));
 
@@ -456,6 +456,8 @@ public class DataService extends IntentService {
     private void handleActionResetCollected() {
         DISK_IO.execute(() -> getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null));
 
+        UserPreferences.setCharities(this, new ArrayList<>());
+        UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
