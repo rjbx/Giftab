@@ -511,10 +511,10 @@ public class RecordFragment extends Fragment implements
             @Override public void onClick(DialogInterface dialog, int which) {
                 if (dialog == mRemoveDialog) {
                     switch (which) {
-                        case androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL:
+                        case AlertDialog.BUTTON_NEUTRAL:
                             dialog.dismiss();
                             break;
-                        case androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE:
+                        case AlertDialog.BUTTON_NEGATIVE:
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
                             String ein = (String) mRemoveDialog.getListView().getTag();

@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
@@ -52,7 +54,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class ReviewFragment extends Fragment {
+public class ReviewFragment extends Fragment implements DialogInterface.OnClickListener {
 
     private static final int [] COLORS = new int[] {
         R.color.colorAttention,
@@ -67,6 +69,7 @@ public class ReviewFragment extends Fragment {
     private static int sThemeIndex;
     private MainActivity mParentActivity;
     private Unbinder mUnbinder;
+    private AlertDialog mTimeDialog;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
@@ -155,6 +158,23 @@ public class ReviewFragment extends Fragment {
         mUnbinder.unbind();
     }
 
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (dialog == mTimeDialog) {
+            switch (which) {
+                case AlertDialog.BUTTON_NEUTRAL:
+                    mTimeDialog.dismiss();
+                    break;
+                case AlertDialog.BUTTON_POSITIVE:
+                    UserPreferences.setTracked(getContext(), "0");
+                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+                    mAmountView.setText("0");
+                    break;
+                default:
+            }
+        }
+    }
+
     @OnClick(R.id.home_amount_text) void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 6) sThemeIndex = 0;
@@ -175,19 +195,13 @@ public class ReviewFragment extends Fragment {
     }
 
     @OnClick(R.id.home_time_button) void trackAmount() {
-        AlertDialog timeDialog = new AlertDialog.Builder(getContext()).create();
-        timeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
-        timeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel),
-                (onClickDialog, onClickPosition) -> timeDialog.dismiss());
-        timeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm),
-                (onClickDialog, onClickPosition) -> {
-                    UserPreferences.setTracked(getContext(), "0");
-                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
-                    mAmountView.setText("0");
-                });
-        timeDialog.show();
-        timeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-        timeDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        mTimeDialog = new AlertDialog.Builder(getContext()).create();
+        mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
+        mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+        mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+        mTimeDialog.show();
+        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
     }
 
     @OnClick(R.id.home_share_button) void shareText() {

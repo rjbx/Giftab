@@ -3,6 +3,7 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -284,7 +285,11 @@ public class SettingsActivity extends PreferenceActivity {
     /**
      * Shows data and sync preferences when the Activity is showing a two-pane settings UI.
      */
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
+    public static class DataSyncPreferenceFragment extends PreferenceFragment implements
+            DialogInterface.OnClickListener {
+
+        AlertDialog mDeleteDialog;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -294,17 +299,13 @@ public class SettingsActivity extends PreferenceActivity {
 
             Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
             deletePreference.setOnPreferenceClickListener(clickedPreference -> {
-                    AlertDialog dialog = new AlertDialog.Builder(getActivity()).create();
-                    dialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
-                    dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
-                        (onClickDialog, onClickPosition) -> dialog.dismiss());
-                    dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase),
-                        (onClickDialog, onClickPosition) ->
-                            startActivity(new Intent(getActivity(), AuthActivity.class).setAction(AuthActivity.ACTION_DELETE_ACCOUNT)));
-                    dialog.show();
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-
+                    mDeleteDialog = new AlertDialog.Builder(getActivity()).create();
+                    mDeleteDialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
+                    mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                    mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
+                    mDeleteDialog.show();
+                    mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                    mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                     return false;
             });
         }
@@ -320,6 +321,21 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (dialog == mDeleteDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        mDeleteDialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        startActivity(new Intent(getActivity(), AuthActivity.class).setAction(AuthActivity.ACTION_DELETE_ACCOUNT));
+                        break;
+                    default:
+                }
+            }
         }
     }
 }

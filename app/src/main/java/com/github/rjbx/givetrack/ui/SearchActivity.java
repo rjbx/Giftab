@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.ui;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -50,15 +51,16 @@ import java.util.HashMap;
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class SearchActivity extends AppCompatActivity
-        implements DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor> {
+public class SearchActivity extends AppCompatActivity implements
+        DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
+        DialogInterface.OnClickListener {
 
     private static final int ID_GENERATION_LOADER = 123;
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
     private ListAdapter mAdapter;
-    private AlertDialog mDialog;
+    private AlertDialog mSearchDialog;
     private String mSnackbar;
     @BindView(R.id.search_fab) FloatingActionButton mFab;
     @BindView(R.id.search_toolbar) Toolbar mToolbar;
@@ -85,15 +87,10 @@ public class SearchActivity extends AppCompatActivity
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
-        mDialog = new AlertDialog.Builder(this).create();
-        mDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start),
-                (onClickDialog, onClickPosition) -> {
-                    sDialogShown = true;
-                    launchFilterPreferences(this);
-        });
-        mDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later),
-                (onClickDialog, onClickPosition) -> mDialog.dismiss());
+        mSearchDialog = new AlertDialog.Builder(this).create();
+        mSearchDialog.setMessage(getString(R.string.dialog_filter_setup));
+        mSearchDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
+        mSearchDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -174,9 +171,9 @@ public class SearchActivity extends AppCompatActivity
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
-            mDialog.show();
-            mDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            mDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+            mSearchDialog.show();
+            mSearchDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+            mSearchDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
         }
         int id = loader.getId();
         switch (id) {
@@ -238,11 +235,20 @@ public class SearchActivity extends AppCompatActivity
         sDualPane = false;
     }
 
-    private static void launchFilterPreferences(Context context) {
-        Intent filterIntent = new Intent(context, SettingsActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        context.startActivity(filterIntent);
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (dialog == mSearchDialog) {
+            switch (which) {
+                case AlertDialog.BUTTON_NEUTRAL:
+                    mSearchDialog.dismiss();
+                    break;
+                case AlertDialog.BUTTON_POSITIVE:
+                    sDialogShown = true;
+                    launchFilterPreferences(this);
+                    break;
+                default:
+            }
+        }
     }
 
     /**
@@ -267,7 +273,15 @@ public class SearchActivity extends AppCompatActivity
         mSnackbar = getString(R.string.message_search_refresh);
     }
 
+    private static void launchFilterPreferences(Context context) {
+        Intent filterIntent = new Intent(context, SettingsActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
+        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        context.startActivity(filterIntent);
+    }
+
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+
         private ContentValues[] mValuesArray;
 
         private View mLastClicked;

@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_NEUTRAL:
                     dialog.dismiss();
                     break;
-                case  AlertDialog.BUTTON_POSITIVE:
+                case AlertDialog.BUTTON_POSITIVE:
                     float magnitude = mSeekProgress / 1000f;
                     UserPreferences.setMagnitude(this, String.format(Locale.getDefault(), "%.2f", magnitude));
                     UserPreferences.updateFirebaseUser(this);
