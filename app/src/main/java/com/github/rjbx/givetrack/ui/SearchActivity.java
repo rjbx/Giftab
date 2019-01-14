@@ -235,8 +235,7 @@ public class SearchActivity extends AppCompatActivity implements
         sDualPane = false;
     }
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
+    @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mSearchDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -280,39 +279,11 @@ public class SearchActivity extends AppCompatActivity implements
         context.startActivity(filterIntent);
     }
 
-    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private ContentValues[] mValuesArray;
 
         private View mLastClicked;
-
-        class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.search_item_primary) TextView mNameView;
-            @BindView(R.id.search_item_secondary) TextView mIdView;
-            @BindView(R.id.search_item_tertiary) TextView mAddressView;
-            @BindView(R.id.search_item_logo) ImageView mLogoView;
-
-            /**
-             * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
-             */
-            ViewHolder(View view) {
-                super(view);
-                ButterKnife.bind(this, view);
-            }
-
-            /**
-             * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
-             */
-            @OnClick(R.id.search_item_view)
-            void togglePane(View v) {
-                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
-                else sDualPane = true;
-
-                mLastClicked = v;
-                if (sDualPane) showDualPane((Bundle) v.getTag());
-                else showSinglePane();
-            }
-        }
 
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation
@@ -366,9 +337,36 @@ public class SearchActivity extends AppCompatActivity implements
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        void swapValues(ContentValues[] valuesArray) {
+        private void swapValues(ContentValues[] valuesArray) {
             mValuesArray = valuesArray;
             notifyDataSetChanged();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.search_item_primary) TextView mNameView;
+            @BindView(R.id.search_item_secondary) TextView mIdView;
+            @BindView(R.id.search_item_tertiary) TextView mAddressView;
+            @BindView(R.id.search_item_logo) ImageView mLogoView;
+
+            /**
+             * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
+             */
+            ViewHolder(View view) {
+                super(view);
+                ButterKnife.bind(this, view);
+            }
+
+            /**
+             * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+             */
+            @OnClick(R.id.search_item_view) void togglePane(View v) {
+                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
+                else sDualPane = true;
+
+                mLastClicked = v;
+                if (sDualPane) showDualPane((Bundle) v.getTag());
+                else showSinglePane();
+            }
         }
     }
 }

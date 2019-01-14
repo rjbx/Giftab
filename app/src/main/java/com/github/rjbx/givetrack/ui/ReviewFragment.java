@@ -28,6 +28,7 @@ import butterknife.OnClick;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -35,8 +36,8 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DataService;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
@@ -54,7 +55,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class ReviewFragment extends Fragment implements DialogInterface.OnClickListener {
+public class ReviewFragment extends Fragment implements
+        DialogInterface.OnClickListener,
+        IAxisValueFormatter {
 
     private static final int [] COLORS = new int[] {
         R.color.colorAttention,
@@ -135,8 +138,7 @@ public class ReviewFragment extends Fragment implements DialogInterface.OnClickL
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
@@ -146,20 +148,17 @@ public class ReviewFragment extends Fragment implements DialogInterface.OnClickL
      * Ensures the parent Activity has been created and data has been retrieved before
      * invoking the method that references them in order to populate the UI.
      */
-    @Override
-    public void onResume() {
+    @Override public void onResume() {
         super.onResume();
         createChart();
     }
 
-    @Override
-    public void onDestroy() {
+    @Override public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
     }
 
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
+    @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mTimeDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -172,6 +171,15 @@ public class ReviewFragment extends Fragment implements DialogInterface.OnClickL
                     break;
                 default:
             }
+        }
+    }
+
+    @Override public String getFormattedValue(float value, AxisBase axis) {
+        switch ((int) value) {
+            case 0: return getString(R.string.axis_value_high);
+            case 1: return getString(R.string.axis_value_today);
+            case 2: return getString(R.string.axis_value_yesterday);
+            default: return getString(R.string.axis_value_days, (int) value);
         }
     }
 
@@ -407,14 +415,7 @@ public class ReviewFragment extends Fragment implements DialogInterface.OnClickL
 
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
-        mActivityChart.getXAxis().setValueFormatter((axisValue, axis) -> {
-            switch ((int) axisValue) {
-                case 0: return getString(R.string.axis_value_high);
-                case 1: return getString(R.string.axis_value_today);
-                case 2: return getString(R.string.axis_value_yesterday);
-                default: return getString(R.string.axis_value_days, (int) axisValue);
-            }
-        });
+        mActivityChart.getXAxis().setValueFormatter(this);
         mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);

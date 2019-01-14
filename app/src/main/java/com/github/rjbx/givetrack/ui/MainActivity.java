@@ -284,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements
                 .launchUrl(this, Uri.parse(url));
         getIntent().setAction(ACTION_CUSTOM_TABS);
     }
+
     public static class PlaceholderFragment extends Fragment {
 
 
@@ -298,7 +299,7 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
          */
-        public static PlaceholderFragment newInstance(@Nullable Bundle args) {
+        static PlaceholderFragment newInstance(@Nullable Bundle args) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             if (args != null) fragment.setArguments(args);
             return fragment;
@@ -324,13 +325,12 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Returns a Fragment corresponding to a section.
      */
-    public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
-
+    private class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         /**
          * Constructs this instance from a {@link FragmentManager}.
          */
-        SectionsPagerAdapter(FragmentManager fm) { super(fm); }
+        private SectionsPagerAdapter(FragmentManager fm) { super(fm); }
 
         /**
          * Instantiates the Fragment for a given section.
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     private static class StatusAsyncTask extends AsyncTask<ContentValues[], Void, Boolean> {
 
-        WeakReference<MainActivity> mActivity;
+        private WeakReference<MainActivity> mActivity;
 
         /**
          * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order

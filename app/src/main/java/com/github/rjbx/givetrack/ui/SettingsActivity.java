@@ -74,9 +74,20 @@ public class SettingsActivity extends PreferenceActivity {
     }
 
     /**
+     * Stops fragment injection in malicious applications.
+     */
+    protected boolean isValidFragment(String fragmentName) {
+        return PreferenceFragment.class.getName().equals(fragmentName)
+                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
+                || SearchPreferenceFragment.class.getName().equals(fragmentName)
+                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    /**
      * Updates the preference summary to reflect its new value.
      */
-    public static boolean changePreference(Preference changedPreference, Object newValue) {
+    private static boolean changePreference(Preference changedPreference, Object newValue) {
         String stringValue = newValue.toString();
 
         if (changedPreference instanceof ListPreference) {
@@ -126,17 +137,6 @@ public class SettingsActivity extends PreferenceActivity {
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
-    }
-
-    /**
-     * Stops fragment injection in malicious applications.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
-                || SearchPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**

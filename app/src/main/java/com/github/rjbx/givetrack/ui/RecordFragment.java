@@ -300,13 +300,6 @@ public class RecordFragment extends Fragment implements
         if (sValuesArray != null) mListAdapter.notifyDataSetChanged();
     }
 
-    /**
-     * Indicates whether the MasterDetailFlow is in dual pane mode.
-     */
-    public boolean isDualPane() {
-        return sDualPane;
-    }
-
     private void renderActionBar() {
 
         int barWrapperColor;
@@ -338,19 +331,26 @@ public class RecordFragment extends Fragment implements
     }
 
     /**
+     * Indicates whether the MasterDetailFlow is in dual pane mode.
+     */
+    public boolean isDualPane() {
+        return sDualPane;
+    }
+
+    /**
      * Populates {@link RecordFragment} {@link RecyclerView}.
      */
-    public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+    private class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private Float[] mPercentages;
         private ImageButton mLastClicked;
-        private Rateraid.Builder mRateraid;
+        private Rateraid.Builder mRateraidBuilder;
 
-        public ListAdapter() {
+        ListAdapter() {
             mPercentages = new Float[sValuesArray.length];
-            mRateraid = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
+            mRateraidBuilder = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
                 float sum = 0;
                 for (float percentage : mPercentages) sum += percentage;
                 Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
@@ -441,8 +441,8 @@ public class RecordFragment extends Fragment implements
 
             final int adapterPosition = holder.getAdapterPosition();
 
-            mRateraid.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
-            mRateraid.addValueEditor(holder.mPercentageView, adapterPosition);
+            mRateraidBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
+            mRateraidBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
         }
 
         /**
@@ -456,7 +456,7 @@ public class RecordFragment extends Fragment implements
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        void swapValues() {
+        private void swapValues() {
             if (mPercentages.length != sValuesArray.length)
                 mPercentages = Arrays.copyOf(mPercentages, sValuesArray.length);
             for (int i = 0; i < mPercentages.length; i++) {
@@ -595,7 +595,7 @@ public class RecordFragment extends Fragment implements
         }
     }
     
-    public static class ContactDialogLayout extends LinearLayout {
+    private static class ContactDialogLayout extends LinearLayout {
 
         private Context mContext;
         private static AlertDialog mAlertDialog;
@@ -608,7 +608,7 @@ public class RecordFragment extends Fragment implements
         @BindView(R.id.location_button) @Nullable Button mLocationButton;
         @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
 
-        ContactDialogLayout(Context context) {
+        private ContactDialogLayout(Context context) {
             super(context);
             mContext = context;
             LayoutInflater.from(mContext).inflate(R.layout.dialog_contact, this, true);

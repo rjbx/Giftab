@@ -81,7 +81,7 @@ public class DetailFragment extends Fragment {
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static DetailFragment newInstance(@Nullable Bundle args) {
+    static DetailFragment newInstance(@Nullable Bundle args) {
         DetailFragment fragment = new DetailFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
@@ -206,7 +206,7 @@ public class DetailFragment extends Fragment {
     /**
      * Generates {@link Snackbar} based on item collection status.
      */
-    public void drawSnackbar() {
+    private void drawSnackbar() {
         String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sName);
         Snackbar sb = Snackbar.make(mFab, message, Snackbar.LENGTH_LONG);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -217,7 +217,7 @@ public class DetailFragment extends Fragment {
     /**
      * Generates toggle Button based on item collection status.
      */
-    public void drawActionButton() {
+    private void drawActionButton() {
         if (getContext() == null || mFab == null) return;
         mFab.setImageResource(sCurrentState ?
                 R.drawable.action_remove: R.drawable.action_download);
@@ -232,7 +232,7 @@ public class DetailFragment extends Fragment {
     /**
      * Defines behavior onClick of item collection status toggle Button.
      */
-    public void onClickActionButton() {
+    private void onClickActionButton() {
         sCurrentState = !sCurrentState;
         drawActionButton();
         drawSnackbar();
@@ -258,9 +258,9 @@ public class DetailFragment extends Fragment {
     /**
      * Confirms whether item exists in collection table and updates status accordingly.
      */
-    public static class StatusAsyncTask extends AsyncTask<Uri, Void, Boolean> {
+    private static class StatusAsyncTask extends AsyncTask<Uri, Void, Boolean> {
 
-        WeakReference<DetailFragment> mFragment;
+        private WeakReference<DetailFragment> mFragment;
 
         /**
          * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order
