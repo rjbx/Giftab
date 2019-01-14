@@ -89,8 +89,8 @@ public class SearchActivity extends AppCompatActivity implements
 
         mSearchDialog = new AlertDialog.Builder(this).create();
         mSearchDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mSearchDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
-        mSearchDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
+        mSearchDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
+        mSearchDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -172,8 +172,8 @@ public class SearchActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
             mSearchDialog.show();
-            mSearchDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            mSearchDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+            mSearchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+            mSearchDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
         }
         int id = loader.getId();
         switch (id) {
