@@ -31,12 +31,12 @@ import androidx.core.view.GravityCompat;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
-    @BindView(R.id.main_readout) TextView mReadout;
     @BindView(R.id.main_pager) ViewPager mPager;
     @BindView(R.id.main_tabs) TabLayout mTabs;
 
@@ -148,11 +147,12 @@ public class MainActivity extends AppCompatActivity implements
                 View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 AlertDialog magnitudeDialog = new AlertDialog.Builder(this).create();
-                mReadout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
+                TextView readout = view.findViewById(R.id.main_readout);
+                readout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
                 seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        mReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
+                        readout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
                     }
                     @Override public void onStartTrackingTouch(SeekBar seekBar) {}
                     @Override public void onStopTrackingTouch(SeekBar seekBar) {}
