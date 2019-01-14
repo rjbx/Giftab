@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -347,13 +346,146 @@ public class RecordFragment extends Fragment implements
         private static final int VIEW_TYPE_BUTTON = 1;
         private Float[] mPercentages;
         private ImageButton mLastClicked;
-        private Rateraid.Builder mWeightsBuilder;
+        private Rateraid.Builder mRateraid;
+
+        public ListAdapter() {
+            mPercentages = new Float[sValuesArray.length];
+            mRateraid = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
+                float sum = 0;
+                for (float percentage : mPercentages) sum += percentage;
+                Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
+                sDonationsAdjusted = true;
+                renderActionBar();
+                mProgress.setVisibility(View.VISIBLE);
+                notifyDataSetChanged();
+            });
+        }
+
+        /**
+         * Generates a Layout for the ViewHolder based on its Adapter position and orientation
+         */
+        @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view;
+            if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_record, parent, false);
+            else view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.button_collect, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override public int getItemViewType(int position) {
+            if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
+            else return VIEW_TYPE_CHARITY;
+        }
+
+        /**
+         * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
+         */
+        @Override
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+            if (position == getItemCount() - 1) {
+                holder.mAddButton.setOnClickListener(clickedView -> {
+                    Intent searchIntent = new Intent(getContext(), SearchActivity.class);
+                    startActivity(searchIntent);
+                });
+                return;
+            }
+
+            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null
+                    || mPercentages == null || mPercentages.length == 0)
+                return;
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                    && position == 0) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.donation_item_height));
+                params.setMargins(
+                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
+                        (int) getResources().getDimension(R.dimen.item_initial_top_margin),
+                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
+                        (int) getResources().getDimension(R.dimen.item_default_vertical_margin));
+                holder.itemView.setLayoutParams(params);
+            }
+
+            final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
+            final NumberFormat percentInstance = NumberFormat.getPercentInstance();
+
+            ContentValues values = sValuesArray[position];
+            final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            final int frequency =
+                    values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
+            final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
+
+            String mutableName = name;
+            if (mutableName.length() > 30) {
+                mutableName = mutableName.substring(0, 30);
+                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("...");
+            }
+            holder.mNameView.setText(mutableName);
+
+            holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
+            holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));
+            if (impact > 10)
+                if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+                else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
+
+            for (View view : holder.itemView.getTouchables()) view.setTag(position);
+
+            holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
+            holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
+
+            if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+            else if (sDualPane && mPanePosition == position) {
+                mLastClicked = holder.mInspectButton;
+                mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
+            }
+
+            final int adapterPosition = holder.getAdapterPosition();
+
+            mRateraid.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
+            mRateraid.addValueEditor(holder.mPercentageView, adapterPosition);
+        }
+
+        /**
+         * Returns the number of items to display.
+         */
+        @Override
+        public int getItemCount() {
+            return sValuesArray != null ? sValuesArray.length + 1 : 1;
+        }
+
+        /**
+         * Swaps the Cursor after completing a load or resetting Loader.
+         */
+        void swapValues() {
+            if (mPercentages.length != sValuesArray.length)
+                mPercentages = Arrays.copyOf(mPercentages, sValuesArray.length);
+            for (int i = 0; i < mPercentages.length; i++) {
+                mPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
+            }
+            Calibrater.resetRatings(mPercentages, false);
+            notifyDataSetChanged();
+        }
+
+        /**
+         * Syncs donation percentage and amount mValues to table.
+         */
+        private void syncDonations() {
+            if (mPercentages == null || mPercentages.length == 0) return;
+            ContentValues[] valuesArray = new ContentValues[mPercentages.length];
+            for (int i = 0; i < mPercentages.length; i++) {
+                ContentValues values = new ContentValues();
+                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(mPercentages[i]));
+                Timber.d(mPercentages[i] + " " + mAmountTotal + " " + i + " " + mPercentages.length);
+                valuesArray[i] = values;
+            }
+            DataService.startActionUpdatePercentages(getContext(), valuesArray);
+        }
 
         /**
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder implements DialogInterface.OnClickListener {
-            
+
             @BindView(R.id.charity_primary) @Nullable TextView mNameView;
             @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
             @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
@@ -460,139 +592,6 @@ public class RecordFragment extends Fragment implements
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
             }
-        }
-
-        public ListAdapter() {
-            mPercentages = new Float[sValuesArray.length];
-            mWeightsBuilder = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
-                float sum = 0;
-                for (float percentage : mPercentages) sum += percentage;
-                Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
-                sDonationsAdjusted = true;
-                renderActionBar();
-                mProgress.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
-            });
-        }
-
-        /**
-         * Generates a Layout for the ViewHolder based on its Adapter position and orientation
-         */
-        @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view;
-            if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_record, parent, false);
-            else view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.button_collect, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override public int getItemViewType(int position) {
-            if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
-            else return VIEW_TYPE_CHARITY;
-        }
-
-        /**
-         * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
-         */
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-
-            if (position == getItemCount() - 1) {
-                holder.mAddButton.setOnClickListener(clickedView -> {
-                    Intent searchIntent = new Intent(getContext(), SearchActivity.class);
-                    startActivity(searchIntent);
-                });
-                return;
-            }
-
-            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null
-                    || mPercentages == null || mPercentages.length == 0)
-                return;
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                    && position == 0) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.donation_item_height));
-                params.setMargins(
-                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
-                        (int) getResources().getDimension(R.dimen.item_initial_top_margin),
-                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
-                        (int) getResources().getDimension(R.dimen.item_default_vertical_margin));
-                holder.itemView.setLayoutParams(params);
-            }
-
-            final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
-            final NumberFormat percentInstance = NumberFormat.getPercentInstance();
-
-            ContentValues values = sValuesArray[position];
-            final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-            final int frequency =
-                    values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
-            final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
-
-            String mutableName = name;
-            if (mutableName.length() > 30) {
-                mutableName = mutableName.substring(0, 30);
-                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("...");
-            }
-            holder.mNameView.setText(mutableName);
-
-            holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
-            holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));
-            if (impact > 10)
-                if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
-                else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
-
-            for (View view : holder.itemView.getTouchables()) view.setTag(position);
-
-            holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
-            holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
-
-            if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-            else if (sDualPane && mPanePosition == position) {
-                mLastClicked = holder.mInspectButton;
-                mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
-            }
-
-            final int adapterPosition = holder.getAdapterPosition();
-
-            mWeightsBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
-            mWeightsBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
-        }
-
-        /**
-         * Returns the number of items to display.
-         */
-        @Override
-        public int getItemCount() {
-            return sValuesArray != null ? sValuesArray.length + 1 : 1;
-        }
-
-        /**
-         * Swaps the Cursor after completing a load or resetting Loader.
-         */
-        void swapValues() {
-            if (mPercentages.length != sValuesArray.length)
-                mPercentages = Arrays.copyOf(mPercentages, sValuesArray.length);
-            for (int i = 0; i < mPercentages.length; i++) {
-                mPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
-            }
-            Calibrater.resetRatings(mPercentages, false);
-            notifyDataSetChanged();
-        }
-
-        /**
-         * Syncs donation percentage and amount mValues to table.
-         */
-        private void syncDonations() {
-            if (mPercentages == null || mPercentages.length == 0) return;
-            ContentValues[] valuesArray = new ContentValues[mPercentages.length];
-            for (int i = 0; i < mPercentages.length; i++) {
-                ContentValues values = new ContentValues();
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(mPercentages[i]));
-                Timber.d(mPercentages[i] + " " + mAmountTotal + " " + i + " " + mPercentages.length);
-                valuesArray[i] = values;
-            }
-            DataService.startActionUpdatePercentages(getContext(), valuesArray);
         }
     }
     
