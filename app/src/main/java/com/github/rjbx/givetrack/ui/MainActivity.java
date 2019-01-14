@@ -261,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements
                     float magnitude = mSeekProgress / 1000f;
                     UserPreferences.setMagnitude(this, String.format(Locale.getDefault(), "%.2f", magnitude));
                     UserPreferences.updateFirebaseUser(this);
+                    getSupportLoaderManager().restartLoader(ID_MAIN_LOADER, null, this);
                     break;
                 default:
             }
