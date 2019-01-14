@@ -117,7 +117,7 @@ public class ReviewFragment extends Fragment {
         float totalImpact = 0f;
         for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[4]);
         mTotal = currencyFormatter.format(totalImpact);
-        mAmountView.setText(mTotalTime);
+        mAmountView.setText(mTotal);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
