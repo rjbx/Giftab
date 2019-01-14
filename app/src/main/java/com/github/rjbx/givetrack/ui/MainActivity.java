@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_magnitude:
                 View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
-                AlertDialog mMagnitudeDialog = new AlertDialog.Builder(this).create();
+                mMagnitudeDialog = new AlertDialog.Builder(this).create();
                 mSeekReadout = view.findViewById(R.id.main_readout);
                 mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
                 seekbar.setOnSeekBarChangeListener(this);
