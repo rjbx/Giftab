@@ -3,6 +3,7 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -32,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -350,7 +352,8 @@ public class RecordFragment extends Fragment implements
         /**
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder implements DialogInterface.OnClickListener {
+            
             @BindView(R.id.charity_primary) @Nullable TextView mNameView;
             @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
             @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
@@ -362,7 +365,8 @@ public class RecordFragment extends Fragment implements
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
-            private AlertDialog mAlertDialog;
+            private AlertDialog mContactDialog;
+            private AlertDialog mRemoveDialog;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -372,25 +376,37 @@ public class RecordFragment extends Fragment implements
                 ButterKnife.bind(this, view);
             }
 
+            @Override public void onClick(DialogInterface dialog, int which) {
+                if (dialog == mRemoveDialog) {
+                    switch (which) {
+                        case androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL:
+                            dialog.dismiss();
+                            break;
+                        case androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE:
+                            if (sDualPane) showSinglePane();
+//                                if (sValuesArray.length == 1) onDestroy();
+                            String ein = (String) mRemoveDialog.getListView().getTag();
+                            DataService.startActionRemoveCollected(getContext(), ein);
+                            break;
+                        default:
+                    }
+                }
+            }
+
             @Optional @OnClick(R.id.collection_remove_button) void removeCollected(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
                 String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
                 String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
 
-                AlertDialog dialog = new AlertDialog.Builder(getContext()).create();
-                dialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
-                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep),
-                        (neutralButtonOnClickDialog, neutralButtonOnClickPosition) -> dialog.dismiss());
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove),
-                        (negativeButtonOnClickDialog, negativeButtonOnClickPosition) -> {
-                            if (sDualPane) showSinglePane();
-//                                if (sValuesArray.length == 1) onDestroy();
-                            DataService.startActionRemoveCollected(getContext(), ein);
-                        });
-                dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                mRemoveDialog = new AlertDialog.Builder(getContext()).create();
+                mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
+                mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mRemoveDialog.getListView().setTag(ein);
+                mRemoveDialog.show();
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
 
             @Optional @OnClick(R.id.inspect_button) void inspectCollected(View v) {
@@ -439,12 +455,11 @@ public class RecordFragment extends Fragment implements
             }
 
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
-                mAlertDialog = new AlertDialog.Builder(getContext()).create();
-                ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mAlertDialog, sValuesArray[(int) v.getTag()]);
-                mAlertDialog.setView(alertLayout);
-                mAlertDialog.show();
+                mContactDialog = new AlertDialog.Builder(getContext()).create();
+                ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
+                mContactDialog.setView(alertLayout);
+                mContactDialog.show();
             }
-
         }
 
         public ListAdapter() {
