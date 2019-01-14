@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_clear:
                 mClearDialog = new AlertDialog.Builder(this).create();
-                ButterKnife.bind(mClearDialog.getListView());
                 mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
