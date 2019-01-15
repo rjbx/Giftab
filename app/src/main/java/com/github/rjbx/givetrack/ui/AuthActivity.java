@@ -152,7 +152,7 @@ public class AuthActivity extends AppCompatActivity {
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
                         UserProfile user = dataSnapshot.child(firebaseUser.getUid()).getValue(UserProfile.class);
-                        if (user == null) return;
+                        if (user == null) user = UserPreferences.generateUserProfile(AuthActivity.this);
                         PreferenceManager.getDefaultSharedPreferences(AuthActivity.this)
                                 .registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
                                 finish();
