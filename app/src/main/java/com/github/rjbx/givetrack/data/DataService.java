@@ -313,6 +313,7 @@ public class DataService extends IntentService {
         ContentValues[] contentValuesArray = new ContentValues[charityCount];
 
         NETWORK_IO.execute(() -> {
+
             for (int i = 0; i < charityCount; i++) {
 
                 String[] charityData = charities.get(i).split(":");
@@ -358,13 +359,13 @@ public class DataService extends IntentService {
 
             Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
             if (cursor == null) return;
-            cursor.moveToFirst();
+            if (cursor.getCount() > 0) cursor.moveToFirst();
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(cursor, values);
 
             List<String> charities = UserPreferences.getCharities(this);
 
-            String percentage = charities.isEmpty() ? "1" : "0";
+            String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
             values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
             values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
@@ -385,7 +386,6 @@ public class DataService extends IntentService {
             UserPreferences.updateFirebaseUser(this);
             getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
             cursor.close();
-
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
