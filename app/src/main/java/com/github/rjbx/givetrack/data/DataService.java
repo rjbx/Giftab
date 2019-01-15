@@ -379,7 +379,7 @@ public class DataService extends IntentService {
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
             String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
