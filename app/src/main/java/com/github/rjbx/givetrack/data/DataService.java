@@ -357,7 +357,7 @@ public class DataService extends IntentService {
         NETWORK_IO.execute(() -> {
 
             Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-            if (cursor == null || cursor.getCount() == 0) return;
+            if (cursor == null) return;
             cursor.moveToFirst();
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(cursor, values);
