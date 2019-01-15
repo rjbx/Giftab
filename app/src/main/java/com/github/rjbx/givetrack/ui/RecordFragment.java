@@ -499,6 +499,7 @@ public class RecordFragment extends Fragment implements
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
             private AlertDialog mContactDialog;
             private AlertDialog mRemoveDialog;
+            private String mEin;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -517,8 +518,7 @@ public class RecordFragment extends Fragment implements
                         case AlertDialog.BUTTON_NEGATIVE:
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            String ein = (String) mRemoveDialog.getListView().getTag();
-                            DataService.startActionRemoveCollected(getContext(), ein);
+                            DataService.startActionRemoveCollected(getContext(), mEin);
                             break;
                         default:
                     }
@@ -529,13 +529,12 @@ public class RecordFragment extends Fragment implements
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
                 String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-                String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+                mEin = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
 
                 mRemoveDialog = new AlertDialog.Builder(getContext()).create();
                 mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
-                mRemoveDialog.getListView().setTag(ein);
                 mRemoveDialog.show();
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
