@@ -364,7 +364,8 @@ public class DataService extends IntentService {
 
             List<String> charities = UserPreferences.getCharities(this);
 
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charities.isEmpty() ? "1" : "0");
+            String percentage = charities.isEmpty() ? "1" : "0";
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
             values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
             values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
 
@@ -378,7 +379,7 @@ public class DataService extends IntentService {
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
             String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, 0f, 0f, 0));
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
