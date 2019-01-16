@@ -84,8 +84,8 @@ public class RecordFragment extends Fragment implements
     private DetailFragment mDetailFragment;
     private ListAdapter mListAdapter;
     private Unbinder mUnbinder;
+    private Timer mTimer;
     private int mPanePosition;
-    private long mAdjustmentTime;
     private float mAmountTotal;
     private float mMagnitude;
     @BindView(R.id.save_progress_bar)
@@ -341,9 +341,13 @@ public class RecordFragment extends Fragment implements
 
     private void scheduleSyncPercentages() {
         if (!sPercentagesAdjusted) return;
-        Timer timer = new Timer();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer.purge();
+        }
+        mTimer = new Timer();
         final Handler handler = new Handler();
-        timer.schedule(new TimerTask() {
+        mTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 handler.post(() -> {
