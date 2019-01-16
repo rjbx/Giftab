@@ -1,6 +1,7 @@
 package com.github.rjbx.givetrack.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import timber.log.Timber;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
+import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.UserPreferences;
@@ -39,7 +41,7 @@ import java.util.List;
 /**
  * Provides a login screen.
  */
-public class AuthActivity extends AppCompatActivity {
+public class AuthActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -128,14 +130,24 @@ public class AuthActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
+    }
+
     /**
      * Hides {@link ProgressBar} when launching AuthUI.
      */
     @Override
     protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
+        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
     }
+
+    @Override
+    public void onBackPressed() { finish(); }
 
     /**
      * Defines behavior on user submission of login credentials.
@@ -153,12 +165,6 @@ public class AuthActivity extends AppCompatActivity {
                         Timber.v(firebaseUser.getUid());
                         UserProfile user = dataSnapshot.child(firebaseUser.getUid()).getValue(UserProfile.class);
                         if (user == null) user = UserPreferences.generateUserProfile(AuthActivity.this);
-                        PreferenceManager.getDefaultSharedPreferences(AuthActivity.this)
-                                .registerOnSharedPreferenceChangeListener((sharedPreferences, key) -> {
-                                finish();
-                                    Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
-                                });
                         UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { Timber.e(databaseError.getMessage()); }
@@ -175,5 +181,10 @@ public class AuthActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() { finish(); }
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (!key.equals(UserPreferences.KEY_TIMESTAMP)) return;
+        Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, MainActivity.class).setAction(ACTION_SIGN_IN));
+        finish();
+    }
 }
