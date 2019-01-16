@@ -481,7 +481,8 @@ public class RecordFragment extends Fragment implements
             for (int i = 0; i < sPercentages.length; i++) {
                 sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
-            Calibrater.resetRatings(sPercentages, false);
+            boolean adjusted = Calibrater.resetRatings(sPercentages, false);
+            if (adjusted) syncPercentages();
             notifyDataSetChanged();
         }
 
@@ -554,8 +555,7 @@ public class RecordFragment extends Fragment implements
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
-                if (mLastClicked != null)
-                    mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+                if (mLastClicked != null) mLastClicked.setImageResource(R.drawable.ic_baseline_expand_more_24px);
                 mLastClicked = (ImageButton) v;
                 mPanePosition = position;
 
