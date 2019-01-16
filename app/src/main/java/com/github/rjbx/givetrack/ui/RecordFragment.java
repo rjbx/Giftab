@@ -82,6 +82,7 @@ public class RecordFragment extends Fragment implements
     private ListAdapter mListAdapter;
     private Unbinder mUnbinder;
     private int mPanePosition;
+    private long mAdjustmentTime;
     private float mAmountTotal;
     private float mMagnitude;
     @BindView(R.id.save_progress_bar) ProgressBar mProgress;
@@ -148,6 +149,20 @@ public class RecordFragment extends Fragment implements
         if (mListAdapter == null) mListAdapter = new ListAdapter();
         else if (getFragmentManager() != null) getFragmentManager().popBackStack();
         mRecyclerView.setAdapter(mListAdapter);
+
+        if (container != null) {
+            container.setClickable(true);
+            container.setOnTouchListener((touchedView, motionEvent) -> {
+                touchedView.performClick();
+                float adjustmentElapsedTime = (float) ((System.currentTimeMillis() - mAdjustmentTime) / 1000.0);
+                if (adjustmentElapsedTime > 1f && sPercentagesAdjusted) {
+                    syncPercentages();
+                    sPercentagesAdjusted = false;
+                    return true;
+                }
+                return false;
+            });
+        }
 
         renderActionBar();
 
@@ -375,6 +390,7 @@ public class RecordFragment extends Fragment implements
                 for (float percentage : sPercentages) sum += percentage;
                 Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
                 sPercentagesAdjusted = true;
+                mAdjustmentTime = System.currentTimeMillis();
                 renderActionBar();
                 mProgress.setVisibility(View.VISIBLE);
                 notifyDataSetChanged();
