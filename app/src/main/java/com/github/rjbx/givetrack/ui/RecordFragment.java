@@ -75,7 +75,8 @@ public class RecordFragment extends Fragment implements
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
     private static ContentValues[] sValuesArray;
     private static boolean sDualPane;
-    private static boolean sDonationsAdjusted;
+    private static boolean sPercentagesAdjusted;
+    private static Float[] sPercentages;
     private MainActivity mParentActivity;
     private DetailFragment mDetailFragment;
     private ListAdapter mListAdapter;
@@ -119,7 +120,7 @@ public class RecordFragment extends Fragment implements
 
         mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
         mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
-        sDonationsAdjusted = false;
+        sPercentagesAdjusted = false;
 
         Bundle args = getArguments();
         if (args != null) {
@@ -127,7 +128,7 @@ public class RecordFragment extends Fragment implements
             if (parcelableArray != null) {
                 ContentValues[] valuesArray = (ContentValues[]) parcelableArray;
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
-                    sDonationsAdjusted = true;
+                    sPercentagesAdjusted = true;
                 }
                 sValuesArray = valuesArray;
             }
@@ -138,7 +139,7 @@ public class RecordFragment extends Fragment implements
 
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
-            sDonationsAdjusted = savedInstanceState.getBoolean(STATE_ADJUST);
+            sPercentagesAdjusted = savedInstanceState.getBoolean(STATE_ADJUST);
             mPanePosition = savedInstanceState.getInt(STATE_POSITION);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
@@ -189,7 +190,7 @@ public class RecordFragment extends Fragment implements
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
-        outState.putBoolean(STATE_ADJUST, sDonationsAdjusted);
+        outState.putBoolean(STATE_ADJUST, sPercentagesAdjusted);
         outState.putInt(STATE_POSITION, mPanePosition);
     }
 
@@ -276,19 +277,38 @@ public class RecordFragment extends Fragment implements
 
     @OnClick(R.id.action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
-        if (sDonationsAdjusted) {
-            mListAdapter.syncDonations();
-            sDonationsAdjusted = false;
+        if (sPercentagesAdjusted) {
+            syncPercentages();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark)));
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
-            ContentValues values = new ContentValues();
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
-            DataService.startActionUpdateFrequency(getContext(), values);
-            UserPreferences.updateFirebaseUser(mParentActivity);
+            syncDonations();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
+    }
+
+    /**
+     * Syncs donation percentage and amount mValues to table.
+     */
+    private void syncPercentages() {
+        if (sPercentages == null || sPercentages.length == 0) return;
+        ContentValues[] valuesArray = new ContentValues[sPercentages.length];
+        for (int i = 0; i < sPercentages.length; i++) {
+            ContentValues values = new ContentValues();
+            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(sPercentages[i]));
+            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
+            valuesArray[i] = values;
+        }
+        DataService.startActionUpdatePercentages(getContext(), valuesArray);
+        sPercentagesAdjusted = false;
+    }
+
+    private void syncDonations() {
+        ContentValues values = new ContentValues();
+        values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
+        DataService.startActionUpdateFrequency(getContext(), values);
+        UserPreferences.updateFirebaseUser(mParentActivity);
     }
 
     /**
@@ -307,7 +327,7 @@ public class RecordFragment extends Fragment implements
         int actionBarIcon;
         int progressBarVisibility;
 
-        if (sDonationsAdjusted) {
+        if (sPercentagesAdjusted) {
             barWrapperColor = R.color.colorAccentDark;
             actionBarColor = R.color.colorAccent;
             actionBarIcon = R.drawable.action_save;
@@ -336,7 +356,6 @@ public class RecordFragment extends Fragment implements
     public boolean isDualPane() {
         return sDualPane;
     }
-
     /**
      * Populates {@link RecordFragment} {@link RecyclerView}.
      */
@@ -344,17 +363,17 @@ public class RecordFragment extends Fragment implements
 
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
-        private Float[] mPercentages;
         private ImageButton mLastClicked;
+
         private Rateraid.Builder mRateraidBuilder;
 
         ListAdapter() {
-            mPercentages = new Float[sValuesArray.length];
-            mRateraidBuilder = Rateraid.with(mPercentages, mMagnitude, clickedView -> {
+            sPercentages = new Float[sValuesArray.length];
+            mRateraidBuilder = Rateraid.with(sPercentages, mMagnitude, clickedView -> {
                 float sum = 0;
-                for (float percentage : mPercentages) sum += percentage;
-                Timber.d("List[%s] : Sum[%s]", Arrays.asList(mPercentages).toString(), sum);
-                sDonationsAdjusted = true;
+                for (float percentage : sPercentages) sum += percentage;
+                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
+                sPercentagesAdjusted = true;
                 renderActionBar();
                 mProgress.setVisibility(View.VISIBLE);
                 notifyDataSetChanged();
@@ -393,7 +412,7 @@ public class RecordFragment extends Fragment implements
             }
 
             if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null
-                    || mPercentages == null || mPercentages.length == 0)
+                    || sPercentages == null || sPercentages.length == 0)
                 return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
@@ -430,8 +449,8 @@ public class RecordFragment extends Fragment implements
 
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
-            holder.mPercentageView.setText(percentInstance.format(mPercentages[position]));
-            holder.mAmountView.setText(currencyInstance.format(mPercentages[position] * mAmountTotal));
+            holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
+            holder.mAmountView.setText(currencyInstance.format(sPercentages[position] * mAmountTotal));
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
             else if (sDualPane && mPanePosition == position) {
@@ -457,28 +476,13 @@ public class RecordFragment extends Fragment implements
          * Swaps the Cursor after completing a load or resetting Loader.
          */
         private void swapValues() {
-            if (mPercentages.length != sValuesArray.length)
-                mPercentages = Arrays.copyOf(mPercentages, sValuesArray.length);
-            for (int i = 0; i < mPercentages.length; i++) {
-                mPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
+            if (sPercentages.length != sValuesArray.length)
+                sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
+            for (int i = 0; i < sPercentages.length; i++) {
+                sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
-            Calibrater.resetRatings(mPercentages, false);
+            Calibrater.resetRatings(sPercentages, false);
             notifyDataSetChanged();
-        }
-
-        /**
-         * Syncs donation percentage and amount mValues to table.
-         */
-        private void syncDonations() {
-            if (mPercentages == null || mPercentages.length == 0) return;
-            ContentValues[] valuesArray = new ContentValues[mPercentages.length];
-            for (int i = 0; i < mPercentages.length; i++) {
-                ContentValues values = new ContentValues();
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(mPercentages[i]));
-                Timber.d(mPercentages[i] + " " + mAmountTotal + " " + i + " " + mPercentages.length);
-                valuesArray[i] = values;
-            }
-            DataService.startActionUpdatePercentages(getContext(), valuesArray);
         }
 
         /**
