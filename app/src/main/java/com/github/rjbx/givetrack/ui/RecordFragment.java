@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
@@ -55,6 +56,8 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
@@ -85,19 +88,27 @@ public class RecordFragment extends Fragment implements
     private long mAdjustmentTime;
     private float mAmountTotal;
     private float mMagnitude;
-    @BindView(R.id.save_progress_bar) ProgressBar mProgress;
-    @BindView(R.id.action_bar) ImageButton mActionBar;
-    @BindView(R.id.action_bar_wrapper) View mActionWrapper;
-    @BindView(R.id.donation_amount_text) EditText mTotalText;
-    @BindView(R.id.donation_amount_label) View mTotalLabel;
-    @BindView(R.id.donation_detail_container) View mDetailContainer;
-    @BindView(R.id.donation_list) RecyclerView mRecyclerView;
+    @BindView(R.id.save_progress_bar)
+    ProgressBar mProgress;
+    @BindView(R.id.action_bar)
+    ImageButton mActionBar;
+    @BindView(R.id.action_bar_wrapper)
+    View mActionWrapper;
+    @BindView(R.id.donation_amount_text)
+    EditText mTotalText;
+    @BindView(R.id.donation_amount_label)
+    View mTotalLabel;
+    @BindView(R.id.donation_detail_container)
+    View mDetailContainer;
+    @BindView(R.id.donation_list)
+    RecyclerView mRecyclerView;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public RecordFragment() {}
+    public RecordFragment() {
+    }
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
@@ -111,7 +122,9 @@ public class RecordFragment extends Fragment implements
     /**
      * Generates a Layout for the Fragment.
      */
-    @Override public @Nullable View onCreateView(
+    @Override
+    public @Nullable
+    View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
@@ -150,20 +163,6 @@ public class RecordFragment extends Fragment implements
         else if (getFragmentManager() != null) getFragmentManager().popBackStack();
         mRecyclerView.setAdapter(mListAdapter);
 
-        if (container != null) {
-            container.setClickable(true);
-            container.setOnTouchListener((touchedView, motionEvent) -> {
-                touchedView.performClick();
-                float adjustmentElapsedTime = (float) ((System.currentTimeMillis() - mAdjustmentTime) / 1000.0);
-                if (adjustmentElapsedTime > 1f && sPercentagesAdjusted) {
-                    syncPercentages();
-                    sPercentagesAdjusted = false;
-                    return true;
-                }
-                return false;
-            });
-        }
-
         renderActionBar();
 
         return rootView;
@@ -172,7 +171,8 @@ public class RecordFragment extends Fragment implements
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
-    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
@@ -183,19 +183,22 @@ public class RecordFragment extends Fragment implements
      * Ensures the parent Activity has been created and data has been retrieved before
      * invoking the method that references them in order to populate the UI.
      */
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         if (mListAdapter != null) mListAdapter.swapValues();
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
-    @Override public void onPause() {
+    @Override
+    public void onPause() {
         super.onPause();
         if (sPercentagesAdjusted) syncPercentages();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
     }
@@ -203,14 +206,16 @@ public class RecordFragment extends Fragment implements
     /**
      * Saves Layout configuration state.
      */
-    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putBoolean(STATE_ADJUST, sPercentagesAdjusted);
         outState.putInt(STATE_POSITION, mPanePosition);
     }
 
-    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(UserPreferences.KEY_MAGNITUDE)) {
             mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
         }
@@ -219,7 +224,8 @@ public class RecordFragment extends Fragment implements
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override public void showDualPane(Bundle args) {
+    @Override
+    public void showDualPane(Bundle args) {
 
         mDetailFragment = DetailFragment.newInstance(args);
         getChildFragmentManager().beginTransaction()
@@ -239,14 +245,16 @@ public class RecordFragment extends Fragment implements
     /**
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
-    @Override public void showSinglePane() {
+    @Override
+    public void showSinglePane() {
         getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
         mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
         mListAdapter.notifyDataSetChanged();
     }
 
-    @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         switch (actionId) {
             case EditorInfo.IME_ACTION_DONE:
                 try {
@@ -265,11 +273,13 @@ public class RecordFragment extends Fragment implements
                 if (inputMethodManager == null) return false;
                 inputMethodManager.toggleSoftInput(0, 0);
                 return true;
-            default: return false;
+            default:
+                return false;
         }
     }
 
-    @OnClick(R.id.donation_decrement_button) void decrementAmount() {
+    @OnClick(R.id.donation_decrement_button)
+    void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
@@ -281,7 +291,8 @@ public class RecordFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnClick(R.id.donation_increment_button) void incrementAmount() {
+    @OnClick(R.id.donation_increment_button)
+    void incrementAmount() {
         mAmountTotal += mMagnitude;
         UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
         UserPreferences.updateFirebaseUser(getContext());
@@ -291,7 +302,8 @@ public class RecordFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnClick(R.id.action_bar) void syncAdjustments() {
+    @OnClick(R.id.action_bar)
+    void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             syncPercentages();
@@ -325,6 +337,22 @@ public class RecordFragment extends Fragment implements
         values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
         DataService.startActionUpdateFrequency(getContext(), values);
         UserPreferences.updateFirebaseUser(mParentActivity);
+    }
+
+    private void scheduleSyncPercentages() {
+        if (!sPercentagesAdjusted) return;
+        Timer timer = new Timer();
+        final Handler handler = new Handler();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(() -> {
+                    if (sPercentagesAdjusted) syncPercentages();
+                    sPercentagesAdjusted = false;
+                });
+            }
+        }, 2000);
+
     }
 
     /**
@@ -390,7 +418,7 @@ public class RecordFragment extends Fragment implements
                 for (float percentage : sPercentages) sum += percentage;
                 Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
                 sPercentagesAdjusted = true;
-                mAdjustmentTime = System.currentTimeMillis();
+                scheduleSyncPercentages();
                 renderActionBar();
                 mProgress.setVisibility(View.VISIBLE);
                 notifyDataSetChanged();
