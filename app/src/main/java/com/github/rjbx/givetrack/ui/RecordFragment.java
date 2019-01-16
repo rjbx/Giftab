@@ -176,6 +176,7 @@ public class RecordFragment extends Fragment implements
 
     @Override public void onPause() {
         super.onPause();
+        if (sPercentagesAdjusted) syncPercentages();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
