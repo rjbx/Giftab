@@ -303,6 +303,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setAnchor(this, mAnchorTime);
+                    UserPreferences.updateFirebaseUser(this);
                     break;
                 default:
             }
