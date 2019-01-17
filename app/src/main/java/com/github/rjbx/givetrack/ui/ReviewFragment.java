@@ -365,7 +365,7 @@ public class ReviewFragment extends Fragment implements
         long timeBetweenConversions = currentTime - lastConversionTime;
 
         long daysBetweenConversions =
-                TimeUnit.convert(
+                TimeUnit.DAYS.convert(
                         timeBetweenConversions,
                         TimeUnit.MILLISECONDS
                 ) * mDaysMultiplier;
