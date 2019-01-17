@@ -34,7 +34,9 @@ public class UserProfile {
     private String rows;
     private boolean focus;
     private String ein;
-    private String tally;
+    private String days;
+    private String months;
+    private String years;
     private String high;
     private String today;
     private long timestamp;
@@ -70,7 +72,9 @@ public class UserProfile {
             String rows,
             boolean focus,
             String ein,
-            String tally,
+            String days,
+            String months,
+            String years,
             String high,
             String today,
             long timestamp,
@@ -96,7 +100,9 @@ public class UserProfile {
         this.rows = rows;
         this.focus = focus;
         this.ein = ein;
-        this.tally = tally;
+        this.days = days;
+        this.months = months;
+        this.years = years;
         this.high = high;
         this.today = today;
         this.timestamp = timestamp;
@@ -209,11 +215,23 @@ public class UserProfile {
     public void setEin(String ein) {
         this.ein = ein;
     }
-    public String getTally() {
-        return tally;
+    public String getDays() {
+        return days;
     }
-    public void setTally(String tally) {
-        this.tally = tally;
+    public void setDays(String days) {
+        this.days = days;
+    }
+    public String getMonths() {
+        return months;
+    }
+    public void setMonths(String months) {
+        this.months = months;
+    }
+    public String getYears() {
+        return years;
+    }
+    public void setYears(String years) {
+        this.years = years;
     }
     public String getHigh() { return high; }
     public void setHigh(String high) { this.high = high; }
@@ -253,7 +271,9 @@ public class UserProfile {
         map.put("rows", rows);
         map.put("focus", focus);
         map.put("ein", ein);
-        map.put("tally", tally);
+        map.put("days", days);
+        map.put("months", months);
+        map.put("years", days);
         map.put("high", high);
         map.put("today", today);
         map.put("timestamp", timestamp);

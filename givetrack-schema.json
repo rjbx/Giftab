@@ -4,6 +4,7 @@
       "birthdate" : "0/0/2000",
       "charities" : [ "" ],
       "city" : "",
+      "days" : "0,0,0,0,0,0,0",
       "donation" : "0",
       "ein" : "",
       "email" : "",
@@ -13,18 +14,19 @@
       "high" : "0",
       "magnitude" : "0.1",
       "minrating" : "0",
+      "months" : "0,0,0,0,0,0,0",
       "order" : "",
       "pages" : "1",
       "rows" : "20",
       "sort" : "",
       "state" : "",
-      "tally" : "0,0,0,0",
       "term" : "",
       "theme" : 0,
       "timestamp" : 0,
       "timetrack" : "0",
       "today" : "0",
       "tracked" : "0",
+      "years" : "0,0,0,0,0,0,0",
       "zip" : ""
     }
   }

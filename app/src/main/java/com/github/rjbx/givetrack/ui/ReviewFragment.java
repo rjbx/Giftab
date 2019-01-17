@@ -344,7 +344,7 @@ public class ReviewFragment extends Fragment implements
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
         String[] tallyArray =
-                UserPreferences.getTally(context).split(":");
+                UserPreferences.getDays(context).split(":");
 
         long currentTime = System.currentTimeMillis();
         long lastConversionTime = UserPreferences.getTimestamp(context);
@@ -358,7 +358,7 @@ public class ReviewFragment extends Fragment implements
 
         if (daysBetweenConversions > 0) {
             for (int j = 0; j < daysBetweenConversions; j++) tallyArray[j] = "0";
-            UserPreferences.setTally(mParentActivity, Arrays.asList(tallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+            UserPreferences.setDays(mParentActivity, Arrays.asList(tallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
         }
 
         float daysSum = 0;
