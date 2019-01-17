@@ -69,6 +69,7 @@ public class ReviewFragment extends Fragment implements
     };
     private static ContentValues[] sValuesArray;
     private static boolean mShowTracked;
+    private static boolean mShowYears;
     private static int sThemeIndex;
     private MainActivity mParentActivity;
     private Unbinder mUnbinder;
@@ -77,6 +78,8 @@ public class ReviewFragment extends Fragment implements
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
+    private String[] mTallyArray;
+    private int mDaysMultiplier;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
@@ -150,7 +153,7 @@ public class ReviewFragment extends Fragment implements
      */
     @Override public void onResume() {
         super.onResume();
-        createChart();
+        renderCharts();
     }
 
     @Override public void onDestroy() {
@@ -202,7 +205,20 @@ public class ReviewFragment extends Fragment implements
         }
     }
 
-    @OnClick(R.id.home_time_button) void trackAmount() {
+    @OnClick(R.id.home_time_button) void toggleTime() {
+        mShowYears = !mShowYears;
+        if (mShowYears) {
+            mDaysMultiplier = 365;
+            mTallyArray = UserPreferences.getYears(getContext()).split(":");
+            renderCharts();
+        } else {
+            mDaysMultiplier = 1;
+            mTallyArray = UserPreferences.getDays(getContext()).split(":");
+            renderCharts();
+        }
+    }
+
+    @OnClick(R.id.home_config_button) void trackAmount() {
         mTimeDialog = new AlertDialog.Builder(getContext()).create();
         mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -228,7 +244,7 @@ public class ReviewFragment extends Fragment implements
     /**
      * Builds the charts supplied by the Fragment layout.
      */
-    private void createChart() {
+    private void renderCharts() {
 
         Context context = getContext();
         if (context == null) return;
@@ -343,32 +359,30 @@ public class ReviewFragment extends Fragment implements
         mTypeChart.invalidate();
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        String[] tallyArray =
-                UserPreferences.getDays(context).split(":");
 
         long currentTime = System.currentTimeMillis();
         long lastConversionTime = UserPreferences.getTimestamp(context);
         long timeBetweenConversions = currentTime - lastConversionTime;
 
         long daysBetweenConversions =
-                TimeUnit.DAYS.convert(
+                TimeUnit.convert(
                         timeBetweenConversions,
                         TimeUnit.MILLISECONDS
-                );
+                ) * mDaysMultiplier;
 
         if (daysBetweenConversions > 0) {
-            for (int j = 0; j < daysBetweenConversions; j++) tallyArray[j] = "0";
-            UserPreferences.setDays(mParentActivity, Arrays.asList(tallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+            for (int j = 0; j < daysBetweenConversions; j++) mTallyArray[j] = "0";
+            UserPreferences.setDays(mParentActivity, Arrays.asList(mTallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
         }
 
         float daysSum = 0;
-        float[] days = new float[tallyArray.length];
-        for (int j = 0; j < tallyArray.length; j++) {
-            days[j] = Float.parseFloat(tallyArray[j]);
+        float[] days = new float[mTallyArray.length];
+        for (int j = 0; j < mTallyArray.length; j++) {
+            days[j] = Float.parseFloat(mTallyArray[j]);
             daysSum += days[j];
         }
 
-        float today = Float.parseFloat(tallyArray[0]);
+        float today = Float.parseFloat(mTallyArray[0]);
         float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
         UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
         UserPreferences.updateFirebaseUser(mParentActivity);
