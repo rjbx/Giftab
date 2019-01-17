@@ -41,6 +41,7 @@ public class UserPreferences {
     public static final String KEY_WEEKS = "weeks";
     public static final String KEY_HIGH = "high";
     public static final String KEY_TODAY = "today";
+    public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_TIMETRACK = "timetrack";
     
@@ -287,6 +288,16 @@ public class UserPreferences {
         sp.edit().putString(KEY_EIN, ein).apply();
     }
 
+    public static long getAnchor(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getLong(KEY_ANCHOR, System.currentTimeMillis());
+    }
+
+    public static void setAnchor(Context context, long anchor) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putLong(KEY_ANCHOR, anchor).apply();
+    }
+
     public static long getTimestamp(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getLong(KEY_TIMESTAMP, System.currentTimeMillis());
@@ -334,7 +345,9 @@ public class UserPreferences {
         setMonths(context, user.getMonths());
         setYears(context, user.getYears());
         setHigh(context, user.getHigh());
+        setAnchor(context, user.getAnchor());
         setTimestamp(context, user.getTimestamp());
+        setTimetrack(context, user.getTimetrack());
     }
 
     /**
@@ -371,6 +384,7 @@ public class UserPreferences {
                 getYears(context),
                 getHigh(context),
                 getToday(context),
+                getAnchor(context),
                 getTimestamp(context),
                 getTimetrack(context));
     }

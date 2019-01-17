@@ -39,6 +39,7 @@ public class UserProfile {
     private String years;
     private String high;
     private String today;
+    private long anchor;
     private long timestamp;
     private long timetrack;
 
@@ -77,6 +78,7 @@ public class UserProfile {
             String years,
             String high,
             String today,
+            long anchor,
             long timestamp,
             long timetrack) {
         this.uid = uid;
@@ -105,6 +107,7 @@ public class UserProfile {
         this.years = years;
         this.high = high;
         this.today = today;
+        this.anchor = anchor;
         this.timestamp = timestamp;
         this.timetrack = timetrack;
     }
@@ -237,6 +240,12 @@ public class UserProfile {
     public void setHigh(String high) { this.high = high; }
     public String getToday() { return today; }
     public void setToday(String today) { this.today = today; }
+    public long getAnchor() {
+        return anchor;
+    }
+    public void setAnchor(long anchor) {
+        this.anchor = anchor;
+    }
     public long getTimestamp() {
         return timestamp;
     }
@@ -276,6 +285,7 @@ public class UserProfile {
         map.put("years", weeks);
         map.put("high", high);
         map.put("today", today);
+        map.put("anchor", anchor);
         map.put("timestamp", timestamp);
         map.put("timetrack", timetrack);
         return map;

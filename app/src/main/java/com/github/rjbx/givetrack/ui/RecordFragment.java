@@ -88,20 +88,13 @@ public class RecordFragment extends Fragment implements
     private int mPanePosition;
     private float mAmountTotal;
     private float mMagnitude;
-    @BindView(R.id.save_progress_bar)
-    ProgressBar mProgress;
-    @BindView(R.id.action_bar)
-    ImageButton mActionBar;
-    @BindView(R.id.action_bar_wrapper)
-    View mActionWrapper;
-    @BindView(R.id.donation_amount_text)
-    EditText mTotalText;
-    @BindView(R.id.donation_amount_label)
-    View mTotalLabel;
-    @BindView(R.id.donation_detail_container)
-    View mDetailContainer;
-    @BindView(R.id.donation_list)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.save_progress_bar) ProgressBar mProgress;
+    @BindView(R.id.action_bar) ImageButton mActionBar;
+    @BindView(R.id.action_bar_wrapper) View mActionWrapper;
+    @BindView(R.id.donation_amount_text) EditText mTotalText;
+    @BindView(R.id.donation_amount_label) View mTotalLabel;
+    @BindView(R.id.donation_detail_container) View mDetailContainer;
+    @BindView(R.id.donation_list) RecyclerView mRecyclerView;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}

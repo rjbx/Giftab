@@ -1,6 +1,7 @@
 {
   "users" : {
     "uid" : {
+      "anchor" : 0,
       "birthdate" : "0/0/2000",
       "charities" : [ "" ],
       "city" : "",

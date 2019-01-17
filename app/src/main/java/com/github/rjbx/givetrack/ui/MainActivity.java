@@ -48,11 +48,12 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
@@ -77,8 +78,10 @@ public class MainActivity extends AppCompatActivity implements
     private ContentValues[] mValuesArray;
     private TextView mSeekReadout;
     private int mSeekProgress;
+    private long mAnchorTime;
     private AlertDialog mClearDialog;
     private AlertDialog mMagnitudeDialog;
+    private AlertDialog mAnchorDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
@@ -166,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(UserPreferences.getAnchor(this));
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
@@ -177,53 +181,6 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_add: startActivity(new Intent(this, SearchActivity.class)); break;
             default: return super.onOptionsItemSelected(item);
         } return false;
-    }
-
-    /**
-     * Updates the DatePicker with the date selected from the Dialog.
-     */
-    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-        Calendar calendar = Calendar.getInstance();
-        int currentYear = calendar.get(Calendar.YEAR);
-        int currentMonth = calendar.get(Calendar.MONTH);
-        int currentWeek = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        calendar.set(year, month, dayOfMonth);
-        int entryYear = calendar.get(Calendar.YEAR);
-        int entryMonth = calendar.get(Calendar.MONTH);
-        int entryWeek = calendar.get(Calendar.WEEK_OF_YEAR);
-
-        if (entryYear > currentYear - 7) {
-            
-            String[] yearTally = UserPreferences.getYears(this).split(":");
-            float[] years = new float[yearTally.length];
-            for (int j = 0; j < yearTally.length; j++) {
-                years[j] = Float.parseFloat(yearTally[j]);
-            }
-            years[currentYear - entryYear] += 0;
-            UserPreferences.setYears(this, Arrays.asList(yearTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
-        }
-
-        if (entryMonth > currentMonth - 7) {
-            String[] monthTally = UserPreferences.getMonths(this).split(":");
-            float[] months = new float[monthTally.length];
-            for (int j = 0; j < monthTally.length; j++) {
-                months[j] = Float.parseFloat(monthTally[j]);
-            }
-            months[currentMonth - entryMonth] += 0;
-            UserPreferences.setMonths(this, Arrays.asList(monthTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
-        }
-
-        if (entryWeek > currentWeek - 7) {
-            String[] weekTally = UserPreferences.getWeeks(this).split(":");
-            float[] weeks = new float[weekTally.length];
-            for (int j = 0; j < weekTally.length; j++) {
-                weeks[j] = Float.parseFloat(weekTally[j]);
-            }
-            weeks[currentWeek - entryWeek] += 0;
-            UserPreferences.setWeeks(this, Arrays.asList(weekTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
-        }
     }
 
     /**
@@ -284,6 +241,37 @@ public class MainActivity extends AppCompatActivity implements
         return true;
     }
 
+    /**
+     * Updates the DatePicker with the date selected from the Dialog.
+     */
+    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth);
+        mAnchorTime = calendar.getTimeInMillis();
+        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
+        dateFormatter.setTimeZone(TimeZone.getDefault());
+        String formattedDate = dateFormatter.format(mAnchorTime);
+
+        mAnchorDialog = new AlertDialog.Builder(this).create();
+        mAnchorDialog.setMessage(String.format("Do you want to change the date to %s for recording past donations?", formattedDate));
+        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
+        mAnchorDialog.show();
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            mSeekProgress = progress;
+            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
+            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
+    }
+
+    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+
     @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mClearDialog) {
             switch (which) {
@@ -308,17 +296,18 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 default:
             }
+        } else if (dialog == mAnchorDialog) {
+            switch (which) {
+                case AlertDialog.BUTTON_NEUTRAL:
+                    dialog.dismiss();
+                    break;
+                case AlertDialog.BUTTON_POSITIVE:
+                    UserPreferences.setAnchor(this, mAnchorTime);
+                    break;
+                default:
+            }
         }
     }
-
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            mSeekProgress = progress;
-            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
-            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
-    }
-    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
 
     private void launchCustomTabs(String url) {
         new CustomTabsIntent.Builder()
