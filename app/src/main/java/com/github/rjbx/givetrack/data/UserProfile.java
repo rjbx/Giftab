@@ -34,9 +34,7 @@ public class UserProfile {
     private String rows;
     private boolean focus;
     private String ein;
-    private String weeks;
-    private String months;
-    private String years;
+    private List<String> records;
     private String high;
     private String today;
     private long anchor;
@@ -73,9 +71,7 @@ public class UserProfile {
             String rows,
             boolean focus,
             String ein,
-            String weeks,
-            String months,
-            String years,
+            List<String> records,
             String high,
             String today,
             long anchor,
@@ -102,9 +98,7 @@ public class UserProfile {
         this.rows = rows;
         this.focus = focus;
         this.ein = ein;
-        this.weeks = weeks;
-        this.months = months;
-        this.years = years;
+        this.records = records;
         this.high = high;
         this.today = today;
         this.anchor = anchor;
@@ -135,7 +129,7 @@ public class UserProfile {
     }
     public void setGender(String gender) { this.gender = gender; }
     public int getTheme() { return theme; }
-    void setTheme(int theme) { this.theme = theme; }
+    public void setTheme(int theme) { this.theme = theme; }
     public String getTracked() { return tracked; }
     public void setTracked(String tracked) { this.tracked = tracked; }
     public String getMagnitude() { return magnitude; }
@@ -218,24 +212,8 @@ public class UserProfile {
     public void setEin(String ein) {
         this.ein = ein;
     }
-    public String getWeeks() {
-        return weeks;
-    }
-    public void setWeeks(String weeks) {
-        this.weeks = weeks;
-    }
-    public String getMonths() {
-        return months;
-    }
-    public void setMonths(String months) {
-        this.months = months;
-    }
-    public String getYears() {
-        return years;
-    }
-    public void setYears(String years) {
-        this.years = years;
-    }
+    public List<String> getRecords() { return records; }
+    public void setRecords(List<String> records) { this.records = records; }
     public String getHigh() { return high; }
     public void setHigh(String high) { this.high = high; }
     public String getToday() { return today; }
@@ -280,9 +258,7 @@ public class UserProfile {
         map.put("rows", rows);
         map.put("focus", focus);
         map.put("ein", ein);
-        map.put("weeks", weeks);
-        map.put("months", months);
-        map.put("years", weeks);
+        map.put("records", records);
         map.put("high", high);
         map.put("today", today);
         map.put("anchor", anchor);

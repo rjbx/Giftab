@@ -36,9 +36,7 @@ public class UserPreferences {
     public static final String KEY_ROWS = "rows";
     public static final String KEY_FOCUS = "focus";
     public static final String KEY_EIN = "ein";
-    public static final String KEY_YEARS = "years";
-    public static final String KEY_MONTHS = "months";
-    public static final String KEY_WEEKS = "weeks";
+    public static final String KEY_RECORDS = "records";
     public static final String KEY_HIGH = "high";
     public static final String KEY_TODAY = "today";
     public static final String KEY_ANCHOR = "anchor";
@@ -227,35 +225,18 @@ public class UserPreferences {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(KEY_BIRTHDATE, birthday).apply();
     }
-    
-    public static String getWeeks(Context context) {
+
+    public static List<String> getRecords(Context context) {
+        Set<String> defaultValue = new LinkedHashSet<>();
+        defaultValue.add("");
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_WEEKS, "0:0:0:0:0:0:0");
+        return new ArrayList<>(sp.getStringSet(KEY_RECORDS, defaultValue));
     }
 
-    public static void setWeeks(Context context, String weeks) {
+    public static void setRecords(Context context, List<String> records) {
+        Set<String> value = new LinkedHashSet<>(records);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_WEEKS, weeks).apply();
-    }
-
-    public static String getMonths(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_MONTHS, "0:0:0:0:0:0:0");
-    }
-
-    public static void setMonths(Context context, String months) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_MONTHS, months).apply();
-    }
-
-    public static String getYears(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_YEARS, "0:0:0:0:0:0:0");
-    }
-
-    public static void setYears(Context context, String years) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_YEARS, years).apply();
+        sp.edit().putStringSet(KEY_RECORDS, value).apply();
     }
 
     public static int getTheme(Context context) {
@@ -341,9 +322,7 @@ public class UserPreferences {
         setRows(context, user.getRows());
         setFocus(context, user.getFocus());
         setEin(context, user.getEin());
-        setWeeks(context, user.getWeeks());
-        setMonths(context, user.getMonths());
-        setYears(context, user.getYears());
+        setRecords(context, user.getRecords());
         setHigh(context, user.getHigh());
         setAnchor(context, user.getAnchor());
         setTimestamp(context, user.getTimestamp());
@@ -379,9 +358,7 @@ public class UserPreferences {
                 getRows(context),
                 getFocus(context),
                 getEin(context),
-                getWeeks(context),
-                getMonths(context),
-                getYears(context),
+                getCharities(context),
                 getHigh(context),
                 getToday(context),
                 getAnchor(context),

@@ -36,6 +36,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -560,12 +561,21 @@ public class DataService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            String[] tallyArray = UserPreferences.getWeeks(this).split(":");
-            tallyArray[0] = String.format(Locale.getDefault(), "%.2f", todaysImpact);
-            UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+
+            long anchorTime = UserPreferences.getAnchor(this);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(anchorTime);
+            int difference = calendar.compareTo(Calendar.getInstance());
+
+            if (difference == 0) {
+                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+                UserPreferences.setTimestamp(this, System.currentTimeMillis());
+            }
+            List<String> records = UserPreferences.getRecords(this);
+            records.add(String.format(Locale.getDefault(), "%d:%s", anchorTime, todaysImpact));
+            UserPreferences.setRecords(this, records);
+
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
-            UserPreferences.setWeeks(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
-            UserPreferences.setTimestamp(this, System.currentTimeMillis());
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
         });

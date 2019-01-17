@@ -154,7 +154,9 @@ public class ReviewFragment extends Fragment implements
      */
     @Override public void onResume() {
         super.onResume();
-        toggleTime();
+        List<String> recordsList = UserPreferences.getRecords(getContext());
+        mTallyArray = recordsList.toArray(new String[recordsList.size()]);
+        renderCharts();
     }
 
     @Override public void onDestroy() {
@@ -213,17 +215,14 @@ public class ReviewFragment extends Fragment implements
         switch (mPeriod) {
             case Calendar.YEAR:
                 mDayMultiplier = 365;
-                mTallyArray = UserPreferences.getYears(getContext()).split(":");
                 renderCharts();
                 break;
             case Calendar.MONTH:
                 mDayMultiplier = 30;
-                mTallyArray = UserPreferences.getMonths(getContext()).split(":");
                 renderCharts();
                 break;
             case Calendar.WEEK_OF_YEAR:
                 mDayMultiplier = 7;
-                mTallyArray = UserPreferences.getWeeks(getContext()).split(":");
                 renderCharts();
                 break;
         }
@@ -380,11 +379,6 @@ public class ReviewFragment extends Fragment implements
                         timeBetweenConversions,
                         TimeUnit.MILLISECONDS
                 ) * mDayMultiplier;
-
-        if (daysBetweenConversions > 0) {
-            for (int j = 0; j < daysBetweenConversions; j++) mTallyArray[j] = "0";
-            UserPreferences.setWeeks(mParentActivity, Arrays.asList(mTallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
-        }
 
         float daysSum = 0;
         float[] days = new float[mTallyArray.length];
