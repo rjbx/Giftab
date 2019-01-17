@@ -38,7 +38,7 @@ public class UserPreferences {
     public static final String KEY_EIN = "ein";
     public static final String KEY_YEARS = "years";
     public static final String KEY_MONTHS = "months";
-    public static final String KEY_DAYS = "days";
+    public static final String KEY_WEEKS = "weeks";
     public static final String KEY_HIGH = "high";
     public static final String KEY_TODAY = "today";
     public static final String KEY_TIMESTAMP = "timestamp";
@@ -227,14 +227,14 @@ public class UserPreferences {
         sp.edit().putString(KEY_BIRTHDATE, birthday).apply();
     }
     
-    public static String getDays(Context context) {
+    public static String getWeeks(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_DAYS, "0:0:0:0:0:0:0");
+        return sp.getString(KEY_WEEKS, "0:0:0:0:0:0:0");
     }
 
-    public static void setDays(Context context, String days) {
+    public static void setWeeks(Context context, String weeks) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_DAYS, days).apply();
+        sp.edit().putString(KEY_WEEKS, weeks).apply();
     }
 
     public static String getMonths(Context context) {
@@ -330,7 +330,7 @@ public class UserPreferences {
         setRows(context, user.getRows());
         setFocus(context, user.getFocus());
         setEin(context, user.getEin());
-        setDays(context, user.getDays());
+        setWeeks(context, user.getWeeks());
         setMonths(context, user.getMonths());
         setYears(context, user.getYears());
         setHigh(context, user.getHigh());
@@ -366,7 +366,7 @@ public class UserPreferences {
                 getRows(context),
                 getFocus(context),
                 getEin(context),
-                getDays(context),
+                getWeeks(context),
                 getMonths(context),
                 getYears(context),
                 getHigh(context),

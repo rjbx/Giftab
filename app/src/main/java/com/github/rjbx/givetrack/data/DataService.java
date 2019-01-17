@@ -560,11 +560,11 @@ public class DataService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            String[] tallyArray = UserPreferences.getDays(this).split(":");
+            String[] tallyArray = UserPreferences.getWeeks(this).split(":");
             tallyArray[0] = String.format(Locale.getDefault(), "%.2f", todaysImpact);
             UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
-            UserPreferences.setDays(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
+            UserPreferences.setWeeks(this, Arrays.asList(tallyArray).toString().replace("[","").replace("]","").replace(", ", ":"));
             UserPreferences.setTimestamp(this, System.currentTimeMillis());
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);

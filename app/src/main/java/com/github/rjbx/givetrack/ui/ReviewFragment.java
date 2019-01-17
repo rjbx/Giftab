@@ -79,7 +79,8 @@ public class ReviewFragment extends Fragment implements
     private String mTrackedTime;
     private String mTotalTime;
     private String[] mTallyArray;
-    private int mDaysMultiplier;
+    private int mPeriod;
+    private int mDayMultiplier;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
@@ -153,7 +154,7 @@ public class ReviewFragment extends Fragment implements
      */
     @Override public void onResume() {
         super.onResume();
-        renderCharts();
+        toggleTime();
     }
 
     @Override public void onDestroy() {
@@ -206,15 +207,25 @@ public class ReviewFragment extends Fragment implements
     }
 
     @OnClick(R.id.home_time_button) void toggleTime() {
+        if (mPeriod < 3) mPeriod++;
+        else mPeriod = 1;
         mShowYears = !mShowYears;
-        if (mShowYears) {
-            mDaysMultiplier = 365;
-            mTallyArray = UserPreferences.getYears(getContext()).split(":");
-            renderCharts();
-        } else {
-            mDaysMultiplier = 1;
-            mTallyArray = UserPreferences.getDays(getContext()).split(":");
-            renderCharts();
+        switch (mPeriod) {
+            case Calendar.YEAR:
+                mDayMultiplier = 365;
+                mTallyArray = UserPreferences.getYears(getContext()).split(":");
+                renderCharts();
+                break;
+            case Calendar.MONTH:
+                mDayMultiplier = 30;
+                mTallyArray = UserPreferences.getMonths(getContext()).split(":");
+                renderCharts();
+                break;
+            case Calendar.WEEK_OF_YEAR:
+                mDayMultiplier = 7;
+                mTallyArray = UserPreferences.getWeeks(getContext()).split(":");
+                renderCharts();
+                break;
         }
     }
 
@@ -368,11 +379,11 @@ public class ReviewFragment extends Fragment implements
                 TimeUnit.DAYS.convert(
                         timeBetweenConversions,
                         TimeUnit.MILLISECONDS
-                ) * mDaysMultiplier;
+                ) * mDayMultiplier;
 
         if (daysBetweenConversions > 0) {
             for (int j = 0; j < daysBetweenConversions; j++) mTallyArray[j] = "0";
-            UserPreferences.setDays(mParentActivity, Arrays.asList(mTallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+            UserPreferences.setWeeks(mParentActivity, Arrays.asList(mTallyArray).toString().replace("[", "").replace("]", "").replace(", ", ":"));
         }
 
         float daysSum = 0;

@@ -34,7 +34,7 @@ public class UserProfile {
     private String rows;
     private boolean focus;
     private String ein;
-    private String days;
+    private String weeks;
     private String months;
     private String years;
     private String high;
@@ -72,7 +72,7 @@ public class UserProfile {
             String rows,
             boolean focus,
             String ein,
-            String days,
+            String weeks,
             String months,
             String years,
             String high,
@@ -100,7 +100,7 @@ public class UserProfile {
         this.rows = rows;
         this.focus = focus;
         this.ein = ein;
-        this.days = days;
+        this.weeks = weeks;
         this.months = months;
         this.years = years;
         this.high = high;
@@ -215,11 +215,11 @@ public class UserProfile {
     public void setEin(String ein) {
         this.ein = ein;
     }
-    public String getDays() {
-        return days;
+    public String getWeeks() {
+        return weeks;
     }
-    public void setDays(String days) {
-        this.days = days;
+    public void setWeeks(String weeks) {
+        this.weeks = weeks;
     }
     public String getMonths() {
         return months;
@@ -271,9 +271,9 @@ public class UserProfile {
         map.put("rows", rows);
         map.put("focus", focus);
         map.put("ein", ein);
-        map.put("days", days);
+        map.put("weeks", weeks);
         map.put("months", months);
-        map.put("years", days);
+        map.put("years", weeks);
         map.put("high", high);
         map.put("today", today);
         map.put("timestamp", timestamp);
