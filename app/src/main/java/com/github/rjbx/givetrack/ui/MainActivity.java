@@ -49,7 +49,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -181,7 +183,44 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Updates the DatePicker with the date selected from the Dialog.
      */
-    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {}
+    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        Calendar calendar = Calendar.getInstance();
+        int currentYear = calendar.get(Calendar.YEAR);
+        int currentMonth = calendar.get(Calendar.MONTH);
+        int currentDay = calendar.get(Calendar.DAY_OF_MONTH);
+        
+        if (year < currentYear) {
+            
+            String[] yearTally = UserPreferences.getYears(this).split(":");
+            float[] years = new float[yearTally.length];
+            for (int j = 0; j < yearTally.length; j++) {
+                years[j] = Float.parseFloat(yearTally[j]);
+            }
+            years[currentYear - year] += 0;
+            UserPreferences.setYears(this, Arrays.asList(yearTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+
+        } else if (dayOfMonth > currentDay - 7) {
+
+            String[] dayTally = UserPreferences.getDays(this).split(":");
+            float[] days = new float[dayTally.length];
+            for (int j = 0; j < dayTally.length; j++) {
+                days[j] = Float.parseFloat(dayTally[j]);
+            }
+            days[currentDay - dayOfMonth] += 0;
+            UserPreferences.setDays(this, Arrays.asList(dayTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+
+        } else {
+
+            String[] monthTally = UserPreferences.getMonths(this).split(":");
+            float[] months = new float[monthTally.length];
+            for (int j = 0; j < monthTally.length; j++) {
+                months[j] = Float.parseFloat(monthTally[j]);
+            }
+            months[currentMonth - month] += 0;
+            UserPreferences.setMonths(this, Arrays.asList(monthTally).toString().replace("[", "").replace("]", "").replace(", ", ":"));
+        }
+    }
 
     /**
      * Instantiates and returns a new {@link Loader} for the given ID.
