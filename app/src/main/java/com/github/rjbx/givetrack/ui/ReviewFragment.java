@@ -399,10 +399,8 @@ public class ReviewFragment extends Fragment implements
             calendar.setTimeInMillis(recordTimestamp);
             int recordYear = calendar.get(mPeriod);
             int yearsDifference = currentYear - recordYear;
-            intervalAggregates[yearsDifference] += recordAmounts[j];
+            if (yearsDifference < 8) intervalAggregates[yearsDifference] += recordAmounts[j];
         }
-        
-        
 
         float today = Float.parseFloat(mRecordsArray[0].split(":")[1]);
         float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
