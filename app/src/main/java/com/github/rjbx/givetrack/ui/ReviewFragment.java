@@ -74,6 +74,7 @@ public class ReviewFragment extends Fragment implements
     private MainActivity mParentActivity;
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
+    private String mTitle;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
@@ -81,6 +82,7 @@ public class ReviewFragment extends Fragment implements
     private String[] mTallyArray;
     private int mPeriod;
     private int mDayMultiplier;
+    @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
@@ -156,7 +158,7 @@ public class ReviewFragment extends Fragment implements
         super.onResume();
         List<String> recordsList = UserPreferences.getRecords(getContext());
         mTallyArray = recordsList.toArray(new String[recordsList.size()]);
-        renderCharts();
+        toggleTime();
     }
 
     @Override public void onDestroy() {
@@ -214,14 +216,17 @@ public class ReviewFragment extends Fragment implements
         mShowYears = !mShowYears;
         switch (mPeriod) {
             case Calendar.YEAR:
+                mTitle = "Annual Giving";
                 mDayMultiplier = 365;
                 renderCharts();
                 break;
             case Calendar.MONTH:
+                mTitle = "Monthly Giving";
                 mDayMultiplier = 30;
                 renderCharts();
                 break;
             case Calendar.WEEK_OF_YEAR:
+                mTitle = "Weekly Giving";
                 mDayMultiplier = 7;
                 renderCharts();
                 break;
@@ -258,6 +263,8 @@ public class ReviewFragment extends Fragment implements
 
         Context context = getContext();
         if (context == null) return;
+
+        mTitleText.setText(mTitle);
 
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
         int backgroundColor = getResources().getColor(R.color.colorChalk);
