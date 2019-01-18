@@ -41,6 +41,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
+import java.security.InvalidParameterException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -398,32 +399,16 @@ public class ReviewFragment extends Fragment implements
             int currentInterval = calendar.get(mPeriod);
             calendar.setTimeInMillis(recordTimestamp);
             int recordInterval = calendar.get(mPeriod);
-            int intervalDifference = -1;
-            boolean validInterval = false;
-            switch (mPeriod) {
-                case Calendar.YEAR:
-                    intervalDifference = currentInterval - recordInterval;
-                    validInterval = intervalDifference < 8;
-                    break;
-                case Calendar.MONTH:
-                    int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
-                    if (yearsDifference > 1) return;
-                    int priorYearIntervals = 7 - currentInterval;
-                    if (priorYearIntervals > 0)  {
-                        int priorYearIndex = -12 + Calendar.getInstance().get(Calendar.MONTH);
-                        intervalDifference = currentInterval - priorYearIndex;
-                        validInterval = intervalDifference < 8;
-                    } else {
-                        intervalDifference = currentInterval - recordInterval;
-                        validInterval = intervalDifference < 8;
-                    }
-                    break;
-                case Calendar.WEEK_OF_YEAR:
-
-                    break;
-                default:
+            int intervalDifference = currentInterval - recordInterval;
+            if (mPeriod != Calendar.YEAR) {
+                int priorYearIntervals = 7 - currentInterval;
+                int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
+                if (yearsDifference < 1 && priorYearIntervals > 0) {
+                    int priorYearIndex = Calendar.getInstance().get(mPeriod) - 12;
+                    intervalDifference = currentInterval - priorYearIndex;
+                }
             }
-            if (validInterval) intervalAggregates[intervalDifference] += recordAmounts[j];
+            if (intervalDifference < 8) intervalAggregates[intervalDifference] += recordAmounts[j];
         }
 
         float today = Float.parseFloat(mRecordsArray[0].split(":")[1]);
