@@ -144,6 +144,7 @@ public class RecordFragment extends Fragment implements
         }
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
+        mTotalText.setOnEditorActionListener(this);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
 
         if (savedInstanceState != null) {
