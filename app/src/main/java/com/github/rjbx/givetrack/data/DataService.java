@@ -534,11 +534,17 @@ public class DataService extends IntentService {
                             TimeUnit.MILLISECONDS
                     );
 
+            long anchorTime = UserPreferences.getAnchor(this);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(anchorTime);
+            int difference = calendar.compareTo(Calendar.getInstance());
+
             float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this));
             float totalTracked = Float.parseFloat(UserPreferences.getTracked(this));
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+                String name = cursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
                 String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
                 String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
@@ -556,24 +562,19 @@ public class DataService extends IntentService {
 
                 charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
+                List<String> records = UserPreferences.getRecords(this);
+                records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, todaysImpact, name, ein));
+                UserPreferences.setRecords(this, records);
+
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
             } while (cursor.moveToNext());
             cursor.close();
 
-
-            long anchorTime = UserPreferences.getAnchor(this);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(anchorTime);
-            int difference = calendar.compareTo(Calendar.getInstance());
-
             if (difference == 0) {
                 UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
                 UserPreferences.setTimestamp(this, System.currentTimeMillis());
             }
-            List<String> records = UserPreferences.getRecords(this);
-            records.add(String.format(Locale.getDefault(), "%d:%s", anchorTime, todaysImpact));
-            UserPreferences.setRecords(this, records);
 
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
             UserPreferences.setCharities(this, charities);
