@@ -393,22 +393,26 @@ public class ReviewFragment extends Fragment implements
         for (int j = 0; j < mRecordsArray.length; j++) {
             recordAmounts[j] = Float.parseFloat(mRecordsArray[j].split(":")[1]);
             recordsTotal += recordAmounts[j];
-            
+
+            int currentInterval = Calendar.getInstance().get(mPeriod);
+
             long recordTimestamp = Long.parseLong(mRecordsArray[j].split(":")[0]);
-            Calendar calendar  = Calendar.getInstance();
-            int currentInterval = calendar.get(mPeriod);
-            calendar.setTimeInMillis(recordTimestamp);
-            int recordInterval = calendar.get(mPeriod);
+            Calendar recordCalendar  = Calendar.getInstance();
+            recordCalendar.setTimeInMillis(recordTimestamp);
+            int recordInterval = recordCalendar.get(mPeriod);
+
             int intervalDifference = currentInterval - recordInterval;
-            if (mPeriod != Calendar.YEAR) {
+            boolean validInterval = true;
+
+            if (mPeriod != Calendar.YEAR  && recordInterval > currentInterval) {
                 int priorYearIntervals = 7 - currentInterval;
-                int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
-                if (yearsDifference < 1 && priorYearIntervals > 0) {
-                    int priorYearIndex = Calendar.getInstance().get(mPeriod) - 12;
+                int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
+                if (priorYearIntervals > 0 && yearsDifference < 2) {
+                    int priorYearIndex = recordCalendar.get(mPeriod) - 13;
                     intervalDifference = currentInterval - priorYearIndex;
-                }
+                } else validInterval = false;
             }
-            if (intervalDifference < 8) intervalAggregates[intervalDifference] += recordAmounts[j];
+            if (validInterval && intervalDifference < 7) intervalAggregates[intervalDifference] += recordAmounts[j];
         }
 
         float today = Float.parseFloat(mRecordsArray[0].split(":")[1]);
