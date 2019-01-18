@@ -395,11 +395,35 @@ public class ReviewFragment extends Fragment implements
             
             long recordTimestamp = Long.parseLong(mRecordsArray[j].split(":")[0]);
             Calendar calendar  = Calendar.getInstance();
-            int currentYear = calendar.get(mPeriod);
+            int currentInterval = calendar.get(mPeriod);
             calendar.setTimeInMillis(recordTimestamp);
-            int recordYear = calendar.get(mPeriod);
-            int yearsDifference = currentYear - recordYear;
-            if (yearsDifference < 8) intervalAggregates[yearsDifference] += recordAmounts[j];
+            int recordInterval = calendar.get(mPeriod);
+            int intervalDifference = -1;
+            boolean validInterval = false;
+            switch (mPeriod) {
+                case Calendar.YEAR:
+                    intervalDifference = currentInterval - recordInterval;
+                    validInterval = intervalDifference < 8;
+                    break;
+                case Calendar.MONTH:
+                    int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - calendar.get(Calendar.YEAR);
+                    if (yearsDifference > 1) return;
+                    int priorYearIntervals = 7 - currentInterval;
+                    if (priorYearIntervals > 0)  {
+                        int priorYearIndex = -12 + Calendar.getInstance().get(Calendar.MONTH);
+                        intervalDifference = currentInterval - priorYearIndex;
+                        validInterval = intervalDifference < 8;
+                    } else {
+                        intervalDifference = currentInterval - recordInterval;
+                        validInterval = intervalDifference < 8;
+                    }
+                    break;
+                case Calendar.WEEK_OF_YEAR:
+
+                    break;
+                default:
+            }
+            if (validInterval) intervalAggregates[intervalDifference] += recordAmounts[j];
         }
 
         float today = Float.parseFloat(mRecordsArray[0].split(":")[1]);
