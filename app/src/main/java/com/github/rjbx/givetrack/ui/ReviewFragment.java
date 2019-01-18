@@ -41,7 +41,6 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
-import java.security.InvalidParameterException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -50,7 +49,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Provides the logic and views for an activity overview screen.
@@ -74,14 +72,13 @@ public class ReviewFragment extends Fragment implements
     private MainActivity mParentActivity;
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
-    private String mTitle;
+    private String mIntervalLabel;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
     private String[] mRecordsArray;
-    private int mPeriod;
-    private int mDayMultiplier;
+    private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
@@ -186,8 +183,8 @@ public class ReviewFragment extends Fragment implements
         switch ((int) value) {
             case 0: return getString(R.string.axis_value_high);
             case 1: return getString(R.string.axis_value_today);
-            case 2: return getString(R.string.axis_value_yesterday);
-            default: return getString(R.string.axis_value_days, (int) value);
+            case 2: return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
+            default: return getString(R.string.axis_value_interval, (int) value, mIntervalLabel);
         }
     }
 
@@ -211,23 +208,20 @@ public class ReviewFragment extends Fragment implements
     }
 
     @OnClick(R.id.home_time_button) void toggleTime() {
-        if (mPeriod < 3) mPeriod++;
-        else mPeriod = 1;
+        if (mInterval < 3) mInterval++;
+        else mInterval = 1;
         mShowYears = !mShowYears;
-        switch (mPeriod) {
+        switch (mInterval) {
             case Calendar.YEAR:
-                mTitle = "Annual Giving";
-                mDayMultiplier = 365;
+                mIntervalLabel = "Year";
                 renderCharts();
                 break;
             case Calendar.MONTH:
-                mTitle = "Monthly Giving";
-                mDayMultiplier = 30;
+                mIntervalLabel = "Month";
                 renderCharts();
                 break;
             case Calendar.WEEK_OF_YEAR:
-                mTitle = "Weekly Giving";
-                mDayMultiplier = 7;
+                mIntervalLabel = "Week";
                 renderCharts();
                 break;
         }
@@ -264,7 +258,7 @@ public class ReviewFragment extends Fragment implements
         Context context = getContext();
         if (context == null) return;
 
-        mTitleText.setText(mTitle);
+        mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
         int backgroundColor = getResources().getColor(R.color.colorChalk);
@@ -381,12 +375,6 @@ public class ReviewFragment extends Fragment implements
         long lastConversionTime = UserPreferences.getTimestamp(context);
         long timeBetweenConversions = currentTime - lastConversionTime;
 
-        long daysBetweenConversions =
-                TimeUnit.DAYS.convert(
-                        timeBetweenConversions,
-                        TimeUnit.MILLISECONDS
-                ) * mDayMultiplier;
-
         float recordsTotal = 0;
         float[] recordAmounts = new float[mRecordsArray.length];
         float[] intervalAggregates = new float[7];
@@ -394,21 +382,21 @@ public class ReviewFragment extends Fragment implements
             recordAmounts[j] = Float.parseFloat(mRecordsArray[j].split(":")[1]);
             recordsTotal += recordAmounts[j];
 
-            int currentInterval = Calendar.getInstance().get(mPeriod);
+            int currentInterval = Calendar.getInstance().get(mInterval);
 
             long recordTimestamp = Long.parseLong(mRecordsArray[j].split(":")[0]);
             Calendar recordCalendar  = Calendar.getInstance();
             recordCalendar.setTimeInMillis(recordTimestamp);
-            int recordInterval = recordCalendar.get(mPeriod);
+            int recordInterval = recordCalendar.get(mInterval);
 
             int intervalDifference = currentInterval - recordInterval;
             boolean validInterval = true;
 
-            if (mPeriod != Calendar.YEAR  && recordInterval > currentInterval) {
+            if (mInterval != Calendar.YEAR  && recordInterval > currentInterval) {
                 int priorYearIntervals = 7 - currentInterval;
                 int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
                 if (priorYearIntervals > 0 && yearsDifference < 2) {
-                    int priorYearIndex = recordCalendar.get(mPeriod) - 13;
+                    int priorYearIndex = recordCalendar.get(mInterval) - 13;
                     intervalDifference = currentInterval - priorYearIndex;
                 } else validInterval = false;
             }

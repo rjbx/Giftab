@@ -110,8 +110,8 @@
     <string name="indicator_donation_impact">Your total impact: %s</string>
     <string name="axis_value_high">All-time high</string>
     <string name="axis_value_today">Today</string>
-    <string name="axis_value_yesterday">Yesterday</string>
-    <string name="axis_value_days">%d days ago</string>
+    <string name="axis_value_yester">Yester%s</string>
+    <string name="axis_value_interval">%d %ss Ago</string>
     <string name="axis_value_alltime">All-time</string>
     <string name="axis_value_daily">Daily</string>
     <string name="axis_value_donation">Donated</string>
@@ -120,6 +120,7 @@
     <string name="chart_title_type">Conversion Types</string>
     <string name="chart_title_usage">Amount Totals</string>
     <string name="chart_title_percentage">Your Charities</string>
+    <string name="charts_title">%sly Giving</string>
     <string name="symbol_increment_button">+</string>
     <string name="symbol_decrement_button">—</string>
 
