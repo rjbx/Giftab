@@ -523,6 +523,7 @@ public class DataService extends IntentService {
 
             int f = charityValues.getAsInteger(affectedColumn);
             List<String> charities = new ArrayList<>();
+            List<String> records = UserPreferences.getRecords(this);
 
             long currentTime = System.currentTimeMillis();
             long lastConversionTime = UserPreferences.getTimestamp(this);
@@ -562,9 +563,7 @@ public class DataService extends IntentService {
 
                 charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
-                List<String> records = UserPreferences.getRecords(this);
-                records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, todaysImpact, name, ein));
-                UserPreferences.setRecords(this, records);
+                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
 
                 Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
@@ -576,6 +575,7 @@ public class DataService extends IntentService {
                 UserPreferences.setTimestamp(this, System.currentTimeMillis());
             }
 
+            UserPreferences.setRecords(this, records);
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
