@@ -383,11 +383,11 @@ public class ReviewFragment extends Fragment implements
         float daysSum = 0;
         float[] days = new float[mTallyArray.length];
         for (int j = 0; j < mTallyArray.length; j++) {
-            days[j] = Float.parseFloat(mTallyArray[j]);
+            days[j] = Float.parseFloat(mTallyArray[j].split(":")[1]);
             daysSum += days[j];
         }
 
-        float today = Float.parseFloat(mTallyArray[0]);
+        float today = Float.parseFloat(mTallyArray[0].split(":")[1]);
         float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
         UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
         UserPreferences.updateFirebaseUser(mParentActivity);
@@ -413,15 +413,14 @@ public class ReviewFragment extends Fragment implements
         mAverageChart.invalidate();
 
         List<BarEntry> activityEntries = new ArrayList<>();
-        activityEntries.add(new BarEntry(0f, high));
-        activityEntries.add(new BarEntry(1f, days[0]));
-        activityEntries.add(new BarEntry(2f, days[1]));
-
-        activityEntries.add(new BarEntry(3f, days[2]));
-        activityEntries.add(new BarEntry(4f, days[3]));
-        activityEntries.add(new BarEntry(5f, days[4]));
-        activityEntries.add(new BarEntry(6f, days[5]));
-        activityEntries.add(new BarEntry(7f, days[6]));
+//        activityEntries.add(new BarEntry(0f, high));
+//        activityEntries.add(new BarEntry(1f, days[0]));
+//        activityEntries.add(new BarEntry(2f, days[1]));
+//        activityEntries.add(new BarEntry(3f, days[2]));
+//        activityEntries.add(new BarEntry(4f, days[3]));
+//        activityEntries.add(new BarEntry(5f, days[4]));
+//        activityEntries.add(new BarEntry(6f, days[5]));
+//        activityEntries.add(new BarEntry(7f, days[6]));
 
         BarDataSet activityDataSet = new BarDataSet(activityEntries, "");
         activityDataSet.setColors(chartColors);

@@ -358,7 +358,7 @@ public class UserPreferences {
                 getRows(context),
                 getFocus(context),
                 getEin(context),
-                getCharities(context),
+                getRecords(context),
                 getHigh(context),
                 getToday(context),
                 getAnchor(context),
