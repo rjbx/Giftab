@@ -76,21 +76,15 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/collection_add_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorNeutralDark">
-
-    </FrameLayout>
-
     <LinearLayout
         android:id="@+id/home_amount_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAttentionDark"
-        android:padding="2dp"
+        android:paddingTop="6dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:paddingBottom="2dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:labelFor="@id/home_amount_text">
@@ -100,7 +94,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".3"
-            android:padding="5dp"
+            android:padding="3.5dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:background="@color/colorSlate"
@@ -116,8 +110,8 @@
             android:layout_weight=".4"
             android:padding="3dp"
             android:layout_gravity="center"
-            android:background="@color/colorSlate"
             android:gravity="center"
+            android:background="@color/colorSlate"
             android:textSize="@dimen/text_size_paragraph_title"
             android:textStyle="bold"
             android:textColor="#fff"/>
@@ -126,9 +120,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".3"
-            android:layout_marginEnd="3dp"
             android:layout_marginTop="3dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="2.5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:background="@color/colorSlate"
@@ -136,7 +129,7 @@
 
             <ImageButton
                 android:id="@+id/home_time_button"
-                android:layout_width="20dp"
+                android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:src="@android:drawable/ic_menu_recent_history"
@@ -145,16 +138,16 @@
 
             <ImageButton
                 android:id="@+id/home_config_button"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/action_manage"
+                android:src="@drawable/altimeter"
                 android:background="@color/colorSlate"
                 android:contentDescription="@string/description_decrement_percentage_text"/>
 
             <ImageButton
                 android:id="@+id/home_share_button"
-                android:layout_width="20dp"
+                android:layout_width="18dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:src="@android:drawable/ic_menu_share"
