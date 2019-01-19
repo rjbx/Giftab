@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.ui;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,14 +24,20 @@ import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.GivetrackContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Presents a set of application settings.
@@ -267,6 +274,38 @@ public class SettingsActivity extends PreferenceActivity {
             return SettingsActivity.changePreference(preference, newValue);
         }
     }
+
+/*    *//**
+     * Shows search preferences when the Activity is showing a two-pane settings UI.
+     *//*
+    public static class RecordPreferenceFragment extends PreferenceFragment implements
+            Preference.OnPreferenceChangeListener {
+        
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_record);
+            setHasOptionsMenu(true);
+        }
+
+        *//**
+         * Defines behavior onClick of each MenuItem.
+         *//*
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            int id = item.getItemId();
+            if (id == android.R.id.home) {
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            return SettingsActivity.changePreference(preference, newValue);
+        }
+    }*/
 
     /**
      * Shows notification preferences when the Activity is showing a two-pane settings UI.

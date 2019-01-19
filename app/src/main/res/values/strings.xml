@@ -140,6 +140,8 @@
     <string name="pref_gender_key" translatable="false">gender</string>
     <string name="pref_birthdate_key" translatable="false">birthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
+    <string name="pref_recalibrate_key" translatable="false">recalibrate</string>
+    <string name="pref_magnitude_key" translatable="false">magnitude</string>
     <string name="pref_ein_key" translatable="false">ein</string>
     <string name="pref_term_label">Keywords</string>
     <string name="pref_city_label">City</string>
@@ -156,6 +158,8 @@
     <string name="pref_gender_label">Gender</string>
     <string name="pref_birthdate_label">Birthdate</string>
     <string name="pref_delete_label">Delete Account</string>
+    <string name="pref_recalibrate_label">Recalibrate Percentages</string>
+    <string name="pref_magnitude_label">Adjust Magnitude</string>
 
     <!-- General settings -->
     <string name="pref_header_user">User Attributes</string>
@@ -328,6 +332,9 @@
         <item>ASC</item>
     </string-array>
     <string-array name="multi_select_list_preference_default_value" />
+
+
+    <string name="pref_header_record">Record Tuners</string>
 
     <!-- Notification settings -->
     <string name="pref_header_notifications">Message Notifications</string>

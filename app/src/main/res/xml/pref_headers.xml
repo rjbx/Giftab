@@ -12,6 +12,11 @@
         android:icon="@drawable/menu_filter"
         android:title="@string/pref_header_search" />
 
+<!--    <header
+        android:fragment="com.github.rjbx.givetrack.ui.SettingsActivity$RecordPreferenceFragment"
+        android:icon="@drawable/tune_vertical"
+        android:title="@string/pref_header_record" />-->
+
     <header
         android:fragment="com.github.rjbx.givetrack.ui.SettingsActivity$NotificationPreferenceFragment"
         android:icon="@drawable/menu_info"

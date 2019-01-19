@@ -139,12 +139,12 @@ public class SearchActivity extends AppCompatActivity implements
             case (android.R.id.home):
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
-            case (R.id.action_settings):
+            /*case (R.id.action_settings):
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case (R.id.action_clear):
                 DataService.startActionResetGenerated(this);
-                return true;
+                return true;*/
             case (R.id.action_filter):
                 launchFilterPreferences(this);
         }

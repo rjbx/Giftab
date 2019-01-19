@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                 break;
-            case R.id.action_magnitude:
+          /*  case R.id.action_magnitude:
                 View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 mMagnitudeDialog = new AlertDialog.Builder(this).create();
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements
                 mMagnitudeDialog.show();
                 mMagnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                 mMagnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-                break;
+                break;*/
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(UserPreferences.getAnchor(this));
