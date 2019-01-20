@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DataService;
@@ -87,6 +88,7 @@ public class SettingsActivity extends PreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
+                || RecordPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -122,6 +124,7 @@ public class SettingsActivity extends PreferenceActivity {
                 }
             }
         } else changedPreference.setSummary(stringValue);
+        UserPreferences.updateFirebaseUser(changedPreference.getContext());
         return true;
     }
 
@@ -217,6 +220,7 @@ public class SettingsActivity extends PreferenceActivity {
      */
     public static class SearchPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener {
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -275,22 +279,75 @@ public class SettingsActivity extends PreferenceActivity {
         }
     }
 
-/*    *//**
+    /**
      * Shows search preferences when the Activity is showing a two-pane settings UI.
-     *//*
+     */
     public static class RecordPreferenceFragment extends PreferenceFragment implements
-            Preference.OnPreferenceChangeListener {
-        
+            Preference.OnPreferenceChangeListener,
+            DialogInterface.OnClickListener,
+            SeekBar.OnSeekBarChangeListener {
+
+        AlertDialog mMagnitudeDialog;
+        AlertDialog mRecalibrateDialog;
+        AlertDialog mClearDialog;
+        TextView mSeekReadout;
+        int mSeekProgress;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_record);
             setHasOptionsMenu(true);
+
+            Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
+            mSeekProgress = Math.round(Float.parseFloat(UserPreferences.getMagnitude(getActivity())) * 1000f);
+            magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
+            magnitudePreference.setOnPreferenceClickListener(clickedPreference -> {
+                View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
+                SeekBar seekbar = view.findViewById(R.id.main_seekbar);
+                mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
+                mSeekReadout = view.findViewById(R.id.main_readout);
+                mSeekReadout.setText(percentIntToDecimalString(mSeekProgress));
+                seekbar.setOnSeekBarChangeListener(this);
+                seekbar.setProgress(mSeekProgress);
+                mMagnitudeDialog.setView(view);
+                mMagnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
+                mMagnitudeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mMagnitudeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                mMagnitudeDialog.show();
+                mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion));
+                return false;
+            });
+
+            Preference recalibratePreference = findPreference(getString(R.string.pref_recalibrate_key));
+            recalibratePreference.setOnPreferenceClickListener(clickedPreference -> {
+                mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
+                mRecalibrateDialog.setMessage(getActivity().getString(R.string.dialog_message_recalibrate));
+                mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mRecalibrateDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                mRecalibrateDialog.show();
+                mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion));
+                return false;
+            });
+
+            Preference unsavePreference = findPreference(getString(R.string.pref_unsave_key));
+            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+                mClearDialog = new AlertDialog.Builder(getActivity()).create();
+                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
+                mClearDialog.show();
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                return false;
+            });
         }
 
-        *//**
+        /**
          * Defines behavior onClick of each MenuItem.
-         *//*
+         */
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
@@ -305,7 +362,59 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             return SettingsActivity.changePreference(preference, newValue);
         }
-    }*/
+
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            mSeekProgress = progress;
+            mSeekReadout.setText(percentIntToDecimalString(progress));
+        }
+        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (dialog == mMagnitudeDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_POSITIVE:
+                        UserPreferences.setMagnitude(getActivity(), percentIntToDecimalString(mSeekProgress));
+                        UserPreferences.updateFirebaseUser(getActivity());
+                        Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
+                        magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
+                        break;
+                    default:
+                }
+            } else if (dialog == mRecalibrateDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_POSITIVE:
+                        ContentValues values = new ContentValues();
+                        values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
+                        DataService.startActionUpdatePercentages(getActivity(), values);
+                        break;
+                    default:
+                }
+            } else if (dialog == mClearDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        DataService.startActionResetCollected(getActivity());
+                        break;
+                    default:
+                }
+            }
+        }
+
+        private static String percentIntToDecimalString(int percentInt) {
+            return String.format(Locale.getDefault(), "%.2f", percentInt / 1000f);
+        }
+    }
 
     /**
      * Shows notification preferences when the Activity is showing a two-pane settings UI.

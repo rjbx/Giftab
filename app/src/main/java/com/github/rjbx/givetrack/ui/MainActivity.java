@@ -29,6 +29,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
 
+import android.preference.PreferenceActivity;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -52,7 +53,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
@@ -67,8 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         LoaderManager.LoaderCallbacks<Cursor>,
         DialogInterface.OnClickListener,
-        DatePickerDialog.OnDateSetListener,
-        SeekBar.OnSeekBarChangeListener {
+        DatePickerDialog.OnDateSetListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
 
@@ -76,17 +75,14 @@ public class MainActivity extends AppCompatActivity implements
     private static final int ID_MAIN_LOADER = 444;
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mValuesArray;
-    private TextView mSeekReadout;
-    private int mSeekProgress;
     private long mAnchorTime;
-    private AlertDialog mClearDialog;
-    private AlertDialog mMagnitudeDialog;
     private AlertDialog mAnchorDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
     @BindView(R.id.main_pager) ViewPager mPager;
     @BindView(R.id.main_tabs) TabLayout mTabs;
+
     /**
      * Populates the TabLayout with a SectionsPagerAdapter and the NavigationView with a DrawerLayout.
      */
@@ -135,38 +131,8 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                launchTunerPreferences(this);
                 return true;
-            case R.id.action_recalibrate:
-                ContentValues values = new ContentValues();
-                values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
-                DataService.startActionUpdatePercentages(this, values);
-                return true;
-            case R.id.action_clear:
-                mClearDialog = new AlertDialog.Builder(this).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
-                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
-                mClearDialog.show();
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-                break;
-          /*  case R.id.action_magnitude:
-                View view = getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(this));
-                SeekBar seekbar = view.findViewById(R.id.main_seekbar);
-                mMagnitudeDialog = new AlertDialog.Builder(this).create();
-                mSeekReadout = view.findViewById(R.id.main_readout);
-                mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", seekbar.getProgress() / 1000f));
-                seekbar.setOnSeekBarChangeListener(this);
-                seekbar.setProgress(Math.round(Float.parseFloat(UserPreferences.getMagnitude(this)) * 1000f));
-                mMagnitudeDialog.setView(view);
-                mMagnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
-                mMagnitudeDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
-                mMagnitudeDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-                mMagnitudeDialog.show();
-                mMagnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                mMagnitudeDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
-                break;*/
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(UserPreferences.getAnchor(this));
@@ -262,41 +228,8 @@ public class MainActivity extends AppCompatActivity implements
         mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
     }
 
-    @Override
-    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            mSeekProgress = progress;
-            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", seekBar.getProgress() / 1000f));
-            mSeekReadout.setText(String.format(Locale.getDefault(), "%.2f", progress / 1000f));
-    }
-
-    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
-
     @Override public void onClick(DialogInterface dialog, int which) {
-        if (dialog == mClearDialog) {
-            switch (which) {
-                case AlertDialog.BUTTON_NEUTRAL:
-                    dialog.dismiss();
-                    break;
-                case AlertDialog.BUTTON_NEGATIVE:
-                    DataService.startActionResetCollected(this);
-                    break;
-                default:
-            }
-        } else if (dialog == mMagnitudeDialog) {
-            switch (which) {
-                case AlertDialog.BUTTON_NEUTRAL:
-                    dialog.dismiss();
-                    break;
-                case AlertDialog.BUTTON_POSITIVE:
-                    float magnitude = mSeekProgress / 1000f;
-                    UserPreferences.setMagnitude(this, String.format(Locale.getDefault(), "%.2f", magnitude));
-                    UserPreferences.updateFirebaseUser(this);
-                    getSupportLoaderManager().restartLoader(ID_MAIN_LOADER, null, this);
-                    break;
-                default:
-            }
-        } else if (dialog == mAnchorDialog) {
+        if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     dialog.dismiss();
@@ -310,6 +243,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private static void launchTunerPreferences(Context context) {
+        Intent filterIntent = new Intent(context, SettingsActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.RecordPreferenceFragment.class.getName());
+        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        context.startActivity(filterIntent);
+    }
+
     private void launchCustomTabs(String url) {
         new CustomTabsIntent.Builder()
                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -319,7 +259,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public static class PlaceholderFragment extends Fragment {
-
 
         private Unbinder mUnbinder;
 

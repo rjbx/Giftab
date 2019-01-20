@@ -98,6 +98,7 @@
     <string name="add_widget">Add widget</string>
 
     <!-- Charity -->
+    <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
     <string name="dialog_description_magnitude_adjustment">Set the amount added or subtracted to a decimal number when clicking the related increment or decrement buttons</string>
     <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_alert">Remove %s from your collection?</string>
@@ -143,6 +144,7 @@
     <string name="pref_recalibrate_key" translatable="false">recalibrate</string>
     <string name="pref_magnitude_key" translatable="false">magnitude</string>
     <string name="pref_ein_key" translatable="false">ein</string>
+    <string name="pref_unsave_key" translatable="false">clearData</string>
     <string name="pref_term_label">Keywords</string>
     <string name="pref_city_label">City</string>
     <string name="pref_state_label">State</string>
@@ -160,6 +162,7 @@
     <string name="pref_delete_label">Delete Account</string>
     <string name="pref_recalibrate_label">Recalibrate Percentages</string>
     <string name="pref_magnitude_label">Adjust Magnitude</string>
+    <string name="pref_unsave_label">Clear Data</string>
 
     <!-- General settings -->
     <string name="pref_header_user">User Attributes</string>

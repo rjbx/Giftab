@@ -5,28 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_magnitude"
-        android:orderInCategory="200"
-        android:title="@string/action_magnitude_label"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_recalibrate"
-        android:orderInCategory="200"
-        android:title="@string/action_recalibrate"
-        app:showAsAction="never"/>
-    <item
-        android:id="@+id/action_clear"
-        android:orderInCategory="300"
-        android:title="@string/action_clear"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="Edit Settings"
         android:icon="@drawable/tune_vertical"
         app:showAsAction="always"/>
-
 
     <item
         android:id="@+id/action_date"
