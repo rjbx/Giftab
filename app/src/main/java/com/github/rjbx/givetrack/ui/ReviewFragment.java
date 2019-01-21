@@ -378,6 +378,7 @@ public class ReviewFragment extends Fragment implements
         float recordsTotal = 0;
         float[] recordAmounts = new float[mRecordsArray.length];
         float[] intervalAggregates = new float[7];
+        if (mRecordsArray.length == 0 || mRecordsArray[0].isEmpty()) return;
         for (int j = 0; j < mRecordsArray.length; j++) {
             recordAmounts[j] = Float.parseFloat(mRecordsArray[j].split(":")[1]);
             recordsTotal += recordAmounts[j];
