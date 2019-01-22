@@ -789,6 +789,7 @@ public class DatabaseService extends IntentService {
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
                 ContentValues values = new ContentValues();
+                DatabaseUtils.cursorRowToContentValues(cursor, values);
                 values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
@@ -800,6 +801,8 @@ public class DatabaseService extends IntentService {
                 Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
 
+
+                values.remove(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, currentTime);
                 getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
