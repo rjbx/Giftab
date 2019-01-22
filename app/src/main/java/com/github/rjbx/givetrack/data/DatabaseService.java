@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
-public class DataService extends IntentService {
+public class DatabaseService extends IntentService {
 
     private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
@@ -74,7 +74,7 @@ public class DataService extends IntentService {
     /**
      * Creates an {@link IntentService} instance.
      */
-    public DataService() { super(DataService.class.getSimpleName()); }
+    public DatabaseService() { super(DatabaseService.class.getSimpleName()); }
 
     /**
      * Starts this service to perform action FetchGenerated with the given parameters.
@@ -83,7 +83,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchGenerated(Context context, HashMap<String, String> apiRequest) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_GENERATED);
         intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
@@ -96,7 +96,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchCollected(Context context) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_COLLECTED);
         context.startService(intent);
     }
@@ -108,7 +108,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionCollectGenerated(Context context, String charityId) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_COLLECT_GENERATED);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
@@ -121,7 +121,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveGenerated(Context context, String charityId) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_GENERATED);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
@@ -134,7 +134,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveCollected(Context context, String charityId) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_COLLECTED);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
@@ -147,7 +147,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetGenerated(Context context) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_GENERATED);
         context.startService(intent);
     }
@@ -159,7 +159,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetCollected(Context context) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_COLLECTED);
         context.startService(intent);
     }
@@ -171,7 +171,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateFrequency(Context context, ContentValues charityValues) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_FREQUENCY);
         intent.putExtra(EXTRA_ITEM_VALUES, charityValues);
         context.startService(intent);
@@ -184,7 +184,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdatePercentages(Context context, ContentValues... charityValues) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_PERCENTAGES);
         if (charityValues.length > 1) {
             ArrayList<ContentValues> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
@@ -200,7 +200,7 @@ public class DataService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetData(Context context) {
-        Intent intent = new Intent(context, DataService.class);
+        Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_DATA);
         context.startService(intent);
     }
@@ -289,8 +289,8 @@ public class DataService extends IntentService {
             ContentValues[] parsedResponse = parseJsonResponse(response, single);
 
             // Store data
-            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
-            getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_GENERATION, parsedResponse);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
+            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_SEARCH, parsedResponse);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -333,16 +333,16 @@ public class DataService extends IntentService {
                 String response = requestResponseFromUrl(url);
                 Timber.e("Collection Fetched Response: %s", response);
                 ContentValues[] parsedResponse = parseJsonResponse(response, true);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
-                parsedResponse[0].put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
                 contentValuesArray[i] = parsedResponse[0];
             }
 
-            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
-            getContentResolver().bulkInsert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, contentValuesArray);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null);
+            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_DONOR, contentValuesArray);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -354,7 +354,7 @@ public class DataService extends IntentService {
      * Handles action CollectGenerated in the provided background thread with the provided parameters.
      */
     private void handleActionCollectGenerated(String charityId) {
-        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
 
         NETWORK_IO.execute(() -> {
 
@@ -367,25 +367,25 @@ public class DataService extends IntentService {
             List<String> charities = UserPreferences.getCharities(this);
 
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, "0");
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
 
-            String navUrl = cursor.getString(GivetrackContract.Entry.INDEX_NAVIGATOR_URL);
+            String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
-            values.put(GivetrackContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+            values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
 
-            String orgUrl = cursor.getString(GivetrackContract.Entry.INDEX_HOMEPAGE_URL);
+            String orgUrl = cursor.getString(DatabaseContract.Entry.INDEX_HOMEPAGE_URL);
             String emailAddress = urlToEmailAddress(orgUrl);
-            values.put(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+            values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
+            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
             charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            getContentResolver().insert(GivetrackContract.Entry.CONTENT_URI_COLLECTION, values);
+            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_DONOR, values);
             cursor.close();
         });
 
@@ -398,7 +398,7 @@ public class DataService extends IntentService {
      * Handles action RemoveGenerated in the provided background thread with the provided parameters.
      */
     private void handleActionRemoveGenerated(String charityId) {
-        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_GENERATION.buildUpon().appendPath(charityId).build();
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -411,10 +411,10 @@ public class DataService extends IntentService {
      */
     private void handleActionRemoveCollected(String charityId) {
 
-        Uri charityUri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(charityId).build();
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(charityId).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
-        Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
                 null, null, null, null);
         if (cursor == null) return;
 
@@ -422,13 +422,11 @@ public class DataService extends IntentService {
         if (!cursor.moveToFirst()) charities.add("");
         else {
             do {
-                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
-                float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
-                int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
+                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, percentage, impact, frequency));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -445,7 +443,7 @@ public class DataService extends IntentService {
      * Handles action ResetGenerated in the provided background thread with the provided parameters.
      */
     private void handleActionResetGenerated() {
-        DISK_IO.execute(() -> getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null));
+        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -456,7 +454,7 @@ public class DataService extends IntentService {
      * Handles action ResetCollected in the provided background thread with the provided parameters.
      */
     private void handleActionResetCollected() {
-        DISK_IO.execute(() -> getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null));
+        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null));
 
         UserPreferences.setCharities(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
@@ -470,27 +468,25 @@ public class DataService extends IntentService {
      */
     private void handleActionUpdatePercentages(ContentValues... charityValues) {
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
             null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
-            boolean recalibrate = charityValues[0].get(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
-            if (recalibrate) charityValues[0].put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(1f / cursor.getCount()));
+            boolean recalibrate = charityValues[0].get(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
+            if (recalibrate) charityValues[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(1f / cursor.getCount()));
             int i = 0;
 
             List<String> charities = new ArrayList<>();
 
             do {
                 ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
-                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
-                float impact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT));
-                int frequency = cursor.getInt(GivetrackContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
+                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
+                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, percentage, impact, frequency));
 
-                Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+                Uri uri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
 
             } while (cursor.moveToNext());
@@ -512,13 +508,13 @@ public class DataService extends IntentService {
 
         String affectedColumn;
         int affectedIndex;
-        if (charityValues.containsKey(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY)) {
-            affectedColumn = GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY;
-            affectedIndex = GivetrackContract.Entry.INDEX_DONATION_FREQUENCY;
+        if (charityValues.containsKey(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY)) {
+            affectedColumn = DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY;
+            affectedIndex = DatabaseContract.Entry.INDEX_DONATION_FREQUENCY;
         } else return;
 
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null, null, null);
+            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
             int f = charityValues.getAsInteger(affectedColumn);
@@ -544,28 +540,26 @@ public class DataService extends IntentService {
             float totalTracked = Float.parseFloat(UserPreferences.getTracked(this));
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
-                String ein = cursor.getString(GivetrackContract.Entry.INDEX_EIN);
-                String name = cursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
-                String phone = cursor.getString(GivetrackContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(GivetrackContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
+                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                String name = cursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
-                float totalImpact = Float.parseFloat(cursor.getString(GivetrackContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
+                float totalImpact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
                 todaysImpact += transactionImpact * 100f / 100f;
                 totalTracked += transactionImpact * 100f / 100f;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage == 0f ? 0 : f);
 
                 ContentValues values = new ContentValues();
-                values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
+                values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
-                values.put(GivetrackContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
 
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, percentage, totalImpact, affectedFrequency));
 
                 if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
 
-                Uri uri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon().appendPath(ein).build();
+                Uri uri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
             } while (cursor.moveToNext());
             cursor.close();
@@ -592,8 +586,8 @@ public class DataService extends IntentService {
     private void handleActionResetData() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
-            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_GENERATION, null, null);
-            getContentResolver().delete(GivetrackContract.Entry.CONTENT_URI_COLLECTION, null, null);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null);
         });
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -765,15 +759,15 @@ public class DataService extends IntentService {
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
         ContentValues values = new ContentValues();
-        values.put(GivetrackContract.Entry.COLUMN_EIN, ein);
-        values.put(GivetrackContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATION_STREET, nullToDefaultStr(street));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
-        values.put(GivetrackContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
-        values.put(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
-        values.put(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
+        values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STREET, nullToDefaultStr(street));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
+        values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
+        values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
 
         return values;
     }

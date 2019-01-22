@@ -15,12 +15,14 @@ import timber.log.Timber;
 /**
  * Provides data in response to requests generated from {@link android.content.ContentResolver}.
  */
-public class GivetrackProvider extends ContentProvider {
+public class DatabaseProvider extends ContentProvider {
 
-    private static final int CODE_COLLECTION = 100;
-    private static final int CODE_GENERATION = 101;
-    private static final int CODE_COLLECTION_WITH_ID = 200;
-    private static final int CODE_GENERATION_WITH_ID = 201;
+    private static final int CODE_GIVING = 100;
+    private static final int CODE_SEARCH = 101;
+    private static final int CODE_RECORD = 102;
+    private static final int CODE_GIVING_WITH_ID = 200;
+    private static final int CODE_SEARCH_WITH_ID = 201;
+    private static final int CODE_RECORD_WITH_ID = 202;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     /**
@@ -30,17 +32,17 @@ public class GivetrackProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = GivetrackContract.AUTHORITY;
+        final String authority = DatabaseContract.AUTHORITY;
 
-        matcher.addURI(authority, GivetrackContract.PATH_COLLECTION_TABLE, CODE_COLLECTION);
-        matcher.addURI(authority, GivetrackContract.PATH_GENERATION_TABLE, CODE_GENERATION);
-        matcher.addURI(authority, GivetrackContract.PATH_COLLECTION_TABLE + "/#", CODE_COLLECTION_WITH_ID);
-        matcher.addURI(authority, GivetrackContract.PATH_GENERATION_TABLE + "/#", CODE_GENERATION_WITH_ID);
+        matcher.addURI(authority, DatabaseContract.PATH_DONOR_TABLE, CODE_GIVING);
+        matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE, CODE_SEARCH);
+        matcher.addURI(authority, DatabaseContract.PATH_DONOR_TABLE + "/#", CODE_GIVING_WITH_ID);
+        matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE + "/#", CODE_SEARCH_WITH_ID);
 
         return matcher;
     }
 
-    private GivetrackOpener mOpenHelper;
+    private DatabaseOpener mOpenHelper;
 
     /**
      * Initializes all registered {@link ContentProvider}s on the application glance thread at launch time.
@@ -49,7 +51,7 @@ public class GivetrackProvider extends ContentProvider {
     @Override public boolean onCreate() {
         Context context = getContext();
         if (context == null) return false;
-        mOpenHelper = new GivetrackOpener(context);
+        mOpenHelper = new DatabaseOpener(context);
         return true;
     }
 
@@ -66,8 +68,9 @@ public class GivetrackProvider extends ContentProvider {
         String tableName;
         
         switch (sUriMatcher.match(uri)) {
-            case CODE_COLLECTION: tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
-            case CODE_GENERATION: tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -97,8 +100,9 @@ public class GivetrackProvider extends ContentProvider {
         String tableName;
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_COLLECTION: tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
-            case CODE_GENERATION: tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -131,19 +135,26 @@ public class GivetrackProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_COLLECTION: tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
-            case CODE_GENERATION: tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
 
-            case CODE_COLLECTION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_GIVING_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION;
+                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING;
                 break;
 
-            case CODE_GENERATION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_SEARCH_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION;
+                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH;
+                break;
+
+            case CODE_RECORD_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD;
                 break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -177,19 +188,26 @@ public class GivetrackProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
 
-            case CODE_COLLECTION: tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
-            case CODE_GENERATION: tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
 
-            case CODE_COLLECTION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_GIVING_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION;
+                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING;
                 break;
 
-            case CODE_GENERATION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_SEARCH_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION;
+                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH;
+                break;
+
+            case CODE_RECORD_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD;
                 break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -221,18 +239,24 @@ public class GivetrackProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_COLLECTION: tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
-            case CODE_GENERATION: tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
 
-            case CODE_COLLECTION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_GIVING_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_COLLECTION; break;
+                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
 
-            case CODE_GENERATION_WITH_ID:
-                selection = GivetrackContract.Entry.COLUMN_EIN + " = ? ";
+            case CODE_SEARCH_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = GivetrackContract.Entry.TABLE_NAME_GENERATION; break;
+                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+
+            case CODE_RECORD_WITH_ID:
+                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.github.rjbx.givetrack">
 
     <!--<permission android:name="com.github.rjbx.givetrack.permission.READ_PROVIDER"/>-->
@@ -50,7 +50,16 @@
                 android:value="com.github.rjbx.givetrack.ui.MainActivity" />
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name=".ui.RecordActivity"
+            android:label="History"
+            android:parentActivityName=".ui.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.rjbx.givetrack.ui.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.ConfigActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme.StatusBarOverlay" />
         <activity
@@ -75,11 +84,11 @@
             android:name=".AppWidget$AppWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name=".data.DataService"
+            android:name=".data.DatabaseService"
             android:exported="false" />
 
         <provider
-            android:name=".data.GivetrackProvider"
+            android:name=".data.DatabaseProvider"
             android:authorities="com.github.rjbx.givetrack"
             android:exported="false" />
         <provider

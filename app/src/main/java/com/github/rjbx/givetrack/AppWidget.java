@@ -10,7 +10,7 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.ui.MainActivity;
 import com.github.rjbx.givetrack.ui.SearchActivity;
 
@@ -84,7 +84,7 @@ public class AppWidget extends AppWidgetProvider {
         @Override public void onDataSetChanged() {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
-            mCursor = mContext.getContentResolver().query(GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+            mCursor = mContext.getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
                     null, null, null, null);
             Binder.restoreCallingIdentity(token);
         }
@@ -97,8 +97,8 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
 
-            String name = mCursor.getString(GivetrackContract.Entry.INDEX_CHARITY_NAME);
-            Float percentage = Float.parseFloat(mCursor.getString(GivetrackContract.Entry.INDEX_DONATION_PERCENTAGE));
+            String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);

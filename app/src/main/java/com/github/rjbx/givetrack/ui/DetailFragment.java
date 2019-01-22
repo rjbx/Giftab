@@ -31,8 +31,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
-import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,9 +43,9 @@ import java.lang.ref.WeakReference;
  */
 public class DetailFragment extends Fragment {
 
-    public static final String ARG_ITEM_NAME = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
-    public static final String ARG_ITEM_EIN = "com.github.rjbx.givetrack.ui.arg.ITEM_EIN";
-    public static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
+    static final String ARG_ITEM_NAME = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
+    static final String ARG_ITEM_EIN = "com.github.rjbx.givetrack.ui.arg.ITEM_EIN";
+    static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
@@ -134,7 +134,7 @@ public class DetailFragment extends Fragment {
             sEin = getArguments().getString(ARG_ITEM_EIN);
             sUrl = getArguments().getString(ARG_ITEM_URL);
             sScrollState = 0;
-            Uri collectionUri = GivetrackContract.Entry.CONTENT_URI_COLLECTION.buildUpon()
+            Uri collectionUri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon()
                     .appendPath(sEin).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }
@@ -183,8 +183,8 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onDestroy() {
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DataService.startActionCollectGenerated(mParentActivity, sEin);
-            else DataService.startActionRemoveCollected(mParentActivity, sEin);
+            if (sCurrentState) DatabaseService.startActionCollectGenerated(mParentActivity, sEin);
+            else DatabaseService.startActionRemoveCollected(mParentActivity, sEin);
         }
         super.onDestroy();
         mUnbinder.unbind();

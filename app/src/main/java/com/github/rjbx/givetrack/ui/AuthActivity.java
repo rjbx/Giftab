@@ -20,12 +20,11 @@ import timber.log.Timber;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
-import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.UserProfile;
-import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.DatabaseService;
 
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -85,7 +84,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
                                             }));
                     break;
                 case ACTION_DELETE_ACCOUNT:
-                    DataService.startActionResetData(AuthActivity.this);
+                    DatabaseService.startActionResetData(AuthActivity.this);
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                     if (firebaseUser == null || firebaseUser.getEmail() == null) return;
                     String userId = firebaseUser.getUid();

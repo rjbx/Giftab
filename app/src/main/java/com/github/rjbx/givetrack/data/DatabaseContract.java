@@ -4,26 +4,34 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Defines attributes for tables and entries of database initialized in {@link GivetrackOpener}.
+ * Defines attributes for tables and entries of database initialized in {@link DatabaseOpener}.
  */
-public final class GivetrackContract {
+public final class DatabaseContract {
 
     static final String AUTHORITY = "com.github.rjbx.givetrack";
-    static final String PATH_COLLECTION_TABLE = "collection.table";
-    static final String PATH_GENERATION_TABLE = "generation.table";
+    static final String PATH_DONOR_TABLE = "donor.table";
+    static final String PATH_SEARCH_TABLE = "search.table";
+    static final String PATH_RECORD_TABLE = "record.table";
 
     private static final String SCHEME = "content";
     private static final Uri BASE_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
 
+    public static final int LOADER_ID_SEARCH = 1;
+    public static final int LOADER_ID_GIVING = 2;
+    public static final int LOADER_ID_RECORD = 3;
+
     public static final class Entry implements BaseColumns {
 
-        static final String TABLE_NAME_COLLECTION = "collection";
-        static final String TABLE_NAME_GENERATION = "generation";
+        static final String TABLE_NAME_GIVING = "donor";
+        static final String TABLE_NAME_SEARCH = "search";
+        static final String TABLE_NAME_RECORD = "record";
         
-        public static final Uri CONTENT_URI_COLLECTION =
-                BASE_URI.buildUpon().appendPath(PATH_COLLECTION_TABLE).build();
-        public static final Uri CONTENT_URI_GENERATION =
-                BASE_URI.buildUpon().appendPath(PATH_GENERATION_TABLE).build();
+        public static final Uri CONTENT_URI_DONOR =
+                BASE_URI.buildUpon().appendPath(PATH_DONOR_TABLE).build();
+        public static final Uri CONTENT_URI_SEARCH =
+                BASE_URI.buildUpon().appendPath(PATH_SEARCH_TABLE).build();
+        public static final Uri CONTENT_URI_RECORD =
+                BASE_URI.buildUpon().appendPath(PATH_RECORD_TABLE).build();
 
         public static final String COLUMN_EIN = "ein";
         public static final String COLUMN_CHARITY_NAME = "charityName";
@@ -38,6 +46,7 @@ public final class GivetrackContract {
         public static final String COLUMN_NAVIGATOR_URL = "navigatorUrl";
         public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
         public static final String COLUMN_DONATION_IMPACT = "donationTotal";
+        public static final String COLUMN_DONATION_TIME = "donationTime";
         public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
 
         public static final int INDEX_EIN = 0;
@@ -49,10 +58,9 @@ public final class GivetrackContract {
         public static final int INDEX_LOCATION_ZIP = 6;
         public static final int INDEX_HOMEPAGE_URL = 7;
         public static final int INDEX_NAVIGATOR_URL = 8;
-        public static final int INDEX_PHONE_NUMBER = 9;
-        public static final int INDEX_EMAIL_ADDRESS = 10;
-        public static final int INDEX_DONATION_PERCENTAGE = 11;
-        public static final int INDEX_DONATION_IMPACT = 12;
-        public static final int INDEX_DONATION_FREQUENCY = 13;
+        public static final int INDEX_DONATION_IMPACT = 9;
+        public static final int INDEX_DONATION_TIME = 10;
+        public static final int INDEX_DONATION_PERCENTAGE = 10;
+        public static final int INDEX_DONATION_FREQUENCY = 11;
     }
 }

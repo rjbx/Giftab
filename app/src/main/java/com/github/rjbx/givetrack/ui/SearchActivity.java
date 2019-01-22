@@ -39,9 +39,9 @@ import butterknife.OnClick;
 import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.DatabaseService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -55,7 +55,6 @@ public class SearchActivity extends AppCompatActivity implements
         DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
         DialogInterface.OnClickListener {
 
-    private static final int ID_GENERATION_LOADER = 123;
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
@@ -76,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(ID_GENERATION_LOADER, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
@@ -108,7 +107,7 @@ public class SearchActivity extends AppCompatActivity implements
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
                 final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
-                if (direction == ItemTouchHelper.LEFT) DataService.startActionRemoveGenerated(getBaseContext(), ein);
+                if (direction == ItemTouchHelper.LEFT) DatabaseService.startActionRemoveGenerated(getBaseContext(), ein);
             }
         }).attachToRecyclerView(mRecyclerView);
     }
@@ -139,12 +138,6 @@ public class SearchActivity extends AppCompatActivity implements
             case (android.R.id.home):
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
-            /*case (R.id.action_settings):
-                startActivity(new Intent(this, SettingsActivity.class));
-                return true;
-            case (R.id.action_clear):
-                DataService.startActionResetGenerated(this);
-                return true;*/
             case (R.id.action_filter):
                 launchFilterPreferences(this);
         }
@@ -156,8 +149,8 @@ public class SearchActivity extends AppCompatActivity implements
      */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
-            case ID_GENERATION_LOADER:
-                Uri ratingUri = GivetrackContract.Entry.CONTENT_URI_GENERATION;
+            case DatabaseContract.LOADER_ID_SEARCH:
+                Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_SEARCH;
                 return new CursorLoader(
                         this, ratingUri,
                         null, null, null, null);
@@ -177,7 +170,7 @@ public class SearchActivity extends AppCompatActivity implements
         }
         int id = loader.getId();
         switch (id) {
-            case ID_GENERATION_LOADER:
+            case DatabaseContract.LOADER_ID_SEARCH:
                 if (cursor == null|| !cursor.moveToFirst()) return;
                 ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
                 int i = 0;
@@ -256,25 +249,25 @@ public class SearchActivity extends AppCompatActivity implements
     @OnClick(R.id.search_fab) public void refreshResults() {
         Context context = SearchActivity.this;
         HashMap<String, String> hashMap = new HashMap<>();
-        if (UserPreferences.getFocus(context)) hashMap.put(DataService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
+        if (UserPreferences.getFocus(context)) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
         else {
-            hashMap.put(DataService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
-            hashMap.put(DataService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
-            hashMap.put(DataService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
-            hashMap.put(DataService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
-            hashMap.put(DataService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
-            hashMap.put(DataService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-            hashMap.put(DataService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
-            hashMap.put(DataService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
-            hashMap.put(DataService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
+            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
         }
-        DataService.startActionFetchGenerated(getBaseContext(), hashMap);
+        DatabaseService.startActionFetchGenerated(getBaseContext(), hashMap);
         mSnackbar = getString(R.string.message_search_refresh);
     }
 
     private static void launchFilterPreferences(Context context) {
-        Intent filterIntent = new Intent(context, SettingsActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.SearchPreferenceFragment.class.getName());
+        Intent filterIntent = new Intent(context, ConfigActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.SearchPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
         context.startActivity(filterIntent);
     }
@@ -303,13 +296,13 @@ public class SearchActivity extends AppCompatActivity implements
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
             ContentValues values = mValuesArray[position];
-            String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
-            String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
-            String homepage = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
-            String url = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+            String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+            String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
+            String homepage = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
+            String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));

@@ -38,7 +38,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
 import java.text.DateFormat;
@@ -53,7 +53,7 @@ import java.util.TimeZone;
 /**
  * Provides the logic and views for an activity overview screen.
  */
-public class ReviewFragment extends Fragment implements
+public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
         IAxisValueFormatter {
 
@@ -92,13 +92,13 @@ public class ReviewFragment extends Fragment implements
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public ReviewFragment() {}
+    public GlanceFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static ReviewFragment newInstance(@Nullable Bundle args) {
-        ReviewFragment fragment = new ReviewFragment();
+    public static GlanceFragment newInstance(@Nullable Bundle args) {
+        GlanceFragment fragment = new GlanceFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
     }
@@ -111,7 +111,7 @@ public class ReviewFragment extends Fragment implements
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_review, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_glance, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle args = getArguments();
@@ -269,15 +269,15 @@ public class ReviewFragment extends Fragment implements
 
         if (sValuesArray == null || sValuesArray.length == 0) return;
         for (ContentValues values : sValuesArray) {
-            float percentage = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
+            float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
             if (percentage < .01f) continue;
-            String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
             if (name.length() > 20) { name = name.substring(0, 20);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
             percentageEntries.add(new PieEntry(percentage, name));
 
-            donationAmount += Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
-            donationFrequency += values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
+            donationAmount += Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
+            donationFrequency += values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         }
 
         int chartColors[] = {

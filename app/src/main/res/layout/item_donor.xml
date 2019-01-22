@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/donation_item_view"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:clickable="true"
+        android:focusable="true">
+
+        <Button
+            android:id="@+id/collection_remove_button"
+            android:layout_width="34dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:background="@color/colorAttention"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:text="@string/symbol_decrement_button"/>
+
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingStart="10dp"
+            android:background="@color/colorChalk"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/inspect_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="top"
+                android:background="@color/colorChalk"
+                android:src="@drawable/ic_baseline_expand_more_24px"
+                android:contentDescription="@string/description_increment_percentage_text"/>
+
+            <ImageButton
+                android:id="@+id/contact_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginBottom="25dp"
+                android:layout_gravity="bottom"
+                android:background="@color/colorChalk"
+                android:src="@drawable/ic_baseline_more_horiz_24px"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
+
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:background="@color/colorChalk"
+                android:src="@drawable/ic_menu_share"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
+
+        </FrameLayout>
+
+        <include layout="@layout/text_item"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="10dp"/>
+
+        <LinearLayout
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:background="@color/colorPrimaryLight"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/donation_increment_button"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_gravity="top"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:background="@color/colorPrimary"
+                android:textColor="#fff"
+                android:text="@string/symbol_increment_button"
+                android:contentDescription="@string/description_increment_percentage_text"/>
+
+            <TextView
+                android:id="@+id/donation_amount_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <EditText
+                android:id="@+id/donation_percentage_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"
+                android:hint="temp"
+                android:importantForAutofill="no"/>
+
+            <Button
+                android:id="@+id/donation_decrement_button"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:background="@color/colorPrimary"
+                android:textColor="#fff"
+                android:text="@string/symbol_decrement_button"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

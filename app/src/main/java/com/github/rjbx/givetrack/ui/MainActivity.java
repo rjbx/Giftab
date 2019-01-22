@@ -31,14 +31,11 @@ import androidx.core.view.GravityCompat;
 
 import android.preference.PreferenceActivity;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -56,9 +53,9 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.DatabaseService;
 
 /**
  * Provides the main screen for this application.
@@ -72,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
 
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
-    private static final int ID_MAIN_LOADER = 444;
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mValuesArray;
     private long mAnchorTime;
@@ -103,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
-        getSupportLoaderManager().initLoader(ID_MAIN_LOADER, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
     }
 
     /**
@@ -145,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements
                 datePicker.show();
                 break;
             case R.id.action_add: startActivity(new Intent(this, SearchActivity.class)); break;
+            case R.id.action_history: startActivity(new Intent(this, RecordActivity.class));
             default: return super.onOptionsItemSelected(item);
         } return false;
     }
@@ -154,8 +151,8 @@ public class MainActivity extends AppCompatActivity implements
      */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
-            case ID_MAIN_LOADER:
-                return new CursorLoader(this, GivetrackContract.Entry.CONTENT_URI_COLLECTION,
+            case DatabaseContract.LOADER_ID_GIVING:
+                return new CursorLoader(this, DatabaseContract.Entry.CONTENT_URI_DONOR,
                         null, null, null, null);
             default: throw new RuntimeException(getString(R.string.loader_error_message, id));
         }
@@ -166,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
-            case ID_MAIN_LOADER:
+            case DatabaseContract.LOADER_ID_GIVING:
                 mValuesArray = new ContentValues[cursor.getCount()];
                 if (cursor.moveToFirst()) {
                     int i = 0;
@@ -197,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case (R.id.nav_search): startActivity(new Intent(this, SearchActivity.class)); break;
-            case (R.id.nav_settings): startActivity(new Intent(this, SettingsActivity.class)); break;
+            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
@@ -244,8 +241,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private static void launchTunerPreferences(Context context) {
-        Intent filterIntent = new Intent(context, SettingsActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, SettingsActivity.RecordPreferenceFragment.class.getName());
+        Intent filterIntent = new Intent(context, ConfigActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.RecordPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
         context.startActivity(filterIntent);
     }
@@ -315,8 +312,8 @@ public class MainActivity extends AppCompatActivity implements
                 Bundle args = new Bundle();
                 args.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mValuesArray);
                 switch (position) {
-                    case 0: return RecordFragment.newInstance(args);
-                    case 1: return ReviewFragment.newInstance(args);
+                    case 0: return GivingFragment.newInstance(args);
+                    case 1: return GlanceFragment.newInstance(args);
                     default: return PlaceholderFragment.newInstance(null);
                 }
             }
@@ -378,7 +375,7 @@ public class MainActivity extends AppCompatActivity implements
             if (valuesArray == null || valuesArray.length == 0) return false;
             Boolean isCurrent = true;
             for (ContentValues values : valuesArray) {
-               isCurrent = eins.contains(values.getAsString(GivetrackContract.Entry.COLUMN_EIN));
+               isCurrent = eins.contains(values.getAsString(DatabaseContract.Entry.COLUMN_EIN));
             }
             return isCurrent;
         }
@@ -388,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override protected void onPostExecute(Boolean isCurrent) {
             if (!isCurrent) {
-                DataService.startActionFetchCollected(mActivity.get());
+                DatabaseService.startActionFetchCollected(mActivity.get());
                 mActivity.get().mPagerAdapter.notifyDataSetChanged();
             }
         }

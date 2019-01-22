@@ -31,8 +31,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DataService;
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ import java.util.Locale;
 /**
  * Presents a set of application settings.
  */
-public class SettingsActivity extends PreferenceActivity {
+public class ConfigActivity extends PreferenceActivity {
 
     /**
      * Constructs the Settings UI.
@@ -203,7 +203,7 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), ConfigActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -211,7 +211,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return SettingsActivity.changePreference(preference, newValue);
+            return ConfigActivity.changePreference(preference, newValue);
         }
     }
 
@@ -267,7 +267,7 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), ConfigActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -275,7 +275,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return SettingsActivity.changePreference(preference, newValue);
+            return ConfigActivity.changePreference(preference, newValue);
         }
     }
 
@@ -352,7 +352,7 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), ConfigActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -360,7 +360,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return SettingsActivity.changePreference(preference, newValue);
+            return ConfigActivity.changePreference(preference, newValue);
         }
 
         @Override
@@ -393,8 +393,8 @@ public class SettingsActivity extends PreferenceActivity {
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         ContentValues values = new ContentValues();
-                        values.putNull(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE);
-                        DataService.startActionUpdatePercentages(getActivity(), values);
+                        values.putNull(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
+                        DatabaseService.startActionUpdatePercentages(getActivity(), values);
                         break;
                     default:
                 }
@@ -404,7 +404,7 @@ public class SettingsActivity extends PreferenceActivity {
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DataService.startActionResetCollected(getActivity());
+                        DatabaseService.startActionResetCollected(getActivity());
                         break;
                     default:
                 }
@@ -436,7 +436,7 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), ConfigActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -444,7 +444,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return SettingsActivity.changePreference(preference, newValue);
+            return ConfigActivity.changePreference(preference, newValue);
         }
     }
 
@@ -484,7 +484,7 @@ public class SettingsActivity extends PreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                startActivity(new Intent(getActivity(), ConfigActivity.class));
                 return true;
             }
             return super.onOptionsItemSelected(item);
@@ -492,7 +492,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return SettingsActivity.changePreference(preference, newValue);
+            return ConfigActivity.changePreference(preference, newValue);
         }
 
         @Override

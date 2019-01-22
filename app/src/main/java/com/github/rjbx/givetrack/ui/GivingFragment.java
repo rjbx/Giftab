@@ -47,16 +47,14 @@ import timber.log.Timber;
 
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.GivetrackContract;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.data.DataService;
+import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,7 +67,7 @@ import java.util.TimerTask;
  * Presents a list of collected items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecordFragment extends Fragment implements
+public class GivingFragment extends Fragment implements
         DetailFragment.MasterDetailFlow,
         SharedPreferences.OnSharedPreferenceChangeListener,
         TextView.OnEditorActionListener {
@@ -102,14 +100,14 @@ public class RecordFragment extends Fragment implements
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public RecordFragment() {
+    public GivingFragment() {
     }
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static RecordFragment newInstance(@Nullable Bundle args) {
-        RecordFragment fragment = new RecordFragment();
+    public static GivingFragment newInstance(@Nullable Bundle args) {
+        GivingFragment fragment = new GivingFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
     }
@@ -124,7 +122,7 @@ public class RecordFragment extends Fragment implements
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_record, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
         mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
@@ -320,18 +318,18 @@ public class RecordFragment extends Fragment implements
         ContentValues[] valuesArray = new ContentValues[sPercentages.length];
         for (int i = 0; i < sPercentages.length; i++) {
             ContentValues values = new ContentValues();
-            values.put(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(sPercentages[i]));
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(sPercentages[i]));
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
             valuesArray[i] = values;
         }
-        DataService.startActionUpdatePercentages(getContext(), valuesArray);
+        DatabaseService.startActionUpdatePercentages(getContext(), valuesArray);
         sPercentagesAdjusted = false;
     }
 
     private void syncDonations() {
         ContentValues values = new ContentValues();
-        values.put(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
-        DataService.startActionUpdateFrequency(getContext(), values);
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
+        DatabaseService.startActionUpdateFrequency(getContext(), values);
         UserPreferences.updateFirebaseUser(mParentActivity);
     }
 
@@ -401,7 +399,7 @@ public class RecordFragment extends Fragment implements
         return sDualPane;
     }
     /**
-     * Populates {@link RecordFragment} {@link RecyclerView}.
+     * Populates {@link GivingFragment} {@link RecyclerView}.
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
@@ -431,7 +429,7 @@ public class RecordFragment extends Fragment implements
         @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_record, parent, false);
+                    .inflate(R.layout.item_donor, parent, false);
             else view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.button_collect, parent, false);
             return new ViewHolder(view);
@@ -474,10 +472,10 @@ public class RecordFragment extends Fragment implements
             final NumberFormat percentInstance = NumberFormat.getPercentInstance();
 
             ContentValues values = sValuesArray[position];
-            final String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
+            final String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
             final int frequency =
-                    values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
-            final float impact = Float.parseFloat(values.getAsString(GivetrackContract.Entry.COLUMN_DONATION_IMPACT));
+                    values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+            final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
 
             String mutableName = name;
             if (mutableName.length() > 30) {
@@ -524,7 +522,7 @@ public class RecordFragment extends Fragment implements
             if (sPercentages.length != sValuesArray.length)
                 sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
             for (int i = 0; i < sPercentages.length; i++) {
-                sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(GivetrackContract.Entry.COLUMN_DONATION_PERCENTAGE));
+                sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
             boolean adjusted = Calibrater.resetRatings(sPercentages, false);
             if (adjusted) syncPercentages();
@@ -568,7 +566,7 @@ public class RecordFragment extends Fragment implements
                         case AlertDialog.BUTTON_NEGATIVE:
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DataService.startActionRemoveCollected(getContext(), mEin);
+                            DatabaseService.startActionRemoveCollected(getContext(), mEin);
                             break;
                         default:
                     }
@@ -578,8 +576,8 @@ public class RecordFragment extends Fragment implements
             @Optional @OnClick(R.id.collection_remove_button) void removeCollected(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
-                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-                mEin = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                mEin = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
 
                 mRemoveDialog = new AlertDialog.Builder(getContext()).create();
                 mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
@@ -594,9 +592,9 @@ public class RecordFragment extends Fragment implements
 
                 int position = (int) v.getTag();
                 ContentValues values = sValuesArray[position];
-                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-                String ein = values.getAsString(GivetrackContract.Entry.COLUMN_EIN);
-                String navUrl = values.getAsString(GivetrackContract.Entry.COLUMN_NAVIGATOR_URL);
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -619,9 +617,9 @@ public class RecordFragment extends Fragment implements
             @Optional @OnClick(R.id.share_button) void shareCollected(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
-                String name = values.getAsString(GivetrackContract.Entry.COLUMN_CHARITY_NAME);
-                int frequency = values.getAsInteger(GivetrackContract.Entry.COLUMN_DONATION_FREQUENCY);
-                float impact = values.getAsFloat(GivetrackContract.Entry.COLUMN_DONATION_IMPACT);
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                int frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+                float impact = values.getAsFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                         .setType("text/plain")
@@ -681,19 +679,19 @@ public class RecordFragment extends Fragment implements
 
         public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
             mAlertDialog = alertDialog;
-            mEmail = values.getAsString(GivetrackContract.Entry.COLUMN_EMAIL_ADDRESS);
-            mPhone = values.getAsString(GivetrackContract.Entry.COLUMN_PHONE_NUMBER);
-            mWebsite = values.getAsString(GivetrackContract.Entry.COLUMN_HOMEPAGE_URL);
+            mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
+            mPhone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
+            mWebsite = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
             mLocation = valuesToAddress(values);
             return new ContactDialogLayout(mAlertDialog.getContext());
         }
 
         private static String valuesToAddress(ContentValues values) {
-            String street = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STREET);
-            String detail = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_DETAIL);
-            String city = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(GivetrackContract.Entry.COLUMN_LOCATION_ZIP);
+            String street = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
+            String detail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
+            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
             return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
         }
 
