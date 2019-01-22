@@ -84,7 +84,7 @@ public class AppWidget extends AppWidgetProvider {
         @Override public void onDataSetChanged() {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
-            mCursor = mContext.getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
+            mCursor = mContext.getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
                     null, null, null, null);
             Binder.restoreCallingIdentity(token);
         }

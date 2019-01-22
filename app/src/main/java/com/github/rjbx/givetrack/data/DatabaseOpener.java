@@ -63,6 +63,8 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
                         Entry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"              +

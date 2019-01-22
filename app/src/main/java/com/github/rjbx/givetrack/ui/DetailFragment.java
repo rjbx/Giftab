@@ -134,7 +134,7 @@ public class DetailFragment extends Fragment {
             sEin = getArguments().getString(ARG_ITEM_EIN);
             sUrl = getArguments().getString(ARG_ITEM_URL);
             sScrollState = 0;
-            Uri collectionUri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon()
+            Uri collectionUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon()
                     .appendPath(sEin).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }

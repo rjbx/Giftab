@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                return new CursorLoader(this, DatabaseContract.Entry.CONTENT_URI_DONOR,
+                return new CursorLoader(this, DatabaseContract.Entry.CONTENT_URI_GIVING,
                         null, null, null, null);
             default: throw new RuntimeException(getString(R.string.loader_error_message, id));
         }

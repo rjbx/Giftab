@@ -59,6 +59,7 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_REMOVE_COLLECTED = "com.github.rjbx.givetrack.data.action.REMOVE_COLLECTED";
     private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.data.action.RESET_GENERATED";
     private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.data.action.RESET_COLLECTED";
+    private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
@@ -165,6 +166,19 @@ public class DatabaseService extends IntentService {
     }
     
     /**
+     * Starts this service to perform action UpdateContact with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUpdateContact(Context context, ContentValues charityValues) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UPDATE_CONTACT);
+        intent.putExtra(EXTRA_ITEM_VALUES, charityValues);
+        context.startService(intent);
+    }
+
+    /**
      * Starts this service to perform action UpdateFrequency with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -238,6 +252,8 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_RESET_COLLECTED:
                 handleActionResetCollected();
+                break;
+            case ACTION_UPDATE_CONTACT:
                 break;
             case ACTION_UPDATE_FREQUENCY:
                 final ContentValues updateFrequencyValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
@@ -329,9 +345,9 @@ public class DatabaseService extends IntentService {
                 Uri charityUri = charityBuilder.build();
 
                 URL url = getUrl(charityUri);
-                Timber.e("Collection Fetched URL: %s", url);
+                Timber.e("Giving Fetched URL: %s", url);
                 String response = requestResponseFromUrl(url);
-                Timber.e("Collection Fetched Response: %s", response);
+                Timber.e("Giving Fetched Response: %s", response);
                 ContentValues[] parsedResponse = parseJsonResponse(response, true);
                 parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
                 parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
@@ -341,8 +357,8 @@ public class DatabaseService extends IntentService {
                 contentValuesArray[i] = parsedResponse[0];
             }
 
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null);
-            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_DONOR, contentValuesArray);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
+            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_GIVING, contentValuesArray);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -385,7 +401,7 @@ public class DatabaseService extends IntentService {
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_DONOR, values);
+            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_GIVING, values);
             cursor.close();
         });
 
@@ -411,10 +427,10 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveCollected(String charityId) {
 
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(charityId).build();
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(charityId).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
-        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
+        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
                 null, null, null, null);
         if (cursor == null) return;
 
@@ -423,10 +439,12 @@ public class DatabaseService extends IntentService {
         else {
             do {
                 String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, percentage, impact, frequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
             } while (cursor.moveToNext());
             cursor.close();
         }
@@ -451,10 +469,15 @@ public class DatabaseService extends IntentService {
     }
 
     /**
+     * Handles action UpdatePercentages in the provided background thread with the provided parameters.
+     */
+    private void handleActionUpdateContact(ContentValues... charityValues) {}
+
+    /**
      * Handles action ResetCollected in the provided background thread with the provided parameters.
      */
     private void handleActionResetCollected() {
-        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null));
+        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null));
 
         UserPreferences.setCharities(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
@@ -462,14 +485,14 @@ public class DatabaseService extends IntentService {
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
-    
+
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
     private void handleActionUpdatePercentages(ContentValues... charityValues) {
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR,
-            null, null, null, null);
+            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
+                    null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
             boolean recalibrate = charityValues[0].get(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
@@ -481,12 +504,14 @@ public class DatabaseService extends IntentService {
             do {
                 ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
                 String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
                 float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
                 int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, percentage, impact, frequency));
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
 
-                Uri uri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(ein).build();
+                Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
 
             } while (cursor.moveToNext());
@@ -514,7 +539,7 @@ public class DatabaseService extends IntentService {
         } else return;
 
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null, null, null);
+            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
             int f = charityValues.getAsInteger(affectedColumn);
@@ -542,6 +567,8 @@ public class DatabaseService extends IntentService {
             do {
                 String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
                 String name = cursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
                 float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
@@ -555,11 +582,11 @@ public class DatabaseService extends IntentService {
                 values.put(affectedColumn, affectedFrequency);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
 
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, percentage, totalImpact, affectedFrequency));
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
                 if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
 
-                Uri uri = DatabaseContract.Entry.CONTENT_URI_DONOR.buildUpon().appendPath(ein).build();
+                Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
             } while (cursor.moveToNext());
             cursor.close();
@@ -587,7 +614,7 @@ public class DatabaseService extends IntentService {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_DONOR, null, null);
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
         });
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -829,27 +856,27 @@ public class DatabaseService extends IntentService {
         private static final String KEY_SEVERITY = "severity";
         private static final String KEY_CHARITY_NAVIGATOR_URL = "charityNavigatorURL";
         private static final String KEY_ERROR_MESSAGE = "errorMessage";
-        
+
         private static final String[] OPTIONAL_PARAMS = {
-            PARAM_PAGE_NUM, 
-            PARAM_PAGE_SIZE, 
-            PARAM_SEARCH, 
-            PARAM_SEARCH_TYPE,
-            PARAM_RATED, 
-            PARAM_CATEGORY_ID, 
-            PARAM_CAUSE_ID,
-            PARAM_FILTER,
-            PARAM_STATE, 
-            PARAM_CITY, 
-            PARAM_ZIP, 
-            PARAM_MIN_RATING, 
-            PARAM_MAX_RATING, 
-            PARAM_SIZE_RANGE, 
-            PARAM_DONOR_PRIVACY, 
-            PARAM_SCOPE_OF_WORK, 
-            PARAM_CFC_CHARITIES, 
-            PARAM_NO_GOV_SUPPORT, 
-            PARAM_SORT   
+                PARAM_PAGE_NUM,
+                PARAM_PAGE_SIZE,
+                PARAM_SEARCH,
+                PARAM_SEARCH_TYPE,
+                PARAM_RATED,
+                PARAM_CATEGORY_ID,
+                PARAM_CAUSE_ID,
+                PARAM_FILTER,
+                PARAM_STATE,
+                PARAM_CITY,
+                PARAM_ZIP,
+                PARAM_MIN_RATING,
+                PARAM_MAX_RATING,
+                PARAM_SIZE_RANGE,
+                PARAM_DONOR_PRIVACY,
+                PARAM_SCOPE_OF_WORK,
+                PARAM_CFC_CHARITIES,
+                PARAM_NO_GOV_SUPPORT,
+                PARAM_SORT
         };
     }
 }
