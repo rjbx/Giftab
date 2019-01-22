@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
+    public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
     private SectionsPagerAdapter mPagerAdapter;
@@ -194,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case (R.id.nav_search): startActivity(new Intent(this, SearchActivity.class)); break;
-            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class)); break;
+            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
@@ -250,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.GivingPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.setAction(ACTION_MAIN_INTENT);
         context.startActivity(filterIntent);
     }
 

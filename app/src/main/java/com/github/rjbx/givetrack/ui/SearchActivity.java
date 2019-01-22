@@ -55,6 +55,8 @@ public class SearchActivity extends AppCompatActivity implements
         DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
         DialogInterface.OnClickListener {
 
+
+    public static final String ACTION_SEARCH_INTENT = "com.github.rjbx.givetrack.ui.action.SEARCH_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
@@ -275,6 +277,7 @@ public class SearchActivity extends AppCompatActivity implements
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.SearchPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.setAction(ACTION_SEARCH_INTENT);
         context.startActivity(filterIntent);
     }
 

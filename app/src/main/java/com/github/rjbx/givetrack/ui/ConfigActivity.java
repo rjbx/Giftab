@@ -140,6 +140,25 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
+     * Defines behavior onClick of each MenuItem.
+     */
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            String action = getIntent().getAction();
+            switch (action) {
+                case SearchActivity.ACTION_SEARCH_INTENT:
+                    startActivity(new Intent(this, SearchActivity.class));
+                    return true;
+                case MainActivity.ACTION_MAIN_INTENT:
+                    startActivity(new Intent(this, MainActivity.class));
+                    return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
      * Fragment bound to preference header for updating user settings.
      */
     public static class UserPreferenceFragment extends PreferenceFragment implements
@@ -185,18 +204,6 @@ public class ConfigActivity extends PreferenceActivity {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
             UserPreferences.setBirthdate(getActivity(), birthdate);
             UserPreferences.updateFirebaseUser(getActivity());
-        }
-
-        /**
-         * Defines behavior onClick of each MenuItem.
-         */
-        @Override public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), ConfigActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
         }
 
         /**
@@ -259,7 +266,8 @@ public class ConfigActivity extends PreferenceActivity {
 
             Preference showPreference = findPreference("showAll");
             showPreference.setOnPreferenceClickListener(clickedPreference -> {
-                Intent intent = new Intent(getActivity(), ConfigActivity.class);
+                String action = getActivity().getIntent().getAction();
+                Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return false;
             });
@@ -274,18 +282,6 @@ public class ConfigActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_order_key)), this);
-        }
-
-        /**
-         * Defines behavior onClick of each MenuItem.
-         */
-        @Override public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), ConfigActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
         }
 
         /**
@@ -382,23 +378,14 @@ public class ConfigActivity extends PreferenceActivity {
 
             Preference showPreference = findPreference("showAll");
             showPreference.setOnPreferenceClickListener(clickedPreference -> {
-                Intent intent = new Intent(getActivity(), ConfigActivity.class);
+                String action = getActivity().getIntent().getAction();
+                Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return false;
             });
         }
 
-        /**
-         * Defines behavior onClick of each MenuItem.
-         */
-        @Override public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), ConfigActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
+
 
         /**
          * Invokes helper method for setting preference summary to new preference value.
@@ -481,18 +468,6 @@ public class ConfigActivity extends PreferenceActivity {
         }
 
         /**
-         * Defines behavior onClick of each MenuItem.
-         */
-        @Override public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), ConfigActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
-        }
-
-        /**
          * Invokes helper method for setting preference summary to new preference value.
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -529,18 +504,6 @@ public class ConfigActivity extends PreferenceActivity {
                     mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                     return false;
             });
-        }
-
-        /**
-         * Defines behavior onClick of each MenuItem.
-         */
-        @Override public boolean onOptionsItemSelected(MenuItem item) {
-            int id = item.getItemId();
-            if (id == android.R.id.home) {
-                startActivity(new Intent(getActivity(), ConfigActivity.class));
-                return true;
-            }
-            return super.onOptionsItemSelected(item);
         }
 
         /**
