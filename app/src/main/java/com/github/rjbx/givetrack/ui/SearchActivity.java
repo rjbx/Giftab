@@ -109,7 +109,7 @@ public class SearchActivity extends AppCompatActivity implements
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
                 final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
-                if (direction == ItemTouchHelper.LEFT) DatabaseService.startActionRemoveGenerated(getBaseContext(), ein);
+                if (direction == ItemTouchHelper.LEFT) DatabaseService.startActionRemoveSearch(getBaseContext(), ein);
             }
         }).attachToRecyclerView(mRecyclerView);
     }
@@ -266,7 +266,7 @@ public class SearchActivity extends AppCompatActivity implements
             hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
             hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
         }
-        DatabaseService.startActionFetchGenerated(getBaseContext(), hashMap);
+        DatabaseService.startActionFetchSearch(getBaseContext(), hashMap);
         mSnackbar = getString(R.string.message_search_refresh);
     }
 

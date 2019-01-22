@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override protected void onPostExecute(Boolean isCurrent) {
             if (!isCurrent) {
-                DatabaseService.startActionFetchCollected(mActivity.get());
+                DatabaseService.startActionFetchGiving(mActivity.get());
                 mActivity.get().mPagerAdapter.notifyDataSetChanged();
             }
         }

@@ -591,7 +591,7 @@ public class GivingFragment extends Fragment implements
                         case AlertDialog.BUTTON_NEGATIVE:
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveCollected(getContext(), mEin);
+                            DatabaseService.startActionRemoveGiving(getContext(), mEin);
                             break;
                         default:
                     }
@@ -601,7 +601,7 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of remove button.
              */
-            @Optional @OnClick(R.id.collection_remove_button) void removeCollected(View v) {
+            @Optional @OnClick(R.id.collection_remove_button) void removeGiving(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
                 String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
@@ -619,7 +619,7 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of inspect button.
              */
-            @Optional @OnClick(R.id.inspect_button) void inspectCollected(View v) {
+            @Optional @OnClick(R.id.inspect_button) void inspectGiving(View v) {
 
                 int position = (int) v.getTag();
                 ContentValues values = sValuesArray[position];
@@ -648,7 +648,7 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of share button.
              */
-            @Optional @OnClick(R.id.share_button) void shareCollected(View v) {
+            @Optional @OnClick(R.id.share_button) void shareGiving(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
                 String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);

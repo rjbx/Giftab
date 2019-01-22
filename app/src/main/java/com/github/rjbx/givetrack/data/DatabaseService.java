@@ -52,13 +52,17 @@ public class DatabaseService extends IntentService {
     private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
 
-    private static final String ACTION_FETCH_GENERATED = "com.github.rjbx.givetrack.data.action.FETCH_GENERATED";
-    private static final String ACTION_FETCH_COLLECTED = "com.github.rjbx.givetrack.data.action.FETCH_COLLECTED";
-    private static final String ACTION_COLLECT_GENERATED = "com.github.rjbx.givetrack.data.action.COLLECT_GENERATED";
-    private static final String ACTION_REMOVE_GENERATED = "com.github.rjbx.givetrack.data.action.REMOVE_GENERATED";
-    private static final String ACTION_REMOVE_COLLECTED = "com.github.rjbx.givetrack.data.action.REMOVE_COLLECTED";
-    private static final String ACTION_RESET_GENERATED = "com.github.rjbx.givetrack.data.action.RESET_GENERATED";
-    private static final String ACTION_RESET_COLLECTED = "com.github.rjbx.givetrack.data.action.RESET_COLLECTED";
+    private static final String ACTION_FETCH_SEARCH = "com.github.rjbx.givetrack.data.action.FETCH_SEARCH";
+    private static final String ACTION_FETCH_GIVING = "com.github.rjbx.givetrack.data.action.FETCH_GIVING";
+    private static final String ACTION_FETCH_RECORD = "com.github.rjbx.givetrack.data.action.FETCH_RECORD";
+    private static final String ACTION_REMOVE_SEARCH = "com.github.rjbx.givetrack.data.action.REMOVE_SEARCH";
+    private static final String ACTION_REMOVE_GIVING = "com.github.rjbx.givetrack.data.action.REMOVE_GIVING";
+    private static final String ACTION_REMOVE_RECORD = "com.github.rjbx.givetrack.data.action.REMOVE_RECORD";
+    private static final String ACTION_RESET_SEARCH = "com.github.rjbx.givetrack.data.action.RESET_SEARCH";
+    private static final String ACTION_RESET_GIVING = "com.github.rjbx.givetrack.data.action.RESET_GIVING";
+    private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
+    private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
+    private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
@@ -78,90 +82,140 @@ public class DatabaseService extends IntentService {
     public DatabaseService() { super(DatabaseService.class.getSimpleName()); }
 
     /**
-     * Starts this service to perform action FetchGenerated with the given parameters.
+     * Starts this service to perform action FetchSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionFetchGenerated(Context context, HashMap<String, String> apiRequest) {
+    public static void startActionFetchSearch(Context context, HashMap<String, String> apiRequest) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_GENERATED);
+        intent.setAction(ACTION_FETCH_SEARCH);
         intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action FetchCollected with the given parameters.
+     * Starts this service to perform action FetchGiving with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionFetchCollected(Context context) {
+    public static void startActionFetchGiving(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_COLLECTED);
+        intent.setAction(ACTION_FETCH_GIVING);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action CollectGenerated with the given parameters.
+     * Starts this service to perform action FetchRecord with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionCollectGenerated(Context context, String charityId) {
+    public static void startActionFetchRecord(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_COLLECT_GENERATED);
+        intent.setAction(ACTION_FETCH_RECORD);
+        context.startService(intent);
+    }
+    
+    /**
+     * Starts this service to perform action GiveSearch with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionGiveSearch(Context context, String charityId) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_GIVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action RemoveGenerated with the given parameters.
+     * Starts this service to perform action GiveSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionRemoveGenerated(Context context, String charityId) {
+    public static void startActionGiveRecord(Context context, String charityId) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_REMOVE_GENERATED);
+        intent.setAction(ACTION_GIVE_RECORD);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action RemoveCollected with the given parameters.
+     * Starts this service to perform action RemoveSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionRemoveCollected(Context context, String charityId) {
+    public static void startActionRemoveSearch(Context context, String charityId) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_REMOVE_COLLECTED);
+        intent.setAction(ACTION_REMOVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action ResetGenerated with the given parameters.
+     * Starts this service to perform action RemoveGiving with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionResetGenerated(Context context) {
+    public static void startActionRemoveGiving(Context context, String charityId) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_RESET_GENERATED);
+        intent.setAction(ACTION_REMOVE_GIVING);
+        intent.putExtra(EXTRA_ITEM_ID, charityId);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action ResetCollected with the given parameters.
+     * Starts this service to perform action RemoveRecord with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionResetCollected(Context context) {
+    public static void startActionRemoveRecord(Context context, String charityId) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_RESET_COLLECTED);
+        intent.setAction(ACTION_REMOVE_RECORD);
+        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetSearch with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetSearch(Context context) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_RESET_SEARCH);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetGiving with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetGiving(Context context) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_RESET_GIVING);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action ResetRecord with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetRecord(Context context) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_RESET_RECORD);
         context.startService(intent);
     }
     
@@ -227,30 +281,44 @@ public class DatabaseService extends IntentService {
         if (intent == null || intent.getAction() == null) return;
         final String action = intent.getAction();
         switch (action) {
-            case ACTION_FETCH_GENERATED:
-                final HashMap fetchGeneratedMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
-                handleActionFetchGenerated(fetchGeneratedMap);
+            case ACTION_FETCH_SEARCH:
+                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
+                handleActionFetchSearch(fetchSearchMap);
                 break;
-            case ACTION_FETCH_COLLECTED:
-                handleActionFetchCollected();
+            case ACTION_FETCH_GIVING:
+                handleActionFetchGiving();
                 break;
-            case ACTION_COLLECT_GENERATED:
-                final String collectGeneratedString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionCollectGenerated(collectGeneratedString);
+            case ACTION_FETCH_RECORD:
+                handleActionFetchRecord();
                 break;
-            case ACTION_REMOVE_GENERATED:
-                final String removeGeneratedString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveGenerated(removeGeneratedString);
+            case ACTION_GIVE_SEARCH:
+                final String collectSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionGiveSearch(collectSearchString);
                 break;
-            case ACTION_REMOVE_COLLECTED:
-                final String removeCollectedString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveCollected(removeCollectedString);
+            case ACTION_GIVE_RECORD:
+                final String collectRecordString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionGiveSearch(collectRecordString);
                 break;
-            case ACTION_RESET_GENERATED:
-                handleActionResetGenerated();
+            case ACTION_REMOVE_SEARCH:
+                final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveSearch(removeSearchString);
                 break;
-            case ACTION_RESET_COLLECTED:
-                handleActionResetCollected();
+            case ACTION_REMOVE_GIVING:
+                final String removeGivingString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveGiving(removeGivingString);
+                break;
+            case ACTION_REMOVE_RECORD:
+                final String removeRecordString = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveRecord(removeRecordString);
+                break;
+            case ACTION_RESET_SEARCH:
+                handleActionResetSearch();
+                break;
+            case ACTION_RESET_GIVING:
+                handleActionResetGiving();
+                break;
+            case ACTION_RESET_RECORD:
+                handleActionResetRecord();
                 break;
             case ACTION_UPDATE_CONTACT:
                 break;
@@ -272,9 +340,9 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action FetchGenerated in the provided background thread with the provided parameters.
+     * Handles action FetchSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionFetchGenerated(HashMap apiRequest) {
+    private void handleActionFetchSearch(HashMap apiRequest) {
 
         Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
         builder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
@@ -314,9 +382,9 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action FetchCollected in the provided background thread.
+     * Handles action FetchGiving in the provided background thread.
      */
-    private void handleActionFetchCollected() {
+    private void handleActionFetchGiving() {
 
         Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
         templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
@@ -366,9 +434,61 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action CollectGenerated in the provided background thread with the provided parameters.
+     * Handles action FetchRecord in the provided background thread.
      */
-    private void handleActionCollectGenerated(String charityId) {
+    private void handleActionFetchRecord() {
+
+        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+        Uri template = templateBuilder.build();
+
+        List<String> charities = UserPreferences.getCharities(this);
+        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
+
+        int charityCount = charities.size();
+        ContentValues[] contentValuesArray = new ContentValues[charityCount];
+
+        NETWORK_IO.execute(() -> {
+
+            for (int i = 0; i < charityCount; i++) {
+
+                String[] charityData = charities.get(i).split(":");
+                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
+
+                charityBuilder.appendPath(charityData[0]);
+
+                // Append required parameters
+                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+
+                Uri charityUri = charityBuilder.build();
+
+                URL url = getUrl(charityUri);
+                Timber.e("Record Fetched URL: %s", url);
+                String response = requestResponseFromUrl(url);
+                Timber.e("Record Fetched Response: %s", response);
+                ContentValues[] parsedResponse = parseJsonResponse(response, true);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
+                contentValuesArray[i] = parsedResponse[0];
+            }
+
+            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null);
+            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_RECORD, contentValuesArray);
+        });
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action GiveSearch in the provided background thread with the provided parameters.
+     */
+    private void handleActionGiveSearch(String charityId) {
         Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
 
         NETWORK_IO.execute(() -> {
@@ -410,9 +530,53 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action RemoveGenerated in the provided background thread with the provided parameters.
+     * Handles action GiveRecord in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveGenerated(String charityId) {
+    private void handleActionGiveRecord(String charityId) {
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(charityId).build();
+
+        NETWORK_IO.execute(() -> {
+
+            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
+            if (cursor == null) return;
+            if (cursor.getCount() > 0) cursor.moveToFirst();
+            ContentValues values = new ContentValues();
+            DatabaseUtils.cursorRowToContentValues(cursor, values);
+
+            List<String> charities = UserPreferences.getCharities(this);
+
+            String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+
+            String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
+            String phoneNumber = urlToPhoneNumber(navUrl);
+            values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+
+            String orgUrl = cursor.getString(DatabaseContract.Entry.INDEX_HOMEPAGE_URL);
+            String emailAddress = urlToEmailAddress(orgUrl);
+            values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+
+            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
+            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
+
+            UserPreferences.setCharities(this, charities);
+            UserPreferences.updateFirebaseUser(this);
+            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
+            cursor.close();
+        });
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action RemoveSearch in the provided background thread with the provided parameters.
+     */
+    private void handleActionRemoveSearch(String charityId) {
         Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
@@ -422,9 +586,9 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action RemoveCollected in the provided background thread with the provided parameters.
+     * Handles action RemoveGiving in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveCollected(String charityId) {
+    private void handleActionRemoveGiving(String charityId) {
 
         Uri charityUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(charityId).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
@@ -457,11 +621,72 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action ResetGenerated in the provided background thread with the provided parameters.
+     * Handles action RemoveRecord in the provided background thread with the provided parameters.
      */
-    private void handleActionResetGenerated() {
+    private void handleActionRemoveRecord(String charityId) {
+
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(charityId).build();
+        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
+
+        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_RECORD,
+                null, null, null, null);
+        if (cursor == null) return;
+
+        List<String> charities = new ArrayList<>();
+        if (!cursor.moveToFirst()) charities.add("");
+        else {
+            do {
+                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
+                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
+                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
+                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        UserPreferences.setCharities(this, charities);
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetSearch in the provided background thread with the provided parameters.
+     */
+    private void handleActionResetSearch() {
         DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null));
 
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetGiving in the provided background thread with the provided parameters.
+     */
+    private void handleActionResetGiving() {
+        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null));
+
+        UserPreferences.setCharities(this, new ArrayList<>());
+        UserPreferences.updateFirebaseUser(this);
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action ResetRecord in the provided background thread with the provided parameters.
+     */
+    private void handleActionResetRecord() {
+        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null));
+
+        UserPreferences.setCharities(this, new ArrayList<>());
+        UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -471,19 +696,6 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateContact(ContentValues... charityValues) {}
-
-    /**
-     * Handles action ResetCollected in the provided background thread with the provided parameters.
-     */
-    private void handleActionResetCollected() {
-        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null));
-
-        UserPreferences.setCharities(this, new ArrayList<>());
-        UserPreferences.updateFirebaseUser(this);
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-    }
 
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
