@@ -365,7 +365,6 @@ public class GivingFragment extends Fragment implements
                 });
             }
         }, 2000); // Wait until this time interval has elapsed to sync percentages
-
     }
 
     /**

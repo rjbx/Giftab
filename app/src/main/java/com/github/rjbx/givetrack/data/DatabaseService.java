@@ -799,6 +799,10 @@ public class DatabaseService extends IntentService {
 
                 Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
                 getContentResolver().update(uri, values, null, null);
+
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, currentTime);
+                getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
+
             } while (cursor.moveToNext());
             cursor.close();
 
