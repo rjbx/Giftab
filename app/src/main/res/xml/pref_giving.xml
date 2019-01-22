@@ -2,6 +2,13 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_payments_key"
+        android:title="@string/pref_payments_label"
+        android:summaryOn="Process donations when adding money to charities"
+        android:summaryOff="Don't process donations when adding money to charities"/>
+
     <Preference
         android:key="@string/pref_recalibrate_key"
         android:title="@string/pref_recalibrate_label"
@@ -14,12 +21,13 @@
         android:title="@string/pref_magnitude_label"/>
 
     <Preference
-        android:key="@string/pref_unsave_key"
-        android:title="@string/pref_unsave_label"
-        android:summary="Remove all charities and related data"/>
+        android:key="@string/pref_clear_key"
+        android:title="@string/pref_clear_label"
+        android:summary="Clear all saved items and related data.\nClearing does not impact historical records."/>
 
     <Preference
-        android:key="showAll"
-        android:title="Show all preferences"/>
+        android:key="@string/pref_show_key"
+        android:title="@string/pref_show_label"
+        android:summary="Navigate to the main preference screen"/>
 
 </PreferenceScreen>

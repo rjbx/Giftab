@@ -144,7 +144,9 @@
     <string name="pref_recalibrate_key" translatable="false">recalibrate</string>
     <string name="pref_magnitude_key" translatable="false">magnitude</string>
     <string name="pref_ein_key" translatable="false">ein</string>
-    <string name="pref_unsave_key" translatable="false">clearData</string>
+    <string name="pref_clear_key" translatable="false">clearData</string>
+    <string name="pref_show_key" translatable="false">showAll</string>
+    <string name="pref_payments_key" translatable="false">payments</string>
     <string name="pref_term_label">Keywords</string>
     <string name="pref_city_label">City</string>
     <string name="pref_state_label">State</string>
@@ -162,7 +164,9 @@
     <string name="pref_delete_label">Delete Account</string>
     <string name="pref_recalibrate_label">Recalibrate Percentages</string>
     <string name="pref_magnitude_label">Adjust Magnitude</string>
-    <string name="pref_unsave_label">Clear Data</string>
+    <string name="pref_clear_label">Clear Data</string>
+    <string name="pref_show_label">Show All</string>
+    <string name="pref_payments_label">Process Donations</string>
 
     <!-- General settings -->
     <string name="pref_header_user">User Attributes</string>

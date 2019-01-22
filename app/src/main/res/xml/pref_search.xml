@@ -96,12 +96,13 @@
         android:summaryOff="Search for multiple charities"/>
 
     <Preference
-        android:key="@string/pref_unsave_key"
-        android:title="@string/pref_unsave_label"
-        android:summary="Remove all charities and related data"/>
+        android:key="@string/pref_clear_key"
+        android:title="@string/pref_clear_label"
+        android:summary="Clear all search results.\nClearing does not impact saved items."/>
 
     <Preference
-        android:key="showAll"
-        android:title="Show all preferences"/>
+        android:key="@string/pref_show_key"
+        android:title="@string/pref_show_label"
+        android:summary="Navigate to the main preference screen"/>
 
 </PreferenceScreen>

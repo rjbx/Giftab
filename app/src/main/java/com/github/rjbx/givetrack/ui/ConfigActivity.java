@@ -252,7 +252,7 @@ public class ConfigActivity extends PreferenceActivity {
                     return true;
             });
 
-            Preference unsavePreference = findPreference(getString(R.string.pref_unsave_key));
+            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
@@ -309,7 +309,7 @@ public class ConfigActivity extends PreferenceActivity {
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetCollected(getActivity());
+                        DatabaseService.startActionResetGenerated(getActivity());
                         break;
                     default:
                 }
@@ -370,7 +370,7 @@ public class ConfigActivity extends PreferenceActivity {
                 return false;
             });
 
-            Preference unsavePreference = findPreference(getString(R.string.pref_unsave_key));
+            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
