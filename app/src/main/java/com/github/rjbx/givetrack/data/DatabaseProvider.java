@@ -34,10 +34,12 @@ public class DatabaseProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = DatabaseContract.AUTHORITY;
 
-        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE, CODE_GIVING);
         matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE, CODE_SEARCH);
-        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE + "/#", CODE_GIVING_WITH_ID);
+        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE, CODE_GIVING);
+        matcher.addURI(authority, DatabaseContract.PATH_RECORD_TABLE, CODE_RECORD);
         matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE + "/#", CODE_SEARCH_WITH_ID);
+        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE + "/#", CODE_GIVING_WITH_ID);
+        matcher.addURI(authority, DatabaseContract.PATH_RECORD_TABLE + "/#", CODE_RECORD_WITH_ID);
 
         return matcher;
     }
