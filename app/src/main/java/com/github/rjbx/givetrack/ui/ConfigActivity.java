@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.ui;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -88,7 +89,7 @@ public class ConfigActivity extends PreferenceActivity {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || GeneralPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
-                || RecordPreferenceFragment.class.getName().equals(fragmentName)
+                || GivingPreferenceFragment.class.getName().equals(fragmentName)
                 || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -219,7 +220,10 @@ public class ConfigActivity extends PreferenceActivity {
      * Shows search preferences when the Activity is showing a two-pane settings UI.
      */
     public static class SearchPreferenceFragment extends PreferenceFragment implements
-            Preference.OnPreferenceChangeListener {
+            Preference.OnPreferenceChangeListener,
+            Dialog.OnClickListener {
+
+        AlertDialog mClearDialog;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -246,6 +250,25 @@ public class ConfigActivity extends PreferenceActivity {
                         einPref.setEnabled(true);
                     } else einPref.setEnabled(false);
                     return true;
+            });
+
+            Preference unsavePreference = findPreference(getString(R.string.pref_unsave_key));
+            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+                mClearDialog = new AlertDialog.Builder(getActivity()).create();
+                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
+                mClearDialog.show();
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                return false;
+            });
+
+            Preference showPreference = findPreference("showAll");
+            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+                Intent intent = new Intent(getActivity(), ConfigActivity.class);
+                startActivity(intent);
+                return false;
             });
 
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
@@ -277,12 +300,27 @@ public class ConfigActivity extends PreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (dialog == mClearDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        DatabaseService.startActionResetCollected(getActivity());
+                        break;
+                    default:
+                }
+            }
+        }
     }
 
     /**
      * Shows search preferences when the Activity is showing a two-pane settings UI.
      */
-    public static class RecordPreferenceFragment extends PreferenceFragment implements
+    public static class GivingPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DialogInterface.OnClickListener,
             SeekBar.OnSeekBarChangeListener {
@@ -296,7 +334,7 @@ public class ConfigActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_record);
+            addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
 
             Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
@@ -341,6 +379,13 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.show();
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                return false;
+            });
+
+            Preference showPreference = findPreference("showAll");
+            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+                Intent intent = new Intent(getActivity(), ConfigActivity.class);
+                startActivity(intent);
                 return false;
             });
         }

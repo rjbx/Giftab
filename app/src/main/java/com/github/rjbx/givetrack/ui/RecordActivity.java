@@ -145,7 +145,7 @@ public class RecordActivity extends AppCompatActivity implements
 
     private static void launchFilterPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.RecordPreferenceFragment.class.getName());
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.GivingPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
         context.startActivity(filterIntent);
     }

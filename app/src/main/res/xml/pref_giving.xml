@@ -18,4 +18,8 @@
         android:title="@string/pref_unsave_label"
         android:summary="Remove all charities and related data"/>
 
+    <Preference
+        android:key="showAll"
+        android:title="Show all preferences"/>
+
 </PreferenceScreen>

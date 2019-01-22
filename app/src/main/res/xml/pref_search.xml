@@ -95,4 +95,13 @@
         android:summaryOn="Search for single charity"
         android:summaryOff="Search for multiple charities"/>
 
+    <Preference
+        android:key="@string/pref_unsave_key"
+        android:title="@string/pref_unsave_label"
+        android:summary="Remove all charities and related data"/>
+
+    <Preference
+        android:key="showAll"
+        android:title="Show all preferences"/>
+
 </PreferenceScreen>

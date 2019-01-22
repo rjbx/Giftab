@@ -13,7 +13,7 @@
         android:title="@string/pref_header_search" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$RecordPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GivingPreferenceFragment"
         android:icon="@drawable/tune_vertical_black"
         android:title="@string/pref_header_record" />
 
