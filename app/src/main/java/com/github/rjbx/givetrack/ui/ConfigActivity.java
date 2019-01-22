@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -49,25 +48,23 @@ public class ConfigActivity extends PreferenceActivity {
     /**
      * Constructs the Settings UI.
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
     }
 
     /**
-     * {@inheritDoc}
+     * Renders preference headers and related Fragments in dual panes
+     * when device orientation is landscape.
      */
-    @Override
-    public boolean onIsMultiPane() {
-        return isXLargeTablet(this);
+    @Override public boolean onIsMultiPane() {
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override
-    public void onBuildHeaders(List<Header> target) {
+    @Override public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
@@ -87,10 +84,10 @@ public class ConfigActivity extends PreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
-                || GeneralPreferenceFragment.class.getName().equals(fragmentName)
+                || UserPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
                 || GivingPreferenceFragment.class.getName().equals(fragmentName)
-                || DataSyncPreferenceFragment.class.getName().equals(fragmentName)
+                || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
@@ -130,14 +127,6 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
-     * Determins if the device has an extra-large screen.
-     */
-    private static boolean isXLargeTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
-    }
-
-    /**
      * Binds preference summary to its value; the exact display format is dependent on preference type.
      *
      * @see #PreferenceActivity
@@ -151,16 +140,18 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
-     * Shows general preferences when the Activity is showing a two-pane settings UI.
+     * Fragment bound to preference header for updating user settings.
      */
-    public static class GeneralPreferenceFragment extends PreferenceFragment implements
+    public static class UserPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DatePickerDialog.OnDateSetListener {
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
+        /**
+         * Inflates and provides logic for updating values of preference.
+         */
+        @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
 
             bindPreferenceSummaryToValue(findPreference("example_text"), this);
@@ -177,7 +168,7 @@ public class ConfigActivity extends PreferenceActivity {
             datePreference.setOnPreferenceClickListener(clickedPreference -> {
                     DatePickerDialog datePicker = new DatePickerDialog(
                             getActivity(),
-                            GeneralPreferenceFragment.this,
+                            UserPreferenceFragment.this,
                             calendar.get(Calendar.YEAR),
                             calendar.get(Calendar.MONTH),
                             calendar.get(Calendar.DAY_OF_MONTH));
@@ -190,8 +181,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Updates the DatePicker with the date selected from the Dialog.
          */
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
             UserPreferences.setBirthdate(getActivity(), birthdate);
             UserPreferences.updateFirebaseUser(getActivity());
@@ -200,8 +190,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Defines behavior onClick of each MenuItem.
          */
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        @Override public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), ConfigActivity.class));
@@ -210,14 +199,16 @@ public class ConfigActivity extends PreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
     }
 
     /**
-     * Shows search preferences when the Activity is showing a two-pane settings UI.
+     * Fragment bound to preference header for updating search settings.
      */
     public static class SearchPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
@@ -225,8 +216,10 @@ public class ConfigActivity extends PreferenceActivity {
 
         AlertDialog mClearDialog;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
+        /**
+         * Inflates and provides logic for updating values of preference.
+         */
+        @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_search);
             setHasOptionsMenu(true);
@@ -286,8 +279,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Defines behavior onClick of each MenuItem.
          */
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        @Override public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), ConfigActivity.class));
@@ -296,13 +288,17 @@ public class ConfigActivity extends PreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+        /**
+         * Defines behavior onClick of each DialogInterface option.
+         */
+        @Override public void onClick(DialogInterface dialog, int which) {
             if (dialog == mClearDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -318,7 +314,7 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
-     * Shows search preferences when the Activity is showing a two-pane settings UI.
+     * Fragment bound to preference header for updating giving settings.
      */
     public static class GivingPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
@@ -331,8 +327,10 @@ public class ConfigActivity extends PreferenceActivity {
         TextView mSeekReadout;
         int mSeekProgress;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
+        /**
+         * Inflates and provides logic for updating values of preference.
+         */
+        @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
@@ -393,8 +391,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Defines behavior onClick of each MenuItem.
          */
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        @Override public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), ConfigActivity.class));
@@ -403,21 +400,27 @@ public class ConfigActivity extends PreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        /**
+         * Updates dialog readout to reflect adjustment.
+         */
+        @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             mSeekProgress = progress;
             mSeekReadout.setText(percentIntToDecimalString(progress));
         }
         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
         @Override public void onStopTrackingTouch(SeekBar seekBar) {}
 
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+        /**
+         * Defines behavior onClick of each DialogInterface option.
+         */
+        @Override public void onClick(DialogInterface dialog, int which) {
             if (dialog == mMagnitudeDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -456,18 +459,21 @@ public class ConfigActivity extends PreferenceActivity {
             }
         }
 
+        /**
+         * Converts whole number percentage to its decimal equivalent,
+         * formatted as a String to preserve its precision.
+         */
         private static String percentIntToDecimalString(int percentInt) {
             return String.format(Locale.getDefault(), "%.2f", percentInt / 1000f);
         }
     }
 
     /**
-     * Shows notification preferences when the Activity is showing a two-pane settings UI.
+     * Fragment bound to preference header for updating notification settings.
      */
     public static class NotificationPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
+        @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
@@ -477,8 +483,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Defines behavior onClick of each MenuItem.
          */
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        @Override public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), ConfigActivity.class));
@@ -487,25 +492,29 @@ public class ConfigActivity extends PreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
     }
 
     /**
-     * Shows data and sync preferences when the Activity is showing a two-pane settings UI.
+     * Fragment bound to preference header for updating advanced settings.
      */
-    public static class DataSyncPreferenceFragment extends PreferenceFragment implements
+    public static class AdvancedPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DialogInterface.OnClickListener {
 
         AlertDialog mDeleteDialog;
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
+        /**
+         * Inflates and provides logic for updating values of preference.
+         */
+        @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_sync);
+            addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
             bindPreferenceSummaryToValue(findPreference("sync_frequency"), this);
 
@@ -525,8 +534,7 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Defines behavior onClick of each MenuItem.
          */
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
+        @Override public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
                 startActivity(new Intent(getActivity(), ConfigActivity.class));
@@ -535,13 +543,17 @@ public class ConfigActivity extends PreferenceActivity {
             return super.onOptionsItemSelected(item);
         }
 
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
+        /**
+         * Defines behavior onClick of each DialogInterface option.
+         */
+        @Override public void onClick(DialogInterface dialog, int which) {
             if (dialog == mDeleteDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:

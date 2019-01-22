@@ -3,7 +3,7 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GeneralPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$UserPreferenceFragment"
         android:icon="@drawable/menu_user"
         android:title="@string/pref_header_user" />
 
@@ -23,7 +23,7 @@
         android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$DataSyncPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$AdvancedPreferenceFragment"
         android:icon="@drawable/menu_manage"
         android:title="@string/pref_header_advanced" />
 

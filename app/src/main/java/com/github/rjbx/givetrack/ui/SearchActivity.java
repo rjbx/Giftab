@@ -228,6 +228,9 @@ public class SearchActivity extends AppCompatActivity implements
         sDualPane = false;
     }
 
+    /**
+     * Defines behaviors on click of DialogInterface buttons.
+     */
     @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mSearchDialog) {
             switch (which) {
@@ -265,6 +268,9 @@ public class SearchActivity extends AppCompatActivity implements
         mSnackbar = getString(R.string.message_search_refresh);
     }
 
+    /**
+     * Defines and launches Intent for displaying {@link ConfigActivity.SearchPreferenceFragment}.
+     */
     private static void launchFilterPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.SearchPreferenceFragment.class.getName());
@@ -272,6 +278,9 @@ public class SearchActivity extends AppCompatActivity implements
         context.startActivity(filterIntent);
     }
 
+    /**
+     * Populates {@link SearchActivity} {@link RecyclerView}.
+     */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private ContentValues[] mValuesArray;
@@ -335,6 +344,9 @@ public class SearchActivity extends AppCompatActivity implements
             notifyDataSetChanged();
         }
 
+        /**
+         * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
             @BindView(R.id.search_item_primary) TextView mNameView;
             @BindView(R.id.search_item_secondary) TextView mIdView;

@@ -156,6 +156,7 @@ public class DatabaseProvider extends ContentProvider {
                 selectionArgs = new String[]{ Id };
                 tableName = DatabaseContract.Entry.TABLE_NAME_RECORD;
                 break;
+
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 

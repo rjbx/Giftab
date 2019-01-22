@@ -10,8 +10,7 @@ import java.util.Map;
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties
-public class UserProfile {
+@IgnoreExtraProperties public class UserProfile {
 
     private String uid;
     private String email;
@@ -235,8 +234,7 @@ public class UserProfile {
         this.timetrack = timetrack;
     }
 
-    @Exclude
-    public Map<String, Object> toParameterMap() {
+    @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("email", email);
         map.put("birthdate", birthdate);

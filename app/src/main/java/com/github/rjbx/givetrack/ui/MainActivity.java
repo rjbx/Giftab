@@ -225,6 +225,9 @@ public class MainActivity extends AppCompatActivity implements
         mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
     }
 
+    /**
+     * Defines behaviors on click of DialogInterface buttons.
+     */
     @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mAnchorDialog) {
             switch (which) {
@@ -240,6 +243,9 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Defines and launches Intent for displaying the {@link ConfigActivity.GivingPreferenceFragment} screen.
+     */
     private static void launchTunerPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.GivingPreferenceFragment.class.getName());
@@ -247,6 +253,9 @@ public class MainActivity extends AppCompatActivity implements
         context.startActivity(filterIntent);
     }
 
+    /**
+     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
+     */
     private void launchCustomTabs(String url) {
         new CustomTabsIntent.Builder()
                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -255,6 +264,9 @@ public class MainActivity extends AppCompatActivity implements
         getIntent().setAction(ACTION_CUSTOM_TABS);
     }
 
+    /**
+     * Provides logic and views for a default screen when others are unavailable.
+     */
     public static class PlaceholderFragment extends Fragment {
 
         private Unbinder mUnbinder;
@@ -283,11 +295,17 @@ public class MainActivity extends AppCompatActivity implements
             return rootView;
         }
 
+        /**
+         * Unbinds Butterknife from this Fragment.
+         */
         @Override public void onDestroy() {
             super.onDestroy();
             mUnbinder.unbind();
         }
 
+        /**
+         * Defines behavior on click of launch search button.
+         */
         @OnClick(R.id.placeholder_button) void launchSearch()  { startActivity(new Intent(getActivity(), SearchActivity.class)); }
     }
 
@@ -319,9 +337,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
 
-        @Override public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-        }
+//        @Override public void notifyDataSetChanged() { super.notifyDataSetChanged(); }
 
         /**
          * Defines the number of sections.

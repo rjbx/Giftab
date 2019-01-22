@@ -42,6 +42,8 @@ public class UserPreferences {
     public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_TIMETRACK = "timetrack";
+
+    public static final String LAST_PREFERENCE = KEY_TIMETRACK;
     
     public static List<String> getCharities(Context context) {
         Set<String> defaultValue = new LinkedHashSet<>();

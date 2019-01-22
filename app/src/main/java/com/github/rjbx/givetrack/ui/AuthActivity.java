@@ -56,8 +56,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
      * Handles sign in, sign out, and account deletion launch Intent actions.
      * @param savedInstanceState
      */
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
@@ -129,30 +128,32 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    @Override
-    protected void onResume() {
+    /**
+     * Registers the Activity to listen for changes to the last Preference in UserPreferences
+     * in order to launch MainActivity.
+     */
+    @Override protected void onResume() {
         super.onResume();
         PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
-     * Hides {@link ProgressBar} when launching AuthUI.
+     * Hides {@link ProgressBar} when launching AuthUI
+     * and unregisters this Activity from listening to Preference changes
+     * in order to prevent relaunching MainActivity.
      */
-    @Override
-    protected void onStop() {
+    @Override protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
         PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
     }
 
-    @Override
-    public void onBackPressed() { finish(); }
+    @Override public void onBackPressed() { finish(); }
 
     /**
      * Defines behavior on user submission of login credentials.
      */
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGN_IN) {
             if (resultCode == RESULT_OK) {
@@ -179,9 +180,12 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (!key.equals(UserPreferences.KEY_TIMESTAMP)) return;
+    /**
+     * Launches {@link MainActivity} when all {@link SharedPreferences} have been replaced
+     * {@link #onActivityResult(int, int, Intent)} during sign-in sequence
+     */
+    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (!key.equals(UserPreferences.LAST_PREFERENCE)) return;
         Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class).setAction(ACTION_SIGN_IN));
         finish();

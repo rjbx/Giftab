@@ -223,8 +223,7 @@ public class DatabaseService extends IntentService {
      * Syncs data inside a worker thread on requests to process {@link Intent}.
      * @param intent launches this {@link IntentService}.
      */
-    @Override
-    protected void onHandleIntent(Intent intent) {
+    @Override protected void onHandleIntent(Intent intent) {
         if (intent == null || intent.getAction() == null) return;
         final String action = intent.getAction();
         switch (action) {

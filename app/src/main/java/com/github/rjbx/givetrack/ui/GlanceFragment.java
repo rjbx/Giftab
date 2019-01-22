@@ -158,11 +158,17 @@ public class GlanceFragment extends Fragment implements
         toggleTime();
     }
 
+    /**
+     * Unbinds Butterknife from this Fragment.
+     */
     @Override public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
     }
 
+    /**
+     * Defines behaviors on click of DialogInterface buttons.
+     */
     @Override public void onClick(DialogInterface dialog, int which) {
         if (dialog == mTimeDialog) {
             switch (which) {
@@ -179,6 +185,9 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
+    /**
+     * Formats axis value of BarChart depending on their axis and the set time interval.
+     */
     @Override public String getFormattedValue(float value, AxisBase axis) {
         switch ((int) value) {
             case 0: return getString(R.string.axis_value_high);
@@ -188,6 +197,9 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
+    /**
+     * Defines behavior on click of toggle color button.
+     */
     @OnClick(R.id.home_amount_text) void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 6) sThemeIndex = 0;
@@ -196,6 +208,9 @@ public class GlanceFragment extends Fragment implements
         UserPreferences.updateFirebaseUser(getContext());
     }
 
+    /**
+     * Defines behavior on click of toggle amount button.
+     */
     @OnClick(R.id.home_amount_label) void toggleAmount(TextView label) {
         mShowTracked = !mShowTracked;
         if (mShowTracked) {
@@ -207,6 +222,9 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
+    /**
+     * Defines behavior on click of toggle time button.
+     */
     @OnClick(R.id.home_time_button) void toggleTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
@@ -227,6 +245,9 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
+    /**
+     * Defines behavior on click of track amount button.
+     */
     @OnClick(R.id.home_config_button) void trackAmount() {
         mTimeDialog = new AlertDialog.Builder(getContext()).create();
         mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
@@ -237,6 +258,9 @@ public class GlanceFragment extends Fragment implements
         mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
     }
 
+    /**
+     * Defines behavior on click of share text button.
+     */
     @OnClick(R.id.home_share_button) void shareText() {
         String amount = mShowTracked ? mTracked : mTotal;
         String timeframe = mShowTracked ? mTrackedTime : mTotalTime;

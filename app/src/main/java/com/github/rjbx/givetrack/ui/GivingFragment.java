@@ -100,8 +100,7 @@ public class GivingFragment extends Fragment implements
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public GivingFragment() {
-    }
+    public GivingFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
@@ -115,8 +114,7 @@ public class GivingFragment extends Fragment implements
     /**
      * Generates a Layout for the Fragment.
      */
-    @Override
-    public @Nullable
+    @Override public @Nullable
     View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
@@ -165,8 +163,7 @@ public class GivingFragment extends Fragment implements
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
@@ -177,22 +174,26 @@ public class GivingFragment extends Fragment implements
      * Ensures the parent Activity has been created and data has been retrieved before
      * invoking the method that references them in order to populate the UI.
      */
-    @Override
-    public void onResume() {
+    @Override public void onResume() {
         super.onResume();
         if (mListAdapter != null) mListAdapter.swapValues();
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onPause() {
+    /**
+     * Registers this Activity to listen for magnitude preference changes generated from selecting related
+     * {@link #mParentActivity} options {@link android.view.MenuItem}, as well as save item percentage changes.
+     */
+    @Override public void onPause() {
         super.onPause();
         if (sPercentagesAdjusted) syncPercentages();
         PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    @Override
-    public void onDestroy() {
+    /**
+     * Unbinds Butterknife from this Fragment.
+     */
+    @Override public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
     }
@@ -200,16 +201,18 @@ public class GivingFragment extends Fragment implements
     /**
      * Saves Layout configuration state.
      */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putBoolean(STATE_ADJUST, sPercentagesAdjusted);
         outState.putInt(STATE_POSITION, mPanePosition);
     }
 
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    /**
+     * Applies magnitude preference changes generated from selecting related
+     * {@link #mParentActivity} options {@link android.view.MenuItem}.
+     */
+    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(UserPreferences.KEY_MAGNITUDE)) {
             mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
         }
@@ -218,8 +221,7 @@ public class GivingFragment extends Fragment implements
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override
-    public void showDualPane(Bundle args) {
+    @Override public void showDualPane(Bundle args) {
 
         mDetailFragment = DetailFragment.newInstance(args);
         getChildFragmentManager().beginTransaction()
@@ -239,16 +241,17 @@ public class GivingFragment extends Fragment implements
     /**
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
-    @Override
-    public void showSinglePane() {
+    @Override public void showSinglePane() {
         getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
         mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
         mListAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+    /**
+     * Listens for and persists changes to text editor value.
+     */
+    @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         switch (actionId) {
             case EditorInfo.IME_ACTION_DONE:
                 try {
@@ -272,8 +275,10 @@ public class GivingFragment extends Fragment implements
         }
     }
 
-    @OnClick(R.id.donation_decrement_button)
-    void decrementAmount() {
+    /**
+     * Defines behavior on click of decrement amount button.
+     */
+    @OnClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
@@ -285,8 +290,10 @@ public class GivingFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnClick(R.id.donation_increment_button)
-    void incrementAmount() {
+    /**
+     * Defines behavior on click of increment amount button.
+     */
+    @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
         UserPreferences.updateFirebaseUser(getContext());
@@ -296,8 +303,10 @@ public class GivingFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnClick(R.id.action_bar)
-    void syncAdjustments() {
+    /**
+     * Defines behavior on click of sync adjustments button.
+     */
+    @OnClick(R.id.action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             syncPercentages();
@@ -311,7 +320,7 @@ public class GivingFragment extends Fragment implements
     }
 
     /**
-     * Syncs donation percentage and amount mValues to table.
+     * Syncs donation percentage and amount mValues to database from which table is repopulated.
      */
     private void syncPercentages() {
         if (sPercentages == null || sPercentages.length == 0) return;
@@ -326,6 +335,9 @@ public class GivingFragment extends Fragment implements
         sPercentagesAdjusted = false;
     }
 
+    /**
+     * Syncs donations to database.
+     */
     private void syncDonations() {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
@@ -333,10 +345,13 @@ public class GivingFragment extends Fragment implements
         UserPreferences.updateFirebaseUser(mParentActivity);
     }
 
+    /**
+     * Schedules syncing of percentages a specified time interval after the last adjustment.
+     */
     private void scheduleSyncPercentages() {
         if (!sPercentagesAdjusted) return;
-        if (mTimer != null) {
-            mTimer.cancel();
+        if (mTimer != null) {  // Where last adjustment occurs before the set time interval
+            mTimer.cancel(); // Prevent scheduling multiple invocations
             mTimer.purge();
         }
         mTimer = new Timer();
@@ -349,7 +364,7 @@ public class GivingFragment extends Fragment implements
                     sPercentagesAdjusted = false;
                 });
             }
-        }, 2000);
+        }, 2000); // Wait until this time interval has elapsed to sync percentages
 
     }
 
@@ -362,6 +377,9 @@ public class GivingFragment extends Fragment implements
         if (sValuesArray != null) mListAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Contextually applies visual attributes to action bar.
+     */
     private void renderActionBar() {
 
         int barWrapperColor;
@@ -398,6 +416,7 @@ public class GivingFragment extends Fragment implements
     public boolean isDualPane() {
         return sDualPane;
     }
+
     /**
      * Populates {@link GivingFragment} {@link RecyclerView}.
      */
@@ -406,9 +425,11 @@ public class GivingFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-
         private Rateraid.Builder mRateraidBuilder;
 
+        /**
+         * Initializes percentage array and percentage button click handler and view updater.
+         */
         ListAdapter() {
             sPercentages = new Float[sValuesArray.length];
             mRateraidBuilder = Rateraid.with(sPercentages, mMagnitude, clickedView -> {
@@ -435,6 +456,9 @@ public class GivingFragment extends Fragment implements
             return new ViewHolder(view);
         }
 
+        /**
+         * Reserves the last element in the list to an add button for launching {@link SearchActivity}.
+         */
         @Override public int getItemViewType(int position) {
             if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
             else return VIEW_TYPE_CHARITY;
@@ -443,8 +467,7 @@ public class GivingFragment extends Fragment implements
         /**
          * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
          */
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        @Override public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
             if (position == getItemCount() - 1) {
                 holder.mAddButton.setOnClickListener(clickedView -> {
@@ -510,8 +533,7 @@ public class GivingFragment extends Fragment implements
         /**
          * Returns the number of items to display.
          */
-        @Override
-        public int getItemCount() {
+        @Override public int getItemCount() {
             return sValuesArray != null ? sValuesArray.length + 1 : 1;
         }
 
@@ -557,6 +579,9 @@ public class GivingFragment extends Fragment implements
                 ButterKnife.bind(this, view);
             }
 
+            /**
+             * Defines behaviors on click of DialogInterface buttons.
+             */
             @Override public void onClick(DialogInterface dialog, int which) {
                 if (dialog == mRemoveDialog) {
                     switch (which) {
@@ -573,6 +598,9 @@ public class GivingFragment extends Fragment implements
                 }
             }
 
+            /**
+             * Defines behavior on click of remove button.
+             */
             @Optional @OnClick(R.id.collection_remove_button) void removeCollected(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
@@ -588,6 +616,9 @@ public class GivingFragment extends Fragment implements
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
             }
 
+            /**
+             * Defines behavior on click of inspect button.
+             */
             @Optional @OnClick(R.id.inspect_button) void inspectCollected(View v) {
 
                 int position = (int) v.getTag();
@@ -614,6 +645,9 @@ public class GivingFragment extends Fragment implements
                 else showSinglePane();
             }
 
+            /**
+             * Defines behavior on click of share button.
+             */
             @Optional @OnClick(R.id.share_button) void shareCollected(View v) {
 
                 ContentValues values = sValuesArray[(int) v.getTag()];
@@ -632,6 +666,9 @@ public class GivingFragment extends Fragment implements
                 startActivity(shareIntent);
             }
 
+            /**
+             * Defines behavior on click of contact button.
+             */
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
                 mContactDialog = new AlertDialog.Builder(getContext()).create();
                 ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
@@ -640,7 +677,11 @@ public class GivingFragment extends Fragment implements
             }
         }
     }
-    
+
+    /**
+     * Provides an inflated layout populated with contact method buttons and associated
+     * listeners predefined.
+     */
     static class ContactDialogLayout extends LinearLayout {
 
         private Context mContext;
@@ -654,6 +695,9 @@ public class GivingFragment extends Fragment implements
         @BindView(R.id.location_button) @Nullable Button mLocationButton;
         @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
 
+        /**
+         * Defines visibility and appearance of button according to associated content value.
+         */
         private ContactDialogLayout(Context context) {
             super(context);
             mContext = context;
@@ -677,6 +721,9 @@ public class GivingFragment extends Fragment implements
                 else mLocationButton.setText(mLocation);
         }
 
+        /**
+         * Initializes value instance fields and generates an instance of this layout.
+         */
         public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
             mAlertDialog = alertDialog;
             mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
@@ -686,6 +733,9 @@ public class GivingFragment extends Fragment implements
             return new ContactDialogLayout(mAlertDialog.getContext());
         }
 
+        /**
+         * Converts a set of ContentValues to a single formatted String.
+         */
         private static String valuesToAddress(ContentValues values) {
             String street = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
             String detail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
@@ -695,6 +745,9 @@ public class GivingFragment extends Fragment implements
             return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
         }
 
+        /**
+         * Defines behavior on click of email launch button.
+         */
         @Optional @OnClick(R.id.email_button) void launchEmail() {
             Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
             mailIntent.setData(Uri.parse("mailto:"));
@@ -704,6 +757,9 @@ public class GivingFragment extends Fragment implements
             }
         }
 
+        /**
+         * Defines behavior on click of phone launch button.
+         */
         @Optional @OnClick(R.id.phone_button) void launchPhone() {
             Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
             phoneIntent.setData(Uri.parse("tel:" + mPhone));
@@ -712,6 +768,9 @@ public class GivingFragment extends Fragment implements
             }
         }
 
+        /**
+         * Defines behavior on click of website launch button.
+         */
         @Optional @OnClick(R.id.website_button) void launchWebsite() {
             new CustomTabsIntent.Builder()
                     .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
@@ -719,6 +778,9 @@ public class GivingFragment extends Fragment implements
                     .launchUrl(mContext, Uri.parse(mWebsite));
         }
 
+        /**
+         * Defines behavior on click of map launch button.
+         */
         @Optional @OnClick(R.id.location_button) void launchMap() {
             Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);

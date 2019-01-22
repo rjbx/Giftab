@@ -90,8 +90,7 @@ public class DetailFragment extends Fragment {
     /**
      * Saves references to parent Activity or Fragment.
      */
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
         super.onActivityCreated(savedInstanceState);
 
@@ -106,8 +105,7 @@ public class DetailFragment extends Fragment {
      * Initializes collection status, populates {@link WebView} and defines Button onClick behavior
      * of this Fragment.
      */
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+    @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -144,20 +142,8 @@ public class DetailFragment extends Fragment {
         int padding = (int) getResources().getDimension(R.dimen.text_margin);
         mWebview.setPadding(padding, padding, padding, padding);
         mWebview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        mWebview.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                mProgress.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                if (mWebview == null) return;
-                mProgress.setVisibility(View.GONE);
-                mWebview.setScrollY(sScrollState);
-                super.onPageFinished(view, url);
-            }
-        });
+
+        mWebview.setWebViewClient(new DetailViewClient());
         mWebview.setWebChromeClient(new WebChromeClient());
 
         mFrame.addView(mWebview);
@@ -171,8 +157,7 @@ public class DetailFragment extends Fragment {
     /**
      * Forces garbage collection on {@link WebView} in addition to default behavior.
      */
-    @Override
-    public void onDestroyView() {
+    @Override public void onDestroyView() {
         mWebview.destroy();
         super.onDestroyView();
     }
@@ -193,8 +178,7 @@ public class DetailFragment extends Fragment {
     /**
      * Saves {@link WebView} scroll state.
      */
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
+    @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
         outState.putString(ARG_ITEM_EIN, sEin);
@@ -230,18 +214,13 @@ public class DetailFragment extends Fragment {
     }
 
     /**
-     * Defines behavior onClick of item collection status toggle Button.
+     * Defines behavior on click of browser close button.
      */
-    private void onClickActionButton() {
-        sCurrentState = !sCurrentState;
-        drawActionButton();
-        drawSnackbar();
-    }
+    @OnClick(R.id.browser_close_button) void closeBrowser() { mMasterDetailFlow.showSinglePane(); }
 
-    @OnClick(R.id.browser_close_button) void closeBrowser() {
-        mMasterDetailFlow.showSinglePane();
-    }
-
+    /**
+     * Defines behavior on click of browser close button.
+     */
     @OnClick(R.id.browser_open_button) void openBrowser() {
         new CustomTabsIntent.Builder()
                 .setToolbarColor(getResources()
@@ -251,8 +230,37 @@ public class DetailFragment extends Fragment {
         mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
     }
 
+    /**
+     * Defines behavior onClick of item collection status toggle Button.
+     */
     @OnClick(R.id.detail_fab) void toggleSaved() {
-        onClickActionButton();
+        sCurrentState = !sCurrentState;
+        drawActionButton();
+        drawSnackbar();
+    }
+
+    /**
+     * Defines a {@link WebViewClient} for displaying a webpage populated with organization details.
+     */
+    private class DetailViewClient extends WebViewClient {
+
+        /**
+         * Displays a loading indicator while the page is loading.
+         */
+        @Override public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            mProgress.setVisibility(View.VISIBLE);
+        }
+
+        /**
+         * Hides the loading indicator and restores scroll state when the page has loaded.
+         */
+        @Override public void onPageFinished(WebView view, String url) {
+            if (mWebview == null) return;
+            mProgress.setVisibility(View.GONE);
+            mWebview.setScrollY(sScrollState);
+            super.onPageFinished(view, url);
+        }
     }
 
     /**

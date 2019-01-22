@@ -28,8 +28,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
      * Builds and executes statements that create data-caching tables for given database.
      * @param db database with which to populate tables.
      */
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    @Override public void onCreate(SQLiteDatabase db) {
 
         final String SQL_CREATE_SEARCH_TABLE =
 
@@ -100,8 +99,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
     /**
      * Removes and creates a new table on version upgrades.
      */
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + Entry.TABLE_NAME_SEARCH);
         db.execSQL("DROP TABLE IF EXISTS " + Entry.TABLE_NAME_GIVING);
