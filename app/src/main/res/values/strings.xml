@@ -50,9 +50,10 @@
     <string name="description_increment_percentage_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
 
     <!-- Screens -->
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Main Activity</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="title_charity_list">Search Results</string>
+    <string name="title_search_results">Search Results</string>
+    <string name="title_donor_records">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_settings">Settings</string>
 
@@ -341,7 +342,9 @@
     <string-array name="multi_select_list_preference_default_value" />
 
 
-    <string name="pref_header_giving">Record Tuners</string>
+    <string name="pref_header_giving">Giving Tuners</string>
+
+    <string name="pref_header_record">Record Sorters</string>
 
     <!-- Notification settings -->
     <string name="pref_header_notifications">Message Notifications</string>

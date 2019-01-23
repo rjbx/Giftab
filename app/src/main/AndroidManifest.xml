@@ -42,7 +42,7 @@
         </activity>
         <activity
             android:name=".ui.SearchActivity"
-            android:label="@string/title_charity_list"
+            android:label="@string/title_search_results"
             android:parentActivityName=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

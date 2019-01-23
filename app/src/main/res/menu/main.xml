@@ -8,7 +8,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="Edit Settings"
-        android:icon="@drawable/tune_vertical"
+        android:icon="@drawable/arrow_expand_horizontal"
         app:showAsAction="always"/>
 
     <item

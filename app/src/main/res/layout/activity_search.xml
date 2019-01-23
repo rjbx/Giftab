@@ -27,7 +27,7 @@
                 android:gravity="end|center_vertical"
                 android:textSize="@dimen/text_size_paragraph_title"
                 android:textColor="#fff"
-                android:text="@string/title_charity_list"
+                android:text="@string/title_search_results"
                 style="@style/AppTheme.AppBarOverlay"/>
 
         </androidx.appcompat.widget.Toolbar>

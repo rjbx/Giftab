@@ -19,6 +19,6 @@
         android:id="@+id/action_record"
         android:orderInCategory="0"
         android:title="@string/action_clear"
-        android:icon="@drawable/ic_baseline_sort_24px"
+        android:icon="@drawable/filter_variant"
         app:showAsAction="always" />
 </menu>
