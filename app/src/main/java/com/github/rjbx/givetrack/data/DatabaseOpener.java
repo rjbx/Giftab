@@ -90,7 +90,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_TIME          + " INTEGER PRIMARY KEY NOT NULL,"              +
 
-                        "UNIQUE (" + Entry.COLUMN_EIN +
+                        "UNIQUE (" + Entry.COLUMN_DONATION_TIME +
                         ") ON CONFLICT REPLACE" + ");";
 
         db.execSQL(SQL_CREATE_SEARCH_TABLE);
