@@ -306,6 +306,7 @@ public class ConfigActivity extends PreferenceActivity {
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseService.startActionResetSearch(getActivity());
+                        startActivity(new Intent(getActivity(), SearchActivity.class));
                         break;
                     default:
                 }
@@ -442,6 +443,7 @@ public class ConfigActivity extends PreferenceActivity {
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseService.startActionResetGiving(getActivity());
+                        startActivity(new Intent(getActivity(), MainActivity.class));
                         break;
                     default:
                 }
@@ -513,6 +515,7 @@ public class ConfigActivity extends PreferenceActivity {
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseService.startActionResetRecord(getActivity());
+                        startActivity(new Intent(getActivity(), RecordActivity.class));
                         break;
                     default:
                 }
