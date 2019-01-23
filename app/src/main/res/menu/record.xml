@@ -16,7 +16,7 @@
         app:showAsAction="never" />-->
 
     <item
-        android:id="@+id/action_filter"
+        android:id="@+id/action_record"
         android:orderInCategory="0"
         android:title="@string/action_clear"
         android:icon="@drawable/ic_baseline_sort_24px"

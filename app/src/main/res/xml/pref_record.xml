@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_payments_key"
+        android:title="@string/pref_payments_label"
+        android:summaryOn="Process donations when adding money to charities"
+        android:summaryOff="Don't process donations when adding money to charities"/>
+
+    <Preference
+        android:key="@string/pref_recalibrate_key"
+        android:title="@string/pref_recalibrate_label"
+        android:summary="Allocate the same percentage of donations to each charity"/>
+
+    <Preference
+        android:key="@string/pref_magnitude_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_magnitude_label"/>
+
+    <Preference
+        android:key="@string/pref_clear_key"
+        android:title="@string/pref_clear_label"
+        android:summary="Clear all records and related data.\nClearing does not impact your saved collection."/>
+
+    <Preference
+        android:key="@string/pref_show_key"
+        android:title="@string/pref_show_label"
+        android:summary="Navigate to the main preference screen"/>
+
+</PreferenceScreen>

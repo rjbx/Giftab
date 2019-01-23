@@ -131,20 +131,21 @@ public class RecordActivity extends AppCompatActivity implements
         return true;
     }
 
-/*    *//**
+    /**
      * Defines behavior onClick of each MenuItem.
-     *//*
+     */
     @Override public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
-            case (R.id.action_filter):
+            case (R.id.action_record):
                 launchFilterPreferences(this);
+                return true;
         }
         return super.onOptionsItemSelected(item);
-    }*/
+    }
 
     /**
      * Instantiates and returns a new {@link Loader} for the given ID.
@@ -272,7 +273,7 @@ public class RecordActivity extends AppCompatActivity implements
 
     /**
      * Defines and launches Intent for displaying {@link ConfigActivity.RecordPreferenceFragment}.
-     *//*
+     */
 
     private static void launchFilterPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
@@ -281,7 +282,6 @@ public class RecordActivity extends AppCompatActivity implements
         filterIntent.setAction(ACTION_RECORD_INTENT);
         context.startActivity(filterIntent);
     }
-*/
 
     /**
      * Populates {@link RecordActivity} {@link RecyclerView}.

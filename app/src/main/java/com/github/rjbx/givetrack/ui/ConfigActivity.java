@@ -69,6 +69,19 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
+     * Stops fragment injection in malicious applications.
+     */
+    @Override protected boolean isValidFragment(String fragmentName) {
+        return PreferenceFragment.class.getName().equals(fragmentName)
+                || UserPreferenceFragment.class.getName().equals(fragmentName)
+                || SearchPreferenceFragment.class.getName().equals(fragmentName)
+                || GivingPreferenceFragment.class.getName().equals(fragmentName)
+                || RecordPreferenceFragment.class.getName().equals(fragmentName)
+                || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    /**
      * Sets up the {@link android.app.ActionBar}, if the API is available.
      */
     private void setupActionBar() {
@@ -77,18 +90,6 @@ public class ConfigActivity extends PreferenceActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
         }
-    }
-
-    /**
-     * Stops fragment injection in malicious applications.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
-                || UserPreferenceFragment.class.getName().equals(fragmentName)
-                || SearchPreferenceFragment.class.getName().equals(fragmentName)
-                || GivingPreferenceFragment.class.getName().equals(fragmentName)
-                || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
     /**
@@ -147,6 +148,9 @@ public class ConfigActivity extends PreferenceActivity {
         if (id == android.R.id.home) {
             String action = getIntent().getAction();
             switch (action) {
+                case RecordActivity.ACTION_RECORD_INTENT:
+                    startActivity(new Intent(this, RecordActivity.class));
+                    return true;
                 case SearchActivity.ACTION_SEARCH_INTENT:
                     startActivity(new Intent(this, SearchActivity.class));
                     return true;
@@ -385,8 +389,6 @@ public class ConfigActivity extends PreferenceActivity {
             });
         }
 
-
-
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
@@ -452,6 +454,69 @@ public class ConfigActivity extends PreferenceActivity {
          */
         private static String percentIntToDecimalString(int percentInt) {
             return String.format(Locale.getDefault(), "%.2f", percentInt / 1000f);
+        }
+    }
+
+    /**
+     * Fragment bound to preference header for updating giving settings.
+     */
+    public static class RecordPreferenceFragment extends PreferenceFragment implements
+            Preference.OnPreferenceChangeListener,
+            DialogInterface.OnClickListener {
+
+        AlertDialog mClearDialog;
+
+        /**
+         * Inflates and provides logic for updating values of preference.
+         */
+        @Override public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_record);
+            setHasOptionsMenu(true);
+
+            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
+            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+                mClearDialog = new AlertDialog.Builder(getActivity()).create();
+                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
+                mClearDialog.show();
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+                return false;
+            });
+
+            Preference showPreference = findPreference("showAll");
+            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+                String action = getActivity().getIntent().getAction();
+                Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
+                startActivity(intent);
+                return false;
+            });
+        }
+
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            return ConfigActivity.changePreference(preference, newValue);
+        }
+
+        /**
+         * Defines behavior onClick of each DialogInterface option.
+         */
+        @Override public void onClick(DialogInterface dialog, int which) {
+            if (dialog == mClearDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        DatabaseService.startActionResetRecord(getActivity());
+                        break;
+                    default:
+                }
+            }
         }
     }
 

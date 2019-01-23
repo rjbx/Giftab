@@ -15,7 +15,12 @@
     <header
         android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GivingPreferenceFragment"
         android:icon="@drawable/tune_vertical_black"
-        android:title="@string/pref_header_record" />
+        android:title="@string/pref_header_giving" />
+
+    <header
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$RecordPreferenceFragment"
+        android:icon="@drawable/tune_vertical_black"
+        android:title="Record" />
 
     <header
         android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$NotificationPreferenceFragment"
