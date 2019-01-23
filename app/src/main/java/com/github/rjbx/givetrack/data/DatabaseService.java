@@ -803,6 +803,7 @@ public class DatabaseService extends IntentService {
 
 
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+                values.remove(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, currentTime);
                 getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
