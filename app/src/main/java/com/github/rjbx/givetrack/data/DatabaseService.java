@@ -537,13 +537,16 @@ public class DatabaseService extends IntentService {
 
         NETWORK_IO.execute(() -> {
 
+            List<String> charities = UserPreferences.getCharities(this);
+
             Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
             if (cursor == null) return;
             if (cursor.getCount() > 0) cursor.moveToFirst();
             ContentValues values = new ContentValues();
             DatabaseUtils.cursorRowToContentValues(cursor, values);
 
-            List<String> charities = UserPreferences.getCharities(this);
+            values.remove(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+            values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
 
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
             values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
@@ -564,7 +567,7 @@ public class DatabaseService extends IntentService {
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
+            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_GIVING, values);
             cursor.close();
         });
 
