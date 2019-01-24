@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.app.ShareCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -28,15 +30,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 
-import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -45,6 +48,9 @@ import com.github.rjbx.givetrack.data.DatabaseService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.text.DateFormat;
+import java.text.NumberFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -221,6 +227,7 @@ public class RecordActivity extends AppCompatActivity implements
         mListContainer.setLayoutParams(params);
         mItemContainer.setVisibility(View.VISIBLE);
         mItemContainer.setLayoutParams(params);
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -229,6 +236,7 @@ public class RecordActivity extends AppCompatActivity implements
     @Override public void showSinglePane() {
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -289,8 +297,8 @@ public class RecordActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private ContentValues[] mValuesArray;
-
         private View mLastClicked;
+        private int mLastPosition;
 
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation
@@ -309,28 +317,37 @@ public class RecordActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
+            if (isDualPane()) {
+                if (position != mLastPosition) {
+                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention));
+                }
+                holder.mContainerView.setVisibility(View.GONE);
+            }
+            else {
+                holder.mContainerView.setVisibility(View.VISIBLE);
+                holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+            }
+
             ContentValues values = mValuesArray[position];
             String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
             String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
-            String homepage = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
             String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+            final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
+            final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));
-            holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
-
-            Glide.with(RecordActivity.this).load("https://logo.clearbit.com/" + homepage)
-                    .into(holder.mLogoView);
+            holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
+            holder.mTimeView.setText(DateFormat.getDateInstance().format(new Date(time)));
 
             Bundle arguments = new Bundle();
             arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
             arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
             arguments.putString(DetailFragment.ARG_ITEM_URL, url);
 
-            holder.itemView.setTag(arguments);
+            for (View view : holder.itemView.getTouchables()) view.setTag(position);
         }
 
         /**
@@ -353,10 +370,16 @@ public class RecordActivity extends AppCompatActivity implements
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.record_item_primary) TextView mNameView;
-            @BindView(R.id.record_item_secondary) TextView mIdView;
-            @BindView(R.id.record_item_tertiary) TextView mAddressView;
-            @BindView(R.id.record_item_logo) ImageView mLogoView;
+
+            @BindView(R.id.record_text_view) View mContainerView;
+            @BindView(R.id.stats_view) View mStatsView;
+            @BindView(R.id.record_primary) TextView mNameView;
+            @BindView(R.id.record_secondary) TextView mIdView;
+            @BindView(R.id.record_amount_text) TextView mAmountView;
+            @BindView(R.id.record_time_text) TextView mTimeView;
+            @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
+            @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
+            private android.app.AlertDialog mContactDialog;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -369,14 +392,165 @@ public class RecordActivity extends AppCompatActivity implements
             /**
              * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
              */
+
             @OnClick(R.id.record_item_view) void togglePane(View v) {
+                int position = (int) v.getTag();
+                ContentValues values = mValuesArray[position];
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
-
-                mLastClicked = v;
-                if (sDualPane) showDualPane((Bundle) v.getTag());
+                mLastPosition = position;
+                Bundle arguments = new Bundle();
+                arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
+                arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
+                arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
+                if (sDualPane) showDualPane(arguments);
                 else showSinglePane();
             }
+
+            /**
+             * Defines behavior on click of share button.
+             */
+            @Optional @OnClick(R.id.record_share_button) void shareRecord(View v) {
+
+                ContentValues values = mValuesArray[(int) v.getTag()];
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                float impact = values.getAsFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+
+                Intent shareIntent = ShareCompat.IntentBuilder.from(RecordActivity.this)
+                        .setType("text/plain")
+                        .setText(String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
+                                DateFormat.getDateInstance().format(new Date(time)),
+                                NumberFormat.getCurrencyInstance().format(impact),
+                                name,
+                                getString(R.string.app_name)))
+                        .getIntent();
+                startActivity(shareIntent);
+            }
+
+            /**
+             * Defines behavior on click of contact button.
+             */
+            @Optional @OnClick(R.id.record_contact_button) void viewContacts(View v) {
+                mContactDialog = new android.app.AlertDialog.Builder(RecordActivity.this).create();
+                ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, mValuesArray[(int) v.getTag()]);
+                mContactDialog.setView(alertLayout);
+                mContactDialog.show();
+            }
+        }
+    }
+
+    /**
+     * Provides an inflated layout populated with contact method buttons and associated
+     * listeners predefined.
+     */
+    static class ContactDialogLayout extends LinearLayout {
+
+        private Context mContext;
+        private static android.app.AlertDialog mAlertDialog;
+        private static String mPhone;
+        private static String mEmail;
+        private static String mWebsite;
+        private static String mLocation;
+        @BindView(R.id.email_button) @Nullable Button mEmailButton;
+        @BindView(R.id.phone_button) @Nullable Button mPhoneButton;
+        @BindView(R.id.location_button) @Nullable Button mLocationButton;
+        @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
+
+        /**
+         * Defines visibility and appearance of button according to associated content value.
+         */
+        private ContactDialogLayout(Context context) {
+            super(context);
+            mContext = context;
+            LayoutInflater.from(mContext).inflate(R.layout.dialog_contact, this, true);
+            ButterKnife.bind(this);
+
+            if (mEmailButton != null)
+                if (mEmail.isEmpty()) mEmailButton.setVisibility(View.GONE);
+                else mEmailButton.setText(mEmail.toLowerCase());
+
+            if (mPhoneButton != null)
+                if (mPhone.isEmpty()) mPhoneButton.setVisibility(View.GONE);
+                else mPhoneButton.setText(String.format("+%s", mPhone));
+
+            if (mWebsiteButton != null)
+                if (mWebsite.isEmpty()) mWebsiteButton.setVisibility(View.GONE);
+                else mWebsiteButton.setText(mWebsite.toLowerCase());
+
+            if (mLocationButton != null)
+                if (mLocation.isEmpty()) mLocationButton.setVisibility(View.GONE);
+                else mLocationButton.setText(mLocation);
+        }
+
+        /**
+         * Initializes value instance fields and generates an instance of this layout.
+         */
+        public static ContactDialogLayout getInstance(android.app.AlertDialog alertDialog, ContentValues values) {
+            mAlertDialog = alertDialog;
+            mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
+            mPhone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
+            mWebsite = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
+            mLocation = valuesToAddress(values);
+            return new ContactDialogLayout(mAlertDialog.getContext());
+        }
+
+        /**
+         * Converts a set of ContentValues to a single formatted String.
+         */
+        private static String valuesToAddress(ContentValues values) {
+            String street = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
+            String detail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
+            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
+            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
+            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
+            return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
+        }
+
+        /**
+         * Defines behavior on click of email launch button.
+         */
+        @Optional @OnClick(R.id.email_button) void launchEmail() {
+            Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
+            mailIntent.setData(Uri.parse("mailto:"));
+            mailIntent.putExtra(Intent.EXTRA_EMAIL, mEmail);
+            if (mailIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                mContext.startActivity(mailIntent);
+            }
+        }
+
+        /**
+         * Defines behavior on click of phone launch button.
+         */
+        @Optional @OnClick(R.id.phone_button) void launchPhone() {
+            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+            phoneIntent.setData(Uri.parse("tel:" + mPhone));
+            if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                mContext.startActivity(phoneIntent);
+            }
+        }
+
+        /**
+         * Defines behavior on click of website launch button.
+         */
+        @Optional @OnClick(R.id.website_button) void launchWebsite() {
+            new CustomTabsIntent.Builder()
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .build()
+                    .launchUrl(mContext, Uri.parse(mWebsite));
+        }
+
+        /**
+         * Defines behavior on click of map launch button.
+         */
+        @Optional @OnClick(R.id.location_button) void launchMap() {
+            Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            mContext.startActivity(mapIntent);
         }
     }
 }

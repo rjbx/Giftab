@@ -10,6 +10,8 @@
     <color name="colorNeutralDark">#AAA</color>
     <color name="colorAttention">#EE4444</color>
     <color name="colorAttentionDark">#F01C1C</color>
+    <color name="colorSpice">#FF8800</color>
+    <color name="colorSpiceDark">#DD6600</color>
     <color name="colorConversion">#05BB33</color>
     <color name="colorConversionDark">#119944</color>
     <color name="colorComfort">#AC59E1</color>

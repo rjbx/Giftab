@@ -1,66 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/record_item_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:layout_margin="1dp"
-    android:background="#fff">
+    android:layout_height="100dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp">
 
-    <TextView
-        android:id="@+id/record_item_primary"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:baselineAligned="false"
-        android:gravity="center">
+        android:baselineAligned="false">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingStart="10dp"
+            android:background="@color/colorChalk"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageButton
+                android:id="@+id/record_contact_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="top"
+                android:background="@color/colorChalk"
+                android:src="@drawable/ic_baseline_more_horiz_24px"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
+
+            <ImageButton
+                android:id="@+id/record_share_button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="bottom"
+                android:background="@color/colorChalk"
+                android:src="@drawable/ic_menu_share"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/stats_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_weight=".4"
+            android:padding="4dp"
+            android:orientation="vertical"
+            android:gravity="end"
+            android:clickable="true"
+            android:focusable="true">
 
             <TextView
-                android:id="@+id/record_item_secondary"
+                android:id="@+id/record_time_text"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/record_amount_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".5"
+                android:layout_gravity="center"
+                android:background="#fff"
+                android:textSize="@dimen/text_size_paragraph"
+                android:textStyle="bold"
+                android:gravity="center"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/record_text_view"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".5"
+            android:orientation="vertical"
+            android:layout_gravity="start|center_vertical">
+
+            <TextView
+                android:id="@+id/record_primary"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight=".75"
                 android:layout_margin="4dp"
+                android:textSize="@dimen/text_size_paragraph_title"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
             <TextView
-                android:id="@+id/record_item_tertiary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:id="@+id/record_secondary"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight=".25"
                 android:layout_margin="4dp"
                 android:textAppearance="?attr/textAppearanceListItem" />
 
         </LinearLayout>
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#000"
-            android:gravity="end">
-
-            <ImageView
-                android:id="@+id/record_item_logo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/description_charity_logo"/>
-
-        </RelativeLayout>
-
     </LinearLayout>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
