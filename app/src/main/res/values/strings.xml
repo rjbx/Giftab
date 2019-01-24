@@ -136,8 +136,10 @@
     <string name="pref_size_key" translatable="false">rows</string>
     <string name="pref_minrating_key" translatable="false">minrating</string>
     <string name="pref_filter_key" translatable="false">fundraising</string>
-    <string name="pref_sort_key" translatable="false">sort</string>
-    <string name="pref_order_key" translatable="false">order</string>
+    <string name="pref_sortSearch_key" translatable="false">sortSearch</string>
+    <string name="pref_orderSearch_key" translatable="false">orderSearch</string>
+    <string name="pref_sortRecord_key" translatable="false">sortRecord</string>
+    <string name="pref_orderRecord_key" translatable="false">orderRecord</string>
     <string name="pref_focus_key" translatable="false">focus</string>
     <string name="pref_gender_key" translatable="false">gender</string>
     <string name="pref_birthdate_key" translatable="false">birthdate</string>
@@ -321,21 +323,39 @@
         <item>1</item>
         <item>0</item>
     </string-array>
-    <string-array name="list_preference_sort">
+    <string-array name="list_preference_sortSearch">
         <item>By rating</item>
         <item>By relevance</item>
         <item>By name</item>
     </string-array>
-    <string-array name="list_preference_sort_values">
+    <string-array name="list_preference_sortSearch_values">
         <item>RATING</item>
         <item>RELEVANCE</item>
         <item>NAME</item>
     </string-array>
-    <string-array name="list_preference_order">
+    <string-array name="list_preference_sortRecord">
+        <item>By date</item>
+        <item>By amount</item>
+        <item>By name</item>
+    </string-array>
+    <string-array name="list_preference_sortRecord_values">
+        <item>donationTime</item>
+        <item>donationTotal</item>
+        <item>charityName</item>
+    </string-array>
+    <string-array name="list_preference_orderSearch">
         <item>Descending</item>
         <item>Ascending</item>
     </string-array>
-    <string-array name="list_preference_order_values">
+    <string-array name="list_preference_orderSearch_values">
+        <item>DESC</item>
+        <item>ASC</item>
+    </string-array>
+    <string-array name="list_preference_orderRecord">
+        <item>Descending</item>
+        <item>Ascending</item>
+    </string-array>
+    <string-array name="list_preference_orderRecord_values">
         <item>DESC</item>
         <item>ASC</item>
     </string-array>

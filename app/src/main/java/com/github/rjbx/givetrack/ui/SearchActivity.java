@@ -262,7 +262,7 @@ public class SearchActivity extends AppCompatActivity implements
             hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
             hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
             hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, UserPreferences.getSearchSort(context) + ":" + UserPreferences.getSearchOrder(context));
             hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
             hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
         }

@@ -27,8 +27,10 @@ import java.util.Map;
     private String zip;
     private String minrating;
     private boolean filter;
-    private String sort;
-    private String order;
+    private String searchSort;
+    private String searchOrder;
+    private String recordSort;
+    private String recordOrder;
     private String pages;
     private String rows;
     private boolean focus;
@@ -64,8 +66,10 @@ import java.util.Map;
             String zip,
             String minrating,
             boolean filter,
-            String sort,
-            String order,
+            String searchSort,
+            String searchOrder,
+            String recordSort,
+            String recordOrder,
             String pages,
             String rows,
             boolean focus,
@@ -91,8 +95,10 @@ import java.util.Map;
         this.zip = zip;
         this.minrating = minrating;
         this.filter = filter;
-        this.sort = sort;
-        this.order = order;
+        this.searchSort = searchSort;
+        this.searchOrder = searchOrder;
+        this.recordSort = recordSort;
+        this.recordOrder = recordOrder;
         this.pages = pages;
         this.rows = rows;
         this.focus = focus;
@@ -175,17 +181,29 @@ import java.util.Map;
     public void setFilter(boolean filter) {
         this.filter = filter;
     }
-    public String getSort() {
-        return sort;
+    public String getSearchSort() {
+        return searchSort;
     }
-    public void setSort(String sort) {
-        this.sort = sort;
+    public void setSearchSort(String searchSort) {
+        this.searchSort = searchSort;
     }
-    public String getOrder() {
-        return order;
+    public String getSearchOrder() {
+        return searchOrder;
     }
-    public void setOrder(String order) {
-        this.order = order;
+    public void setSearchOrder(String searchOrder) {
+        this.searchOrder = searchOrder;
+    }
+    public String getRecordSort() {
+        return recordSort;
+    }
+    public void setRecordSort(String recordSort) {
+        this.recordSort = recordSort;
+    }
+    public String getRecordOrder() {
+        return recordOrder;
+    }
+    public void setRecordOrder(String recordOrder) {
+        this.recordOrder = recordOrder;
     }
     public String getPages() {
         return pages;
@@ -250,8 +268,10 @@ import java.util.Map;
         map.put("zip", zip);
         map.put("minrating", minrating);
         map.put("filter", filter);
-        map.put("sort", sort);
-        map.put("order", order);
+        map.put("searchSort", searchSort);
+        map.put("searchOrder", searchOrder);
+        map.put("recordSort", recordSort);
+        map.put("recordOrder", recordOrder);
         map.put("pages", pages);
         map.put("rows", rows);
         map.put("focus", focus);

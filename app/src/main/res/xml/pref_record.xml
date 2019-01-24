@@ -2,6 +2,22 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <ListPreference
+        android:entries="@array/list_preference_sortRecord"
+        android:entryValues="@array/list_preference_sortRecord_values"
+        android:key="@string/pref_sortRecord_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_sort_label"/>
+
+    <ListPreference
+        android:entries="@array/list_preference_orderRecord"
+        android:entryValues="@array/list_preference_orderRecord_values"
+        android:key="@string/pref_orderRecord_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_order_label"/>
+
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"

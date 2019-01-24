@@ -241,13 +241,14 @@ public class ConfigActivity extends PreferenceActivity {
             ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_minrating_key));
             if (ratingPref.getValue() == null) ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sort_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortSearch_key));
             if (sortPref.getValue() == null) sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_order_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderSearch_key));
             if (orderPref.getValue() == null) orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
             EditTextPreference einPref = (EditTextPreference) findPreference(getString(R.string.pref_ein_key));
+
             SwitchPreference focusPref = (SwitchPreference) findPreference(getString(R.string.pref_focus_key));
             focusPref.setOnPreferenceChangeListener((changedPreference, newValue) -> {
                     if ((boolean) newValue) {
@@ -284,8 +285,8 @@ public class ConfigActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_pages_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_order_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortSearch_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_orderSearch_key)), this);
         }
 
         /**
@@ -476,6 +477,14 @@ public class ConfigActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_record);
             setHasOptionsMenu(true);
 
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortRecord_key));
+            if (sortPref.getValue() == null) sortPref.setValueIndex(sortPref.getEntries().length - 1);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortRecord_key)), this);
+
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderRecord_key));
+            if (orderPref.getValue() == null) orderPref.setValueIndex(orderPref.getEntries().length - 1);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_orderRecord_key)), this);
+            
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();

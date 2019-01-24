@@ -30,8 +30,10 @@ public class UserPreferences {
     public static final String KEY_ZIP = "zip";
     public static final String KEY_MINRATING = "minrating";
     public static final String KEY_FILTER = "filter";
-    public static final String KEY_SORT = "sort";
-    public static final String KEY_ORDER = "order";
+    public static final String KEY_RECORDSORT = "sortRecords";
+    public static final String KEY_SEARCHSORT = "sortSearch";
+    public static final String KEY_RECORDORDER = "orderRecords";
+    public static final String KEY_SEARCHORDER = "orderSearch";
     public static final String KEY_PAGES = "pages";
     public static final String KEY_ROWS = "rows";
     public static final String KEY_FOCUS = "focus";
@@ -118,24 +120,44 @@ public class UserPreferences {
         sp.edit().putBoolean(KEY_FILTER, filter).apply();
     }
 
-    public static String getSort(Context context) {
+    public static String getSearchSort(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_SORT, "NAME");
+        return sp.getString(KEY_SEARCHSORT, "NAME");
     }
 
-    public static void setSort(Context context, String sort) {
+    public static void setSearchSort(Context context, String sort) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_SORT, sort).apply();
+        sp.edit().putString(KEY_SEARCHSORT, sort).apply();
     }
 
-    public static String getOrder(Context context) {
+    public static String getSearchOrder(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_ORDER, "ASC");
+        return sp.getString(KEY_SEARCHORDER, "ASC");
     }
 
-    public static void setOrder(Context context, String order) {
+    public static void setSearchOrder(Context context, String order) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_ORDER, order).apply();
+        sp.edit().putString(KEY_SEARCHORDER, order).apply();
+    }
+    
+    public static String getRecordSort(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(KEY_RECORDSORT, "NAME");
+    }
+
+    public static void setRecordSort(Context context, String sort) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(KEY_RECORDSORT, sort).apply();
+    }
+
+    public static String getRecordOrder(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(KEY_RECORDORDER, "ASC");
+    }
+
+    public static void setRecordOrder(Context context, String order) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putString(KEY_RECORDORDER, order).apply();
     }
 
     public static String getPages(Context context) {
@@ -318,8 +340,8 @@ public class UserPreferences {
         setZip(context, user.getZip());
         setMinrating(context, user.getMinrating());
         setFilter(context, user.getFilter());
-        setSort(context, user.getSort());
-        setOrder(context, user.getOrder());
+        setSearchSort(context, user.getSearchSort());
+        setSearchOrder(context, user.getSearchOrder());
         setPages(context, user.getPages());
         setRows(context, user.getRows());
         setFocus(context, user.getFocus());
@@ -354,8 +376,10 @@ public class UserPreferences {
                 getZip(context),
                 getMinrating(context),
                 getFilter(context),
-                getSort(context),
-                getOrder(context),
+                getSearchSort(context),
+                getSearchOrder(context),
+                getRecordSort(context),
+                getRecordOrder(context),
                 getPages(context),
                 getRows(context),
                 getFocus(context),

@@ -44,6 +44,7 @@ import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.UserPreferences;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
@@ -152,12 +153,17 @@ public class RecordActivity extends AppCompatActivity implements
      * Instantiates and returns a new {@link Loader} for the given ID.
      */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
+
+        String sort = UserPreferences.getRecordSort(this);
+        String order = UserPreferences.getRecordOrder(this);
+        String sortOrder = String.format("%s %s", sort, order);
+
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
                 Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_RECORD;
                 return new CursorLoader(
                         this, ratingUri,
-                        null, null, null, null);
+                        null, null, null, sortOrder);
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
         }
