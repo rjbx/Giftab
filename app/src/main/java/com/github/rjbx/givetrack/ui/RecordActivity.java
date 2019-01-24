@@ -316,6 +316,9 @@ public class RecordActivity extends AppCompatActivity implements
             final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
             final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
 
+            if (name.length() > 35) { name = name.substring(0, 35);
+            name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));
             holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
