@@ -60,8 +60,9 @@ public class GlanceFragment extends Fragment implements
     private static final int [] COLORS = new int[] {
         R.color.colorAttention,
         R.color.colorAccent,
-        R.color.colorConversion,
         R.color.colorPrimary,
+        R.color.colorHeat,
+        R.color.colorConversion,
         R.color.colorComfort,
         R.color.colorNeutral
     };
@@ -202,7 +203,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_text) void toggleColor() {
         sThemeIndex++;
-        if (sThemeIndex == 6) sThemeIndex = 0;
+        if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
         UserPreferences.setTheme(getContext(), sThemeIndex);
         UserPreferences.updateFirebaseUser(getContext());

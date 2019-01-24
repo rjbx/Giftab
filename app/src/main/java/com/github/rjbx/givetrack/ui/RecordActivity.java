@@ -43,16 +43,12 @@ import butterknife.Optional;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
-import java.util.HashMap;
-
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
