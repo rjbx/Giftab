@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -100,7 +101,7 @@ public class SearchActivity extends AppCompatActivity implements
         mRecyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 ItemTouchHelper.ACTION_STATE_IDLE,
-                ItemTouchHelper.LEFT) {
+                ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
 
             @Override public boolean onMove(@NonNull RecyclerView recyclerView,
                                   @NonNull RecyclerView.ViewHolder viewHolder,
@@ -108,8 +109,22 @@ public class SearchActivity extends AppCompatActivity implements
 
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
-                final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
-                if (direction == ItemTouchHelper.LEFT) DatabaseService.startActionRemoveSearch(getBaseContext(), ein);
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                        final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
+                        DatabaseService.startActionRemoveSearch(getBaseContext(), ein);
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(getResources()
+                                        .getColor(R.color.colorPrimaryDark))
+                                .build()
+                                .launchUrl(SearchActivity.this, Uri.parse(url));
+                        getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                        break;
+                    default:
+                }
             }
         }).attachToRecyclerView(mRecyclerView);
     }
