@@ -69,7 +69,6 @@ public class RecordActivity extends AppCompatActivity implements
     private ListAdapter mAdapter;
     private AlertDialog mRecordDialog;
     private String mSnackbar;
-    @BindView(R.id.record_fab) FloatingActionButton mFab;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
     @BindView(R.id.record_list_container) View mListContainer;
@@ -189,8 +188,8 @@ public class RecordActivity extends AppCompatActivity implements
                     valuesArray[i++] = values;
                 } while (cursor.moveToNext());
                 mAdapter.swapValues(valuesArray);
-//                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
-                Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
+                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
+                Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 sb.show();
                 break;
@@ -250,33 +249,11 @@ public class RecordActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
-//                    launchFilterPreferences(this);
+                    launchFilterPreferences(this);
                     break;
                 default:
             }
         }
-    }
-
-    /**
-     * Populates {@link RecordActivity} {@link RecyclerView}.
-     */
-    @OnClick(R.id.record_fab) public void refreshResults() {
-        Context context = RecordActivity.this;
-        HashMap<String, String> hashMap = new HashMap<>();
-        if (UserPreferences.getFocus(context)) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
-        else {
-//            hashMap.put(DatabaseService.FetchContract.PARAM_RECORD, UserPreferences.getTerm(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, UserPreferences.getSort(context) + ":" + UserPreferences.getOrder(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
-        }
-        DatabaseService.startActionFetchSearch(getBaseContext(), hashMap);
-//        mSnackbar = getString(R.string.message_record_refresh);
     }
 
     /**

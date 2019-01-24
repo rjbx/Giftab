@@ -65,7 +65,7 @@
                 android:layout_weight=".5"
                 android:layout_gravity="center"
                 android:background="#fff"
-                android:textSize="@dimen/text_size_paragraph"
+                android:textSize="@dimen/text_size_paragraph_title"
                 android:textStyle="bold"
                 android:gravity="center"/>
 
@@ -76,7 +76,7 @@
                 android:layout_weight=".5"
                 android:layout_gravity="center"
                 android:background="#fff"
-                android:textSize="@dimen/text_size_paragraph"
+                android:textSize="@dimen/text_size_paragraph_title"
                 android:textStyle="bold"
                 android:gravity="center"/>
 
