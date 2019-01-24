@@ -297,7 +297,7 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_GIVE_RECORD:
                 final String collectRecordString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionGiveSearch(collectRecordString);
+                handleActionGiveRecord(collectRecordString);
                 break;
             case ACTION_REMOVE_SEARCH:
                 final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);

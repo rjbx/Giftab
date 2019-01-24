@@ -168,7 +168,10 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onDestroy() {
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseService.startActionGiveSearch(mParentActivity, sEin);
+            if (sCurrentState) {
+                if (mParentActivity instanceof SearchActivity) DatabaseService.startActionGiveSearch(mParentActivity, sEin);
+                else if (mParentActivity instanceof RecordActivity) DatabaseService.startActionGiveRecord(mParentActivity, sEin);
+            }
             else DatabaseService.startActionRemoveGiving(mParentActivity, sEin);
         }
         super.onDestroy();
