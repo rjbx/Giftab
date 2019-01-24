@@ -257,7 +257,7 @@ public class DatabaseProvider extends ContentProvider {
                 tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.Entry.COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
 

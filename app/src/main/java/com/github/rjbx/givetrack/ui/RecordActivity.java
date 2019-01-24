@@ -100,20 +100,10 @@ public class RecordActivity extends AppCompatActivity implements
         assert mRecyclerView != null;
         mAdapter = new ListAdapter();
         mRecyclerView.setAdapter(mAdapter);
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
+        new ItemTouchHelper(getSimpleCallback(
                 ItemTouchHelper.ACTION_STATE_IDLE,
-                ItemTouchHelper.LEFT) {
-
-            @Override public boolean onMove(@NonNull RecyclerView recyclerView,
-                                            @NonNull RecyclerView.ViewHolder viewHolder,
-                                            @NonNull RecyclerView.ViewHolder target) { return false; }
-
-            @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Bundle bundle = (Bundle) viewHolder.itemView.getTag();
-                final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
-                if (direction == ItemTouchHelper.LEFT) DatabaseService.startActionRemoveSearch(getBaseContext(), ein);
-            }
-        }).attachToRecyclerView(mRecyclerView);
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
+        )).attachToRecyclerView(mRecyclerView);
     }
 
     /**
@@ -256,6 +246,35 @@ public class RecordActivity extends AppCompatActivity implements
                 default:
             }
         }
+    }
+
+    private ItemTouchHelper.SimpleCallback getSimpleCallback(int dragDirs, int swipeDirs) {
+        return new ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
+
+            @Override public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = (int) viewHolder.itemView.getTag();
+                ContentValues values = mAdapter.mValuesArray[position];
+                switch (direction) {
+                    case ItemTouchHelper.LEFT:
+                        final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                        DatabaseService.startActionRemoveRecord(getBaseContext(), time);
+                        break;
+                    case ItemTouchHelper.RIGHT:
+                        final String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+                        new CustomTabsIntent.Builder()
+                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                                .build()
+                                .launchUrl(RecordActivity.this, Uri.parse(url));
+                        getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                        break;
+                    default:
+                }
+            }
+        };
     }
 
     /**

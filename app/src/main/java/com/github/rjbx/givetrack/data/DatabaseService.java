@@ -18,6 +18,7 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
+import com.github.rjbx.givetrack.ui.RecordActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -176,10 +177,10 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveRecord(Context context, String charityId) {
+    public static void startActionRemoveRecord(Context context, long recordTime) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_RECORD);
-        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        intent.putExtra(EXTRA_ITEM_ID, recordTime);
         context.startService(intent);
     }
 
@@ -308,8 +309,8 @@ public class DatabaseService extends IntentService {
                 handleActionRemoveGiving(removeGivingString);
                 break;
             case ACTION_REMOVE_RECORD:
-                final String removeRecordString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveRecord(removeRecordString);
+                final long removeRecordLong = intent.getLongExtra(EXTRA_ITEM_ID, -1);
+                handleActionRemoveRecord(removeRecordLong);
                 break;
             case ACTION_RESET_SEARCH:
                 handleActionResetSearch();
@@ -600,21 +601,17 @@ public class DatabaseService extends IntentService {
                 null, null, null, null);
         if (cursor == null) return;
 
-        List<String> charities = new ArrayList<>();
-        if (!cursor.moveToFirst()) charities.add("");
-        else {
-            do {
-                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
-                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
-                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
-                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-
+        List<String> charities = UserPreferences.getCharities(this);
+        int removeIndex = 0;
+        boolean notFound = true;
+        for (int i = 0; i < charities.size(); i++) {
+            if (charities.get(i).split(":")[0].contains(charityId)) {
+                removeIndex = i;
+                notFound = false;
+                break;
+            }
+        } if (notFound) return;
+        charities.remove(charities.get(removeIndex));
         UserPreferences.setCharities(this, charities);
         UserPreferences.updateFirebaseUser(this);
 
@@ -626,31 +623,25 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action RemoveRecord in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveRecord(String charityId) {
+    private void handleActionRemoveRecord(long time) {
 
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(charityId).build();
+        String formattedTime = String.valueOf(time);
+        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
 
-        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_RECORD,
-                null, null, null, null);
-        if (cursor == null) return;
-
-        List<String> charities = new ArrayList<>();
-        if (!cursor.moveToFirst()) charities.add("");
-        else {
-            do {
-                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
-                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
-                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
-                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
-            } while (cursor.moveToNext());
-            cursor.close();
-        }
-
-        UserPreferences.setCharities(this, charities);
+        List<String> records = UserPreferences.getRecords(this);
+        if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
+        int removeIndex = 0;
+        boolean notFound = true;
+        for (int i = 0; i < records.size(); i++) {
+            if (records.get(i).split(":")[3].contains(formattedTime)) {
+                removeIndex = i;
+                notFound = false;
+                break;
+            }
+        } if (notFound) return;
+        records.remove(records.get(removeIndex));
+        UserPreferences.setCharities(this, records);
         UserPreferences.updateFirebaseUser(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -759,6 +750,7 @@ public class DatabaseService extends IntentService {
             int f = charityValues.getAsInteger(affectedColumn);
             List<String> charities = new ArrayList<>();
             List<String> records = UserPreferences.getRecords(this);
+            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
 
             long currentTime = System.currentTimeMillis();
             long lastConversionTime = UserPreferences.getTimestamp(this);
