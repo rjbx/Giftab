@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements
         String qualifier = mDateDifference < 2 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
-        mAnchorDialog.setMessage(String.format(Locale.getDefault(), "Do you want to change the date to %s for recording %2donations?", formattedDate, qualifier));
+        mAnchorDialog.setMessage(String.format(Locale.getDefault(), "Do you want to change the date to %s for recording %sdonations?", formattedDate, qualifier));
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
@@ -236,13 +236,6 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override public void onClick(DialogInterface dialog, int which) {
         AlertDialog currentDialog = new AlertDialog.Builder(this).create();
-        currentDialog.setMessage(String.format(Locale.getDefault(), "Do you want to automatically maintain the date as current"));
-        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
-        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-        currentDialog.show();
-        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
-
         if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -251,6 +244,16 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setAnchor(this, mAnchorTime);
                     UserPreferences.updateFirebaseUser(this);
+                    if (mDateDifference < 2) {
+                        currentDialog.setMessage(String.format(Locale.getDefault(), "Do you want to automatically maintain the date as current"));
+                        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                        currentDialog.show();
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+                    } else {
+                        UserPreferences.setHistorical(this, true);
+                    }
                     break;
                 default:
             }
