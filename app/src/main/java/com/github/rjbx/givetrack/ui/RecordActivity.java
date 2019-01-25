@@ -231,7 +231,7 @@ public class RecordActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_NEUTRAL:
                     mRemoveDialog.dismiss();
                     break;
-                case AlertDialog.BUTTON_POSITIVE:
+                case AlertDialog.BUTTON_NEGATIVE:
                     DatabaseService.startActionRemoveRecord(getBaseContext(), mDeletedTime);
                     break;
                 default:
