@@ -30,9 +30,9 @@ public class UserPreferences {
     public static final String KEY_ZIP = "zip";
     public static final String KEY_MINRATING = "minrating";
     public static final String KEY_FILTER = "filter";
-    public static final String KEY_RECORDSORT = "sortRecords";
+    public static final String KEY_RECORDSORT = "sortRecord";
     public static final String KEY_SEARCHSORT = "sortSearch";
-    public static final String KEY_RECORDORDER = "orderRecords";
+    public static final String KEY_RECORDORDER = "orderRecord";
     public static final String KEY_SEARCHORDER = "orderSearch";
     public static final String KEY_PAGES = "pages";
     public static final String KEY_ROWS = "rows";
