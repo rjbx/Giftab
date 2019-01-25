@@ -255,7 +255,9 @@ public class GivingFragment extends Fragment implements
         switch (actionId) {
             case EditorInfo.IME_ACTION_DONE:
                 try {
-                    mAmountTotal = CURRENCY_FORMATTER.parse(mTotalText.getText().toString()).floatValue();
+                    String viewText = mTotalText.getText().toString();
+                    if (viewText.contains("$")) mAmountTotal = CURRENCY_FORMATTER.parse(viewText).floatValue();
+                    else mAmountTotal = Float.parseFloat(viewText);
                     UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
                     UserPreferences.updateFirebaseUser(getContext());
                 } catch (ParseException e) {
