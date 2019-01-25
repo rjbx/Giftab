@@ -752,9 +752,8 @@ public class DatabaseService extends IntentService {
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
 
-            long currentTime = System.currentTimeMillis();
             long lastConversionTime = UserPreferences.getTimestamp(this);
-            long timeBetweenConversions = currentTime - lastConversionTime;
+            long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
 
             long daysBetweenConversions =
                     TimeUnit.DAYS.convert(
@@ -799,7 +798,7 @@ public class DatabaseService extends IntentService {
 
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, currentTime);
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, System.currentTimeMillis());
                 getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
             } while (cursor.moveToNext());
