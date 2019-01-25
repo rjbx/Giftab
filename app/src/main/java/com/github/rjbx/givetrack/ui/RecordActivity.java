@@ -230,6 +230,7 @@ public class RecordActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     mRemoveDialog.dismiss();
+                    mAdapter.notifyDataSetChanged();
                     break;
                 case AlertDialog.BUTTON_NEGATIVE:
                     DatabaseService.startActionRemoveRecord(getBaseContext(), mDeletedTime);
