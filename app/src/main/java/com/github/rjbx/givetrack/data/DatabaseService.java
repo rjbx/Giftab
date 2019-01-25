@@ -798,7 +798,9 @@ public class DatabaseService extends IntentService {
                 if (percentage < .01f) continue;
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
+                values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, System.currentTimeMillis());
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", transactionImpact));
                 getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
             } while (cursor.moveToNext());
