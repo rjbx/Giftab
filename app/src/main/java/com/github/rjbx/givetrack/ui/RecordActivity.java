@@ -218,7 +218,7 @@ public class RecordActivity extends AppCompatActivity implements
         mListContainer.setLayoutParams(params);
         mItemContainer.setVisibility(View.VISIBLE);
         mItemContainer.setLayoutParams(params);
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -227,7 +227,7 @@ public class RecordActivity extends AppCompatActivity implements
     @Override public void showSinglePane() {
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
     /**
