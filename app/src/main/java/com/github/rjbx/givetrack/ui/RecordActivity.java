@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -61,10 +62,10 @@ public class RecordActivity extends AppCompatActivity implements
 
     public static final String ACTION_RECORD_INTENT = "com.github.rjbx.givetrack.ui.action.RECORD_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
-    private static boolean sDialogShown;
+    private long mDeletedTime;
     private static boolean sDualPane;
     private ListAdapter mAdapter;
-    private AlertDialog mRecordDialog;
+    private AlertDialog mRemoveDialog;
     private String mSnackbar;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
@@ -90,10 +91,6 @@ public class RecordActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
-        mRecordDialog = new AlertDialog.Builder(this).create();
-        mRecordDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mRecordDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
-        mRecordDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -163,15 +160,10 @@ public class RecordActivity extends AppCompatActivity implements
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
-            mRecordDialog.show();
-             mRecordDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            mRecordDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        }
+        if (cursor == null || (!cursor.moveToFirst())) return;
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                if (cursor == null|| !cursor.moveToFirst()) return;
                 ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
                 int i = 0;
                 do {
@@ -234,14 +226,13 @@ public class RecordActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
-        if (dialog == mRecordDialog) {
+        if (dialog == mRemoveDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    mRecordDialog.dismiss();
+                    mRemoveDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    sDialogShown = true;
-                    launchFilterPreferences(this);
+                    DatabaseService.startActionRemoveRecord(getBaseContext(), mDeletedTime);
                     break;
                 default:
             }
@@ -260,8 +251,15 @@ public class RecordActivity extends AppCompatActivity implements
                 ContentValues values = mAdapter.mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-                        DatabaseService.startActionRemoveRecord(getBaseContext(), time);
+                        String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                        mDeletedTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                        mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
+                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_alert, name));
+                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), RecordActivity.this);
+                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), RecordActivity.this);
+                        mRemoveDialog.show();
+                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
