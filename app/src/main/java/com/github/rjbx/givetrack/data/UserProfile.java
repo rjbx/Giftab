@@ -38,6 +38,7 @@ import java.util.Map;
     private List<String> records;
     private String high;
     private String today;
+    private boolean historical;
     private long anchor;
     private long timestamp;
     private long timetrack;
@@ -77,6 +78,7 @@ import java.util.Map;
             List<String> records,
             String high,
             String today,
+            boolean historical,
             long anchor,
             long timestamp,
             long timetrack) {
@@ -106,6 +108,7 @@ import java.util.Map;
         this.records = records;
         this.high = high;
         this.today = today;
+        this.historical = historical;
         this.anchor = anchor;
         this.timestamp = timestamp;
         this.timetrack = timetrack;
@@ -235,6 +238,12 @@ import java.util.Map;
     public void setHigh(String high) { this.high = high; }
     public String getToday() { return today; }
     public void setToday(String today) { this.today = today; }
+    public boolean getHistorical() {
+        return historical;
+    }
+    public void setHistorical(boolean historical) {
+        this.historical = historical;
+    }
     public long getAnchor() {
         return anchor;
     }
@@ -279,6 +288,7 @@ import java.util.Map;
         map.put("records", records);
         map.put("high", high);
         map.put("today", today);
+        map.put("historical", historical);
         map.put("anchor", anchor);
         map.put("timestamp", timestamp);
         map.put("timetrack", timetrack);

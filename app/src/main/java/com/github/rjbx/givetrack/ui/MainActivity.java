@@ -50,6 +50,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mValuesArray;
     private long mAnchorTime;
+    private int mDateDifference;
     private AlertDialog mAnchorDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
@@ -216,9 +218,12 @@ public class MainActivity extends AppCompatActivity implements
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
         dateFormatter.setTimeZone(TimeZone.getDefault());
         String formattedDate = dateFormatter.format(mAnchorTime);
+        
+        mDateDifference = calendar.compareTo(Calendar.getInstance());
+        String qualifier = mDateDifference < 2 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
-        mAnchorDialog.setMessage(String.format("Do you want to change the date to %s for recording past donations?", formattedDate));
+        mAnchorDialog.setMessage(String.format(Locale.getDefault(), "Do you want to change the date to %s for recording %2donations?", formattedDate, qualifier));
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
@@ -230,6 +235,14 @@ public class MainActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
+        AlertDialog currentDialog = new AlertDialog.Builder(this).create();
+        currentDialog.setMessage(String.format(Locale.getDefault(), "Do you want to automatically maintain the date as current"));
+        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+        currentDialog.show();
+        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
+        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+
         if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -241,9 +254,19 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 default:
             }
+        } else if (dialog == currentDialog) {
+            switch (which) {
+                case AlertDialog.BUTTON_NEUTRAL:
+                    UserPreferences.setHistorical(this, true);
+                    break;
+                case AlertDialog.BUTTON_POSITIVE:
+                    UserPreferences.setHistorical(this, false);
+                    break;
+                default:
+            }
         }
     }
-
+    
     /**
      * Defines and launches Intent for displaying the {@link ConfigActivity.GivingPreferenceFragment} screen.
      */

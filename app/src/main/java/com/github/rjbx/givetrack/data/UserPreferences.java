@@ -41,6 +41,7 @@ public class UserPreferences {
     public static final String KEY_RECORDS = "records";
     public static final String KEY_HIGH = "high";
     public static final String KEY_TODAY = "today";
+    public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_TIMETRACK = "timetrack";
@@ -283,6 +284,16 @@ public class UserPreferences {
         sp.edit().putBoolean(KEY_FOCUS, focus).apply();
     }
 
+    public static boolean getHistorical(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(KEY_HISTORICAL, false);
+    }
+
+    public static void setHistorical(Context context, boolean historical) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_HISTORICAL, historical).apply();
+    }
+
     public static String getEin(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(KEY_EIN, "");
@@ -348,6 +359,7 @@ public class UserPreferences {
         setEin(context, user.getEin());
         setRecords(context, user.getRecords());
         setHigh(context, user.getHigh());
+        setHistorical(context, user.getHistorical());
         setAnchor(context, user.getAnchor());
         setTimestamp(context, user.getTimestamp());
         setTimetrack(context, user.getTimetrack());
@@ -387,6 +399,7 @@ public class UserPreferences {
                 getRecords(context),
                 getHigh(context),
                 getToday(context),
+                getHistorical(context),
                 getAnchor(context),
                 getTimestamp(context),
                 getTimetrack(context));

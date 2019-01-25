@@ -761,6 +761,7 @@ public class DatabaseService extends IntentService {
                             TimeUnit.MILLISECONDS
                     );
 
+            if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
             long anchorTime = UserPreferences.getAnchor(this);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(anchorTime);
