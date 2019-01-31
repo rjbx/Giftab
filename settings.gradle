@@ -1,1 +1,1 @@
-include ':app', ':calibrater', ':rateraid'
+include ':app'
