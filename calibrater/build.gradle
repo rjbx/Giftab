@@ -1,0 +1,32 @@
+apply plugin: 'java-library'
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'com.github.rjbx.rateraid:calibrater'
+
+    publishedGroupId = 'com.github.rjbx.rateraid'
+    libraryName = 'Calibrater'
+    artifact = 'calibrater'
+
+    libraryDescription = 'Automatically calibrate percent values'
+    siteUrl = 'https://github.com/rjbx/rateraid'
+    gitUrl = 'https://github.com/rjbx/rateraid.git'
+
+    libraryVersion = '0.4.0'
+
+    developerId = 'rjbx'
+    developerName = 'Bob Basmaji'
+    developerEmail = 'rjbx@users.noreply.github.com'
+
+    licenseName = 'GNU General Public License, Version 3.0'
+    licenseUrl = 'https://www.gnu.org/licenses/gpl-3.0.en.html'
+    allLicenses = ["GPLv3.0"]
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"

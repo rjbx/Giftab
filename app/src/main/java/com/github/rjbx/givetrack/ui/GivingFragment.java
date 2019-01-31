@@ -79,7 +79,7 @@ public class GivingFragment extends Fragment implements
     private static ContentValues[] sValuesArray;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
-    private static Float[] sPercentages;
+    private static double[] sPercentages;
     private MainActivity mParentActivity;
     private DetailFragment mDetailFragment;
     private ListAdapter mListAdapter;
@@ -426,16 +426,16 @@ public class GivingFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-        private Rateraid.Builder mRateraidBuilder;
+        private Rateraid.Arrays mRateraidArrays;
 
         /**
          * Initializes percentage array and percentage button click handler and view updater.
          */
         ListAdapter() {
-            sPercentages = new Float[sValuesArray.length];
-            mRateraidBuilder = Rateraid.with(sPercentages, mMagnitude, clickedView -> {
+            sPercentages = new double[sValuesArray.length];
+            mRateraidArrays = Rateraid.with(sPercentages, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
                 float sum = 0;
-                for (float percentage : sPercentages) sum += percentage;
+                for (double percentage : sPercentages) sum += percentage;
                 Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
@@ -527,8 +527,8 @@ public class GivingFragment extends Fragment implements
 
             final int adapterPosition = holder.getAdapterPosition();
 
-            mRateraidBuilder.addButtonSet(holder.mIncrementButton, holder.mDecrementButton, adapterPosition);
-            mRateraidBuilder.addValueEditor(holder.mPercentageView, adapterPosition);
+            mRateraidArrays.addShifters(holder.mIncrementButton, holder.mDecrementButton, adapterPosition)
+                           .addEditor(holder.mPercentageView, adapterPosition);
         }
 
         /**
@@ -547,7 +547,7 @@ public class GivingFragment extends Fragment implements
             for (int i = 0; i < sPercentages.length; i++) {
                 sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
-            boolean adjusted = Calibrater.resetRatings(sPercentages, false);
+            boolean adjusted = Calibrater.resetRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) syncPercentages();
             notifyDataSetChanged();
         }
