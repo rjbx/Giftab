@@ -260,7 +260,7 @@ public class ConfigActivity extends PreferenceActivity {
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
                 mClearDialog.show();
@@ -373,7 +373,7 @@ public class ConfigActivity extends PreferenceActivity {
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
                 mClearDialog.show();
@@ -488,7 +488,7 @@ public class ConfigActivity extends PreferenceActivity {
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_alert, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_confirm), this);
                 mClearDialog.show();

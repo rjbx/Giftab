@@ -609,7 +609,7 @@ public class GivingFragment extends Fragment implements
                 mEin = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
 
                 mRemoveDialog = new AlertDialog.Builder(getContext()).create();
-                mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_alert, name));
+                mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_charity, name));
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mRemoveDialog.show();

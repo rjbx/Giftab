@@ -255,7 +255,7 @@ public class RecordActivity extends AppCompatActivity implements
                         String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
                         mDeletedTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
                         mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
-                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_alert, name));
+                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, name));
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), RecordActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), RecordActivity.this);
                         mRemoveDialog.show();
