@@ -634,7 +634,7 @@ public class DatabaseService extends IntentService {
             float rI = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
             cursor.close();
             Uri givingUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendEncodedPath(ein).build();
-            cursor = getContentResolver().query(givingUri, null, null, null);
+            cursor = getContentResolver().query(givingUri, null, null, null, null);
             if (cursor != null && cursor.moveToFirst()) {
                 int f = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
                 float i = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
