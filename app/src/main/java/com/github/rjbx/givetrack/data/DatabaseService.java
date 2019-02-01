@@ -626,8 +626,26 @@ public class DatabaseService extends IntentService {
     private void handleActionRemoveRecord(long time) {
 
         String formattedTime = String.valueOf(time);
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
-        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
+        Uri recordUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
+        DISK_IO.execute(() -> {
+            Cursor cursor = getContentResolver().query(recordUri, null, null, null, null);
+            if (cursor == null || !cursor.moveToFirst()) return;
+            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+            float rI = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
+            cursor.close();
+            Uri givingUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendEncodedPath(ein).build();
+            cursor = getContentResolver().query(givingUri, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int f = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
+                float i = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
+                ContentValues values = new ContentValues();
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, i - rI);
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, --f);
+                getContentResolver().update(givingUri, values, null, null);
+            }
+            cursor.close();
+            getContentResolver().delete(recordUri, null, null);
+        });
 
         List<String> records = UserPreferences.getRecords(this);
         if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
