@@ -71,6 +71,8 @@ public class GlanceFragment extends Fragment implements
         R.color.colorComfort,
         R.color.colorNeutral
     };
+    private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
+    private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
     private static ContentValues[] sValuesArray;
     private static boolean mShowTracked;
     private static boolean mShowYears;
@@ -124,15 +126,13 @@ public class GlanceFragment extends Fragment implements
         Bundle args = getArguments();
         if (args != null) sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_ITEM_ATTRIBUTES);
 
-        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance();
-
         float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
-        mTracked = currencyFormatter.format(tracked);
+        mTracked = CURRENCY_FORMATTER.format(tracked);
 
         List<String> charities = UserPreferences.getCharities(getContext());
         float totalImpact = 0f;
         for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[4]);
-        mTotal = currencyFormatter.format(totalImpact);
+        mTotal = CURRENCY_FORMATTER.format(totalImpact);
         mAmountView.setText(mTotal);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
@@ -301,13 +301,14 @@ public class GlanceFragment extends Fragment implements
         StringBuilder percentageMessageBuilder = new StringBuilder();
         if (sValuesArray == null || sValuesArray.length == 0) return;
         for (ContentValues values : sValuesArray) {
-            float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
+            String percentageStr = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
+            float percentage = Float.parseFloat(percentageStr);
             if (percentage < .01f) continue;
             String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(percentage), name));
             if (name.length() > 20) { name = name.substring(0, 20);
-            name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+                name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
             percentageEntries.add(new PieEntry(percentage, name));
-            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%f %s\n", percentage, name));
             donationAmount += Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
             donationFrequency += values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         }
@@ -480,6 +481,15 @@ public class GlanceFragment extends Fragment implements
         activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
         activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
+        StringBuilder activityMessageBuilder = new StringBuilder();
+        activityMessageBuilder.append(String.format(Locale.getDefault(),"Today %s\n", intervalAggregates[0]));
+        activityMessageBuilder.append(String.format(Locale.getDefault(),"Yesterday %s\n", intervalAggregates[1]));
+        for (int i = 2; i < activityEntries.size(); i++) {
+            activityMessageBuilder.append(String.format(Locale.getDefault(), "%s %d %s\n", mIntervalLabel, i, intervalAggregates[1]));
+        }
+
+        String activityMessage = activityMessageBuilder.toString();
+
         BarDataSet activityDataSet = new BarDataSet(activityEntries, "");
         activityDataSet.setColors(chartColors);
 
@@ -489,6 +499,7 @@ public class GlanceFragment extends Fragment implements
         activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
 
+        mActivityChart.setTag(activityMessage);
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
         mActivityChart.getXAxis().setValueFormatter(this);
