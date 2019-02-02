@@ -378,6 +378,7 @@ public class GlanceFragment extends Fragment implements
         mUsageChart.setTransparentCircleColor(backgroundColor);
         mUsageChart.setHoleColor(backgroundColor);
         mUsageChart.getLegend().setEnabled(false);
+        mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
         mUsageChart.invalidate();
 
         float conversionsTotal = donationFrequency;
@@ -399,6 +400,7 @@ public class GlanceFragment extends Fragment implements
         mTypeChart.setTransparentCircleColor(backgroundColor);
         mTypeChart.setHoleColor(backgroundColor);
         mTypeChart.getLegend().setEnabled(false);
+        mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
         mTypeChart.invalidate();
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
@@ -459,6 +461,7 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.setTransparentCircleColor(backgroundColor);
         mAverageChart.setHoleColor(backgroundColor);
         mAverageChart.getLegend().setEnabled(false);
+        mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
         mAverageChart.invalidate();
 
         List<BarEntry> activityEntries = new ArrayList<>();
@@ -488,6 +491,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
         mActivityChart.notifyDataSetChanged();
+        mActivityChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mActivityChart));
         mActivityChart.invalidate();
     }
 
@@ -496,7 +500,8 @@ public class GlanceFragment extends Fragment implements
         chartDialog.setMessage(stats);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-//        chartDialog.setView(chart);
+        ((ViewGroup) chart.getParent()).removeView(chart);
+        chartDialog.setView(chart);
         chartDialog.show();
         chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
         chartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
@@ -508,7 +513,7 @@ public class GlanceFragment extends Fragment implements
         String mStats;
 
         public OnSelectedChartOnGestureListener(Chart chart) {
-            mView = chart.getRootView();
+            mView = chart;
             mStats = chart.getDescription().toString() + chart.getData().toString();
         }
 
