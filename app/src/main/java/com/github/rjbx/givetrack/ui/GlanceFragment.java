@@ -35,10 +35,13 @@ import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.ChartData;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.R;
@@ -90,8 +93,8 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
     @BindView(R.id.usage_chart) PieChart mUsageChart;
     @BindView(R.id.type_chart) PieChart mTypeChart;
-    @BindView(R.id.average_chart) PieChart mAverageChart;
-    @BindView(R.id.activity_chart) BarChart mActivityChart;
+    @BindView(R.id.average_chart) PieChart pieChart;
+    @BindView(R.id.activity_chart) BarChart chartClone;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -453,16 +456,16 @@ public class GlanceFragment extends Fragment implements
         averageDesc.setText(getString(R.string.chart_title_average));
         averageDesc.setTextSize(fontSize / 1.1f);
         PieData averageData = new PieData(averageSet);
-        mAverageChart.setData(averageData);
-        mAverageChart.setDescription(averageDesc);
-        mAverageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        mAverageChart.setHoleRadius(15f);
-        mAverageChart.setBackgroundColor(backgroundColor);
-        mAverageChart.setTransparentCircleColor(backgroundColor);
-        mAverageChart.setHoleColor(backgroundColor);
-        mAverageChart.getLegend().setEnabled(false);
-        mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
-        mAverageChart.invalidate();
+        pieChart.setData(averageData);
+        pieChart.setDescription(averageDesc);
+        pieChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        pieChart.setHoleRadius(15f);
+        pieChart.setBackgroundColor(backgroundColor);
+        pieChart.setTransparentCircleColor(backgroundColor);
+        pieChart.setHoleColor(backgroundColor);
+        pieChart.getLegend().setEnabled(false);
+        pieChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(pieChart));
+        pieChart.invalidate();
 
         List<BarEntry> activityEntries = new ArrayList<>();
         activityEntries.add(new BarEntry(0f, high));
@@ -483,25 +486,44 @@ public class GlanceFragment extends Fragment implements
         activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
 
-        mActivityChart.setData(activityData);
-        mActivityChart.setDescription(activityDesc);
-        mActivityChart.getXAxis().setValueFormatter(this);
-        mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
-        mActivityChart.setFitBars(true);
-        mActivityChart.getLegend().setEnabled(false);
-        mActivityChart.setPinchZoom(true);
-        mActivityChart.notifyDataSetChanged();
-        mActivityChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mActivityChart));
-        mActivityChart.invalidate();
+        chartClone.setData(activityData);
+        chartClone.setDescription(activityDesc);
+        chartClone.getXAxis().setValueFormatter(this);
+        chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+        chartClone.setFitBars(true);
+        chartClone.getLegend().setEnabled(false);
+        chartClone.setPinchZoom(true);
+        chartClone.notifyDataSetChanged();
+        chartClone.setOnChartGestureListener(new OnSelectedChartOnGestureListener(chartClone));
+        chartClone.invalidate();
     }
 
-    private void expandChart(View chart, String stats) {
+    private void expandChart(Chart chart, String s) {
         AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
-        chartDialog.setMessage(stats);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-        ((ViewGroup) chart.getParent()).removeView(chart);
-        chartDialog.setView(chart);
+        Chart chartClone;
+        if (chart instanceof PieChart) {
+            chartClone = new PieChart(mParentActivity);
+            ((PieChart) chartClone).setData(((PieChart) chart).getData());
+            ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+            ((PieChart) chartClone).setHoleRadius(15f);
+            chartClone.getLegend().setEnabled(false);
+            chartClone.setLayoutParams(chart.getLayoutParams());
+        } else if (chart instanceof BarChart) {
+            chartClone = new BarChart(mParentActivity);
+            chartClone.setData(((BarChart) chart).getData());
+            chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
+            chartClone.getXAxis().setTextSize(chart.getXAxis().getTextSize());
+            ((BarChart) chartClone).setFitBars(true);
+            chartClone.getLegend().setEnabled(false);
+            ((BarChart) chartClone).setPinchZoom(true);
+        } else return;
+
+        pieChart.setBackgroundColor((chart).getSolidColor());
+        pieChart.setDescription((chart).getDescription());
+
+        chartDialog.setView(chartClone);
         chartDialog.show();
         chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
         chartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
@@ -509,7 +531,7 @@ public class GlanceFragment extends Fragment implements
 
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
 
-        View mView;
+        Chart mView;
         String mStats;
 
         public OnSelectedChartOnGestureListener(Chart chart) {
