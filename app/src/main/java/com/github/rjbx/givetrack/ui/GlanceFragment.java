@@ -482,10 +482,11 @@ public class GlanceFragment extends Fragment implements
         activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
         StringBuilder activityMessageBuilder = new StringBuilder();
-        activityMessageBuilder.append(String.format(Locale.getDefault(),"Today %s\n", intervalAggregates[0]));
-        activityMessageBuilder.append(String.format(Locale.getDefault(),"Yesterday %s\n", intervalAggregates[1]));
-        for (int i = 2; i < activityEntries.size(); i++) {
-            activityMessageBuilder.append(String.format(Locale.getDefault(), "%s %d %s\n", mIntervalLabel, i, intervalAggregates[1]));
+        for (int i = 0; i < activityEntries.size(); i++) {
+            String axisLabel = mIntervalLabel + i;
+            if (i == 0) axisLabel = "Today";
+            else if (i == 1) axisLabel = "Yesterday";
+            activityMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", axisLabel, CURRENCY_FORMATTER.format(intervalAggregates[1])));
         }
 
         String activityMessage = activityMessageBuilder.toString();
