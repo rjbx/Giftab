@@ -505,11 +505,11 @@ public class GlanceFragment extends Fragment implements
         Chart chartClone;
         if (chart instanceof PieChart) {
             chartClone = new PieChart(mParentActivity);
+            chartClone.setLayoutParams(chart.getLayoutParams());
             ((PieChart) chartClone).setData(((PieChart) chart).getData());
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
             chartClone.getLegend().setEnabled(false);
-            chartClone.setLayoutParams(chart.getLayoutParams());
         } else if (chart instanceof BarChart) {
             chartClone = new BarChart(mParentActivity);
             chartClone.setData(((BarChart) chart).getData());
@@ -520,11 +520,12 @@ public class GlanceFragment extends Fragment implements
             ((BarChart) chartClone).setPinchZoom(true);
         } else return;
 
-        pieChart.setBackgroundColor((chart).getSolidColor());
-        pieChart.setDescription((chart).getDescription());
+        chartClone.setMinimumHeight(1000);
+        chartClone.setMinimumWidth(1000);
 
         chartDialog.setView(chartClone);
         chartDialog.show();
+        chartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
         chartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
     }
