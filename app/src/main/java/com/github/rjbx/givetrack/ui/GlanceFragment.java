@@ -485,7 +485,7 @@ public class GlanceFragment extends Fragment implements
     }
     
     private void expandChart(View chart) {
-        AlertDialog chartDialog = new AlertDialog.Builder(this).create();
+        AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
         chartDialog.setMessage(String.format(Locale.getDefault(), "Do you want to change the date to %s for recording %sdonations?", formattedDate, qualifier));
         chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
