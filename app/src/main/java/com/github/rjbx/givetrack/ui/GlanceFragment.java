@@ -28,21 +28,19 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
@@ -353,7 +351,7 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.getLegend().setEnabled(false);
         mPercentageChart.setHighlightPerTapEnabled(true);
         mPercentageChart.setClickable(true);
-        mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart, percentageDesc.toString() + percentageData.toString()));
+        mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
         float amountTotal = donationAmount;
@@ -506,20 +504,20 @@ public class GlanceFragment extends Fragment implements
 
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
 
-        View mChart;
+        View mView;
         String mStats;
 
-        public OnSelectedChartOnGestureListener(View chart, String stats) {
-            mChart = chart;
-            mStats = stats;
+        public OnSelectedChartOnGestureListener(Chart chart) {
+            mView = chart.getRootView();
+            mStats = chart.getDescription().toString() + chart.getData().toString();
         }
 
         @Override public void onChartLongPressed(MotionEvent me) {
-            expandChart(mChart, mStats);
+            expandChart(mView, mStats);
         }
 
         @Override public void onChartDoubleTapped(MotionEvent me) {
-            expandChart(mChart, mStats);
+            expandChart(mView, mStats);
         }
 
         @Override public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
