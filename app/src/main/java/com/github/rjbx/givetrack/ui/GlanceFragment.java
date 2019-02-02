@@ -16,6 +16,7 @@ import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -33,10 +34,15 @@ import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
@@ -345,6 +351,9 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setHoleColor(backgroundColor);
         mPercentageChart.setRotationEnabled(false);
         mPercentageChart.getLegend().setEnabled(false);
+        mPercentageChart.setHighlightPerTapEnabled(true);
+        mPercentageChart.setClickable(true);
+        mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart, percentageDesc.toString() + percentageData.toString()));
         mPercentageChart.invalidate();
 
         float amountTotal = donationAmount;
@@ -483,15 +492,41 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.notifyDataSetChanged();
         mActivityChart.invalidate();
     }
-    
+
     private void expandChart(View chart, String stats) {
         AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
         chartDialog.setMessage(stats);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-        chartDialog.setView(chart);
+//        chartDialog.setView(chart);
         chartDialog.show();
         chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
         chartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+    }
+
+    class OnSelectedChartOnGestureListener implements OnChartGestureListener {
+
+        View mChart;
+        String mStats;
+
+        public OnSelectedChartOnGestureListener(View chart, String stats) {
+            mChart = chart;
+            mStats = stats;
+        }
+
+        @Override public void onChartLongPressed(MotionEvent me) {
+            expandChart(mChart, mStats);
+        }
+
+        @Override public void onChartDoubleTapped(MotionEvent me) {
+            expandChart(mChart, mStats);
+        }
+
+        @Override public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
+        @Override public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
+        @Override public void onChartSingleTapped(MotionEvent me) { }
+        @Override public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) { }
+        @Override public void onChartScale(MotionEvent me, float scaleX, float scaleY) { }
+        @Override public void onChartTranslate(MotionEvent me, float dX, float dY) { }
     }
 }
