@@ -29,19 +29,17 @@ import butterknife.OnClick;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.ChartData;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.R;
@@ -85,6 +83,7 @@ public class GlanceFragment extends Fragment implements
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
+    private String[] mDialogMessages;
     private String[] mRecordsArray;
     private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
@@ -93,8 +92,8 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
     @BindView(R.id.usage_chart) PieChart mUsageChart;
     @BindView(R.id.type_chart) PieChart mTypeChart;
-    @BindView(R.id.average_chart) PieChart pieChart;
-    @BindView(R.id.activity_chart) BarChart chartClone;
+    @BindView(R.id.average_chart) PieChart mAverageChart;
+    @BindView(R.id.activity_chart) BarChart mActivityChart;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -299,6 +298,7 @@ public class GlanceFragment extends Fragment implements
         float donationAmount = 0f;
         int donationFrequency = 0;
 
+        StringBuilder percentageMessageBuilder = new StringBuilder();
         if (sValuesArray == null || sValuesArray.length == 0) return;
         for (ContentValues values : sValuesArray) {
             float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
@@ -307,10 +307,11 @@ public class GlanceFragment extends Fragment implements
             if (name.length() > 20) { name = name.substring(0, 20);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
             percentageEntries.add(new PieEntry(percentage, name));
-
+            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%f %s\n", percentage, name));
             donationAmount += Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
             donationFrequency += values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         }
+        String percentMessage = percentageMessageBuilder.toString();
 
         int chartColors[] = {
                 getResources().getColor(R.color.colorPrimary),
@@ -340,7 +341,9 @@ public class GlanceFragment extends Fragment implements
             params.setMargins(margin * 2, margin, margin * 2, margin);
             mPercentageChart.setLayoutParams(params);
         }
+
 //        mPercentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
+        mPercentageChart.setTag(percentMessage);
         mPercentageChart.setData(percentageData);
         mPercentageChart.setDescription(percentageDesc);
         mPercentageChart.setEntryLabelTextSize(fontSize * 1.25f);
@@ -456,16 +459,16 @@ public class GlanceFragment extends Fragment implements
         averageDesc.setText(getString(R.string.chart_title_average));
         averageDesc.setTextSize(fontSize / 1.1f);
         PieData averageData = new PieData(averageSet);
-        pieChart.setData(averageData);
-        pieChart.setDescription(averageDesc);
-        pieChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        pieChart.setHoleRadius(15f);
-        pieChart.setBackgroundColor(backgroundColor);
-        pieChart.setTransparentCircleColor(backgroundColor);
-        pieChart.setHoleColor(backgroundColor);
-        pieChart.getLegend().setEnabled(false);
-        pieChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(pieChart));
-        pieChart.invalidate();
+        mAverageChart.setData(averageData);
+        mAverageChart.setDescription(averageDesc);
+        mAverageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mAverageChart.setHoleRadius(15f);
+        mAverageChart.setBackgroundColor(backgroundColor);
+        mAverageChart.setTransparentCircleColor(backgroundColor);
+        mAverageChart.setHoleColor(backgroundColor);
+        mAverageChart.getLegend().setEnabled(false);
+        mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
+        mAverageChart.invalidate();
 
         List<BarEntry> activityEntries = new ArrayList<>();
         activityEntries.add(new BarEntry(0f, high));
@@ -486,43 +489,49 @@ public class GlanceFragment extends Fragment implements
         activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
 
-        chartClone.setData(activityData);
-        chartClone.setDescription(activityDesc);
-        chartClone.getXAxis().setValueFormatter(this);
-        chartClone.getXAxis().setTextSize(fontSize / 1.1f);
-        chartClone.setFitBars(true);
-        chartClone.getLegend().setEnabled(false);
-        chartClone.setPinchZoom(true);
-        chartClone.notifyDataSetChanged();
-        chartClone.setOnChartGestureListener(new OnSelectedChartOnGestureListener(chartClone));
-        chartClone.invalidate();
+        mActivityChart.setData(activityData);
+        mActivityChart.setDescription(activityDesc);
+        mActivityChart.getXAxis().setValueFormatter(this);
+        mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
+        mActivityChart.setFitBars(true);
+        mActivityChart.getLegend().setEnabled(false);
+        mActivityChart.setPinchZoom(true);
+        mActivityChart.notifyDataSetChanged();
+        mActivityChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mActivityChart));
+        mActivityChart.invalidate();
     }
 
     private void expandChart(Chart chart, String s) {
+
+        float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
         AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
         chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         Chart chartClone;
+
         if (chart instanceof PieChart) {
             chartClone = new PieChart(mParentActivity);
             chartClone.setLayoutParams(chart.getLayoutParams());
             ((PieChart) chartClone).setData(((PieChart) chart).getData());
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
+            ((PieChart) chartClone).setEntryLabelTextSize(fontSize * 1.25f);
             chartClone.getLegend().setEnabled(false);
-        } else if (chart instanceof BarChart) {
-            chartClone = new BarChart(mParentActivity);
-            chartClone.setData(((BarChart) chart).getData());
+        } else if (chart instanceof HorizontalBarChart) {
+            chartClone = new HorizontalBarChart(mParentActivity);
+            chartClone.setData(((HorizontalBarChart) chart).getData());
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
-            chartClone.getXAxis().setTextSize(chart.getXAxis().getTextSize());
-            ((BarChart) chartClone).setFitBars(true);
+            chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+            ((HorizontalBarChart) chartClone).setFitBars(true);
             chartClone.getLegend().setEnabled(false);
-            ((BarChart) chartClone).setPinchZoom(true);
+            ((HorizontalBarChart) chartClone).setPinchZoom(true);
         } else return;
 
-        chartClone.setMinimumHeight(1000);
+        chartClone.setDescription(chart.getDescription());
         chartClone.setMinimumWidth(1000);
+        chartClone.setMinimumHeight(1000);
 
+        chartDialog.setMessage((String) chart.getTag());
         chartDialog.setView(chartClone);
         chartDialog.show();
         chartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
