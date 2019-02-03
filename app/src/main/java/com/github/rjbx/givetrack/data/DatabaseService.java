@@ -649,17 +649,18 @@ public class DatabaseService extends IntentService {
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
             int removeIndex = 0;
-            boolean notFound = true;
+            boolean found = false;
             for (int i = 0; i < records.size(); i++) {
                 if (records.get(i).split(":")[3].contains(formattedTime)) {
                     removeIndex = i;
-                    notFound = false;
+                    found = true;
                     break;
                 }
             }
-            if (notFound) return;
-            records.remove(records.get(removeIndex));
-            UserPreferences.setCharities(this, records);
+            if (found) {
+                records.remove(records.get(removeIndex));
+                UserPreferences.setCharities(this, records);
+            }
 
             float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
             UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
