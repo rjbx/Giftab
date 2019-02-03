@@ -651,7 +651,7 @@ public class DatabaseService extends IntentService {
             int removeIndex = 0;
             boolean found = false;
             for (int i = 0; i < records.size(); i++) {
-                if (records.get(i).split(":")[3].contains(formattedTime)) {
+                if (records.get(i).split(":")[0].contains(formattedTime)) {
                     removeIndex = i;
                     found = true;
                     break;
