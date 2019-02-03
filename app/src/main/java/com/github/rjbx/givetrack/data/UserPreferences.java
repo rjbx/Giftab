@@ -339,7 +339,6 @@ public class UserPreferences {
      */
     public static void replaceSharedPreferences(@NonNull Context context, UserProfile user) {
 
-        setCharities(context, user.getCharities());
         setBirthdate(context, user.getBirthdate());
         setGender(context, user.getGender());
         setTheme(context, user.getTheme());

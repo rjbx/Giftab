@@ -131,7 +131,7 @@ public class GlanceFragment extends Fragment implements
 
         List<String> charities = UserPreferences.getCharities(getContext());
         float totalImpact = 0f;
-        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[4]);
+        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[1]);
         mTotal = CURRENCY_FORMATTER.format(totalImpact);
         mAmountView.setText(mTotal);
 

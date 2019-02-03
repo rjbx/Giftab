@@ -651,7 +651,7 @@ public class DatabaseService extends IntentService {
             int removeIndex = 0;
             boolean found = false;
             for (int i = 0; i < records.size(); i++) {
-                if (records.get(i).split(":")[0].contains(formattedTime)) {
+                if (Float.parseFloat(records.get(i).split(":")[0]) == time) {
                     removeIndex = i;
                     found = true;
                     break;
@@ -659,7 +659,7 @@ public class DatabaseService extends IntentService {
             }
             if (found) {
                 records.remove(records.get(removeIndex));
-                UserPreferences.setCharities(this, records);
+                UserPreferences.setRecords(this, records);
             }
 
             float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
