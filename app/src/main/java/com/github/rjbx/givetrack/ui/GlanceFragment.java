@@ -445,10 +445,8 @@ public class GlanceFragment extends Fragment implements
             if (validInterval && intervalDifference < 7) intervalAggregates[intervalDifference] += recordAmounts[j];
         }
 
-        float today = Float.parseFloat(mRecordsArray[0].split(":")[1]);
-        float high = Math.max(Float.parseFloat(UserPreferences.getHigh(context)), today);
+        float high = Float.parseFloat(UserPreferences.getHigh(context));
         UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
-        UserPreferences.updateFirebaseUser(mParentActivity);
 
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime)));

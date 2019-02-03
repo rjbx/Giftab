@@ -842,7 +842,10 @@ public class DatabaseService extends IntentService {
 
             UserPreferences.setAnchor(this, anchorTime);
             if (difference == 0) {
+                float high = Math.max(Float.parseFloat(UserPreferences.getHigh(this)), todaysImpact);
+                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
                 UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+
                 UserPreferences.setTimestamp(this, anchorTime);
             }
 
