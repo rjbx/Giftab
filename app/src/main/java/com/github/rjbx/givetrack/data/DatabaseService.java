@@ -823,7 +823,7 @@ public class DatabaseService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this) + amount);
+            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this)) + amount;
             UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
 
             long lastConversionTime = UserPreferences.getTimestamp(this);
