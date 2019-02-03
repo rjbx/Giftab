@@ -198,7 +198,7 @@ public class GlanceFragment extends Fragment implements
     @Override public String getFormattedValue(float value, AxisBase axis) {
         switch ((int) value) {
             case 0: return getString(R.string.axis_value_high);
-            case 1: return getString(R.string.axis_value_today);
+            case 1: return getString(R.string.axis_value_this, mIntervalLabel);
             case 2: return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
             default: return getString(R.string.axis_value_interval, (int) value, mIntervalLabel);
         }

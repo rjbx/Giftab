@@ -113,7 +113,7 @@
     <string name="indicator_donation_frequency">Number of donations: %s</string>
     <string name="indicator_donation_impact">Your total impact: %s</string>
     <string name="axis_value_high">All-time high</string>
-    <string name="axis_value_today">Today</string>
+    <string name="axis_value_this">This %s</string>
     <string name="axis_value_yester">Yester%s</string>
     <string name="axis_value_interval">%d %ss Ago</string>
     <string name="axis_value_alltime">All-time</string>
