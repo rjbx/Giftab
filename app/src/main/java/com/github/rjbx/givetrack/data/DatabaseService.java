@@ -780,28 +780,13 @@ public class DatabaseService extends IntentService {
             Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null, null, null);
             if (cursor == null || !cursor.moveToFirst()) return;
 
+            long anchorTime = UserPreferences.getAnchor(this);
+
             int f = charityValues.getAsInteger(affectedColumn);
             List<String> charities = new ArrayList<>();
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
 
-            long lastConversionTime = UserPreferences.getTimestamp(this);
-            long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
-
-            long daysBetweenConversions =
-                    TimeUnit.DAYS.convert(
-                            timeBetweenConversions,
-                            TimeUnit.MILLISECONDS
-                    );
-
-            if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
-            long anchorTime = UserPreferences.getAnchor(this);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(anchorTime);
-            int difference = calendar.compareTo(Calendar.getInstance());
-
-            float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this));
-            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this));
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             do {
                 String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
@@ -811,8 +796,6 @@ public class DatabaseService extends IntentService {
                 float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
-                todaysImpact += transactionImpact * 100f / 100f;
-                totalTracked += transactionImpact * 100f / 100f;
 
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage < .01f ? 0 : f);
 
@@ -840,17 +823,36 @@ public class DatabaseService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            UserPreferences.setAnchor(this, anchorTime);
+            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this) + amount);
+            UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
+
+            long lastConversionTime = UserPreferences.getTimestamp(this);
+            long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
+
+            long daysBetweenConversions =
+                    TimeUnit.DAYS.convert(
+                            timeBetweenConversions,
+                            TimeUnit.MILLISECONDS
+                    );
+
+            if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
+            else UserPreferences.setAnchor(this, anchorTime);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(anchorTime);
+            int difference = calendar.compareTo(Calendar.getInstance());
             if (difference == 0) {
+
+                float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
+                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+
                 float high = Math.max(Float.parseFloat(UserPreferences.getHigh(this)), todaysImpact);
                 UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
-                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
 
                 UserPreferences.setTimestamp(this, anchorTime);
             }
 
             UserPreferences.setRecords(this, records);
-            UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
         });
