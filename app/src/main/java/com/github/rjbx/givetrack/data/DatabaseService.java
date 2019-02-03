@@ -645,22 +645,37 @@ public class DatabaseService extends IntentService {
             }
             cursor.close();
             getContentResolver().delete(recordUri, null, null);
-        });
 
-        List<String> records = UserPreferences.getRecords(this);
-        if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
-        int removeIndex = 0;
-        boolean notFound = true;
-        for (int i = 0; i < records.size(); i++) {
-            if (records.get(i).split(":")[3].contains(formattedTime)) {
-                removeIndex = i;
-                notFound = false;
-                break;
+            List<String> records = UserPreferences.getRecords(this);
+            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
+            int removeIndex = 0;
+            boolean notFound = true;
+            for (int i = 0; i < records.size(); i++) {
+                if (records.get(i).split(":")[3].contains(formattedTime)) {
+                    removeIndex = i;
+                    notFound = false;
+                    break;
+                }
             }
-        } if (notFound) return;
-        records.remove(records.get(removeIndex));
-        UserPreferences.setCharities(this, records);
-        UserPreferences.updateFirebaseUser(this);
+            if (notFound) return;
+            records.remove(records.get(removeIndex));
+            UserPreferences.setCharities(this, records);
+            UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", Float.parseFloat(UserPreferences.getHigh(this)) - rI));
+            UserPreferences.setTracked(this, String.format(Locale.getDefault(),"%.2f", Float.parseFloat(UserPreferences.getTracked(this)) - rI));
+
+            long timeBetweenConversions = System.currentTimeMillis() - time;
+
+            long daysBetweenConversions =
+                    TimeUnit.DAYS.convert(
+                            timeBetweenConversions,
+                            TimeUnit.MILLISECONDS
+                    );
+            if (daysBetweenConversions <= 1) {
+                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", Float.parseFloat(UserPreferences.getToday(this))));
+            }
+
+            UserPreferences.updateFirebaseUser(this);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
