@@ -660,20 +660,19 @@ public class DatabaseService extends IntentService {
             if (notFound) return;
             records.remove(records.get(removeIndex));
             UserPreferences.setCharities(this, records);
-            UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", Float.parseFloat(UserPreferences.getHigh(this)) - rI));
-            UserPreferences.setTracked(this, String.format(Locale.getDefault(),"%.2f", Float.parseFloat(UserPreferences.getTracked(this)) - rI));
+
+            float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
+            UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
+
+            float tracked = Float.parseFloat(UserPreferences.getTracked(this)) - rI;
+            UserPreferences.setTracked(this, String.format(Locale.getDefault(),"%.2f", tracked));
 
             long timeBetweenConversions = System.currentTimeMillis() - time;
-
-            long daysBetweenConversions =
-                    TimeUnit.DAYS.convert(
-                            timeBetweenConversions,
-                            TimeUnit.MILLISECONDS
-                    );
+            long daysBetweenConversions = TimeUnit.DAYS.convert(timeBetweenConversions, TimeUnit.MILLISECONDS);
             if (daysBetweenConversions <= 1) {
-                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", Float.parseFloat(UserPreferences.getToday(this))));
+                float today = Float.parseFloat(UserPreferences.getToday(this)) - rI;
+                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", today));
             }
-
             UserPreferences.updateFirebaseUser(this);
         });
 
