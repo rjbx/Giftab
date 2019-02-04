@@ -72,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
     private SectionsPagerAdapter mPagerAdapter;
-    private ContentValues[] mValuesArray;
+    private ContentValues[] mGivingArray;
+    private ContentValues[] mRecordArray;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -103,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mNavigation.setNavigationItemSelectedListener(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
 
     /**
@@ -157,6 +159,14 @@ public class MainActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_GIVING:
                 return new CursorLoader(this, DatabaseContract.Entry.CONTENT_URI_GIVING,
                         null, null, null, null);
+            case DatabaseContract.LOADER_ID_RECORD:
+                String sort = UserPreferences.getRecordSort(this);
+                String order = UserPreferences.getRecordOrder(this);
+                String sortOrder = String.format("%s %s", sort, order);
+                Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_RECORD;
+                return new CursorLoader(
+                        this, ratingUri,
+                        null, null, null, sortOrder);
             default: throw new RuntimeException(getString(R.string.loader_error_message, id));
         }
     }
@@ -167,27 +177,40 @@ public class MainActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case DatabaseContract.LOADER_ID_GIVING:
-                mValuesArray = new ContentValues[cursor.getCount()];
+                mGivingArray = new ContentValues[cursor.getCount()];
                 if (cursor.moveToFirst()) {
                     int i = 0;
                     do {
                         ContentValues values = new ContentValues();
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
-                        mValuesArray[i++] = values;
+                        mGivingArray[i++] = values;
                     } while (cursor.moveToNext());
                 }
-                new StatusAsyncTask(this).execute(mValuesArray);
-                Intent intent = getIntent();
-                if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
-                    mPagerAdapter.notifyDataSetChanged();
-                else intent.setAction(null);
+            case DatabaseContract.LOADER_ID_RECORD:
+                mRecordArray = new ContentValues[cursor.getCount()];
+                if (cursor.moveToFirst()) {
+                    int i = 0;
+                    do {
+                        ContentValues values = new ContentValues();
+                        DatabaseUtils.cursorRowToContentValues(cursor, values);
+                        mRecordArray[i++] = values;
+                    } while (cursor.moveToNext());
+                }
         }
+        new StatusAsyncTask(this).execute(mGivingArray, mRecordArray);
+        Intent intent = getIntent();
+        if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
+            mPagerAdapter.notifyDataSetChanged();
+        else intent.setAction(null);
     }
 
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mValuesArray = null;}
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mGivingArray = null;
+        mRecordArray = null;
+    }
 
     /**
      * Defines behavior onClick of each Navigation MenuItem.
@@ -352,20 +375,19 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
-            if (mValuesArray == null || mValuesArray.length == 0) return PlaceholderFragment.newInstance(null);
+            if (mGivingArray == null || mGivingArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
-                int i = 0;
-                Bundle args = new Bundle();
-                args.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mValuesArray);
+                Bundle argsGiving = new Bundle();
+                Bundle argsRecord = new Bundle();
+                argsGiving.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mGivingArray);
+                argsRecord.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mRecordArray);
                 switch (position) {
-                    case 0: return GivingFragment.newInstance(args);
-                    case 1: return GlanceFragment.newInstance(args);
+                    case 0: return GivingFragment.newInstance(argsGiving);
+                    case 1: return GlanceFragment.newInstance(argsRecord);
                     default: return PlaceholderFragment.newInstance(null);
                 }
             }
         }
-
-//        @Override public void notifyDataSetChanged() { super.notifyDataSetChanged(); }
 
         /**
          * Defines the number of sections.
