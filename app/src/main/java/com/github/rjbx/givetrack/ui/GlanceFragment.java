@@ -129,12 +129,6 @@ public class GlanceFragment extends Fragment implements
         float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
         mTracked = CURRENCY_FORMATTER.format(tracked);
 
-        List<String> charities = UserPreferences.getCharities(getContext());
-        float totalImpact = 0f;
-        for (String charity : charities) totalImpact += Float.parseFloat(charity.split(":")[1]);
-        mTotal = CURRENCY_FORMATTER.format(totalImpact);
-        mAmountView.setText(mTotal);
-
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
         dateFormatter.setTimeZone(TimeZone.getDefault());
@@ -162,6 +156,10 @@ public class GlanceFragment extends Fragment implements
         super.onResume();
         List<String> recordsList = UserPreferences.getRecords(getContext());
         mRecordsArray = recordsList.toArray(new String[recordsList.size()]);
+        float totalImpact = 0f;
+        for (String record : recordsList) totalImpact += Float.parseFloat(record.split(":")[1]);
+        mTotal = CURRENCY_FORMATTER.format(totalImpact);
+        mAmountView.setText(mTotal);
         toggleTime();
     }
 
