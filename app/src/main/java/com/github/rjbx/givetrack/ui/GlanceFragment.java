@@ -339,20 +339,19 @@ public class GlanceFragment extends Fragment implements
 
                 recordsTotal += amount;
 
-                int currentInterval = Calendar.getInstance().get(mInterval);
 
                 Calendar recordCalendar = Calendar.getInstance();
                 recordCalendar.setTimeInMillis(time);
                 int recordInterval = recordCalendar.get(mInterval);
-
+                int currentInterval = Calendar.getInstance().get(mInterval);
                 int intervalDifference = currentInterval - recordInterval;
-                boolean validInterval = true;
 
+                boolean validInterval = true;
                 if (mInterval != Calendar.YEAR && recordInterval > currentInterval) {
                     int priorYearIntervals = 7 - currentInterval;
                     int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
                     if (priorYearIntervals > 0 && yearsDifference < 2) {
-                        int priorYearIndex = recordCalendar.get(mInterval) - 13;
+                        int priorYearIndex = recordInterval - 13;
                         intervalDifference = currentInterval - priorYearIndex;
                     } else validInterval = false;
                 }
