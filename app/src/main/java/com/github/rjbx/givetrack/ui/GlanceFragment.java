@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -372,20 +374,16 @@ public class GlanceFragment extends Fragment implements
             }
         }
 
-
+        Set<Map.Entry<String, Float>> entries = recordAggregates.entrySet();
         StringBuilder percentageMessageBuilder = new StringBuilder();
-        if (sValuesArray == null || sValuesArray.length == 0) return;
-        for (ContentValues values : sValuesArray) {
-            String percentageStr = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
-            float percentage = Float.parseFloat(percentageStr);
+        for (Map.Entry<String, Float> entry : entries) {
+            String name = entry.getKey();
+            float percentage = entry.getValue();
             if (percentage < .01f) continue;
-            String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
             percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(percentage), name));
             if (name.length() > 20) { name = name.substring(0, 20);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
             percentageEntries.add(new PieEntry(percentage, name));
-            donationAmount += Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
-            donationFrequency += values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         }
         String percentMessage = percentageMessageBuilder.toString();
 
