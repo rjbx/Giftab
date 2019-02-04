@@ -334,7 +334,7 @@ public class GlanceFragment extends Fragment implements
 
                 ContentValues record = sValuesArray[j];
                 Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-                Float amount = Float.parseFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+                Float amount = Float.parseFloat(record.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
                 String name = DatabaseContract.Entry.COLUMN_CHARITY_NAME;
 
                 recordsTotal += amount;
