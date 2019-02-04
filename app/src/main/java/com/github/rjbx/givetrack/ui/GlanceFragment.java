@@ -13,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -90,7 +89,6 @@ public class GlanceFragment extends Fragment implements
     private String mTrackedTime;
     private String mTotalTime;
     private String[] mDialogMessages;
-    private String[] mRecordsArray;
     private int mInterval;
     @BindView(R.id.home_title)
     TextView mTitleText;
@@ -172,12 +170,6 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        List<String> recordsList = UserPreferences.getRecords(getContext());
-        mRecordsArray = recordsList.toArray(new String[recordsList.size()]);
-        float totalImpact = 0f;
-        for (String record : recordsList) totalImpact += Float.parseFloat(record.split(":")[1]);
-        mTotal = CURRENCY_FORMATTER.format(totalImpact);
-        mAmountView.setText(mTotal);
         toggleTime();
     }
 
@@ -331,18 +323,19 @@ public class GlanceFragment extends Fragment implements
         float recordsTotal = 0;
         float[] intervalAggregates = new float[7];
 
+
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
-        int donationFrequency = mRecordsArray.length;
+        int donationFrequency = sValuesArray.length;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
-        if (mRecordsArray != null && donationFrequency != 0) {
+        if (sValuesArray != null && donationFrequency != 0) {
 
-            for (int j = 0; j < mRecordsArray.length; j++) {
+            for (int j = 0; j < sValuesArray.length; j++) {
 
-                String[] splitRecord = mRecordsArray[j].split(":");
-                Long time = Long.parseLong(splitRecord[0]);
-                Float amount = Float.parseFloat(splitRecord[1]);
-                String name = splitRecord[2];
+                ContentValues record = sValuesArray[j];
+                Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                Float amount = Float.parseFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+                String name = DatabaseContract.Entry.COLUMN_CHARITY_NAME;
 
                 recordsTotal += amount;
 
@@ -366,13 +359,16 @@ public class GlanceFragment extends Fragment implements
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
                     if (recordAggregates.containsKey(name)) {
-                       float a = recordAggregates.get(name);
-                       recordAggregates.put(name, amount + a);
+                        float a = recordAggregates.get(name);
+                        recordAggregates.put(name, amount + a);
                     } else recordAggregates.put(name, amount);
                     donationAmount += amount;
                 }
             }
         }
+
+        mTotal = CURRENCY_FORMATTER.format(recordsTotal);
+        mAmountView.setText(mTotal);
 
         Set<Map.Entry<String, Float>> entries = recordAggregates.entrySet();
         StringBuilder percentageMessageBuilder = new StringBuilder();
