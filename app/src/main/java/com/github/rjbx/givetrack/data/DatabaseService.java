@@ -838,10 +838,14 @@ public class DatabaseService extends IntentService {
             if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
             else UserPreferences.setAnchor(this, anchorTime);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(anchorTime);
-            int difference = calendar.compareTo(Calendar.getInstance());
-            if (difference == 0) {
+            long timeSinceAnchor = System.currentTimeMillis() - anchorTime;
+            long daysSinceAnchor =
+                    TimeUnit.DAYS.convert(
+                            timeSinceAnchor,
+                            TimeUnit.MILLISECONDS
+                    );
+
+            if (daysSinceAnchor == 0) {
 
                 float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
                 UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
