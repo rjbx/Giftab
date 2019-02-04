@@ -718,6 +718,9 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
         DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null));
 
+        UserPreferences.setHigh(this, "0");
+        UserPreferences.setToday(this, "0");
+        UserPreferences.setTracked(this, "0");
         UserPreferences.setCharities(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
