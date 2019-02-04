@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mGivingArray;
     private ContentValues[] mRecordArray;
+    private boolean givingLoaded;
+    private boolean recordLoaded;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -186,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements
                         mGivingArray[i++] = values;
                     } while (cursor.moveToNext());
                 }
+                givingLoaded = true;
+                break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new ContentValues[cursor.getCount()];
                 if (cursor.moveToFirst()) {
@@ -196,12 +200,18 @@ public class MainActivity extends AppCompatActivity implements
                         mRecordArray[i++] = values;
                     } while (cursor.moveToNext());
                 }
+                recordLoaded = true;
+                break;
         }
-        new StatusAsyncTask(this).execute(mGivingArray, mRecordArray);
-        Intent intent = getIntent();
-        if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
-            mPagerAdapter.notifyDataSetChanged();
-        else intent.setAction(null);
+        if (givingLoaded && recordLoaded) {
+            new StatusAsyncTask(this).execute(mGivingArray, mRecordArray);
+            Intent intent = getIntent();
+            if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
+                mPagerAdapter.notifyDataSetChanged();
+            else intent.setAction(null);
+            givingLoaded = false;
+            recordLoaded = false;
+        }
     }
 
     /**
@@ -380,7 +390,7 @@ public class MainActivity extends AppCompatActivity implements
                 Bundle argsGiving = new Bundle();
                 Bundle argsRecord = new Bundle();
                 argsGiving.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mGivingArray);
-                argsRecord.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mRecordArray);
+                argsRecord.putParcelableArray("b", mRecordArray);
                 switch (position) {
                     case 0: return GivingFragment.newInstance(argsGiving);
                     case 1: return GlanceFragment.newInstance(argsRecord);
