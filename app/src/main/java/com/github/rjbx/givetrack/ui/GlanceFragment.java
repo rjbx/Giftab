@@ -51,8 +51,10 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -62,14 +64,14 @@ public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
         IAxisValueFormatter {
 
-    private static final int [] COLORS = new int[] {
-        R.color.colorAttention,
-        R.color.colorAccent,
-        R.color.colorPrimary,
-        R.color.colorHeat,
-        R.color.colorConversion,
-        R.color.colorComfort,
-        R.color.colorNeutral
+    private static final int[] COLORS = new int[]{
+            R.color.colorAttention,
+            R.color.colorAccent,
+            R.color.colorPrimary,
+            R.color.colorHeat,
+            R.color.colorConversion,
+            R.color.colorComfort,
+            R.color.colorNeutral
     };
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
@@ -88,20 +90,29 @@ public class GlanceFragment extends Fragment implements
     private String[] mDialogMessages;
     private String[] mRecordsArray;
     private int mInterval;
-    @BindView(R.id.home_title) TextView mTitleText;
-    @BindView(R.id.home_amount_text) TextView mAmountView;
-    @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
-    @BindView(R.id.percentage_chart) PieChart mPercentageChart;
-    @BindView(R.id.usage_chart) PieChart mUsageChart;
-    @BindView(R.id.type_chart) PieChart mTypeChart;
-    @BindView(R.id.average_chart) PieChart mAverageChart;
-    @BindView(R.id.activity_chart) BarChart mActivityChart;
+    @BindView(R.id.home_title)
+    TextView mTitleText;
+    @BindView(R.id.home_amount_text)
+    TextView mAmountView;
+    @BindView(R.id.home_amount_wrapper)
+    View mAmountWrapper;
+    @BindView(R.id.percentage_chart)
+    PieChart mPercentageChart;
+    @BindView(R.id.usage_chart)
+    PieChart mUsageChart;
+    @BindView(R.id.type_chart)
+    PieChart mTypeChart;
+    @BindView(R.id.average_chart)
+    PieChart mAverageChart;
+    @BindView(R.id.activity_chart)
+    BarChart mActivityChart;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public GlanceFragment() {}
+    public GlanceFragment() {
+    }
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
@@ -115,7 +126,9 @@ public class GlanceFragment extends Fragment implements
     /**
      * Generates a Layout for the Fragment.
      */
-    @Override public @Nullable View onCreateView(
+    @Override
+    public @Nullable
+    View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
@@ -124,7 +137,8 @@ public class GlanceFragment extends Fragment implements
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle args = getArguments();
-        if (args != null) sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_ITEM_ATTRIBUTES);
+        if (args != null)
+            sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_ITEM_ATTRIBUTES);
 
         float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
         mTracked = CURRENCY_FORMATTER.format(tracked);
@@ -142,7 +156,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Saves reference to parent Activity, initializes Loader and updates Layout configuration.
      */
-    @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
         mParentActivity = (MainActivity) getActivity();
@@ -152,7 +167,8 @@ public class GlanceFragment extends Fragment implements
      * Ensures the parent Activity has been created and data has been retrieved before
      * invoking the method that references them in order to populate the UI.
      */
-    @Override public void onResume() {
+    @Override
+    public void onResume() {
         super.onResume();
         List<String> recordsList = UserPreferences.getRecords(getContext());
         mRecordsArray = recordsList.toArray(new String[recordsList.size()]);
@@ -166,7 +182,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Unbinds Butterknife from this Fragment.
      */
-    @Override public void onDestroy() {
+    @Override
+    public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
     }
@@ -174,7 +191,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behaviors on click of DialogInterface buttons.
      */
-    @Override public void onClick(DialogInterface dialog, int which) {
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
         if (dialog == mTimeDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -193,19 +211,25 @@ public class GlanceFragment extends Fragment implements
     /**
      * Formats axis value of BarChart depending on their axis and the set time interval.
      */
-    @Override public String getFormattedValue(float value, AxisBase axis) {
+    @Override
+    public String getFormattedValue(float value, AxisBase axis) {
         switch ((int) value) {
-            case 0: return getString(R.string.axis_value_high);
-            case 1: return getString(R.string.axis_value_this, mIntervalLabel);
-            case 2: return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
-            default: return getString(R.string.axis_value_interval, (int) value, mIntervalLabel);
+            case 0:
+                return getString(R.string.axis_value_high);
+            case 1:
+                return getString(R.string.axis_value_this, mIntervalLabel);
+            case 2:
+                return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
+            default:
+                return getString(R.string.axis_value_interval, (int) value, mIntervalLabel);
         }
     }
 
     /**
      * Defines behavior on click of toggle color button.
      */
-    @OnClick(R.id.home_amount_text) void toggleColor() {
+    @OnClick(R.id.home_amount_text)
+    void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
@@ -216,7 +240,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behavior on click of toggle amount button.
      */
-    @OnClick(R.id.home_amount_label) void toggleAmount(TextView label) {
+    @OnClick(R.id.home_amount_label)
+    void toggleAmount(TextView label) {
         mShowTracked = !mShowTracked;
         if (mShowTracked) {
             label.setText(mTrackedTime.toUpperCase());
@@ -230,7 +255,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behavior on click of toggle time button.
      */
-    @OnClick(R.id.home_time_button) void toggleTime() {
+    @OnClick(R.id.home_time_button)
+    void toggleTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         mShowYears = !mShowYears;
@@ -253,7 +279,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behavior on click of track amount button.
      */
-    @OnClick(R.id.home_config_button) void trackAmount() {
+    @OnClick(R.id.home_config_button)
+    void trackAmount() {
         mTimeDialog = new AlertDialog.Builder(getContext()).create();
         mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -266,7 +293,8 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behavior on click of share text button.
      */
-    @OnClick(R.id.home_share_button) void shareText() {
+    @OnClick(R.id.home_share_button)
+    void shareText() {
         String amount = mShowTracked ? mTracked : mTotal;
         String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
@@ -292,9 +320,58 @@ public class GlanceFragment extends Fragment implements
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
         int backgroundColor = getResources().getColor(R.color.colorChalk);
 
+        Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        long currentTime = System.currentTimeMillis();
+        long lastConversionTime = UserPreferences.getTimestamp(context);
+        long timeBetweenConversions = currentTime - lastConversionTime;
+
+        float recordsTotal = 0;
+        float[] intervalAggregates = new float[7];
+
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
-        int donationFrequency = 0;
+        int donationFrequency = mRecordsArray.length;
+        Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
+        if (mRecordsArray != null && donationFrequency != 0) {
+
+            for (int j = 0; j < mRecordsArray.length; j++) {
+
+                String[] splitRecord = mRecordsArray[j].split(":");
+                Long time = Long.parseLong(splitRecord[0]);
+                Float amount = Float.parseFloat(splitRecord[1]);
+                String name = splitRecord[2];
+
+                recordsTotal += amount;
+
+                int currentInterval = Calendar.getInstance().get(mInterval);
+
+                Calendar recordCalendar = Calendar.getInstance();
+                recordCalendar.setTimeInMillis(time);
+                int recordInterval = recordCalendar.get(mInterval);
+
+                int intervalDifference = currentInterval - recordInterval;
+                boolean validInterval = true;
+
+                if (mInterval != Calendar.YEAR && recordInterval > currentInterval) {
+                    int priorYearIntervals = 7 - currentInterval;
+                    int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
+                    if (priorYearIntervals > 0 && yearsDifference < 2) {
+                        int priorYearIndex = recordCalendar.get(mInterval) - 13;
+                        intervalDifference = currentInterval - priorYearIndex;
+                    } else validInterval = false;
+                }
+                if (validInterval && intervalDifference < 7) {
+                    intervalAggregates[intervalDifference] += amount;
+                    if (recordAggregates.containsKey(name)) {
+                       float a = recordAggregates.get(name);
+                       recordAggregates.put(name, amount + a);
+                    } else recordAggregates.put(name, amount);
+                    donationAmount += amount;
+                }
+            }
+        }
+
 
         StringBuilder percentageMessageBuilder = new StringBuilder();
         if (sValuesArray == null || sValuesArray.length == 0) return;
@@ -408,40 +485,6 @@ public class GlanceFragment extends Fragment implements
         mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
         mTypeChart.invalidate();
 
-        Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-        long currentTime = System.currentTimeMillis();
-        long lastConversionTime = UserPreferences.getTimestamp(context);
-        long timeBetweenConversions = currentTime - lastConversionTime;
-
-        float recordsTotal = 0;
-        float[] recordAmounts = new float[mRecordsArray.length];
-        float[] intervalAggregates = new float[7];
-        if (mRecordsArray.length == 0 || mRecordsArray[0].isEmpty()) return;
-        for (int j = 0; j < mRecordsArray.length; j++) {
-            recordAmounts[j] = Float.parseFloat(mRecordsArray[j].split(":")[1]);
-            recordsTotal += recordAmounts[j];
-
-            int currentInterval = Calendar.getInstance().get(mInterval);
-
-            long recordTimestamp = Long.parseLong(mRecordsArray[j].split(":")[0]);
-            Calendar recordCalendar  = Calendar.getInstance();
-            recordCalendar.setTimeInMillis(recordTimestamp);
-            int recordInterval = recordCalendar.get(mInterval);
-
-            int intervalDifference = currentInterval - recordInterval;
-            boolean validInterval = true;
-
-            if (mInterval != Calendar.YEAR  && recordInterval > currentInterval) {
-                int priorYearIntervals = 7 - currentInterval;
-                int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
-                if (priorYearIntervals > 0 && yearsDifference < 2) {
-                    int priorYearIndex = recordCalendar.get(mInterval) - 13;
-                    intervalDifference = currentInterval - priorYearIndex;
-                } else validInterval = false;
-            }
-            if (validInterval && intervalDifference < 7) intervalAggregates[intervalDifference] += recordAmounts[j];
-        }
 
         float high = Float.parseFloat(UserPreferences.getHigh(context));
         UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
