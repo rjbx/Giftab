@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
@@ -660,9 +661,14 @@ public class DatabaseService extends IntentService {
                 UserPreferences.setRecords(this, records);
             }
 
-            float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
-            UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
+            long highday = UserPreferences.getHighday(this);
+            long timeFromHighday= System.currentTimeMillis() - time;
+            long daysFromHighday = TimeUnit.DAYS.convert(timeFromHighday, TimeUnit.MILLISECONDS);
 
+            if (daysFromHighday <= 1) {
+                float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
+                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
+            }
 
             long timeBetweenConversions = System.currentTimeMillis() - time;
             long daysBetweenConversions = TimeUnit.DAYS.convert(timeBetweenConversions, TimeUnit.MILLISECONDS);
@@ -850,8 +856,11 @@ public class DatabaseService extends IntentService {
                 float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
                 UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
 
-                float high = Math.max(Float.parseFloat(UserPreferences.getHigh(this)), todaysImpact);
-                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
+                float high = Float.parseFloat(UserPreferences.getHigh(this));
+                if (todaysImpact > high) {
+                    UserPreferences.setHighday(this, System.currentTimeMillis());
+                    UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+                }
 
                 UserPreferences.setTimestamp(this, anchorTime);
             }
