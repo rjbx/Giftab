@@ -252,10 +252,13 @@ public class RecordActivity extends AppCompatActivity implements
                 ContentValues values = mAdapter.mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
+                        String amount = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
                         String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                        String formattedDate = DateFormat.getDateInstance().format(mDeletedTime);
                         mDeletedTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
                         mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
-                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, name));
+                        String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
+                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, messageArgs));
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), RecordActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), RecordActivity.this);
                         mRemoveDialog.show();
