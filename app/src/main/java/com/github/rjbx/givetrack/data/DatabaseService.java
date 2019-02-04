@@ -662,7 +662,7 @@ public class DatabaseService extends IntentService {
             }
 
             long highday = UserPreferences.getHighday(this);
-            long timeFromHighday= System.currentTimeMillis() - time;
+            long timeFromHighday= Math.abs(time - highday);
             long daysFromHighday = TimeUnit.DAYS.convert(timeFromHighday, TimeUnit.MILLISECONDS);
 
             if (daysFromHighday <= 1) {
