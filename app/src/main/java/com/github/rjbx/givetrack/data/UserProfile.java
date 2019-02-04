@@ -39,6 +39,7 @@ import java.util.Map;
     private String high;
     private String today;
     private boolean historical;
+    private long highday;
     private long anchor;
     private long timestamp;
     private long timetrack;
@@ -79,6 +80,7 @@ import java.util.Map;
             String high,
             String today,
             boolean historical,
+            long highday,
             long anchor,
             long timestamp,
             long timetrack) {
@@ -109,6 +111,7 @@ import java.util.Map;
         this.high = high;
         this.today = today;
         this.historical = historical;
+        this.highday = highday;
         this.anchor = anchor;
         this.timestamp = timestamp;
         this.timetrack = timetrack;
@@ -244,6 +247,8 @@ import java.util.Map;
     public void setHistorical(boolean historical) {
         this.historical = historical;
     }
+    public long getHighday() { return highday; }
+    public void setHighday(long highday) { this.highday = highday; }
     public long getAnchor() {
         return anchor;
     }
@@ -289,6 +294,7 @@ import java.util.Map;
         map.put("high", high);
         map.put("today", today);
         map.put("historical", historical);
+        map.put("highday", highday);
         map.put("anchor", anchor);
         map.put("timestamp", timestamp);
         map.put("timetrack", timetrack);
