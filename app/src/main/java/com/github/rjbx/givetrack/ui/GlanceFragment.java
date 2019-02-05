@@ -329,16 +329,13 @@ public class GlanceFragment extends Fragment implements
         int donationFrequency = sValuesArray.length;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
         if (sValuesArray != null && donationFrequency != 0) {
-
             for (int j = 0; j < sValuesArray.length; j++) {
-
                 ContentValues record = sValuesArray[j];
                 Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
                 Float amount = Float.parseFloat(record.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
-                String name = DatabaseContract.Entry.COLUMN_CHARITY_NAME;
+                String name = record.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
 
                 recordsTotal += amount;
-
 
                 Calendar recordCalendar = Calendar.getInstance();
                 recordCalendar.setTimeInMillis(time);
@@ -358,12 +355,12 @@ public class GlanceFragment extends Fragment implements
                 }
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
-                    if (recordAggregates.containsKey(name)) {
-                        float a = recordAggregates.get(name);
-                        recordAggregates.put(name, amount + a);
-                    } else recordAggregates.put(name, amount);
                     donationAmount += amount;
                 }
+                if (recordAggregates.containsKey(name)) {
+                    float a = recordAggregates.get(name);
+                    recordAggregates.put(name, amount + a);
+                } else recordAggregates.put(name, amount);
             }
         }
 
