@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
     private SectionsPagerAdapter mPagerAdapter;
-    private ContentValues[] mGivingArray;
-    private ContentValues[] mRecordArray;
-    private boolean givingLoaded;
-    private boolean recordLoaded;
+    private static ContentValues[] mGivingArray;
+    private static ContentValues[] mRecordArray;
+    private static boolean givingLoaded;
+    private static boolean recordLoaded;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -188,8 +188,9 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mGivingArray[i++] = values;
                     } while (cursor.moveToNext());
+                    givingLoaded = true;
                 }
-                givingLoaded = true;
+                new StatusAsyncTask(this).execute(mGivingArray);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new ContentValues[cursor.getCount()];
@@ -200,18 +201,18 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mRecordArray[i++] = values;
                     } while (cursor.moveToNext());
+                    recordLoaded = true;
                 }
-                recordLoaded = true;
                 break;
         }
         if (givingLoaded && recordLoaded) {
-            new StatusAsyncTask(this).execute(mGivingArray, mRecordArray);
-            Intent intent = getIntent();
-            if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS))
-                mPagerAdapter.notifyDataSetChanged();
-            else intent.setAction(null);
             givingLoaded = false;
             recordLoaded = false;
+            Intent intent = getIntent();
+            if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
+                mPagerAdapter.notifyDataSetChanged();
+            }
+            else intent.setAction(null);
         }
     }
 
@@ -454,6 +455,7 @@ public class MainActivity extends AppCompatActivity implements
             for (ContentValues values : valuesArray) {
                isCurrent = eins.contains(values.getAsString(DatabaseContract.Entry.COLUMN_EIN));
             }
+            if (!isCurrent) DatabaseService.startActionFetchGiving(mActivity.get());
             return isCurrent;
         }
 
@@ -462,7 +464,6 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override protected void onPostExecute(Boolean isCurrent) {
             if (!isCurrent) {
-                DatabaseService.startActionFetchGiving(mActivity.get());
                 mActivity.get().mPagerAdapter.notifyDataSetChanged();
             }
         }
