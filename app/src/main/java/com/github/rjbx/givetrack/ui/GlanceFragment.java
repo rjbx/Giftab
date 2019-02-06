@@ -356,11 +356,11 @@ public class GlanceFragment extends Fragment implements
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
                     donationAmount += amount;
+                    if (recordAggregates.containsKey(name)) {
+                        float a = recordAggregates.get(name);
+                        recordAggregates.put(name, amount + a);
+                    } else recordAggregates.put(name, amount);
                 }
-                if (recordAggregates.containsKey(name)) {
-                    float a = recordAggregates.get(name);
-                    recordAggregates.put(name, amount + a);
-                } else recordAggregates.put(name, amount);
             }
         }
 
