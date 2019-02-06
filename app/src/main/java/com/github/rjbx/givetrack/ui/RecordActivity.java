@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.ui;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,12 +26,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +44,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 import com.github.rjbx.givetrack.R;
 
@@ -49,7 +55,11 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
@@ -322,10 +332,10 @@ public class RecordActivity extends AppCompatActivity implements
                 } else {
                     holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention));
                 }
-                holder.mContainerView.setVisibility(View.GONE);
+                holder.mEntityView.setVisibility(View.GONE);
             }
             else {
-                holder.mContainerView.setVisibility(View.VISIBLE);
+                holder.mEntityView.setVisibility(View.VISIBLE);
                 holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
 
@@ -371,17 +381,23 @@ public class RecordActivity extends AppCompatActivity implements
         /**
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
-        class ViewHolder extends RecyclerView.ViewHolder {
+        class ViewHolder extends RecyclerView.ViewHolder implements
+                TextView.OnEditorActionListener,
+                DatePickerDialog.OnDateSetListener,
+                DialogInterface.OnClickListener {
 
-            @BindView(R.id.record_text_view) View mContainerView;
+            @BindView(R.id.record_text_view) View mEntityView;
             @BindView(R.id.record_stats_view) View mStatsView;
             @BindView(R.id.record_primary) TextView mNameView;
             @BindView(R.id.record_secondary) TextView mIdView;
-            @BindView(R.id.record_amount_text) TextView mAmountView;
+            @BindView(R.id.record_amount_text) EditText mAmountView;
             @BindView(R.id.record_time_text) TextView mTimeView;
             @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
-            private android.app.AlertDialog mContactDialog;
+            private AlertDialog mContactDialog;
+            private AlertDialog mDateDialog;
+            private float mAmountTotal;
+            private long mTime;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -389,6 +405,7 @@ public class RecordActivity extends AppCompatActivity implements
             ViewHolder(View view) {
                 super(view);
                 ButterKnife.bind(this, view);
+                mAmountTotal = Float.parseFloat(mAmountView.getText().toString());
             }
 
             /**
@@ -403,9 +420,19 @@ public class RecordActivity extends AppCompatActivity implements
              */
             @OnClick(R.id.record_stats_view) void clickStats(View v) {
                 if (isDualPane()) togglePane(v);
-                else {
+            }
 
-                }
+            @OnClick(R.id.record_time_text) void editTime(View v) {
+                Context context = v.getContext();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(UserPreferences.getAnchor(context));
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        context,
+                        this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.show();
             }
 
             /**
@@ -433,10 +460,72 @@ public class RecordActivity extends AppCompatActivity implements
              * Defines behavior on click of contact button.
              */
             @Optional @OnClick(R.id.record_contact_button) void viewContacts(View v) {
-                mContactDialog = new android.app.AlertDialog.Builder(RecordActivity.this).create();
+                mContactDialog = new AlertDialog.Builder(RecordActivity.this).create();
                 ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, mValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
+            }
+
+            /**
+             * Listens for and persists changes to text editor value.
+             */
+            @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+                        try {
+                            String viewText = mAmountView.getText().toString();
+                            if (viewText.contains("$")) mAmountTotal = formatter.parse(viewText).floatValue();
+                            else mAmountTotal = Float.parseFloat(viewText);
+                            UserPreferences.setDonation(v.getContext(), String.valueOf(mAmountTotal));
+                            UserPreferences.updateFirebaseUser(v.getContext());
+                        } catch (ParseException e) {
+                            Timber.e(e);
+                            return false;
+                        }
+                        mAmountView.setText(formatter.format(mAmountTotal));
+//                        mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formatter.format(mAmountTotal)));
+//                        updateAmounts();
+//                        InputMethodManager inputMethodManager = mParentActivity != null ?
+//                                (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
+//                        if (inputMethodManager == null) return false;
+//                        inputMethodManager.toggleSoftInput(0, 0);
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(year, month, dayOfMonth);
+                DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
+                dateFormatter.setTimeZone(TimeZone.getDefault());
+                mTime = calendar.getTimeInMillis();
+                String formattedDate = dateFormatter.format(mTime);
+
+                Context context = view.getContext();
+                mDateDialog = new AlertDialog.Builder(context).create();
+                mDateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.dialog_option_cancel), this);
+                mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
+                mDateDialog.show();
+                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+            }
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog == mDateDialog) {
+                    switch (which) {
+                        case AlertDialog.BUTTON_NEUTRAL:
+                            dialog.dismiss();
+                            break;
+                        case AlertDialog.BUTTON_POSITIVE:
+
+                        default:
+                    }
+                }
             }
 
             private void togglePane(View v) {
@@ -466,7 +555,7 @@ public class RecordActivity extends AppCompatActivity implements
     static class ContactDialogLayout extends LinearLayout {
 
         private Context mContext;
-        private static android.app.AlertDialog mAlertDialog;
+        private static AlertDialog mAlertDialog;
         private static String mPhone;
         private static String mEmail;
         private static String mWebsite;
@@ -505,7 +594,7 @@ public class RecordActivity extends AppCompatActivity implements
         /**
          * Initializes value instance fields and generates an instance of this layout.
          */
-        public static ContactDialogLayout getInstance(android.app.AlertDialog alertDialog, ContentValues values) {
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
             mAlertDialog = alertDialog;
             mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
             mPhone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
