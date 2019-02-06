@@ -82,33 +82,43 @@
 
         </LinearLayout>
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <FrameLayout
             android:id="@+id/record_text_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".5"
-            android:orientation="vertical"
-            android:layout_gravity="start|center_vertical">
+            android:padding="3dp"
+            android:background="@color/colorHeat">
 
-            <TextView
-                android:id="@+id/record_primary"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight=".75"
-                android:layout_margin="4dp"
-                android:textSize="@dimen/text_size_paragraph_title"
-                android:textAppearance="?attr/textAppearanceListItem" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp"
+                android:background="#fff"
+                android:orientation="vertical"
+                android:layout_gravity="start|center_vertical">
 
-            <TextView
-                android:id="@+id/record_secondary"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight=".25"
-                android:layout_margin="4dp"
-                android:textSize="@dimen/text_size_paragraph"
-                android:textAppearance="?attr/textAppearanceListItem" />
+                <TextView
+                    android:id="@+id/record_primary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight=".7"
+                    android:layout_margin="4dp"
+                    android:textSize="@dimen/text_size_paragraph_title"
+                    android:textAppearance="?attr/textAppearanceListItem" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/record_secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight=".3"
+                    android:layout_marginStart="4dp"
+                    android:textSize="@dimen/text_size_paragraph"
+                    android:textAppearance="?attr/textAppearanceListItem" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
 
