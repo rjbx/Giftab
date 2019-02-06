@@ -72,11 +72,17 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
     public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
+
+
+    private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
+    private static final String STATE_RECORD_LOADED= "com.github.rjbx.givetrack.ui.state.RECORD_LOADED";
+    private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
+    private static final String STATE_GIVING_LOADED = "com.github.rjbx.givetrack.ui.state.GIVING_LOADED";
     private SectionsPagerAdapter mPagerAdapter;
-    private static ContentValues[] mGivingArray;
-    private static ContentValues[] mRecordArray;
-    private static boolean givingLoaded;
-    private static boolean recordLoaded;
+    private ContentValues[] mGivingArray;
+    private ContentValues[] mRecordArray;
+    private boolean givingLoaded;
+    private boolean recordLoaded;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -94,6 +100,13 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
+
+        if (savedInstanceState != null) {
+            mGivingArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
+            mRecordArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
+            givingLoaded = savedInstanceState.getBoolean(STATE_GIVING_LOADED);
+            recordLoaded = savedInstanceState.getBoolean(STATE_RECORD_LOADED);
+        }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
         mTabs.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mPager));
@@ -152,6 +165,15 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.action_history: startActivity(new Intent(this, RecordActivity.class));
             default: return super.onOptionsItemSelected(item);
         } return false;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArray(STATE_GIVING_ARRAY, mGivingArray);
+        outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
+        outState.putBoolean(STATE_GIVING_LOADED, givingLoaded);
+        outState.putBoolean(STATE_RECORD_LOADED, recordLoaded);
+        super.onSaveInstanceState(outState);
     }
 
     /**
