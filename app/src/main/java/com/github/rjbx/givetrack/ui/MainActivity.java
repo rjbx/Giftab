@@ -257,12 +257,12 @@ public class MainActivity extends AppCompatActivity implements
         String qualifier = mDateDifference < 2 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
-        mAnchorDialog.setMessage(String.format(Locale.getDefault(), "Do you want to change the date to %s for recording %sdonations?", formattedDate, qualifier));
-        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+        mAnchorDialog.setMessage(getString(R.string.anchor_dialog, formattedDate, qualifier));
+        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_decline), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
     }
 
     /**
@@ -278,12 +278,12 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setAnchor(this, mAnchorTime);
                     if (mDateDifference < 2) {
-                        currentDialog.setMessage(String.format(Locale.getDefault(), "Do you want to automatically maintain the date as current"));
-                        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
-                        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                        currentDialog.setMessage(getString(R.string.historical_dialog));
+                        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
                         currentDialog.show();
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                     } else UserPreferences.setHistorical(this, true);
                     UserPreferences.updateFirebaseUser(this);
                     break;

@@ -26,7 +26,9 @@
     <string name="dialog_option_cancel">CANCEL</string>
     <string name="dialog_option_erase">ERASE</string>
     <string name="dialog_option_keep">KEEP</string>
+    <string name="dialog_option_change">CHANGE</string>
     <string name="dialog_option_confirm">OK</string>
+    <string name="dialog_option_decline">NO</string>
     <string name="dialog_option_remove">REMOVE</string>
     <string name="dialog_option_later">REMIND ME LATER</string>
     <string name="dialog_option_start">GET STARTED</string>
@@ -76,6 +78,8 @@
     <string name="url_clearbit">https://clearbit.com/</string>
     <string name="tab_text_1">Give</string>
     <string name="tab_text_2">Track</string>
+    <string name="historical_dialog">Do you want to restore the current date after recording the next donation?</string>
+    <string name="anchor_dialog">Do you want to change the date to %s for recording %sdonations?</string>
 
     <!-- Auth -->
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s. Charity data and logos powered by Charity Navigator and Clearbit API.</string>
