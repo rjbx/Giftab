@@ -25,6 +25,7 @@
     <string name="action_overlay">Apply overlay</string>
     <string name="dialog_option_cancel">CANCEL</string>
     <string name="dialog_option_erase">ERASE</string>
+    <string name="dialog_option_return">RETURN</string>
     <string name="dialog_option_keep">KEEP</string>
     <string name="dialog_option_change">CHANGE</string>
     <string name="dialog_option_confirm">OK</string>

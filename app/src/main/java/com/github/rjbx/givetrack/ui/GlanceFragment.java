@@ -280,8 +280,8 @@ public class GlanceFragment extends Fragment implements
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
-        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
     }
 
     /**
@@ -546,8 +546,7 @@ public class GlanceFragment extends Fragment implements
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
         AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
-        chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
-        chartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+        chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
         Chart chartClone;
 
         if (chart instanceof PieChart) {
@@ -576,8 +575,7 @@ public class GlanceFragment extends Fragment implements
         chartDialog.setView(chartClone);
         chartDialog.show();
         chartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
-        chartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
+        chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
     }
 
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
