@@ -138,7 +138,7 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null)
-            sValuesArray = (ContentValues[]) args.getParcelableArray("b");
+            sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
 
         float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
         mTracked = CURRENCY_FORMATTER.format(tracked);

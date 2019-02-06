@@ -9,7 +9,6 @@ import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DatePickerDialog;
-import android.graphics.Color;
 import android.net.Uri;
 
 import androidx.appcompat.app.AlertDialog;
@@ -42,7 +41,6 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -51,7 +49,6 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
@@ -71,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
-    public static final String ARGS_ITEM_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ITEM_ATTRIBUTES";
-
+    public static final String ARGS_GIVING_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVING_ATTRIBUTES";
+    public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_RECORD_LOADED= "com.github.rjbx.givetrack.ui.state.RECORD_LOADED";
@@ -81,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mGivingArray;
     private ContentValues[] mRecordArray;
-    private boolean givingLoaded;
-    private boolean recordLoaded;
+    private boolean mGivingLoaded;
+    private boolean mRecordLoaded;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -104,8 +101,8 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             mGivingArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
             mRecordArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
-            givingLoaded = savedInstanceState.getBoolean(STATE_GIVING_LOADED);
-            recordLoaded = savedInstanceState.getBoolean(STATE_RECORD_LOADED);
+            mGivingLoaded = savedInstanceState.getBoolean(STATE_GIVING_LOADED);
+            mRecordLoaded = savedInstanceState.getBoolean(STATE_RECORD_LOADED);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -171,8 +168,8 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArray(STATE_GIVING_ARRAY, mGivingArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
-        outState.putBoolean(STATE_GIVING_LOADED, givingLoaded);
-        outState.putBoolean(STATE_RECORD_LOADED, recordLoaded);
+        outState.putBoolean(STATE_GIVING_LOADED, mGivingLoaded);
+        outState.putBoolean(STATE_RECORD_LOADED, mRecordLoaded);
         super.onSaveInstanceState(outState);
     }
 
@@ -210,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mGivingArray[i++] = values;
                     } while (cursor.moveToNext());
-                    givingLoaded = true;
+                    mGivingLoaded = true;
                 }
                 new StatusAsyncTask(this).execute(mGivingArray);
                 break;
@@ -223,13 +220,13 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mRecordArray[i++] = values;
                     } while (cursor.moveToNext());
-                    recordLoaded = true;
+                    mRecordLoaded = true;
                 }
                 break;
         }
-        if (givingLoaded && recordLoaded) {
-            givingLoaded = false;
-            recordLoaded = false;
+        if (mGivingLoaded && mRecordLoaded) {
+            mGivingLoaded = false;
+            mRecordLoaded = false;
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
@@ -413,8 +410,8 @@ public class MainActivity extends AppCompatActivity implements
             else {
                 Bundle argsGiving = new Bundle();
                 Bundle argsRecord = new Bundle();
-                argsGiving.putParcelableArray(ARGS_ITEM_ATTRIBUTES, mGivingArray);
-                argsRecord.putParcelableArray("b", mRecordArray);
+                argsGiving.putParcelableArray(ARGS_GIVING_ATTRIBUTES, mGivingArray);
+                argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
                 switch (position) {
                     case 0: return GivingFragment.newInstance(argsGiving);
                     case 1: return GlanceFragment.newInstance(argsRecord);
