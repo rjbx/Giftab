@@ -97,8 +97,6 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             mGivingArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
             mRecordArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
-            mGivingLoaded = savedInstanceState.getBoolean(STATE_GIVING_LOADED);
-            mRecordLoaded = savedInstanceState.getBoolean(STATE_RECORD_LOADED);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -164,8 +162,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArray(STATE_GIVING_ARRAY, mGivingArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
-        outState.putBoolean(STATE_GIVING_LOADED, mGivingLoaded);
-        outState.putBoolean(STATE_RECORD_LOADED, mRecordLoaded);
         super.onSaveInstanceState(outState);
     }
 
