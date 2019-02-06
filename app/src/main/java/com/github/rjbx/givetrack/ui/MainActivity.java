@@ -257,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements
         String qualifier = mDateDifference < 2 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
-        mAnchorDialog.setMessage(getString(R.string.anchor_dialog, formattedDate, qualifier));
+        mAnchorDialog.setMessage(getString(R.string.anchor_dialog_message, formattedDate, qualifier));
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setAnchor(this, mAnchorTime);
                     if (mDateDifference < 2) {
-                        currentDialog.setMessage(getString(R.string.historical_dialog));
+                        currentDialog.setMessage(getString(R.string.historical_dialog_message));
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
                         currentDialog.show();
