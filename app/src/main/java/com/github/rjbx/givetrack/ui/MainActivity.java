@@ -72,14 +72,10 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
-    private static final String STATE_RECORD_LOADED= "com.github.rjbx.givetrack.ui.state.RECORD_LOADED";
     private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
-    private static final String STATE_GIVING_LOADED = "com.github.rjbx.givetrack.ui.state.GIVING_LOADED";
     private SectionsPagerAdapter mPagerAdapter;
     private ContentValues[] mGivingArray;
     private ContentValues[] mRecordArray;
-    private boolean mGivingLoaded;
-    private boolean mRecordLoaded;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -207,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mGivingArray[i++] = values;
                     } while (cursor.moveToNext());
-                    mGivingLoaded = true;
                 }
                 new StatusAsyncTask(this).execute(mGivingArray);
                 break;
@@ -220,13 +215,10 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseUtils.cursorRowToContentValues(cursor, values);
                         mRecordArray[i++] = values;
                     } while (cursor.moveToNext());
-                    mRecordLoaded = true;
                 }
                 break;
         }
-        if (mGivingLoaded && mRecordLoaded) {
-            mGivingLoaded = false;
-            mRecordLoaded = false;
+        if (mGivingArray != null && mRecordArray != null) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
