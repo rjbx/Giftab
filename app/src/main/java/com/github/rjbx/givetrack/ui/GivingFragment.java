@@ -129,7 +129,7 @@ public class GivingFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
-            Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
+            Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVING_ATTRIBUTES);
             if (parcelableArray != null) {
                 ContentValues[] valuesArray = (ContentValues[]) parcelableArray;
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
