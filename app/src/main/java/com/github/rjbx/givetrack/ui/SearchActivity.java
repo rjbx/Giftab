@@ -384,7 +384,7 @@ public class SearchActivity extends AppCompatActivity implements
             }
 
             /**
-             * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+             * Defines behavior on click of search item view.
              */
             @OnClick(R.id.search_item_view) void togglePane(View v) {
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;

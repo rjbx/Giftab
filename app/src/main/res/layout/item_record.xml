@@ -48,7 +48,7 @@
         </FrameLayout>
 
         <LinearLayout
-            android:id="@+id/stats_view"
+            android:id="@+id/record_stats_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".4"
@@ -58,7 +58,7 @@
             android:clickable="true"
             android:focusable="true">
 
-            <TextView
+            <EditText
                 android:id="@+id/record_time_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -67,9 +67,13 @@
                 android:background="#fff"
                 android:textSize="@dimen/text_size_paragraph_title"
                 android:textStyle="bold"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:hint="Change the date of this record"/>
 
-            <TextView
+            <EditText
                 android:id="@+id/record_amount_text"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -78,7 +82,11 @@
                 android:background="#fff"
                 android:textSize="@dimen/text_size_paragraph_title"
                 android:textStyle="bold"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:hint="Change the amount of this record"/>
 
         </LinearLayout>
 

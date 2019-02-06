@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -375,7 +374,7 @@ public class RecordActivity extends AppCompatActivity implements
         class ViewHolder extends RecyclerView.ViewHolder {
 
             @BindView(R.id.record_text_view) View mContainerView;
-            @BindView(R.id.stats_view) View mStatsView;
+            @BindView(R.id.record_stats_view) View mStatsView;
             @BindView(R.id.record_primary) TextView mNameView;
             @BindView(R.id.record_secondary) TextView mIdView;
             @BindView(R.id.record_amount_text) TextView mAmountView;
@@ -393,24 +392,20 @@ public class RecordActivity extends AppCompatActivity implements
             }
 
             /**
-             * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+             * Defines behavior on click of item view.
              */
+            @OnClick(R.id.record_text_view) void clickEntity(View v) {
+                togglePane(v);
+            }
 
-            @OnClick(R.id.record_item_view) void togglePane(View v) {
-                int position = (int) v.getTag();
-                ContentValues values = mValuesArray[position];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
-                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
-                else sDualPane = true;
-                mLastPosition = position;
-                Bundle arguments = new Bundle();
-                arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
-                arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
-                arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
-                if (sDualPane) showDualPane(arguments);
-                else showSinglePane();
+            /**
+             * Defines behavior on click of stats view.
+             */
+            @OnClick(R.id.record_stats_view) void clickStats(View v) {
+                if (isDualPane()) togglePane(v);
+                else {
+
+                }
             }
 
             /**
@@ -442,6 +437,24 @@ public class RecordActivity extends AppCompatActivity implements
                 ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, mValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
+            }
+
+            private void togglePane(View v) {
+                int position = (int) v.getTag();
+                ContentValues values = mValuesArray[position];
+                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
+                else sDualPane = true;
+
+                mLastPosition = position;
+                Bundle arguments = new Bundle();
+                arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
+                arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
+                arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
+                if (sDualPane) showDualPane(arguments);
+                else showSinglePane();
             }
         }
     }
