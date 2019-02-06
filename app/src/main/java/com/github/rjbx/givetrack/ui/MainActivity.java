@@ -258,11 +258,11 @@ public class MainActivity extends AppCompatActivity implements
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
         mAnchorDialog.setMessage(getString(R.string.anchor_dialog, formattedDate, qualifier));
-        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_decline), this);
+        mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
         mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
     }
 
     /**
@@ -282,8 +282,8 @@ public class MainActivity extends AppCompatActivity implements
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
                         currentDialog.show();
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                     } else UserPreferences.setHistorical(this, true);
                     UserPreferences.updateFirebaseUser(this);
                     break;
