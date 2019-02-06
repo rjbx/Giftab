@@ -42,6 +42,7 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -276,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setAnchor(this, mAnchorTime);
-                    UserPreferences.updateFirebaseUser(this);
                     if (mDateDifference < 2) {
                         currentDialog.setMessage(String.format(Locale.getDefault(), "Do you want to automatically maintain the date as current"));
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -284,9 +284,8 @@ public class MainActivity extends AppCompatActivity implements
                         currentDialog.show();
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(Color.GRAY);
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.GREEN);
-                    } else {
-                        UserPreferences.setHistorical(this, true);
-                    }
+                    } else UserPreferences.setHistorical(this, true);
+                    UserPreferences.updateFirebaseUser(this);
                     break;
                 default:
             }
@@ -294,9 +293,11 @@ public class MainActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     UserPreferences.setHistorical(this, true);
+                    UserPreferences.updateFirebaseUser(this);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setHistorical(this, false);
+                    UserPreferences.updateFirebaseUser(this);
                     break;
                 default:
             }
