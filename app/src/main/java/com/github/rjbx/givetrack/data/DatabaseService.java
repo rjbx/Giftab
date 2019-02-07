@@ -832,41 +832,7 @@ public class DatabaseService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            float totalTracked = Float.parseFloat(UserPreferences.getTracked(this)) + amount;
-            UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
-
-            long lastConversionTime = UserPreferences.getTimestamp(this);
-            long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
-
-            long daysBetweenConversions =
-                    TimeUnit.DAYS.convert(
-                            timeBetweenConversions,
-                            TimeUnit.MILLISECONDS
-                    );
-
-            if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
-            else UserPreferences.setAnchor(this, anchorTime);
-
-            long timeSinceAnchor = System.currentTimeMillis() - anchorTime;
-            long daysSinceAnchor =
-                    TimeUnit.DAYS.convert(
-                            timeSinceAnchor,
-                            TimeUnit.MILLISECONDS
-                    );
-
-            if (daysSinceAnchor == 0) {
-
-                float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
-                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
-
-                float high = Float.parseFloat(UserPreferences.getHigh(this));
-                if (todaysImpact > high) {
-                    UserPreferences.setHighday(this, System.currentTimeMillis());
-                    UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
-                }
-
-                UserPreferences.setTimestamp(this, anchorTime);
-            }
+            updateTimePreferences(anchorTime);
 
             UserPreferences.setRecords(this, records);
             UserPreferences.setCharities(this, charities);
@@ -876,6 +842,39 @@ public class DatabaseService extends IntentService {
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action UpdateTime in the provided background thread with the provided parameters.
+     */
+    private void handleActionUpdateTime(long oldTime, long newTime) {
+        String formattedTime = String.valueOf(oldTime);
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, newTime);
+        Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
+        DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
+
+        List<String> records = UserPreferences.getRecords(this);
+        for (String record : records)
+            if (record.split(":")[0].equals(formattedTime))
+                record.replaceFirst(formattedTime, String.valueOf(newTime));
+        UserPreferences.setRecords(this, records);
+
+        updateTimePreferences(UserPreferences.getAnchor(this));
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    /**
+     * Handles action UpdateAmount in the provided background thread with the provided parameters.
+     */
+    private void handleActionUpdateAmount(long id, float amount) {
+
+
     }
 
     /**
@@ -890,6 +889,45 @@ public class DatabaseService extends IntentService {
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    private void updateTimePreferences(long anchorTime) {
+
+        float totalTracked = Float.parseFloat(UserPreferences.getTracked(this)) + amount;
+        UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
+
+        long lastConversionTime = UserPreferences.getTimestamp(this);
+        long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
+
+        long daysBetweenConversions =
+                TimeUnit.DAYS.convert(
+                        timeBetweenConversions,
+                        TimeUnit.MILLISECONDS
+                );
+
+        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
+        else UserPreferences.setAnchor(this, anchorTime);
+
+        long timeSinceAnchor = System.currentTimeMillis() - anchorTime;
+        long daysSinceAnchor =
+                TimeUnit.DAYS.convert(
+                        timeSinceAnchor,
+                        TimeUnit.MILLISECONDS
+                );
+
+        if (daysSinceAnchor == 0) {
+
+            float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
+            UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+
+            float high = Float.parseFloat(UserPreferences.getHigh(this));
+            if (todaysImpact > high) {
+                UserPreferences.setHighday(this, System.currentTimeMillis());
+                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
+            }
+
+            UserPreferences.setTimestamp(this, anchorTime);
+        }
     }
 
     private String urlToEmailAddress(String url) {

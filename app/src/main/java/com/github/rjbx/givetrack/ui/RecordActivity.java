@@ -33,6 +33,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -482,7 +483,7 @@ public class RecordActivity extends AppCompatActivity implements
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
-                        float amountTotal = Float.parseFloat(mAmountView.getText().toString());
+                        float amountTotal;
                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
                         try {
                             String viewText = mAmountView.getText().toString();
@@ -495,12 +496,12 @@ public class RecordActivity extends AppCompatActivity implements
                             return false;
                         }
                         mAmountView.setText(formatter.format(amountTotal));
-//                        mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formatter.format(mAmountTotal)));
-//                        updateAmounts();
-//                        InputMethodManager inputMethodManager = mParentActivity != null ?
-//                                (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
-//                        if (inputMethodManager == null) return false;
-//                        inputMethodManager.toggleSoftInput(0, 0);
+                        mAmountView.setContentDescription(getString(R.string.description_donation_text, formatter.format(amountTotal)));
+                        updateAmounts();
+                        InputMethodManager inputMethodManager =
+                                (InputMethodManager) RecordActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (inputMethodManager == null) return false;
+                        inputMethodManager.toggleSoftInput(0, 0);
                         return true;
                     default:
                         return false;
