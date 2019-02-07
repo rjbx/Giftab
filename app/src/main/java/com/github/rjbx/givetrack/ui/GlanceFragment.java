@@ -215,7 +215,7 @@ public class GlanceFragment extends Fragment implements
             case 2:
                 return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
             default:
-                return getString(R.string.axis_value_interval, (int) value, mIntervalLabel);
+                return getString(R.string.axis_value_interval, (int) value - 1, mIntervalLabel);
         }
     }
 
