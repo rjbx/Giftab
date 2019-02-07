@@ -430,6 +430,9 @@ public class RecordActivity extends AppCompatActivity implements
             @OnClick(R.id.record_time_text) void editTime(View v) {
                 if (isDualPane()) togglePane(v);
                 else {
+                    ContentValues values = ListAdapter.this.mValuesArray[(int) v.getTag()];
+                    mOldTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(UserPreferences.getAnchor(context));
@@ -510,9 +513,6 @@ public class RecordActivity extends AppCompatActivity implements
 
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                ContentValues values = ListAdapter.this.mValuesArray[(int) view.getTag()];
-                mOldTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
