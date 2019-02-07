@@ -485,6 +485,7 @@ public class RecordActivity extends AppCompatActivity implements
              * Listens for and persists changes to text editor value.
              */
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                long time = mValuesArray[(int) v.getTag()].getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;
@@ -493,12 +494,11 @@ public class RecordActivity extends AppCompatActivity implements
                             String viewText = mAmountView.getText().toString();
                             if (viewText.contains("$")) amountTotal = formatter.parse(viewText).floatValue();
                             else amountTotal = Float.parseFloat(viewText);
-                            UserPreferences.setDonation(v.getContext(), String.valueOf(amountTotal));
-                            UserPreferences.updateFirebaseUser(v.getContext());
                         } catch (ParseException e) {
                             Timber.e(e);
                             return false;
                         }
+                        DatabaseService.startActionUpdateAmount(RecordActivity.this, time, amountTotal);
                         mAmountView.setText(formatter.format(amountTotal));
                         mAmountView.setContentDescription(getString(R.string.description_donation_text, formatter.format(amountTotal)));
                         InputMethodManager inputMethodManager =
