@@ -497,7 +497,6 @@ public class RecordActivity extends AppCompatActivity implements
                         }
                         mAmountView.setText(formatter.format(amountTotal));
                         mAmountView.setContentDescription(getString(R.string.description_donation_text, formatter.format(amountTotal)));
-                        updateAmounts();
                         InputMethodManager inputMethodManager =
                                 (InputMethodManager) RecordActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (inputMethodManager == null) return false;
