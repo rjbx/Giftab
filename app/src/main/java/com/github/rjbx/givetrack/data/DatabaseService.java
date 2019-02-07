@@ -878,8 +878,35 @@ public class DatabaseService extends IntentService {
      * Handles action UpdateAmount in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateAmount(long id, float amount) {
+        String formattedTime = String.valueOf(id);
 
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, amount);
+        Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
+        DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
 
+        float oldAmount = 0;
+        List<String> records = UserPreferences.getRecords(this);
+        for (String record : records) {
+            String[] recordFields = record.split(":");
+            if(recordFields[0].equals(formattedTime)) {
+                String oldAmountStr = recordFields[1];
+                String newRecord = record.replaceFirst(oldAmountStr, String.format(Locale.getDefault(), "%.2f", amount));
+                records.remove(record);
+                records.add(newRecord);
+                oldAmount = Float.parseFloat(oldAmountStr);
+            }
+        }
+        UserPreferences.setRecords(this, records);
+
+        float amountChange = amount - oldAmount;
+
+        updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
+        UserPreferences.updateFirebaseUser(this);
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     /**
