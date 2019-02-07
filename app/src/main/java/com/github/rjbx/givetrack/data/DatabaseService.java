@@ -855,7 +855,7 @@ public class DatabaseService extends IntentService {
         Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
 
-        float amount;
+        float amount = 0;
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records) {
             String[] recordFields = record.split(":");
