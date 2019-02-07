@@ -66,6 +66,7 @@
                 android:layout_gravity="center"
                 android:background="#fff"
                 android:textSize="@dimen/text_size_paragraph_title"
+                android:textColor="#000"
                 android:gravity="center"
                 android:inputType="numberDecimal"
                 android:imeOptions="actionDone"
