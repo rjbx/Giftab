@@ -909,11 +909,7 @@ public class DatabaseService extends IntentService {
     private void handleActionUpdateAmount(long id, float amount) {
         String formattedTime = String.valueOf(id);
 
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, amount);
-        Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
-        DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
-
+        String ein = "";
         float oldAmount = 0;
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records) {
@@ -924,11 +920,39 @@ public class DatabaseService extends IntentService {
                 int index = records.indexOf(record);
                 records.set(index, newRecord);
                 oldAmount = Float.parseFloat(oldAmountStr);
+                ein = recordFields[3];
             }
         }
         UserPreferences.setRecords(this, records);
-
         float amountChange = amount - oldAmount;
+
+        String newGivingAmountStr = "";
+        List<String> charities = UserPreferences.getCharities(this);
+        for (String charity : charities) {
+            String[] charityFields = charity.split(":");
+            if (charityFields[0].equals(ein)) {
+                String givingAmountStr = charityFields[3];
+                float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
+                newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
+                String newCharity = charity.replaceFirst(givingAmountStr, newGivingAmountStr);
+                int index = charities.indexOf(charity);
+                charities.set(index, newCharity);
+            }
+        }
+        UserPreferences.setCharities(this, charities);
+
+        String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
+
+        ContentValues recordValues = new ContentValues();
+        ContentValues givingValues = new ContentValues();
+        recordValues.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, recordAmountStr);
+        givingValues.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, newGivingAmountStr);
+        Uri recordUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
+        Uri givingUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendEncodedPath(ein).build();
+        DISK_IO.execute(() -> {
+            getContentResolver().update(recordUri, recordValues, null, null);
+            getContentResolver().update(givingUri, givingValues, null, null);
+        });
 
         updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
         UserPreferences.updateFirebaseUser(this);
