@@ -857,8 +857,11 @@ public class DatabaseService extends IntentService {
 
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records)
-            if (record.split(":")[0].equals(formattedTime))
-                record.replaceFirst(formattedTime, String.valueOf(newTime));
+            if (record.split(":")[0].equals(formattedTime)) {
+                String newRecord = record.replaceFirst(formattedTime, String.valueOf(newTime));
+                records.remove(record);
+                records.add(newRecord);
+        }
         UserPreferences.setRecords(this, records);
 
         updateTimePreferences(UserPreferences.getAnchor(this));
