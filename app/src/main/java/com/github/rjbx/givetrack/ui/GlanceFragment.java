@@ -403,17 +403,22 @@ public class GlanceFragment extends Fragment implements
         percentageDesc.setTextSize(fontSize);
 
         int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
+        float labelSize = fontSize * 1.35f;
+        
+
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
             mPercentageChart.setLayoutParams(params);
+            
+            labelSize = fontSize * 1.15f;
         }
 
 //        mPercentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
         mPercentageChart.setTag(percentMessage);
         mPercentageChart.setData(percentageData);
         mPercentageChart.setDescription(percentageDesc);
-        mPercentageChart.setEntryLabelTextSize(fontSize * 1.25f);
+        mPercentageChart.setEntryLabelTextSize(labelSize);
         mPercentageChart.setEntryLabelTypeface(Typeface.defaultFromStyle(Typeface.BOLD_ITALIC));
         mPercentageChart.setHoleRadius(20f);
         mPercentageChart.setTransparentCircleRadius(50f);
@@ -439,7 +444,7 @@ public class GlanceFragment extends Fragment implements
         usageSet.setColors(gaugeColors);
         Description usageDesc = new Description();
         usageDesc.setText(getString(R.string.chart_title_usage));
-        usageDesc.setTextSize(fontSize / 1.1f);
+        usageDesc.setTextSize(fontSize);
         usageEntries.add(new PieEntry(donationAmount / amountTotal, getString(R.string.axis_value_donation)));
 
         PieData usageData = new PieData(usageSet);
@@ -451,6 +456,7 @@ public class GlanceFragment extends Fragment implements
         mUsageChart.setTransparentCircleColor(backgroundColor);
         mUsageChart.setHoleColor(backgroundColor);
         mUsageChart.getLegend().setEnabled(false);
+        mUsageChart.setEntryLabelTextSize(labelSize);
         mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
         mUsageChart.invalidate();
 
@@ -462,7 +468,7 @@ public class GlanceFragment extends Fragment implements
         typeSet.setColors(gaugeColors);
         Description typeDesc = new Description();
         typeDesc.setText(getString(R.string.chart_title_type));
-        typeDesc.setTextSize(fontSize / 1.1f);
+        typeDesc.setTextSize(fontSize);
 
         PieData typeData = new PieData(typeSet);
         mTypeChart.setData(typeData);
@@ -473,6 +479,7 @@ public class GlanceFragment extends Fragment implements
         mTypeChart.setTransparentCircleColor(backgroundColor);
         mTypeChart.setHoleColor(backgroundColor);
         mTypeChart.getLegend().setEnabled(false);
+        mTypeChart.setEntryLabelTextSize(labelSize);
         mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
         mTypeChart.invalidate();
 
@@ -488,7 +495,8 @@ public class GlanceFragment extends Fragment implements
         averageSet.setColors(gaugeColors);
         Description averageDesc = new Description();
         averageDesc.setText(getString(R.string.chart_title_average));
-        averageDesc.setTextSize(fontSize / 1.1f);
+        averageDesc.setTextSize(fontSize);
+
         PieData averageData = new PieData(averageSet);
         mAverageChart.setData(averageData);
         mAverageChart.setDescription(averageDesc);
@@ -498,6 +506,7 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.setTransparentCircleColor(backgroundColor);
         mAverageChart.setHoleColor(backgroundColor);
         mAverageChart.getLegend().setEnabled(false);
+        mAverageChart.setEntryLabelTextSize(labelSize);
         mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
         mAverageChart.invalidate();
 
