@@ -887,10 +887,10 @@ public class DatabaseService extends IntentService {
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records) {
             String[] recordFields = record.split(":");
-            if(recordFields[0].equals(formattedTime)) {
+            if (recordFields[0].equals(formattedTime)) {
                 String newRecord = record.replaceFirst(formattedTime, String.valueOf(newTime));
-                records.remove(record);
-                records.add(newRecord);
+                int index = records.indexOf(record);
+                records.set(index, newRecord);
             }
         }
         UserPreferences.setRecords(this, records);
@@ -921,8 +921,8 @@ public class DatabaseService extends IntentService {
             if(recordFields[0].equals(formattedTime)) {
                 String oldAmountStr = recordFields[1];
                 String newRecord = record.replaceFirst(oldAmountStr, String.format(Locale.getDefault(), "%.2f", amount));
-                records.remove(record);
-                records.add(newRecord);
+                int index = records.indexOf(record);
+                records.set(index, newRecord);
                 oldAmount = Float.parseFloat(oldAmountStr);
             }
         }
