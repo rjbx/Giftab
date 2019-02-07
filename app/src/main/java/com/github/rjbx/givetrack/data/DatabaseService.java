@@ -855,11 +855,9 @@ public class DatabaseService extends IntentService {
         Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
 
-        float amount = 0;
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records) {
             String[] recordFields = record.split(":");
-            amount = Float.parseFloat(recordFields[1]);
             if(recordFields[0].equals(formattedTime)) {
                 String newRecord = record.replaceFirst(formattedTime, String.valueOf(newTime));
                 records.remove(record);
@@ -868,7 +866,7 @@ public class DatabaseService extends IntentService {
         }
         UserPreferences.setRecords(this, records);
 
-        updateTimePreferences(UserPreferences.getAnchor(this), amount);
+        updateTimePreferences(UserPreferences.getAnchor(this), 0);
         UserPreferences.updateFirebaseUser(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
