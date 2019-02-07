@@ -198,18 +198,18 @@
     <!-- Search settings -->
     <string name="pref_header_search">Search Filters</string>
     <string-array name="list_preference_minrating">
+        <item>No Preference</item>
         <item>★</item>
         <item>★★</item>
         <item>★★★</item>
         <item>★★★★</item>
-        <item>No Preference</item>
     </string-array>
     <string-array name="list_preference_minrating_values">
+        <item></item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
-        <item></item>
     </string-array>
     <string-array name="list_preference_state">
         <item>Alabama</item>

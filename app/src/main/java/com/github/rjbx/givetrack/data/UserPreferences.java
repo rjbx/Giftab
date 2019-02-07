@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+
+import com.github.rjbx.givetrack.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -104,7 +106,7 @@ public class UserPreferences {
 
     public static String getMinrating(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_MINRATING, "");
+        return sp.getString(KEY_MINRATING, context.getResources().getStringArray(R.array.list_preference_minrating_values)[0]);
     }
 
     public static void setMinrating(Context context, String minrating) {
@@ -124,7 +126,7 @@ public class UserPreferences {
 
     public static String getSearchSort(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_SEARCHSORT, "NAME");
+        return sp.getString(KEY_SEARCHSORT, context.getResources().getStringArray(R.array.list_preference_sortSearch_values)[0]);
     }
 
     public static void setSearchSort(Context context, String sort) {
@@ -134,7 +136,7 @@ public class UserPreferences {
 
     public static String getSearchOrder(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_SEARCHORDER, "ASC");
+        return sp.getString(KEY_SEARCHORDER, context.getResources().getStringArray(R.array.list_preference_orderSearch_values)[0]);
     }
 
     public static void setSearchOrder(Context context, String order) {
