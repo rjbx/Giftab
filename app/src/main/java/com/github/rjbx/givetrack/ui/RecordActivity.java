@@ -351,8 +351,9 @@ public class RecordActivity extends AppCompatActivity implements
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));
-            holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
             holder.mTimeView.setText(DateFormat.getDateInstance().format(new Date(time)));
+            holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
+            holder.mAmountView.setEnabled(!isDualPane());
 
             Bundle arguments = new Bundle();
             arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
@@ -390,13 +391,12 @@ public class RecordActivity extends AppCompatActivity implements
             @BindView(R.id.record_stats_view) View mStatsView;
             @BindView(R.id.record_primary) TextView mNameView;
             @BindView(R.id.record_secondary) TextView mIdView;
-            @BindView(R.id.record_amount_text) EditText mAmountView;
+            @BindView(R.id.record_amount_text) TextView mAmountView;
             @BindView(R.id.record_time_text) TextView mTimeView;
             @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
             private AlertDialog mContactDialog;
             private AlertDialog mDateDialog;
-            private float mAmountTotal;
             private long mTime;
 
             /**
@@ -405,7 +405,6 @@ public class RecordActivity extends AppCompatActivity implements
             ViewHolder(View view) {
                 super(view);
                 ButterKnife.bind(this, view);
-                mAmountTotal = Float.parseFloat(mAmountView.getText().toString());
             }
 
             /**
@@ -416,23 +415,33 @@ public class RecordActivity extends AppCompatActivity implements
             }
 
             /**
-             * Defines behavior on click of stats view.
+             * Defines behavior on click of item view.
              */
             @OnClick(R.id.record_stats_view) void clickStats(View v) {
                 if (isDualPane()) togglePane(v);
             }
 
+            /**
+             * Defines behavior on click of stats view.
+             */
             @OnClick(R.id.record_time_text) void editTime(View v) {
-                Context context = v.getContext();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(UserPreferences.getAnchor(context));
-                DatePickerDialog datePicker = new DatePickerDialog(
-                        context,
-                        this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH));
-                datePicker.show();
+                if (isDualPane()) togglePane(v);
+                else {
+                    Context context = v.getContext();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(UserPreferences.getAnchor(context));
+                    DatePickerDialog datePicker = new DatePickerDialog(
+                            context,
+                            this,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH));
+                    datePicker.show();
+                }
+            }
+
+            @OnClick(R.id.record_amount_text) void editAmount(EditText v) {
+                if (isDualPane()) togglePane(v);
             }
 
             /**
@@ -472,18 +481,19 @@ public class RecordActivity extends AppCompatActivity implements
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
+                        float amountTotal = Float.parseFloat(mAmountView.getText().toString());
                         NumberFormat formatter = NumberFormat.getCurrencyInstance();
                         try {
                             String viewText = mAmountView.getText().toString();
-                            if (viewText.contains("$")) mAmountTotal = formatter.parse(viewText).floatValue();
-                            else mAmountTotal = Float.parseFloat(viewText);
-                            UserPreferences.setDonation(v.getContext(), String.valueOf(mAmountTotal));
+                            if (viewText.contains("$")) amountTotal = formatter.parse(viewText).floatValue();
+                            else amountTotal = Float.parseFloat(viewText);
+                            UserPreferences.setDonation(v.getContext(), String.valueOf(amountTotal));
                             UserPreferences.updateFirebaseUser(v.getContext());
                         } catch (ParseException e) {
                             Timber.e(e);
                             return false;
                         }
-                        mAmountView.setText(formatter.format(mAmountTotal));
+                        mAmountView.setText(formatter.format(amountTotal));
 //                        mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formatter.format(mAmountTotal)));
 //                        updateAmounts();
 //                        InputMethodManager inputMethodManager = mParentActivity != null ?
