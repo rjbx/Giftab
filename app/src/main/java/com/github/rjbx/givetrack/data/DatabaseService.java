@@ -832,7 +832,7 @@ public class DatabaseService extends IntentService {
             } while (cursor.moveToNext());
             cursor.close();
 
-            updateTimePreferences(anchorTime);
+            updateTimePreferences(anchorTime, amount);
 
             UserPreferences.setRecords(this, records);
             UserPreferences.setCharities(this, charities);
@@ -855,16 +855,20 @@ public class DatabaseService extends IntentService {
         Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
 
+        float amount;
         List<String> records = UserPreferences.getRecords(this);
-        for (String record : records)
-            if (record.split(":")[0].equals(formattedTime)) {
+        for (String record : records) {
+            String[] recordFields = record.split(":");
+            amount = Float.parseFloat(recordFields[1]);
+            if(recordFields[0].equals(formattedTime)) {
                 String newRecord = record.replaceFirst(formattedTime, String.valueOf(newTime));
                 records.remove(record);
                 records.add(newRecord);
+            }
         }
         UserPreferences.setRecords(this, records);
 
-        updateTimePreferences(UserPreferences.getAnchor(this));
+        updateTimePreferences(UserPreferences.getAnchor(this), amount);
         UserPreferences.updateFirebaseUser(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -894,7 +898,7 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    private void updateTimePreferences(long anchorTime) {
+    private void updateTimePreferences(long anchorTime, float amount) {
 
         float totalTracked = Float.parseFloat(UserPreferences.getTracked(this)) + amount;
         UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
