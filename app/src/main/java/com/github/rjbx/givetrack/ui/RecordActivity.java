@@ -352,6 +352,7 @@ public class RecordActivity extends AppCompatActivity implements
             holder.mIdView.setText(String.format("EIN: %s", ein));
             holder.mTimeView.setText(DateFormat.getDateInstance().format(new Date(time)));
             holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
+            holder.mAmountView.setFocusableInTouchMode(!isDualPane());
             holder.mAmountView.setFocusable(!isDualPane());
             holder.mAmountView.setClickable(isDualPane());
 
