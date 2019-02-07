@@ -400,6 +400,7 @@ public class RecordActivity extends AppCompatActivity implements
             private AlertDialog mContactDialog;
             private AlertDialog mDateDialog;
             private long mTime;
+            private long mOldTime;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -509,6 +510,10 @@ public class RecordActivity extends AppCompatActivity implements
 
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                ContentValues values = ListAdapter.this.mValuesArray[(int) view.getTag()];
+                mOldTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
                 DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -533,7 +538,7 @@ public class RecordActivity extends AppCompatActivity implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_POSITIVE:
-
+                            DatabaseService.startActionUpdateTime(RecordActivity.this, mOldTime, mTime);
                         default:
                     }
                 }
