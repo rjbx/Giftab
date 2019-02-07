@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-import com.firebase.ui.auth.data.model.User;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
@@ -66,6 +65,8 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
+    private static final String ACTION_UPDATE_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
+    private static final String ACTION_UPDATE_AMOUNT = "com.github.rjbx.givetrack.data.action.UPDATE_AMOUNT";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
 
     private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.data.extra.API_REQUEST";
@@ -261,6 +262,24 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
+    public static void startActionUpdateTime(Context context, long oldTime, long newTime) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UPDATE_TIME);
+        intent.putExtra(EXTRA_ITEM_ID, oldTime);
+        intent.putExtra(EXTRA_ITEM_VALUES, newTime);
+        context.startService(intent);
+    }
+
+    public static void startActionUpdateAmount(Context context, long id, float amount) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, amount);
+        intent.setAction(ACTION_UPDATE_AMOUNT);
+        intent.putExtra(EXTRA_ITEM_ID, id);
+        intent.putExtra(EXTRA_ITEM_VALUES, amount);
+        context.startService(intent);
+    }
+
     /**
      * Starts this service to perform action ResetData with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -334,6 +353,16 @@ public class DatabaseService extends IntentService {
                     ContentValues updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
                 }
+                break;
+            case ACTION_UPDATE_TIME:
+                long timeId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
+                long newTime = intent.getLongExtra(EXTRA_ITEM_VALUES, 0);
+                handleActionUpdateTime(timeId, newTime);
+                break;
+            case ACTION_UPDATE_AMOUNT:
+                long amountId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
+                float amount = intent.getFloatExtra(EXTRA_ITEM_VALUES, 0f);
+                handleActionUpdateAmount(amountId, amount);
                 break;
             case ACTION_RESET_DATA: handleActionResetData();
         }
