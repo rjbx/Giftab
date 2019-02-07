@@ -228,6 +228,7 @@ public class SearchActivity extends AppCompatActivity implements
         if (dialog == mSearchDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
+                    refreshResults();
                     mSearchDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
@@ -243,6 +244,10 @@ public class SearchActivity extends AppCompatActivity implements
      * Populates {@link SearchActivity} {@link RecyclerView}.
      */
     @OnClick(R.id.search_fab) public void refreshResults() {
+        fetchResults();
+    }
+
+    private void fetchResults() {
         Context context = SearchActivity.this;
         HashMap<String, String> hashMap = new HashMap<>();
         if (UserPreferences.getFocus(context)) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
