@@ -306,7 +306,6 @@ public class RecordActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private ContentValues[] mValuesArray;
-        private View mLastClicked;
         private int mLastPosition;
 
         /**
@@ -545,7 +544,7 @@ public class RecordActivity extends AppCompatActivity implements
                 String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
                 String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
                 String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
-                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
+                if (mLastPosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
                 mLastPosition = position;
