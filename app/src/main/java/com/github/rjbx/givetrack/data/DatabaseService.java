@@ -750,7 +750,7 @@ public class DatabaseService extends IntentService {
         UserPreferences.setHigh(this, "0");
         UserPreferences.setToday(this, "0");
         UserPreferences.setTracked(this, "0");
-        UserPreferences.setCharities(this, new ArrayList<>());
+        UserPreferences.setRecords(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
