@@ -69,7 +69,6 @@ public class RecordActivity extends AppCompatActivity implements
         DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
         DialogInterface.OnClickListener {
 
-
     public static final String ACTION_RECORD_INTENT = "com.github.rjbx.givetrack.ui.action.RECORD_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private long mDeletedTime;
