@@ -355,7 +355,7 @@ public class RecordActivity extends AppCompatActivity implements
             holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
             holder.mAmountView.setFocusableInTouchMode(!isDualPane());
             holder.mAmountView.setFocusable(!isDualPane());
-            holder.mAmountView.setClickable(isDualPane());
+            holder.mAmountView.setClickable(true);
 
             Bundle arguments = new Bundle();
             arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
@@ -393,7 +393,7 @@ public class RecordActivity extends AppCompatActivity implements
             @BindView(R.id.record_stats_view) View mStatsView;
             @BindView(R.id.record_primary) TextView mNameView;
             @BindView(R.id.record_secondary) TextView mIdView;
-            @BindView(R.id.record_amount_text) TextView mAmountView;
+            @BindView(R.id.record_amount_text) EditText mAmountView;
             @BindView(R.id.record_time_text) TextView mTimeView;
             @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
@@ -408,6 +408,7 @@ public class RecordActivity extends AppCompatActivity implements
             ViewHolder(View view) {
                 super(view);
                 ButterKnife.bind(this, view);
+                mAmountView.setOnEditorActionListener(this);
             }
 
             /**
