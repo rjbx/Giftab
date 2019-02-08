@@ -917,7 +917,8 @@ public class DatabaseService extends IntentService {
             if(recordFields[0].equals(formattedTime)) {
                 String oldAmountStr = recordFields[1];
                 String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-                String newRecord = recordFields[0] + newAmountStr + recordFields[1] + recordFields[2];
+                String newRecord = String.format("%s:%s:%s:%s",
+                        recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
                 int index = records.indexOf(record);
                 records.set(index, newRecord);
                 oldAmount = Float.parseFloat(oldAmountStr);
@@ -935,7 +936,8 @@ public class DatabaseService extends IntentService {
                 String givingAmountStr = charityFields[3];
                 float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
                 newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
-                String newCharity = charityFields[0] + charityFields[1] + charityFields[2] + charityFields[3] + newGivingAmountStr + charityFields[5];
+                String newCharity = String.format("%s:%s:%s:%s:%s:%s",
+                        charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
                 int index = charities.indexOf(charity);
                 charities.set(index, newCharity);
             }
