@@ -530,10 +530,22 @@ public class DatabaseService extends IntentService {
 
             List<String> charities = UserPreferences.getCharities(this);
 
+            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+            float impact = 0;
+            int frequency = 0;
+
+            for (String record : UserPreferences.getRecords(this)) {
+                String[] recordFields = record.split(":");
+                if (recordFields[3].equals(ein)) {
+                    impact += Float.parseFloat(recordFields[1]);
+                    frequency++;
+                }
+            }
+
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
             values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
@@ -544,7 +556,7 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+
             charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
@@ -577,10 +589,22 @@ public class DatabaseService extends IntentService {
             values.remove(DatabaseContract.Entry.COLUMN_DONATION_TIME);
             values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
 
+            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+            float impact = 0;
+            int frequency = 0;
+
+            for (String record : UserPreferences.getRecords(this)) {
+                String[] recordFields = record.split(":");
+                if (recordFields[3].equals(ein)) {
+                    impact += Float.parseFloat(recordFields[1]);
+                    frequency++;
+                }
+            }
+
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
             values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
@@ -591,7 +615,6 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
             charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
