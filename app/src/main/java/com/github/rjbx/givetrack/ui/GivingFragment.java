@@ -80,6 +80,7 @@ public class GivingFragment extends Fragment implements
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private static double[] sPercentages;
+    private InputMethodManager mMethodManager;
     private MainActivity mParentActivity;
     private DetailFragment mDetailFragment;
     private ListAdapter mListAdapter;
@@ -150,6 +151,7 @@ public class GivingFragment extends Fragment implements
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
+        if (mParentActivity != null) mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         if (mListAdapter == null) mListAdapter = new ListAdapter();
         else if (getFragmentManager() != null) getFragmentManager().popBackStack();
@@ -267,10 +269,8 @@ public class GivingFragment extends Fragment implements
                 mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                 mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
                 updateAmounts();
-                InputMethodManager inputMethodManager = mParentActivity != null ?
-                        (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE) : null;
-                if (inputMethodManager == null) return false;
-                inputMethodManager.toggleSoftInput(0, 0);
+                if (mMethodManager == null) return false;
+                mMethodManager.toggleSoftInput(0, 0);
                 return true;
             default:
                 return false;
@@ -528,7 +528,7 @@ public class GivingFragment extends Fragment implements
             final int adapterPosition = holder.getAdapterPosition();
 
             mRateraidArrays.addShifters(holder.mIncrementButton, holder.mDecrementButton, adapterPosition)
-                           .addEditor(holder.mPercentageView, adapterPosition);
+                           .addEditor(holder.mPercentageView, adapterPosition, mMethodManager);
         }
 
         /**
