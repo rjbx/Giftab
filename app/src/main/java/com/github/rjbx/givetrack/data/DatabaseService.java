@@ -933,7 +933,7 @@ public class DatabaseService extends IntentService {
         for (String charity : charities) {
             String[] charityFields = charity.split(":");
             if (charityFields[0].equals(ein)) {
-                String givingAmountStr = charityFields[3];
+                String givingAmountStr = charityFields[4];
                 float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
                 newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
                 String newCharity = String.format("%s:%s:%s:%s:%s:%s",
