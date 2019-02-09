@@ -151,7 +151,6 @@ public class GivingFragment extends Fragment implements
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
-        if (mParentActivity != null) mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         if (mListAdapter == null) mListAdapter = new ListAdapter();
         else if (getFragmentManager() != null) getFragmentManager().popBackStack();
@@ -178,6 +177,7 @@ public class GivingFragment extends Fragment implements
      */
     @Override public void onResume() {
         super.onResume();
+        if (mParentActivity != null) mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (mListAdapter != null) mListAdapter.swapValues();
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
