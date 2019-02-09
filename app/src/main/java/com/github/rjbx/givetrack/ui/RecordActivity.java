@@ -181,7 +181,7 @@ public class RecordActivity extends AppCompatActivity implements
                     valuesArray[i++] = values;
                 } while (cursor.moveToNext());
                 mAdapter.swapValues(valuesArray);
-                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
+                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 sb.show();
