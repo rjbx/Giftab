@@ -547,7 +547,7 @@ public class GivingFragment extends Fragment implements
             for (int i = 0; i < sPercentages.length; i++) {
                 sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
             }
-            boolean adjusted = Calibrater.resetRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
+            boolean adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) syncPercentages();
             notifyDataSetChanged();
         }
