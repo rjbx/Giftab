@@ -183,7 +183,7 @@ public class GivingFragment extends Fragment implements
         if (mParentActivity != null) {
             View contentView = mParentActivity.getWindow().getDecorView().findViewById(R.id.main_drawer);
             contentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-                if (mTotalText.hasFocus()) return;
+                if (mTotalText == null || mTotalText.hasFocus()) return;
 
                 Rect r = new Rect();
                 contentView.getWindowVisibleDisplayFrame(r);
