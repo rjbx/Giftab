@@ -125,18 +125,6 @@ public class GivingFragment extends Fragment implements
 
         View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            if (mTotalText.hasFocus()) return;
-            Rect r = new Rect();
-            rootView.getWindowVisibleDisplayFrame(r);
-            if (500 < (rootView.getHeight() - (r.bottom - r.top))) {
-                mActionWrapper.setVisibility(View.GONE);
-                mDonationWrapper.setVisibility(View.GONE);
-            } else {
-                mActionWrapper.setVisibility(View.VISIBLE);
-                mDonationWrapper.setVisibility(View.VISIBLE);
-            }
-        });
 
         mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
         mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
@@ -191,7 +179,26 @@ public class GivingFragment extends Fragment implements
      */
     @Override public void onResume() {
         super.onResume();
-        if (mParentActivity != null) mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (mParentActivity != null) {
+            View contentView = mParentActivity.getWindow().getDecorView().findViewById(R.id.main_drawer);
+            contentView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+                if (mTotalText.hasFocus()) return;
+
+                Rect r = new Rect();
+                contentView.getWindowVisibleDisplayFrame(r);
+
+                if (100 < (contentView.getHeight() - (r.bottom - r.top))) {
+                    mDonationWrapper.setVisibility(View.GONE);
+                    mActionWrapper.setVisibility(View.GONE);
+                } else {
+                    mDonationWrapper.setVisibility(View.VISIBLE);
+                    mActionWrapper.setVisibility(View.VISIBLE);
+                }
+
+            });
+            mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        }
         if (mListAdapter != null) mListAdapter.swapValues();
         PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
@@ -532,7 +539,6 @@ public class GivingFragment extends Fragment implements
 
             holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
             holder.mAmountView.setText(currencyInstance.format(sPercentages[position] * mAmountTotal));
-            holder.mPercentageView.setClickable(true);
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
             else if (sDualPane && mPanePosition == position) {
