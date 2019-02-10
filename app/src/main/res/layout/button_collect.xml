@@ -14,7 +14,7 @@
     <Button
         android:id="@+id/collection_add_button"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:gravity="center"
         android:backgroundTint="@color/colorChalk"
         android:textColor="#555"
