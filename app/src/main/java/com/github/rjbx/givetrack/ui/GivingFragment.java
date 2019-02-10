@@ -280,7 +280,11 @@ public class GivingFragment extends Fragment implements
                 try {
                     String viewText = mTotalText.getText().toString();
                     if (viewText.contains("$")) mAmountTotal = CURRENCY_FORMATTER.parse(viewText).floatValue();
-                    else mAmountTotal = Float.parseFloat(viewText);
+                    else if (!viewText.isEmpty()) mAmountTotal = Float.parseFloat(viewText);
+                    else {
+                        mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
+                        return false;
+                    }
                     UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
                     UserPreferences.updateFirebaseUser(getContext());
                 } catch (ParseException e) {
