@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -92,6 +93,7 @@ public class GivingFragment extends Fragment implements
     @BindView(R.id.save_progress_bar) ProgressBar mProgress;
     @BindView(R.id.action_bar) ImageButton mActionBar;
     @BindView(R.id.action_bar_wrapper) View mActionWrapper;
+    @BindView(R.id.donation_wrapper) View mDonationWrapper;
     @BindView(R.id.donation_amount_text) EditText mTotalText;
     @BindView(R.id.donation_amount_label) View mTotalLabel;
     @BindView(R.id.donation_detail_container) View mDetailContainer;
@@ -123,6 +125,18 @@ public class GivingFragment extends Fragment implements
 
         View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            if (mTotalText.hasFocus()) return;
+            Rect r = new Rect();
+            rootView.getWindowVisibleDisplayFrame(r);
+            if (500 < (rootView.getHeight() - (r.bottom - r.top))) {
+                mActionWrapper.setVisibility(View.GONE);
+                mDonationWrapper.setVisibility(View.GONE);
+            } else {
+                mActionWrapper.setVisibility(View.VISIBLE);
+                mDonationWrapper.setVisibility(View.VISIBLE);
+            }
+        });
 
         mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
         mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
@@ -518,6 +532,7 @@ public class GivingFragment extends Fragment implements
 
             holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
             holder.mAmountView.setText(currencyInstance.format(sPercentages[position] * mAmountTotal));
+            holder.mPercentageView.setClickable(true);
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
             else if (sDualPane && mPanePosition == position) {
