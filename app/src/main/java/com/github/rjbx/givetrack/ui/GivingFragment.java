@@ -553,7 +553,7 @@ public class GivingFragment extends Fragment implements
             final int adapterPosition = holder.getAdapterPosition();
 
             mRateraidArrays.addShifters(holder.mIncrementButton, holder.mDecrementButton, adapterPosition)
-                           .addEditor(holder.mPercentageView, adapterPosition, mMethodManager);
+                           .addEditor(holder.mPercentageView, adapterPosition, mMethodManager, null);
         }
 
         /**
