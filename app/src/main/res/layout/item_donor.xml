@@ -119,7 +119,7 @@
                 android:gravity="center"
                 android:inputType="numberDecimal"
                 android:imeOptions="actionDone"
-                android:hint="temp"
+                android:hint="enter %"
                 android:importantForAutofill="no"/>
 
             <Button
