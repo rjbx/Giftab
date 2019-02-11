@@ -480,8 +480,9 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.invalidate();
 
         List<PieEntry> timingEntries = new ArrayList<>();
-        timingEntries.add(new PieEntry(donationAmount / recordsTotal, String.format("Last 7 %ss", mIntervalLabel)));
-        timingEntries.add(new PieEntry(recordsTotal - donationAmount / recordsTotal, String.format("Over 7 %ss", mIntervalLabel)));
+        float percentRecent = donationAmount / recordsTotal;
+        timingEntries.add(new PieEntry(percentRecent, String.format("Last 7 %ss", mIntervalLabel)));
+        if (percentRecent != 1f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);

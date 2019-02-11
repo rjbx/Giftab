@@ -41,22 +41,26 @@
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/type_chart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp"
+                android:layout_margin="10dp"/>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/average_chart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp"
+                android:layout_margin="10dp"/>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/timing_chart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"/>
+                android:layout_height="300dp"
+                android:layout_margin="10dp"/>
 
             <com.github.mikephil.charting.charts.HorizontalBarChart
                 android:id="@+id/activity_chart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="50dp"/>
 
         </LinearLayout>
