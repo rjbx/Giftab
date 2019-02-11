@@ -346,8 +346,8 @@ public class GlanceFragment extends Fragment implements
                 }
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
+                    donationAmount += amount;
                     if (recordAggregates.containsKey(name)) {
-                        donationAmount += amount;
                         float a = recordAggregates.get(name);
                         recordAggregates.put(name, amount + a);
                     } else recordAggregates.put(name, amount);
@@ -482,7 +482,7 @@ public class GlanceFragment extends Fragment implements
         List<PieEntry> timingEntries = new ArrayList<>();
         float percentRecent = donationAmount / recordsTotal;
         timingEntries.add(new PieEntry(percentRecent, String.format("Last 7 %ss", mIntervalLabel)));
-        if (percentRecent != 1f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
+        if (percentRecent < .99f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
