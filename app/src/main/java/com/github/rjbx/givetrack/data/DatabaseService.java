@@ -775,6 +775,10 @@ public class DatabaseService extends IntentService {
         UserPreferences.setTracked(this, "0");
         UserPreferences.setRecords(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
+        getContentResolver().update(DatabaseContract.Entry.CONTENT_URI_GIVING, values, null, null);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
