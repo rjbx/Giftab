@@ -341,7 +341,6 @@ public class RecordActivity extends AppCompatActivity implements
             ContentValues values = mValuesArray[position];
             String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
             String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-            String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
             final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
             final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
 
@@ -356,11 +355,7 @@ public class RecordActivity extends AppCompatActivity implements
             holder.mAmountView.setFocusable(!isDualPane());
             holder.mAmountView.setClickable(true);
 
-            Bundle arguments = new Bundle();
-            arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
-            arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
-            arguments.putString(DetailFragment.ARG_ITEM_URL, url);
-
+            holder.itemView.setTag(position);
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
         }
 
