@@ -457,8 +457,8 @@ public class GlanceFragment extends Fragment implements
 //        UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
 
         List<PieEntry> averageEntries = new ArrayList<>();
-        averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime)));
-        averageEntries.add(new PieEntry(recordsTotal / 7, getString(R.string.axis_value_daily)));
+        averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
+        averageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
 
         PieDataSet averageSet = new PieDataSet(averageEntries, "");
         averageSet.setColors(overviewColors);

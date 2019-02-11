@@ -122,7 +122,7 @@
     <string name="axis_value_this">This %s</string>
     <string name="axis_value_yester">Yester%s</string>
     <string name="axis_value_interval">%d %ss Ago</string>
-    <string name="axis_value_alltime">All-time</string>
+    <string name="axis_value_alltime">%sly High</string>
     <string name="axis_value_daily">Daily</string>
     <string name="axis_value_donation">Donated</string>
     <string name="chart_title_activity">Recent Conversions</string>
