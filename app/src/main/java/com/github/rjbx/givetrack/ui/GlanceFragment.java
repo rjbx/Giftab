@@ -312,8 +312,7 @@ public class GlanceFragment extends Fragment implements
         long timeBetweenConversions = currentTime - lastConversionTime;
 
         float recordsTotal = 0;
-        float[] intervalAggregates = new float[7];
-
+        float[] intervalAggregates = new float[100];
 
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
@@ -346,8 +345,8 @@ public class GlanceFragment extends Fragment implements
                         } else validInterval = false;
                     }
                 }
+                intervalAggregates[intervalDifference] += amount;
                 if (validInterval && intervalDifference < 7) {
-                    intervalAggregates[intervalDifference] += amount;
                     donationAmount += amount;
                     if (recordAggregates.containsKey(name)) {
                         float a = recordAggregates.get(name);
@@ -356,6 +355,9 @@ public class GlanceFragment extends Fragment implements
                 }
             }
         }
+
+        float high = 0f;
+        for (float a : intervalAggregates) if (a > high) high = a;
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
@@ -403,7 +405,6 @@ public class GlanceFragment extends Fragment implements
         int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
         float labelSize = fontSize * 1.35f;
 
-
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
@@ -430,7 +431,6 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
-
         float conversionsTotal = donationFrequency;
         List<PieEntry> typeEntries = new ArrayList<>();
         typeEntries.add(new PieEntry(conversionsTotal != 0f ? donationFrequency / conversionsTotal : .5f, getString(R.string.indicator_donation_frequency)));
@@ -454,9 +454,7 @@ public class GlanceFragment extends Fragment implements
         mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
         mTypeChart.invalidate();
 
-
-        float high = Float.parseFloat(UserPreferences.getHigh(context));
-        UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
+//        UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
 
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime)));
