@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -99,7 +98,7 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.percentage_chart)
     PieChart mPercentageChart;
     @BindView(R.id.usage_chart)
-    PieChart mUsageChart;
+    PieChart mRecentChart;
     @BindView(R.id.type_chart)
     PieChart mTypeChart;
     @BindView(R.id.average_chart)
@@ -355,8 +354,8 @@ public class GlanceFragment extends Fragment implements
                 }
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
-                    donationAmount += amount;
                     if (recordAggregates.containsKey(name)) {
+                        donationAmount += amount;
                         float a = recordAggregates.get(name);
                         recordAggregates.put(name, amount + a);
                     } else recordAggregates.put(name, amount);
@@ -432,33 +431,32 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
-        float amountTotal = donationAmount;
-        List<PieEntry> usageEntries = new ArrayList<>();
-        usageEntries.add(new PieEntry(donationAmount / amountTotal, getString(R.string.axis_value_donation)));
+        List<PieEntry> recentEntries = new ArrayList<>();
+        recentEntries.add(new PieEntry(donationAmount / recordsTotal, String.format("Last 7 %ss", mIntervalLabel)));
+        recentEntries.add(new PieEntry(recordsTotal - donationAmount / recordsTotal, String.format("Over 7 %ss", mIntervalLabel)));
 
         int gaugeColors[] = {
                 getResources().getColor(R.color.colorConversion),
                 getResources().getColor(R.color.colorConversionDark),
         };
-        PieDataSet usageSet = new PieDataSet(usageEntries, "");
-        usageSet.setColors(gaugeColors);
-        Description usageDesc = new Description();
-        usageDesc.setText(getString(R.string.chart_title_usage));
-        usageDesc.setTextSize(fontSize);
-        usageEntries.add(new PieEntry(donationAmount / amountTotal, getString(R.string.axis_value_donation)));
+        PieDataSet recentSet = new PieDataSet(recentEntries, "");
+        recentSet.setColors(gaugeColors);
+        Description recentDesc = new Description();
+        recentDesc.setText("Recent Activity");
+        recentDesc.setTextSize(fontSize);
 
-        PieData usageData = new PieData(usageSet);
-        mUsageChart.setData(usageData);
-        mUsageChart.setDescription(usageDesc);
-        mUsageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        mUsageChart.setHoleRadius(15f);
-        mUsageChart.setBackgroundColor(backgroundColor);
-        mUsageChart.setTransparentCircleColor(backgroundColor);
-        mUsageChart.setHoleColor(backgroundColor);
-        mUsageChart.getLegend().setEnabled(false);
-        mUsageChart.setEntryLabelTextSize(labelSize);
-        mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
-        mUsageChart.invalidate();
+        PieData usageData = new PieData(recentSet);
+        mRecentChart.setData(usageData);
+        mRecentChart.setDescription(recentDesc);
+        mRecentChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mRecentChart.setHoleRadius(15f);
+        mRecentChart.setBackgroundColor(backgroundColor);
+        mRecentChart.setTransparentCircleColor(backgroundColor);
+        mRecentChart.setHoleColor(backgroundColor);
+        mRecentChart.getLegend().setEnabled(false);
+        mRecentChart.setEntryLabelTextSize(labelSize);
+        mRecentChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mRecentChart));
+        mRecentChart.invalidate();
 
         float conversionsTotal = donationFrequency;
         List<PieEntry> typeEntries = new ArrayList<>();
