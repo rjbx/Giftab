@@ -334,16 +334,22 @@ public class GlanceFragment extends Fragment implements
                 int currentInterval = Calendar.getInstance().get(mInterval);
                 int intervalDifference = currentInterval - recordInterval;
 
-                boolean validInterval = true;
-                if (mInterval != Calendar.YEAR && recordInterval > currentInterval) {
-                    int priorYearIntervals = 7 - currentInterval;
+                boolean validInterval = false;
+                if (mInterval != Calendar.YEAR) {
                     int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
-                    if (priorYearIntervals > 0 && yearsDifference < 2) {
-                        int intervalThreshold = mInterval == Calendar.MONTH ? 13 : 53;
-                        int priorYearIndex = recordInterval - intervalThreshold;
-                        intervalDifference = currentInterval - priorYearIndex;
-                    } else validInterval = false;
-                }
+                    if (yearsDifference > 0) {
+                        if (recordInterval > currentInterval) {
+                            int priorIntervals = 7 - currentInterval;
+                            if (priorIntervals > 0 && yearsDifference < 2) {
+                                int intervalThreshold = mInterval == Calendar.MONTH ? 13 : 53;
+                                int priorYearIndex = recordInterval - intervalThreshold;
+                                intervalDifference = currentInterval - priorYearIndex;
+                                validInterval = true;
+                            }
+                        }
+                    } else validInterval = true;
+                } else validInterval = true;
+
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
                     donationAmount += amount;
@@ -482,7 +488,7 @@ public class GlanceFragment extends Fragment implements
         List<PieEntry> timingEntries = new ArrayList<>();
         float percentRecent = donationAmount / recordsTotal;
         timingEntries.add(new PieEntry(percentRecent, String.format("Last 7 %ss", mIntervalLabel)));
-        if (percentRecent < .99f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
+        if (percentRecent < 1f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
