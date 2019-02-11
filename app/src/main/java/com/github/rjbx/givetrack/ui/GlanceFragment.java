@@ -334,22 +334,18 @@ public class GlanceFragment extends Fragment implements
                 int currentInterval = Calendar.getInstance().get(mInterval);
                 int intervalDifference = currentInterval - recordInterval;
 
-                boolean validInterval = false;
+                boolean validInterval = true;
                 if (mInterval != Calendar.YEAR) {
                     int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
                     if (yearsDifference > 0) {
-                        if (recordInterval > currentInterval) {
-                            int priorIntervals = 7 - currentInterval;
-                            if (priorIntervals > 0 && yearsDifference < 2) {
-                                int intervalThreshold = mInterval == Calendar.MONTH ? 13 : 53;
-                                int priorYearIndex = recordInterval - intervalThreshold;
-                                intervalDifference = currentInterval - priorYearIndex;
-                                validInterval = true;
-                            }
-                        }
-                    } else validInterval = true;
-                } else validInterval = true;
-
+                        int priorIntervals = 7 - currentInterval;
+                        if (priorIntervals > 0 && recordInterval > currentInterval && yearsDifference < 2) {
+                            int intervalThreshold = mInterval == Calendar.MONTH ? 13 : 53;
+                            int priorYearIndex = recordInterval - intervalThreshold;
+                            intervalDifference = currentInterval - priorYearIndex;
+                        } else validInterval = false;
+                    }
+                }
                 if (validInterval && intervalDifference < 7) {
                     intervalAggregates[intervalDifference] += amount;
                     donationAmount += amount;
