@@ -131,9 +131,6 @@ public class GlanceFragment extends Fragment implements
         if (args != null)
             sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
 
-        float tracked = Float.parseFloat(UserPreferences.getTracked(getContext()));
-        mTracked = CURRENCY_FORMATTER.format(tracked);
-
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
         dateFormatter.setTimeZone(TimeZone.getDefault());
@@ -184,7 +181,6 @@ public class GlanceFragment extends Fragment implements
                     mTimeDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    UserPreferences.setTracked(getContext(), "0");
                     UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
                     mAmountView.setText("0");
                     break;
@@ -307,14 +303,13 @@ public class GlanceFragment extends Fragment implements
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
-        long currentTime = System.currentTimeMillis();
-        long lastConversionTime = UserPreferences.getTimestamp(context);
-        long timeBetweenConversions = currentTime - lastConversionTime;
-
         float recordsTotal = 0;
         float[] intervalAggregates = new float[100];
 
         int highDifference = 0;
+
+        float tracked = 0f;
+        long tracktime = UserPreferences.getTimetrack(mParentActivity);
 
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
@@ -328,6 +323,7 @@ public class GlanceFragment extends Fragment implements
                 String name = record.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
 
                 recordsTotal += amount;
+                if (time >= tracktime) tracked += amount;
 
                 Calendar recordCalendar = Calendar.getInstance();
                 recordCalendar.setTimeInMillis(time);
@@ -358,6 +354,8 @@ public class GlanceFragment extends Fragment implements
                 if (intervalDifference > highDifference) highDifference = intervalDifference;
             }
         }
+
+        mTracked = CURRENCY_FORMATTER.format(tracked);
 
         float high = 0f;
         for (float a : intervalAggregates) if (a > high) high = a;

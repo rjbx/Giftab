@@ -713,16 +713,6 @@ public class DatabaseService extends IntentService {
                 UserPreferences.setRecords(this, records);
             }
 
-            long timeBetweenConversions = System.currentTimeMillis() - time;
-            long daysBetweenConversions = TimeUnit.DAYS.convert(timeBetweenConversions, TimeUnit.MILLISECONDS);
-            if (daysBetweenConversions <= 1) {
-
-                float today = Float.parseFloat(UserPreferences.getToday(this)) - rI;
-                UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", today));
-
-                float tracked = Float.parseFloat(UserPreferences.getTracked(this)) - rI;
-                UserPreferences.setTracked(this, String.format(Locale.getDefault(),"%.2f", tracked));
-            }
             UserPreferences.updateFirebaseUser(this);
         });
 
@@ -761,8 +751,6 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
         DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null));
 
-        UserPreferences.setToday(this, "0");
-        UserPreferences.setTracked(this, "0");
         UserPreferences.setRecords(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
         ContentValues values = new ContentValues();
@@ -998,35 +986,8 @@ public class DatabaseService extends IntentService {
 
     private void updateTimePreferences(long anchorTime, float amount) {
 
-        float totalTracked = Float.parseFloat(UserPreferences.getTracked(this)) + amount;
-        UserPreferences.setTracked(this, String.format(Locale.getDefault(), "%.2f", totalTracked));
-
-        long lastConversionTime = UserPreferences.getTimestamp(this);
-        long timeBetweenConversions = System.currentTimeMillis() - lastConversionTime;
-
-        long daysBetweenConversions =
-                TimeUnit.DAYS.convert(
-                        timeBetweenConversions,
-                        TimeUnit.MILLISECONDS
-                );
-
         if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
         else UserPreferences.setAnchor(this, anchorTime);
-
-        long timeSinceAnchor = System.currentTimeMillis() - anchorTime;
-        long daysSinceAnchor =
-                TimeUnit.DAYS.convert(
-                        timeSinceAnchor,
-                        TimeUnit.MILLISECONDS
-                );
-
-        if (daysSinceAnchor == 0) {
-
-            float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
-            UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
-
-            UserPreferences.setTimestamp(this, anchorTime);
-        }
     }
 
     private String urlToEmailAddress(String url) {

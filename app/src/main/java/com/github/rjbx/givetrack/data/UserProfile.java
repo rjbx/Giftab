@@ -17,7 +17,6 @@ import java.util.Map;
     private String birthdate;
     private String gender;
     private int theme;
-    private String tracked;
     private String donation;
     private String magnitude;
     private List<String> charities;
@@ -36,10 +35,8 @@ import java.util.Map;
     private boolean focus;
     private String ein;
     private List<String> records;
-    private String today;
     private boolean historical;
     private long anchor;
-    private long timestamp;
     private long timetrack;
 
     /**
@@ -56,7 +53,6 @@ import java.util.Map;
             String birthdate,
             String gender,
             int theme,
-            String tracked,
             String donation,
             String magnitude,
             List<String> charities,
@@ -75,17 +71,14 @@ import java.util.Map;
             boolean focus,
             String ein,
             List<String> records,
-            String today,
             boolean historical,
             long anchor,
-            long timestamp,
             long timetrack) {
         this.uid = uid;
         this.email = email;
         this.birthdate = birthdate;
         this.gender = gender;
         this.theme = theme;
-        this.tracked = tracked;
         this.magnitude = magnitude;
         this.donation = donation;
         this.charities = charities;
@@ -104,10 +97,8 @@ import java.util.Map;
         this.focus = focus;
         this.ein = ein;
         this.records = records;
-        this.today = today;
         this.historical = historical;
         this.anchor = anchor;
-        this.timestamp = timestamp;
         this.timetrack = timetrack;
     }
 
@@ -135,8 +126,6 @@ import java.util.Map;
     public void setGender(String gender) { this.gender = gender; }
     public int getTheme() { return theme; }
     public void setTheme(int theme) { this.theme = theme; }
-    public String getTracked() { return tracked; }
-    public void setTracked(String tracked) { this.tracked = tracked; }
     public String getMagnitude() { return magnitude; }
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
     public String getDonation() { return donation; }
@@ -231,8 +220,6 @@ import java.util.Map;
     }
     public List<String> getRecords() { return records; }
     public void setRecords(List<String> records) { this.records = records; }
-    public String getToday() { return today; }
-    public void setToday(String today) { this.today = today; }
     public boolean getHistorical() {
         return historical;
     }
@@ -245,12 +232,6 @@ import java.util.Map;
     public void setAnchor(long anchor) {
         this.anchor = anchor;
     }
-    public long getTimestamp() {
-        return timestamp;
-    }
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
     public long getTimetrack() { return timetrack; }
     public void setTimetrack(long timetrack) {
         this.timetrack = timetrack;
@@ -262,7 +243,6 @@ import java.util.Map;
         map.put("birthdate", birthdate);
         map.put("gender", gender);
         map.put("theme", theme);
-        map.put("tracked", tracked);
         map.put("magnitude", magnitude);
         map.put("donation", donation);
         map.put("charities", charities);
@@ -281,10 +261,8 @@ import java.util.Map;
         map.put("focus", focus);
         map.put("ein", ein);
         map.put("records", records);
-        map.put("today", today);
         map.put("historical", historical);
         map.put("anchor", anchor);
-        map.put("timestamp", timestamp);
         map.put("timetrack", timetrack);
         return map;
     }

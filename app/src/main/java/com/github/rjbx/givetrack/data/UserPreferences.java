@@ -22,7 +22,6 @@ public class UserPreferences {
     public static final String KEY_BIRTHDATE = "birthdate";
     public static final String KEY_GENDER = "gender";
     public static final String KEY_THEME = "theme";
-    public static final String KEY_TRACKED = "tracked";
     public static final String KEY_MAGNITUDE = "magnitude";
     public static final String KEY_DONATION = "donation";
     public static final String KEY_CHARITIES = "charities";
@@ -41,10 +40,8 @@ public class UserPreferences {
     public static final String KEY_FOCUS = "focus";
     public static final String KEY_EIN = "ein";
     public static final String KEY_RECORDS = "records";
-    public static final String KEY_TODAY = "today";
     public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
-    public static final String KEY_TIMESTAMP = "timestamp";
     public static final String KEY_TIMETRACK = "timetrack";
 
     public static final String LAST_PREFERENCE = KEY_TIMETRACK;
@@ -192,16 +189,6 @@ public class UserPreferences {
         sp.edit().putString(KEY_GENDER, gender).apply();
     }
 
-    public static String getTracked(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_TRACKED, "0");
-    }
-
-    public static void setTracked(Context context, String tracked) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_TRACKED, tracked).apply();
-    }
-
     public static String getMagnitude(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(KEY_MAGNITUDE, "0.01");
@@ -220,16 +207,6 @@ public class UserPreferences {
     public static void setDonation(Context context, String donation) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(KEY_DONATION, donation).apply();
-    }
-
-    public static String getToday(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_TODAY, "0");
-    }
-
-    public static void setToday(Context context, String today) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_TODAY, today).apply();
     }
 
     public static String getBirthdate(Context context) {
@@ -305,16 +282,6 @@ public class UserPreferences {
         sp.edit().putLong(KEY_ANCHOR, anchor).apply();
     }
 
-    public static long getTimestamp(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getLong(KEY_TIMESTAMP, System.currentTimeMillis());
-    }
-
-    public static void setTimestamp(Context context, long timestamp) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putLong(KEY_TIMESTAMP, timestamp).apply();
-    }
-
     public static long getTimetrack(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getLong(KEY_TIMETRACK, System.currentTimeMillis());
@@ -350,7 +317,6 @@ public class UserPreferences {
         setRecords(context, user.getRecords());
         setHistorical(context, user.getHistorical());
         setAnchor(context, user.getAnchor());
-        setTimestamp(context, user.getTimestamp());
         setTimetrack(context, user.getTimetrack());
     }
 
@@ -367,7 +333,6 @@ public class UserPreferences {
                 getBirthdate(context),
                 getGender(context),
                 getTheme(context),
-                getTracked(context),
                 getDonation(context),
                 getMagnitude(context),
                 getCharities(context),
@@ -386,10 +351,8 @@ public class UserPreferences {
                 getFocus(context),
                 getEin(context),
                 getRecords(context),
-                getToday(context),
                 getHistorical(context),
                 getAnchor(context),
-                getTimestamp(context),
                 getTimetrack(context));
     }
 
