@@ -314,6 +314,8 @@ public class GlanceFragment extends Fragment implements
         float recordsTotal = 0;
         float[] intervalAggregates = new float[100];
 
+        int highDifference = 0;
+
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
         int donationFrequency = sValuesArray.length;
@@ -353,6 +355,7 @@ public class GlanceFragment extends Fragment implements
                         recordAggregates.put(name, amount + a);
                     } else recordAggregates.put(name, amount);
                 }
+                if (intervalDifference > highDifference) highDifference = intervalDifference;
             }
         }
 
@@ -433,7 +436,8 @@ public class GlanceFragment extends Fragment implements
 
         float conversionsTotal = donationFrequency;
         List<PieEntry> typeEntries = new ArrayList<>();
-        typeEntries.add(new PieEntry(conversionsTotal != 0f ? donationFrequency / conversionsTotal : .5f, getString(R.string.indicator_donation_frequency)));
+        typeEntries.add(new PieEntry(recordsTotal / highDifference, "Average" + mIntervalLabel));
+        typeEntries.add(new PieEntry(recordsTotal / sValuesArray.length, "Average Donation"));
 
         PieDataSet typeSet = new PieDataSet(typeEntries, "");
         typeSet.setColors(overviewColors);
