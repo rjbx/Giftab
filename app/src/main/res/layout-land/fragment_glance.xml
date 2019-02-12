@@ -52,13 +52,13 @@
                     android:layout_weight=".33"/>
 
                 <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/type_chart"
+                    android:id="@+id/average_chart"
                     android:layout_width="0dp"
                     android:layout_height="180dp"
                     android:layout_weight=".33"/>
 
                 <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/average_chart"
+                    android:id="@+id/usage_chart"
                     android:layout_width="0dp"
                     android:layout_height="180dp"
                     android:layout_weight=".33"/>

@@ -93,8 +93,8 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
-    @BindView(R.id.type_chart) PieChart mTypeChart;
     @BindView(R.id.average_chart) PieChart mAverageChart;
+    @BindView(R.id.usage_chart) PieChart mUsageChart;
     @BindView(R.id.timing_chart) PieChart mTimingChart;
     @BindView(R.id.activity_chart) BarChart mActivityChart;
 
@@ -360,11 +360,12 @@ public class GlanceFragment extends Fragment implements
         float high = 0f;
         for (float a : intervalAggregates) if (a > high) high = a;
 
+        StringBuilder percentageMessageBuilder = new StringBuilder();
+
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
 
         Set<Map.Entry<String, Float>> entries = recordAggregates.entrySet();
-        StringBuilder percentageMessageBuilder = new StringBuilder();
         for (Map.Entry<String, Float> entry : entries) {
             String name = entry.getKey();
             float percentage = entry.getValue();
@@ -432,33 +433,15 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
-        float conversionsTotal = donationFrequency;
-        List<PieEntry> typeEntries = new ArrayList<>();
-        typeEntries.add(new PieEntry(recordsTotal / highDifference, "Average" + mIntervalLabel));
-        typeEntries.add(new PieEntry(recordsTotal / sValuesArray.length, "Average Donation"));
-
-        PieDataSet typeSet = new PieDataSet(typeEntries, "");
-        typeSet.setColors(overviewColors);
-        Description typeDesc = new Description();
-        typeDesc.setText(getString(R.string.chart_title_type));
-        typeDesc.setTextSize(fontSize);
-
-        PieData typeData = new PieData(typeSet);
-        mTypeChart.setData(typeData);
-        mTypeChart.setDescription(typeDesc);
-        mTypeChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
-        mTypeChart.setHoleRadius(15f);
-        mTypeChart.setBackgroundColor(backgroundColor);
-        mTypeChart.setTransparentCircleColor(backgroundColor);
-        mTypeChart.setHoleColor(backgroundColor);
-        mTypeChart.getLegend().setEnabled(false);
-        mTypeChart.setEntryLabelTextSize(labelSize);
-        mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
-        mTypeChart.invalidate();
+        String intervalLabel = "Average " + mIntervalLabel;
+        String donationLabel = "Average Donation";
+        float perInterval = recordsTotal / highDifference;
+        float perDonation = recordsTotal / sValuesArray.length;
+        String averageMessage = String.format("%s %s\n%s %s", intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
-        averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
-        averageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
+        averageEntries.add(new PieEntry(perInterval, intervalLabel));
+        averageEntries.add(new PieEntry(perDonation, donationLabel));
 
         PieDataSet averageSet = new PieDataSet(averageEntries, "");
         averageSet.setColors(overviewColors);
@@ -467,6 +450,7 @@ public class GlanceFragment extends Fragment implements
         averageDesc.setTextSize(fontSize);
 
         PieData averageData = new PieData(averageSet);
+        mAverageChart.setTag(averageMessage);
         mAverageChart.setData(averageData);
         mAverageChart.setDescription(averageDesc);
         mAverageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
@@ -479,18 +463,52 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
         mAverageChart.invalidate();
 
-        List<PieEntry> timingEntries = new ArrayList<>();
+        String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
+        String currentLabel = getFormattedValue(1, null);
+        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
+
+        List<PieEntry> usageEntries = new ArrayList<>();
+        usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
+        usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
+
+        PieDataSet usageSet = new PieDataSet(usageEntries, "");
+        usageSet.setColors(overviewColors);
+        Description usageDesc = new Description();
+        usageDesc.setText(getString(R.string.chart_title_usage));
+        usageDesc.setTextSize(fontSize);
+
+        PieData usageData = new PieData(usageSet);
+        mUsageChart.setTag(usageMessage);
+        mUsageChart.setData(usageData);
+        mUsageChart.setDescription(usageDesc);
+        mUsageChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
+        mUsageChart.setHoleRadius(15f);
+        mUsageChart.setBackgroundColor(backgroundColor);
+        mUsageChart.setTransparentCircleColor(backgroundColor);
+        mUsageChart.setHoleColor(backgroundColor);
+        mUsageChart.getLegend().setEnabled(false);
+        mUsageChart.setEntryLabelTextSize(labelSize);
+        mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
+        mUsageChart.invalidate();
+
+        String recentLabel = String.format("Within 7 %ss", mIntervalLabel);
+        String oldLabel = String.format("Over 7 %ss", mIntervalLabel);
         float percentRecent = donationAmount / recordsTotal;
-        timingEntries.add(new PieEntry(percentRecent, String.format("Last 7 %ss", mIntervalLabel)));
-        if (percentRecent < 1f) timingEntries.add(new PieEntry(1f - percentRecent, String.format("Over 7 %ss", mIntervalLabel)));
+        float percentOld = 1f - percentRecent;
+        String timingMessage = String.format("%s %s\n%s %s", recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+
+        List<PieEntry> timingEntries = new ArrayList<>();
+        timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
+        if (percentRecent < 1f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalLabel)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
         Description timingDesc = new Description();
-        timingDesc.setText("Activity Timing");
+        timingDesc.setText(getString(R.string.chart_title_timing));
         timingDesc.setTextSize(fontSize);
 
         PieData timingData = new PieData(timingSet);
+        mTimingChart.setTag(timingMessage);
         mTimingChart.setData(timingData);
         mTimingChart.setDescription(timingDesc);
         mTimingChart.setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
@@ -528,7 +546,7 @@ public class GlanceFragment extends Fragment implements
         BarData activityData = new BarData(activityDataSet);
         activityData.setBarWidth(.75f);
         Description activityDesc = new Description();
-        activityDesc.setText(getString(R.string.chart_title_activity));
+        activityDesc.setText(getString(R.string.chart_title_timing));
         activityDesc.setTextSize(fontSize);
 
         mActivityChart.setTag(activityMessage);
