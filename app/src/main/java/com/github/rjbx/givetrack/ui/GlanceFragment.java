@@ -458,8 +458,6 @@ public class GlanceFragment extends Fragment implements
         mTypeChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTypeChart));
         mTypeChart.invalidate();
 
-//        UserPreferences.setHigh(context, String.format(Locale.getDefault(), "%.2f", high));
-
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
         averageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));

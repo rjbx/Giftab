@@ -41,8 +41,6 @@ public class UserPreferences {
     public static final String KEY_FOCUS = "focus";
     public static final String KEY_EIN = "ein";
     public static final String KEY_RECORDS = "records";
-    public static final String KEY_HIGH = "high";
-    public static final String KEY_HIGHDAY = "highday";
     public static final String KEY_TODAY = "today";
     public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
@@ -223,16 +221,6 @@ public class UserPreferences {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(KEY_DONATION, donation).apply();
     }
-    
-    public static String getHigh(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_HIGH, "0");
-    }
-
-    public static void setHigh(Context context, String high) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_HIGH, high).apply();
-    }
 
     public static String getToday(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -307,16 +295,6 @@ public class UserPreferences {
         sp.edit().putString(KEY_EIN, ein).apply();
     }
 
-    public static long getHighday(Context context) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getLong(KEY_HIGHDAY, System.currentTimeMillis());
-    }
-
-    public static void setHighday(Context context, long highday) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putLong(KEY_HIGHDAY, highday).apply();
-    }
-
     public static long getAnchor(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getLong(KEY_ANCHOR, System.currentTimeMillis());
@@ -370,9 +348,7 @@ public class UserPreferences {
         setFocus(context, user.getFocus());
         setEin(context, user.getEin());
         setRecords(context, user.getRecords());
-        setHigh(context, user.getHigh());
         setHistorical(context, user.getHistorical());
-        setHighday(context, user.getHighday());
         setAnchor(context, user.getAnchor());
         setTimestamp(context, user.getTimestamp());
         setTimetrack(context, user.getTimetrack());
@@ -410,10 +386,8 @@ public class UserPreferences {
                 getFocus(context),
                 getEin(context),
                 getRecords(context),
-                getHigh(context),
                 getToday(context),
                 getHistorical(context),
-                getHighday(context),
                 getAnchor(context),
                 getTimestamp(context),
                 getTimetrack(context));

@@ -713,15 +713,6 @@ public class DatabaseService extends IntentService {
                 UserPreferences.setRecords(this, records);
             }
 
-            long highday = UserPreferences.getHighday(this);
-            long timeFromHighday= Math.abs(time - highday);
-            long daysFromHighday = TimeUnit.DAYS.convert(timeFromHighday, TimeUnit.MILLISECONDS);
-
-            if (daysFromHighday <= 1) {
-                float high = Float.parseFloat(UserPreferences.getHigh(this)) - rI;
-                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", high));
-            }
-
             long timeBetweenConversions = System.currentTimeMillis() - time;
             long daysBetweenConversions = TimeUnit.DAYS.convert(timeBetweenConversions, TimeUnit.MILLISECONDS);
             if (daysBetweenConversions <= 1) {
@@ -770,7 +761,6 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
         DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null));
 
-        UserPreferences.setHigh(this, "0");
         UserPreferences.setToday(this, "0");
         UserPreferences.setTracked(this, "0");
         UserPreferences.setRecords(this, new ArrayList<>());
@@ -1034,12 +1024,6 @@ public class DatabaseService extends IntentService {
 
             float todaysImpact = daysBetweenConversions > 0 ? 0 : Float.valueOf(UserPreferences.getToday(this)) + amount;
             UserPreferences.setToday(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
-
-            float high = Float.parseFloat(UserPreferences.getHigh(this));
-            if (todaysImpact > high) {
-                UserPreferences.setHighday(this, System.currentTimeMillis());
-                UserPreferences.setHigh(this, String.format(Locale.getDefault(), "%.2f", todaysImpact));
-            }
 
             UserPreferences.setTimestamp(this, anchorTime);
         }

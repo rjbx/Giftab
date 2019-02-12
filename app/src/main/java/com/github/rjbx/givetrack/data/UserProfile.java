@@ -36,10 +36,8 @@ import java.util.Map;
     private boolean focus;
     private String ein;
     private List<String> records;
-    private String high;
     private String today;
     private boolean historical;
-    private long highday;
     private long anchor;
     private long timestamp;
     private long timetrack;
@@ -77,10 +75,8 @@ import java.util.Map;
             boolean focus,
             String ein,
             List<String> records,
-            String high,
             String today,
             boolean historical,
-            long highday,
             long anchor,
             long timestamp,
             long timetrack) {
@@ -108,10 +104,8 @@ import java.util.Map;
         this.focus = focus;
         this.ein = ein;
         this.records = records;
-        this.high = high;
         this.today = today;
         this.historical = historical;
-        this.highday = highday;
         this.anchor = anchor;
         this.timestamp = timestamp;
         this.timetrack = timetrack;
@@ -237,8 +231,6 @@ import java.util.Map;
     }
     public List<String> getRecords() { return records; }
     public void setRecords(List<String> records) { this.records = records; }
-    public String getHigh() { return high; }
-    public void setHigh(String high) { this.high = high; }
     public String getToday() { return today; }
     public void setToday(String today) { this.today = today; }
     public boolean getHistorical() {
@@ -247,8 +239,6 @@ import java.util.Map;
     public void setHistorical(boolean historical) {
         this.historical = historical;
     }
-    public long getHighday() { return highday; }
-    public void setHighday(long highday) { this.highday = highday; }
     public long getAnchor() {
         return anchor;
     }
@@ -291,10 +281,8 @@ import java.util.Map;
         map.put("focus", focus);
         map.put("ein", ein);
         map.put("records", records);
-        map.put("high", high);
         map.put("today", today);
         map.put("historical", historical);
-        map.put("highday", highday);
         map.put("anchor", anchor);
         map.put("timestamp", timestamp);
         map.put("timetrack", timetrack);
