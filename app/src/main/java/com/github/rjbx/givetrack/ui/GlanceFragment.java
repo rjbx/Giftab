@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.icu.util.TimeUnit;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -325,33 +326,22 @@ public class GlanceFragment extends Fragment implements
                 recordsTotal += amount;
                 if (time >= tracktime) tracked += amount;
 
+                float a = recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f;
+                recordAggregates.put(name, amount + a);
+
                 Calendar recordCalendar = Calendar.getInstance();
                 recordCalendar.setTimeInMillis(time);
                 int recordInterval = recordCalendar.get(mInterval);
                 int currentInterval = Calendar.getInstance().get(mInterval);
                 int intervalDifference = currentInterval - recordInterval;
 
-                boolean validInterval = true;
                 if (mInterval != Calendar.YEAR) {
-                    int yearsDifference = Calendar.getInstance().get(Calendar.YEAR) - recordCalendar.get(Calendar.YEAR);
-                    if (yearsDifference > 0) {
-                        int priorIntervals = 7 - currentInterval;
-                        if (priorIntervals > 0 && recordInterval > currentInterval && yearsDifference < 2) {
-                            int intervalThreshold = mInterval == Calendar.MONTH ? 13 : 53;
-                            int priorYearIndex = recordInterval - intervalThreshold;
-                            intervalDifference = currentInterval - priorYearIndex;
-                        } else validInterval = false;
-                    }
-                }
-                intervalAggregates[intervalDifference] += amount;
-                if (validInterval && intervalDifference < 7) {
-                    donationAmount += amount;
-                    if (recordAggregates.containsKey(name)) {
-                        float a = recordAggregates.get(name);
-                        recordAggregates.put(name, amount + a);
-                    } else recordAggregates.put(name, amount);
-                }
-                if (intervalDifference > highDifference) highDifference = intervalDifference;
+                    int recordYear = recordCalendar.get(Calendar.YEAR);
+                    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                    int yearsDifference = currentYear - recordYear;
+                    if (mInterval == Calendar.MONTH) intervalDifference = intervalDifference + (yearsDifference * 12);
+                    else intervalDifference = intervalDifference + (yearsDifference * 52);
+                } intervalAggregates[intervalDifference] += amount;
             }
         }
 
