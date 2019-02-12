@@ -344,6 +344,8 @@ public class GlanceFragment extends Fragment implements
                 else intervalDifference = intervalDifference + (yearsDifference * 52);
                 if (intervalDifference > 10000) intervalAggregates = Arrays.copyOf(intervalAggregates, intervalDifference);
             } intervalAggregates[intervalDifference] += amount;
+
+            if (highDifference < intervalDifference) highDifference = intervalDifference;
         }
 
         mTracked = CURRENCY_FORMATTER.format(tracked);
@@ -426,7 +428,7 @@ public class GlanceFragment extends Fragment implements
 
         String intervalLabel = "Average " + mIntervalLabel;
         String donationLabel = "Average Donation";
-        float perInterval = recordsTotal / highDifference;
+        float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
         String averageMessage = String.format("%s %s\n%s %s", intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
