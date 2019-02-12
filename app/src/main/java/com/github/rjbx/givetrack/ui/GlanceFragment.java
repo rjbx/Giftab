@@ -305,7 +305,7 @@ public class GlanceFragment extends Fragment implements
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
         float recordsTotal = 0;
-        float[] intervalAggregates = new float[100];
+        List<Float> intervalAggregates = new ArrayList<>();
 
         int highDifference = 0;
 
@@ -326,8 +326,8 @@ public class GlanceFragment extends Fragment implements
                 recordsTotal += amount;
                 if (time >= tracktime) tracked += amount;
 
-                float a = recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f;
-                recordAggregates.put(name, amount + a);
+                float recordAmount = amount + recordAggregates.get(name);
+                recordAggregates.put(name, recordAmount);
 
                 Calendar recordCalendar = Calendar.getInstance();
                 recordCalendar.setTimeInMillis(time);
@@ -341,7 +341,10 @@ public class GlanceFragment extends Fragment implements
                     int yearsDifference = currentYear - recordYear;
                     if (mInterval == Calendar.MONTH) intervalDifference = intervalDifference + (yearsDifference * 12);
                     else intervalDifference = intervalDifference + (yearsDifference * 52);
-                } intervalAggregates[intervalDifference] += amount;
+                } 
+                float intervalAmount = amount + intervalAggregates.get(intervalDifference);
+                if (intervalAggregates.size() <= intervalDifference) intervalAggregates.add(intervalDifference, intervalAmount);
+                else intervalAggregates.set(intervalDifference, intervalAmount);
             }
         }
 
@@ -455,11 +458,11 @@ public class GlanceFragment extends Fragment implements
 
         String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
         String currentLabel = getFormattedValue(1, null);
-        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
+        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates.get(0)));
 
         List<PieEntry> usageEntries = new ArrayList<>();
         usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
-        usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
+        usageEntries.add(new PieEntry(intervalAggregates.get(0), getFormattedValue(1, null)));
 
         PieDataSet usageSet = new PieDataSet(usageEntries, "");
         usageSet.setColors(overviewColors);
@@ -513,18 +516,18 @@ public class GlanceFragment extends Fragment implements
 
         List<BarEntry> activityEntries = new ArrayList<>();
         activityEntries.add(new BarEntry(0f, high));
-        activityEntries.add(new BarEntry(1f, intervalAggregates[0]));
-        activityEntries.add(new BarEntry(2f, intervalAggregates[1]));
-        activityEntries.add(new BarEntry(3f, intervalAggregates[2]));
-        activityEntries.add(new BarEntry(4f, intervalAggregates[3]));
-        activityEntries.add(new BarEntry(5f, intervalAggregates[4]));
-        activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
-        activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
+        activityEntries.add(new BarEntry(1f, intervalAggregates.get(0)));
+        activityEntries.add(new BarEntry(2f, intervalAggregates.get(1)));
+        activityEntries.add(new BarEntry(3f, intervalAggregates.get(2)));
+        activityEntries.add(new BarEntry(4f, intervalAggregates.get(3)));
+        activityEntries.add(new BarEntry(5f, intervalAggregates.get(4)));
+        activityEntries.add(new BarEntry(6f, intervalAggregates.get(5)));
+        activityEntries.add(new BarEntry(7f, intervalAggregates.get(6)));
 
         StringBuilder activityMessageBuilder = new StringBuilder();
         for (int i = 0; i < activityEntries.size(); i++) {
             String label = getFormattedValue(i, null);
-            String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates[i - 1]);
+            String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates.get(i - 1));
             String intervalStr = String.format(Locale.getDefault(), "%s %s\n", label, amount);
             activityMessageBuilder.append(intervalStr);
         }
