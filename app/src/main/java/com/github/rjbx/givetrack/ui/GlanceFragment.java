@@ -49,6 +49,7 @@ import com.github.rjbx.givetrack.data.UserPreferences;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -305,8 +306,8 @@ public class GlanceFragment extends Fragment implements
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
         float recordsTotal = 0;
-        List<Float> intervalAggregates = new ArrayList<>();
-
+        float[] intervalAggregates = new float[10000];
+        
         int highDifference = 0;
 
         float tracked = 0f;
@@ -315,38 +316,34 @@ public class GlanceFragment extends Fragment implements
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
         int donationFrequency = sValuesArray.length;
+        if (donationFrequency == 0) return;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
-        if (sValuesArray != null && donationFrequency != 0) {
-            for (int j = 0; j < sValuesArray.length; j++) {
-                ContentValues record = sValuesArray[j];
-                Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-                Float amount = Float.parseFloat(record.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
-                String name = record.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+        for (int j = 0; j < sValuesArray.length; j++) {
+            ContentValues record = sValuesArray[j];
+            Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+            Float amount = Float.parseFloat(record.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
+            String name = record.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
 
-                recordsTotal += amount;
-                if (time >= tracktime) tracked += amount;
+            recordsTotal += amount;
+            if (time >= tracktime) tracked += amount;
 
-                float recordAmount = amount + (recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f);
-                recordAggregates.put(name, recordAmount);
+            float recordAmount = amount + (recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f);
+            recordAggregates.put(name, recordAmount);
 
-                Calendar recordCalendar = Calendar.getInstance();
-                recordCalendar.setTimeInMillis(time);
-                int recordInterval = recordCalendar.get(mInterval);
-                int currentInterval = Calendar.getInstance().get(mInterval);
-                int intervalDifference = currentInterval - recordInterval;
+            Calendar recordCalendar = Calendar.getInstance();
+            recordCalendar.setTimeInMillis(time);
+            int recordInterval = recordCalendar.get(mInterval);
+            int currentInterval = Calendar.getInstance().get(mInterval);
+            int intervalDifference = currentInterval - recordInterval;
 
-                if (mInterval != Calendar.YEAR) {
-                    int recordYear = recordCalendar.get(Calendar.YEAR);
-                    int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                    int yearsDifference = currentYear - recordYear;
-                    if (mInterval == Calendar.MONTH) intervalDifference = intervalDifference + (yearsDifference * 12);
-                    else intervalDifference = intervalDifference + (yearsDifference * 52);
-                } 
-                if (intervalAggregates.size() <= intervalDifference) {
-                    float intervalAmount = amount + intervalAggregates.get(intervalDifference);
-                    intervalAggregates.add(intervalDifference, intervalAmount);
-                } else intervalAggregates.set(intervalDifference, amount);
-            }
+            if (mInterval != Calendar.YEAR) {
+                int recordYear = recordCalendar.get(Calendar.YEAR);
+                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int yearsDifference = currentYear - recordYear;
+                if (mInterval == Calendar.MONTH) intervalDifference = intervalDifference + (yearsDifference * 12);
+                else intervalDifference = intervalDifference + (yearsDifference * 52);
+                if (intervalDifference > 10000) intervalAggregates = Arrays.copyOf(intervalAggregates, intervalDifference);
+            } intervalAggregates[intervalDifference] += amount;
         }
 
         mTracked = CURRENCY_FORMATTER.format(tracked);
@@ -459,11 +456,11 @@ public class GlanceFragment extends Fragment implements
 
         String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
         String currentLabel = getFormattedValue(1, null);
-        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates.get(0)));
+        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
 
         List<PieEntry> usageEntries = new ArrayList<>();
         usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
-        usageEntries.add(new PieEntry(intervalAggregates.get(0), getFormattedValue(1, null)));
+        usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
 
         PieDataSet usageSet = new PieDataSet(usageEntries, "");
         usageSet.setColors(overviewColors);
@@ -517,18 +514,18 @@ public class GlanceFragment extends Fragment implements
 
         List<BarEntry> activityEntries = new ArrayList<>();
         activityEntries.add(new BarEntry(0f, high));
-        activityEntries.add(new BarEntry(1f, intervalAggregates.get(0)));
-        activityEntries.add(new BarEntry(2f, intervalAggregates.get(1)));
-        activityEntries.add(new BarEntry(3f, intervalAggregates.get(2)));
-        activityEntries.add(new BarEntry(4f, intervalAggregates.get(3)));
-        activityEntries.add(new BarEntry(5f, intervalAggregates.get(4)));
-        activityEntries.add(new BarEntry(6f, intervalAggregates.get(5)));
-        activityEntries.add(new BarEntry(7f, intervalAggregates.get(6)));
+        activityEntries.add(new BarEntry(1f, intervalAggregates[0]));
+        activityEntries.add(new BarEntry(2f, intervalAggregates[1]));
+        activityEntries.add(new BarEntry(3f, intervalAggregates[2]));
+        activityEntries.add(new BarEntry(4f, intervalAggregates[3]));
+        activityEntries.add(new BarEntry(5f, intervalAggregates[4]));
+        activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
+        activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
         StringBuilder activityMessageBuilder = new StringBuilder();
         for (int i = 0; i < activityEntries.size(); i++) {
             String label = getFormattedValue(i, null);
-            String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates.get(i - 1));
+            String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates[i - 1]);
             String intervalStr = String.format(Locale.getDefault(), "%s %s\n", label, amount);
             activityMessageBuilder.append(intervalStr);
         }
