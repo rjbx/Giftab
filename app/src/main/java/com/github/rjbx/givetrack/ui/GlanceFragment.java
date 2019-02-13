@@ -351,7 +351,10 @@ public class GlanceFragment extends Fragment implements
         mTracked = CURRENCY_FORMATTER.format(tracked);
 
         float high = 0f;
-        for (float a : intervalAggregates) if (a > high) high = a;
+        for (float a : intervalAggregates) {
+            if (a > high) high = a;
+            if (a < 8) donationAmount += a;
+        }
 
         StringBuilder percentageMessageBuilder = new StringBuilder();
 
