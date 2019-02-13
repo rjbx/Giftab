@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
-import android.icu.util.TimeUnit;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -84,12 +83,12 @@ public class GlanceFragment extends Fragment implements
     private MainActivity mParentActivity;
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
+    private AlertDialog mChartDialog;
     private String mIntervalLabel;
     private String mTotal;
     private String mTracked;
     private String mTrackedTime;
     private String mTotalTime;
-    private String[] mDialogMessages;
     private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
@@ -185,6 +184,13 @@ public class GlanceFragment extends Fragment implements
                 case AlertDialog.BUTTON_POSITIVE:
                     UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
                     mAmountView.setText("0");
+                    break;
+                default:
+            }
+        } else if (dialog == mChartDialog) {
+            switch (which) {
+                case AlertDialog.BUTTON_NEUTRAL:
+                    mChartDialog.dismiss();
                     break;
                 default:
             }
@@ -562,8 +568,8 @@ public class GlanceFragment extends Fragment implements
     private void expandChart(Chart chart, String s) {
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
-        AlertDialog chartDialog = new AlertDialog.Builder(mParentActivity).create();
-        chartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
+        mChartDialog = new AlertDialog.Builder(mParentActivity).create();
+        mChartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
         Chart chartClone;
 
         if (chart instanceof PieChart) {
@@ -588,11 +594,11 @@ public class GlanceFragment extends Fragment implements
         chartClone.setMinimumWidth(1000);
         chartClone.setMinimumHeight(1000);
 
-        chartDialog.setMessage((String) chart.getTag());
-        chartDialog.setView(chartClone);
-        chartDialog.show();
-        chartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        chartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mChartDialog.setMessage((String) chart.getTag());
+        mChartDialog.setView(chartClone);
+        mChartDialog.show();
+        mChartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
     }
 
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
