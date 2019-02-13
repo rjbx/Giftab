@@ -518,6 +518,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                 Context context = view.getContext();
                 mDateDialog = new AlertDialog.Builder(context).create();
+                mDateDialog.setMessage("Are you sure you want to change the date of this record?");
                 mDateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.dialog_option_cancel), this);
                 mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
                 mDateDialog.show();
