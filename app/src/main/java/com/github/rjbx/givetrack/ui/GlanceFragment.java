@@ -575,7 +575,7 @@ public class GlanceFragment extends Fragment implements
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
         mChartDialog = new AlertDialog.Builder(mParentActivity).create();
         mChartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
-        mChartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.action_share), this);
+        mChartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.action_share), this);
         Chart chartClone;
 
         if (chart instanceof PieChart) {
