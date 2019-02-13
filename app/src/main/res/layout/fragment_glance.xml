@@ -8,6 +8,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/home_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="30dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:textColor="#555"
+        android:text="Annual Giving"
+        android:background="@color/colorChalk"/>
+
     <androidx.core.widget.NestedScrollView
         android:fillViewport="true"
         android:layout_width="match_parent"
@@ -19,18 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/colorChalk">
-
-            <TextView
-                android:id="@+id/home_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="50dp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textSize="@dimen/text_size_paragraph_title"
-                android:textColor="#555"
-                android:text="Annual Giving"/>
+            android:background="@color/colorSlate">
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/percentage_chart"

@@ -312,7 +312,7 @@ public class GlanceFragment extends Fragment implements
         mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
-        int backgroundColor = getResources().getColor(R.color.colorChalk);
+        int backgroundColor = getResources().getColor(R.color.colorSlate);
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
