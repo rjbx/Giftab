@@ -424,7 +424,6 @@ public class GlanceFragment extends Fragment implements
             labelSize = fontSize * 1.15f;
         }
 
-//        mPercentageChart.animateY(1000, Easing.EasingOption.EaseInOutCirc);
         mPercentageChart.setTag(percentMessage);
         mPercentageChart.setData(percentageData);
         mPercentageChart.setDescription(percentageDesc);
@@ -435,7 +434,7 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setBackgroundColor(backgroundColor);
         mPercentageChart.setTransparentCircleColor(backgroundColor);
         mPercentageChart.setHoleColor(backgroundColor);
-        mPercentageChart.setRotationEnabled(false);
+//        mPercentageChart.setRotationEnabled(false);
         mPercentageChart.getLegend().setEnabled(false);
         mPercentageChart.setHighlightPerTapEnabled(true);
         mPercentageChart.setClickable(true);
@@ -531,8 +530,6 @@ public class GlanceFragment extends Fragment implements
         mTimingChart.setBackgroundColor(backgroundColor);
         mTimingChart.setTransparentCircleColor(backgroundColor);
         mTimingChart.setHoleColor(backgroundColor);
-        mTimingChart.setClickable(false);
-        mTimingChart.setTouchEnabled(true);
         mTimingChart.getLegend().setEnabled(false);
         mTimingChart.setEntryLabelTextSize(labelSize);
         mTimingChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTimingChart));
