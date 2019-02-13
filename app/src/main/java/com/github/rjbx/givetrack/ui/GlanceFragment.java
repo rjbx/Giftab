@@ -575,6 +575,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getAxisRight().setTextColor(Color.WHITE);
         mActivityChart.getAxisLeft().setTextColor(Color.WHITE);
+        mActivityChart.getBarData().setValueTextColor(Color.WHITE);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
