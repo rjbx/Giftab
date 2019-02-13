@@ -462,7 +462,7 @@ public class GlanceFragment extends Fragment implements
 
         List<PieEntry> usageEntries = new ArrayList<>();
         usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
-        usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
+        if (intervalAggregates[0] > 0f) usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
 
         PieDataSet usageSet = new PieDataSet(usageEntries, "");
         usageSet.setColors(overviewColors);
@@ -491,8 +491,8 @@ public class GlanceFragment extends Fragment implements
         String timingMessage = String.format("%s %s\n%s %s", recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
-        timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
-        if (percentRecent < 1f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalLabel)));
+        if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
+        if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalLabel)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
