@@ -563,7 +563,7 @@ public class GlanceFragment extends Fragment implements
         averageData.setValueTextColor(Color.WHITE);
 
         Description activityDesc = new Description();
-        activityDesc.setText(getString(R.string.chart_title_timing));
+        activityDesc.setText(getString(R.string.chart_title_activity));
         activityDesc.setTextSize(fontSize);
         activityDesc.setTextColor(Color.WHITE);
 
@@ -571,8 +571,8 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
         mActivityChart.getXAxis().setValueFormatter(this);
-        mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
+        mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
