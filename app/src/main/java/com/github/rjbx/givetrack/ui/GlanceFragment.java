@@ -574,8 +574,12 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
         mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getAxisRight().setTextColor(Color.WHITE);
+        mActivityChart.getAxisRight().setTextSize(fontSize / 1.1f);
         mActivityChart.getAxisLeft().setTextColor(Color.WHITE);
+        mActivityChart.getAxisLeft().setTextSize(fontSize / 1.1f);
         mActivityChart.getBarData().setValueTextColor(Color.WHITE);
+        mActivityChart.getBarData().setValueTextSize(fontSize / 1.4f);
+        mActivityChart.getBarData().setDrawValues(false);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
@@ -599,17 +603,17 @@ public class GlanceFragment extends Fragment implements
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
             ((PieChart) chartClone).setEntryLabelTextSize(fontSize * 1.25f);
-            chartClone.getLegend().setEnabled(false);
         } else if (chart instanceof HorizontalBarChart) {
             chartClone = new HorizontalBarChart(mParentActivity);
             chartClone.setData(((HorizontalBarChart) chart).getData());
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
             chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+            ((HorizontalBarChart) chartClone).getBarData().setDrawValues(false);
             ((HorizontalBarChart) chartClone).setFitBars(true);
-            chartClone.getLegend().setEnabled(false);
             ((HorizontalBarChart) chartClone).setPinchZoom(true);
         } else return;
 
+        chartClone.getLegend().setEnabled(false);
         chartClone.setDescription(chart.getDescription());
         chartClone.setMinimumWidth(1000);
         chartClone.setMinimumHeight(1000);
@@ -642,14 +646,10 @@ public class GlanceFragment extends Fragment implements
             mStats = chart.getDescription().toString() + chart.getData().toString();
         }
 
-        @Override public void onChartLongPressed(MotionEvent me) {
-            expandChart(mView, mStats);
-        }
-
         @Override public void onChartDoubleTapped(MotionEvent me) {
             expandChart(mView, mStats);
         }
-
+        @Override public void onChartLongPressed(MotionEvent me) { }
         @Override public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
         @Override public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
         @Override public void onChartSingleTapped(MotionEvent me) { }
