@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -103,8 +104,7 @@ public class GlanceFragment extends Fragment implements
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public GlanceFragment() {
-    }
+    public GlanceFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
@@ -411,6 +411,7 @@ public class GlanceFragment extends Fragment implements
         Description percentageDesc = new Description();
         percentageDesc.setText(getString(R.string.chart_title_percentage));
         percentageDesc.setTextSize(fontSize);
+        percentageDesc.setTextColor(Color.WHITE);
 
         int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
         float labelSize = fontSize * 1.35f;
@@ -453,9 +454,11 @@ public class GlanceFragment extends Fragment implements
 
         PieDataSet averageSet = new PieDataSet(averageEntries, "");
         averageSet.setColors(overviewColors);
+
         Description averageDesc = new Description();
         averageDesc.setText(getString(R.string.chart_title_average));
         averageDesc.setTextSize(fontSize);
+        averageDesc.setTextColor(Color.WHITE);
 
         PieData averageData = new PieData(averageSet);
         mAverageChart.setTag(averageMessage);
@@ -481,9 +484,11 @@ public class GlanceFragment extends Fragment implements
 
         PieDataSet usageSet = new PieDataSet(usageEntries, "");
         usageSet.setColors(overviewColors);
+
         Description usageDesc = new Description();
         usageDesc.setText(getString(R.string.chart_title_usage));
         usageDesc.setTextSize(fontSize);
+        usageDesc.setTextColor(Color.WHITE);
 
         PieData usageData = new PieData(usageSet);
         mUsageChart.setTag(usageMessage);
@@ -511,9 +516,11 @@ public class GlanceFragment extends Fragment implements
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
+
         Description timingDesc = new Description();
         timingDesc.setText(getString(R.string.chart_title_timing));
         timingDesc.setTextSize(fontSize);
+        timingDesc.setTextColor(Color.WHITE);
 
         PieData timingData = new PieData(timingSet);
         mTimingChart.setTag(timingMessage);
@@ -553,14 +560,18 @@ public class GlanceFragment extends Fragment implements
 
         BarData activityData = new BarData(activityDataSet);
         activityData.setBarWidth(.75f);
+        averageData.setValueTextColor(Color.WHITE);
+
         Description activityDesc = new Description();
         activityDesc.setText(getString(R.string.chart_title_timing));
         activityDesc.setTextSize(fontSize);
+        activityDesc.setTextColor(Color.WHITE);
 
         mActivityChart.setTag(activityMessage);
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
         mActivityChart.getXAxis().setValueFormatter(this);
+        mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
