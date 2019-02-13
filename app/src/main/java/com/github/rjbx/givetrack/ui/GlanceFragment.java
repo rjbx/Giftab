@@ -531,6 +531,8 @@ public class GlanceFragment extends Fragment implements
         mTimingChart.setBackgroundColor(backgroundColor);
         mTimingChart.setTransparentCircleColor(backgroundColor);
         mTimingChart.setHoleColor(backgroundColor);
+        mTimingChart.setClickable(false);
+        mTimingChart.setTouchEnabled(true);
         mTimingChart.getLegend().setEnabled(false);
         mTimingChart.setEntryLabelTextSize(labelSize);
         mTimingChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTimingChart));
@@ -580,6 +582,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.getBarData().setValueTextColor(Color.WHITE);
         mActivityChart.getBarData().setValueTextSize(fontSize / 1.4f);
         mActivityChart.getBarData().setDrawValues(false);
+        mActivityChart.setDoubleTapToZoomEnabled(false);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
@@ -608,6 +611,7 @@ public class GlanceFragment extends Fragment implements
             chartClone.setData(((HorizontalBarChart) chart).getData());
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
             chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+            ((HorizontalBarChart) chartClone).setDoubleTapToZoomEnabled(false);
             ((HorizontalBarChart) chartClone).getBarData().setDrawValues(false);
             ((HorizontalBarChart) chartClone).setFitBars(true);
             ((HorizontalBarChart) chartClone).setPinchZoom(true);
@@ -646,14 +650,12 @@ public class GlanceFragment extends Fragment implements
             mStats = chart.getDescription().toString() + chart.getData().toString();
         }
 
-        @Override public void onChartDoubleTapped(MotionEvent me) {
-            expandChart(mView, mStats);
-        }
+        @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mStats); }
+        @Override public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) { }
+        @Override public void onChartDoubleTapped(MotionEvent me) { }
         @Override public void onChartLongPressed(MotionEvent me) { }
         @Override public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
         @Override public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) { }
-        @Override public void onChartSingleTapped(MotionEvent me) { }
-        @Override public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) { }
         @Override public void onChartScale(MotionEvent me, float scaleX, float scaleY) { }
         @Override public void onChartTranslate(MotionEvent me, float dX, float dY) { }
     }
