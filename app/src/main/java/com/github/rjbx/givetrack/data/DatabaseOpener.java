@@ -77,7 +77,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " +
                         Entry.TABLE_NAME_RECORD             + " ("                              +
 
-                        Entry.COLUMN_EIN                    + " TEXT NOT NULL, "    +
+                        Entry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
                         Entry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         Entry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         Entry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
