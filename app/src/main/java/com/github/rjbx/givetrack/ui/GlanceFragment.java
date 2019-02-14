@@ -51,12 +51,12 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 
 /**
@@ -373,28 +373,34 @@ public class GlanceFragment extends Fragment implements
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
 
-        Set<Map.Entry<String, Float>> entries = recordAggregates.entrySet();
+        List<Map.Entry<String, Float>> entries = new ArrayList<>(recordAggregates.entrySet());
+        Collections.sort(entries, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+
         for (Map.Entry<String, Float> entry : entries) {
             String name = entry.getKey();
             float percentage = entry.getValue();
             if (percentage < .01f) continue;
             percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(percentage), name));
-            if (name.length() > 20) { name = name.substring(0, 20);
-                name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+            if (name.length() > 20) {
+                name = name.substring(0, 20);
+                name = name.substring(0, name.lastIndexOf(" ")).concat("...");
+            }
             percentageEntries.add(new PieEntry(percentage, name));
         }
         String percentMessage = percentageMessageBuilder.toString();
 
         int detailColors[] = {
                 getResources().getColor(R.color.colorPrimary),
-                getResources().getColor(R.color.colorAttention),
-                getResources().getColor(R.color.colorNeutralDark),
-                getResources().getColor(R.color.colorAccent),
-                getResources().getColor(R.color.colorComfort),
                 getResources().getColor(R.color.colorPrimaryDark),
+                getResources().getColor(R.color.colorAttention),
                 getResources().getColor(R.color.colorAttentionDark),
                 getResources().getColor(R.color.colorNeutral),
+                getResources().getColor(R.color.colorNeutralDark),
+                getResources().getColor(R.color.colorAccent),
                 getResources().getColor(R.color.colorAccentDark),
+                getResources().getColor(R.color.colorHeat),
+                getResources().getColor(R.color.colorHeatDark),
+                getResources().getColor(R.color.colorComfort),
                 getResources().getColor(R.color.colorComfortDark),
                 getResources().getColor(R.color.colorSlate),
         };
