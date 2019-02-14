@@ -102,6 +102,7 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.usage_chart) PieChart mUsageChart;
     @BindView(R.id.timing_chart) PieChart mTimingChart;
     @BindView(R.id.activity_chart) BarChart mActivityChart;
+    @BindView(R.id.home_amount_label) TextView mAmountLabel;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -163,6 +164,7 @@ public class GlanceFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         toggleTime();
+        toggleAmount(mAmountLabel);
     }
 
     /**
@@ -239,8 +241,12 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_label)
     void toggleAmount(TextView label) {
-        mViewTracked = !mViewTracked;
-        UserPreferences.setViewtrack(mParentActivity, mViewTracked);
+        if (mIntervalLabel == null) mViewTracked = UserPreferences.getViewtrack(mParentActivity);
+        else {
+            mViewTracked = !mViewTracked;
+            UserPreferences.setViewtrack(mParentActivity, mViewTracked);
+            UserPreferences.updateFirebaseUser(mParentActivity);
+        }
         if (mViewTracked) {
             label.setText(mTimeTracked.toUpperCase());
             mAmountView.setText(String.valueOf(mTracked));
@@ -255,7 +261,6 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_time_button)
     void toggleTime() {
-        if (mIntervalLabel == null) mViewTracked = UserPreferences.getViewtrack(mParentActivity);
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         mShowYears = !mShowYears;
