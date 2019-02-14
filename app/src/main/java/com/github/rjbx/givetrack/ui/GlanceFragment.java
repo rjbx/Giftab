@@ -623,16 +623,19 @@ public class GlanceFragment extends Fragment implements
 
         chartClone.getLegend().setEnabled(false);
         chartClone.setDescription(chart.getDescription());
-        chartClone.setMinimumWidth(1000);
-        chartClone.setMinimumHeight(1000);
+        chartClone.setMinimumWidth(500);
+        chartClone.setMinimumHeight(500);
 
+        int padding = (int) getResources().getDimension(R.dimen.button_padding);
         ScrollView scrollView = new ScrollView(mParentActivity);
         LinearLayout linearLayout = new LinearLayout(mParentActivity);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setPadding(padding, padding, padding, padding);
 
         TextView textView = new TextView(mParentActivity);
         textView.setText((String) chart.getTag());
         textView.setTextSize(fontSize * 1.2f);
+        textView.setTextColor(Color.BLACK);
         linearLayout.addView(textView);
         linearLayout.addView(chartClone);
 
