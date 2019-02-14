@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.firebase.ui.auth.data.model.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -81,7 +81,7 @@ public class GlanceFragment extends Fragment implements
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
     private static ContentValues[] sValuesArray;
-    private static boolean mShowTracked;
+    private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
     private MainActivity mParentActivity;
@@ -91,7 +91,7 @@ public class GlanceFragment extends Fragment implements
     private String mIntervalLabel;
     private String mTotal;
     private String mTracked;
-    private String mTrackedTime;
+    private String mTimeTracked;
     private String mTotalTime;
     private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
@@ -139,7 +139,7 @@ public class GlanceFragment extends Fragment implements
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
         dateFormatter.setTimeZone(TimeZone.getDefault());
         String formattedDate = dateFormatter.format(date);
-        mTrackedTime = String.format("since %s", formattedDate);
+        mTimeTracked = String.format("since %s", formattedDate);
         mTotalTime = "all-time";
 
         return rootView;
@@ -239,9 +239,10 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_label)
     void toggleAmount(TextView label) {
-        mShowTracked = !mShowTracked;
-        if (mShowTracked) {
-            label.setText(mTrackedTime.toUpperCase());
+        mViewTracked = !mViewTracked;
+        UserPreferences.setViewtrack(mParentActivity, mViewTracked);
+        if (mViewTracked) {
+            label.setText(mTimeTracked.toUpperCase());
             mAmountView.setText(String.valueOf(mTracked));
         } else {
             label.setText(mTotalTime.toUpperCase());
@@ -254,6 +255,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_time_button)
     void toggleTime() {
+        if (mIntervalLabel == null) mViewTracked = UserPreferences.getViewtrack(mParentActivity);
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         mShowYears = !mShowYears;
@@ -279,7 +281,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_config_button)
     void trackAmount() {
         mTimeDialog = new AlertDialog.Builder(getContext()).create();
-        mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTrackedTime));
+        mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTimeTracked));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
@@ -292,8 +294,8 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_share_button)
     void shareText() {
-        String amount = mShowTracked ? mTracked : mTotal;
-        String timeframe = mShowTracked ? mTrackedTime : mTotalTime;
+        String amount = mViewTracked ? mTracked : mTotal;
+        String timeframe = mViewTracked ? mTimeTracked : mTotalTime;
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
                 .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",

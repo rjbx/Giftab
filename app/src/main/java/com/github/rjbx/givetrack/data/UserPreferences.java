@@ -39,13 +39,15 @@ public class UserPreferences {
     public static final String KEY_ROWS = "rows";
     public static final String KEY_FOCUS = "focus";
     public static final String KEY_EIN = "ein";
+    public static final String KEY_VIEWTRACK = "viewtrack";
     public static final String KEY_RECORDS = "records";
     public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMETRACK = "timetrack";
 
     public static final String LAST_PREFERENCE = KEY_TIMETRACK;
-    
+
+
     public static List<String> getCharities(Context context) {
         Set<String> defaultValue = new LinkedHashSet<>();
         defaultValue.add("");
@@ -138,7 +140,7 @@ public class UserPreferences {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putString(KEY_SEARCHORDER, order).apply();
     }
-    
+
     public static String getRecordSort(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getString(KEY_RECORDSORT, DatabaseContract.Entry.COLUMN_DONATION_TIME);
@@ -252,6 +254,16 @@ public class UserPreferences {
         sp.edit().putBoolean(KEY_FOCUS, focus).apply();
     }
 
+    public static boolean getViewtrack(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(KEY_VIEWTRACK, true);
+    }
+
+    public static void setViewtrack(Context context, boolean viewtrack) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_VIEWTRACK, viewtrack).apply();
+    }
+
     public static boolean getHistorical(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(KEY_HISTORICAL, false);
@@ -314,6 +326,7 @@ public class UserPreferences {
         setRows(context, user.getRows());
         setFocus(context, user.getFocus());
         setEin(context, user.getEin());
+        setViewtrack(context, user.getViewtrack());
         setRecords(context, user.getRecords());
         setHistorical(context, user.getHistorical());
         setAnchor(context, user.getAnchor());
@@ -350,6 +363,7 @@ public class UserPreferences {
                 getRows(context),
                 getFocus(context),
                 getEin(context),
+                getViewtrack(context),
                 getRecords(context),
                 getHistorical(context),
                 getAnchor(context),

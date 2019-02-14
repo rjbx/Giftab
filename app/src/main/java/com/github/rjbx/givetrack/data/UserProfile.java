@@ -34,6 +34,7 @@ import java.util.Map;
     private String rows;
     private boolean focus;
     private String ein;
+    private boolean viewtrack;
     private List<String> records;
     private boolean historical;
     private long anchor;
@@ -70,6 +71,7 @@ import java.util.Map;
             String rows,
             boolean focus,
             String ein,
+            boolean viewtrack,
             List<String> records,
             boolean historical,
             long anchor,
@@ -96,6 +98,7 @@ import java.util.Map;
         this.rows = rows;
         this.focus = focus;
         this.ein = ein;
+        this.viewtrack = viewtrack;
         this.records = records;
         this.historical = historical;
         this.anchor = anchor;
@@ -218,6 +221,12 @@ import java.util.Map;
     public void setEin(String ein) {
         this.ein = ein;
     }
+    public boolean getViewtrack() {
+        return viewtrack;
+    }
+    public void setViewtrack(boolean viewtrack) {
+        this.viewtrack = viewtrack;
+    }
     public List<String> getRecords() { return records; }
     public void setRecords(List<String> records) { this.records = records; }
     public boolean getHistorical() {
@@ -260,6 +269,7 @@ import java.util.Map;
         map.put("rows", rows);
         map.put("focus", focus);
         map.put("ein", ein);
+        map.put("viewtrack", viewtrack);
         map.put("records", records);
         map.put("historical", historical);
         map.put("anchor", anchor);
