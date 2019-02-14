@@ -378,15 +378,15 @@ public class GlanceFragment extends Fragment implements
 
         for (Map.Entry<String, Float> entry : entries) {
             String name = entry.getKey();
-            float percentage = entry.getValue();
-            if (percentage < .01f) continue;
-            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(percentage), name));
-            if (percentage < .1) name = "";
+            float value = entry.getValue();
+            float percent = value / recordsTotal;
+            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(value), name));
+            if (percent < .25f) name = "";
             if (name.length() > 20) {
                 name = name.substring(0, 20);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("...");
             }
-            percentageEntries.add(new PieEntry(percentage, name));
+            percentageEntries.add(new PieEntry(value, name));
         }
         String percentMessage = percentageMessageBuilder.toString();
 
