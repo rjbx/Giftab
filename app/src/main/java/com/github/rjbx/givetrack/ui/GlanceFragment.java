@@ -357,19 +357,7 @@ public class GlanceFragment extends Fragment implements
                 if (intervalDifference > 10000) intervalAggregates = Arrays.copyOf(intervalAggregates, intervalDifference);
             } intervalAggregates[intervalDifference] += amount;
 
-            switch (mInterval) {
-                case Calendar.YEAR:
-                    recordAggregates.put(name, recordAmount);
-                    break;
-                case Calendar.MONTH:
-                    if (intervalDifference < 84) recordAggregates.put(name, recordAmount);
-                    break;
-                case Calendar.WEEK_OF_YEAR:
-                    if (intervalDifference < 52) recordAggregates.put(name, recordAmount);
-                    break;
-                default:
-            }
-
+            if (intervalDifference < 7) recordAggregates.put(name, recordAmount);
             if (highDifference < intervalDifference) highDifference = intervalDifference;
         }
 
