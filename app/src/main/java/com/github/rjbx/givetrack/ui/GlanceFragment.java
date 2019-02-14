@@ -29,7 +29,6 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import com.firebase.ui.auth.data.model.User;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
@@ -240,17 +239,11 @@ public class GlanceFragment extends Fragment implements
      * Defines behavior on click of toggle amount button.
      */
     @OnClick(R.id.home_amount_label)
-    void toggleAmount(TextView label) {
+    void toggleTracked(TextView amountLabel) {
         mViewTracked = !mViewTracked;
         UserPreferences.setViewtrack(mParentActivity, mViewTracked);
         UserPreferences.updateFirebaseUser(mParentActivity);
-        if (mViewTracked) {
-            label.setText(mTimeTracked.toUpperCase());
-            mAmountView.setText(String.valueOf(mTracked));
-        } else {
-            label.setText(mTotalTime.toUpperCase());
-            mAmountView.setText(String.valueOf(mTotal));
-        }
+        toggleAmount(mAmountLabel, mViewTracked);
     }
 
     /**
@@ -306,6 +299,16 @@ public class GlanceFragment extends Fragment implements
                         getString(R.string.app_name)))
                 .getIntent();
         startActivity(shareIntent);
+    }
+
+    private void toggleAmount(TextView amountLabel, boolean viewTracked) {
+        if (mViewTracked) {
+            amountLabel.setText(mTimeTracked.toUpperCase());
+            amountLabel.setText(String.valueOf(mTracked));
+        } else {
+            amountLabel.setText(mTotalTime.toUpperCase());
+            amountLabel.setText(String.valueOf(mTotal));
+        }
     }
 
     /**
@@ -379,7 +382,7 @@ public class GlanceFragment extends Fragment implements
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
-        toggleAmount(mAmountLabel);
+        toggleAmount(mAmountLabel, mViewTracked);
 
         List<Map.Entry<String, Float>> entries = new ArrayList<>(recordAggregates.entrySet());
         Collections.sort(entries, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
