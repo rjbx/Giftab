@@ -302,12 +302,12 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void toggleAmount(TextView amountLabel, boolean viewTracked) {
-        if (mViewTracked) {
+        if (viewTracked) {
             amountLabel.setText(mTimeTracked.toUpperCase());
-            amountLabel.setText(String.valueOf(mTracked));
+            mAmountView.setText(String.valueOf(mTracked));
         } else {
             amountLabel.setText(mTotalTime.toUpperCase());
-            amountLabel.setText(String.valueOf(mTotal));
+            mAmountView.setText(String.valueOf(mTotal));
         }
     }
 
