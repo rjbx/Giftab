@@ -441,7 +441,7 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setBackgroundColor(backgroundColor);
         mPercentageChart.setTransparentCircleColor(backgroundColor);
         mPercentageChart.setHoleColor(backgroundColor);
-//        mPercentageChart.setRotationEnabled(false);
+        mPercentageChart.getData().setDrawValues(false);
         mPercentageChart.getLegend().setEnabled(false);
         mPercentageChart.setHighlightPerTapEnabled(true);
         mPercentageChart.setClickable(true);
@@ -475,6 +475,7 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.setBackgroundColor(backgroundColor);
         mAverageChart.setTransparentCircleColor(backgroundColor);
         mAverageChart.setHoleColor(backgroundColor);
+        mAverageChart.getData().setDrawValues(false);
         mAverageChart.getLegend().setEnabled(false);
         mAverageChart.setEntryLabelTextSize(labelSize);
         mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
@@ -505,6 +506,7 @@ public class GlanceFragment extends Fragment implements
         mUsageChart.setBackgroundColor(backgroundColor);
         mUsageChart.setTransparentCircleColor(backgroundColor);
         mUsageChart.setHoleColor(backgroundColor);
+        mUsageChart.getData().setDrawValues(false);
         mUsageChart.getLegend().setEnabled(false);
         mUsageChart.setEntryLabelTextSize(labelSize);
         mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
@@ -537,6 +539,7 @@ public class GlanceFragment extends Fragment implements
         mTimingChart.setBackgroundColor(backgroundColor);
         mTimingChart.setTransparentCircleColor(backgroundColor);
         mTimingChart.setHoleColor(backgroundColor);
+        mTimingChart.getData().setDrawValues(false);
         mTimingChart.getLegend().setEnabled(false);
         mTimingChart.setEntryLabelTextSize(labelSize);
         mTimingChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mTimingChart));
@@ -586,7 +589,6 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.getBarData().setValueTextColor(Color.WHITE);
         mActivityChart.getBarData().setValueTextSize(fontSize / 1.4f);
         mActivityChart.getBarData().setDrawValues(false);
-        mActivityChart.setDoubleTapToZoomEnabled(false);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
         mActivityChart.setPinchZoom(true);
