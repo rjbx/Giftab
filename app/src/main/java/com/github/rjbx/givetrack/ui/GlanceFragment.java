@@ -163,8 +163,8 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        toggleTime();
         toggleAmount(mAmountLabel);
+        toggleTime();
     }
 
     /**
