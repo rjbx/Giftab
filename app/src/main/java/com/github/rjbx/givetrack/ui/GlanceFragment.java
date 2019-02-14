@@ -341,7 +341,6 @@ public class GlanceFragment extends Fragment implements
             if (time >= tracktime) tracked += amount;
 
             float recordAmount = amount + (recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f);
-            recordAggregates.put(name, recordAmount);
 
             Calendar recordCalendar = Calendar.getInstance();
             recordCalendar.setTimeInMillis(time);
@@ -357,6 +356,19 @@ public class GlanceFragment extends Fragment implements
                 else intervalDifference = intervalDifference + (yearsDifference * 52);
                 if (intervalDifference > 10000) intervalAggregates = Arrays.copyOf(intervalAggregates, intervalDifference);
             } intervalAggregates[intervalDifference] += amount;
+
+            switch (mInterval) {
+                case Calendar.YEAR:
+                    recordAggregates.put(name, recordAmount);
+                    break;
+                case Calendar.MONTH:
+                    if (intervalDifference < 84) recordAggregates.put(name, recordAmount);
+                    break;
+                case Calendar.WEEK_OF_YEAR:
+                    if (intervalDifference < 52) recordAggregates.put(name, recordAmount);
+                    break;
+                default:
+            }
 
             if (highDifference < intervalDifference) highDifference = intervalDifference;
         }
