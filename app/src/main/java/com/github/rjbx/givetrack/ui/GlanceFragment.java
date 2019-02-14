@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -370,7 +371,7 @@ public class GlanceFragment extends Fragment implements
             if (i < 8) donationAmount += a;
         }
 
-        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("\nPast 7 %ss\n\n\n", mIntervalLabel));
+        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n\n", mIntervalLabel));
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
@@ -516,7 +517,7 @@ public class GlanceFragment extends Fragment implements
         String oldLabel = String.format("Over 7 %ss", mIntervalLabel);
         float percentRecent = donationAmount / recordsTotal;
         float percentOld = 1f - percentRecent;
-        String timingMessage = String.format("\nPast 7 %ss\n\n%s %s\n%s %s", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
         if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
@@ -555,7 +556,7 @@ public class GlanceFragment extends Fragment implements
         activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
         activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
-        StringBuilder activityMessageBuilder = new StringBuilder(String.format("\nPast 7 %ss\n\n", mIntervalLabel));
+        StringBuilder activityMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n\n", mIntervalLabel));
         for (int i = 0; i < activityEntries.size(); i++) {
             String label = getFormattedValue(i, null);
             String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates[i - 1]);
@@ -597,7 +598,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.invalidate();
     }
 
-    private void expandChart(Chart chart, String info) {
+    private void expandChart(Chart chart, String title, String stats) {
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
         mChartDialog = new AlertDialog.Builder(mParentActivity).create();
@@ -634,11 +635,21 @@ public class GlanceFragment extends Fragment implements
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(padding, padding, padding, padding);
 
-        TextView textView = new TextView(mParentActivity);
-        textView.setText(info);
-        textView.setTextSize(fontSize * 1.2f);
-        textView.setTextColor(Color.BLACK);
-        linearLayout.addView(textView);
+        TextView titleView = new TextView(mParentActivity);
+        titleView.setText(title);
+        titleView.setTextSize(fontSize * 1.25f);
+        titleView.setTextColor(Color.BLACK);
+        titleView.setTypeface(Typeface.DEFAULT_BOLD);
+        titleView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        TextView statsView = new TextView(mParentActivity);
+        statsView.setText(stats);
+        statsView.setTextSize(fontSize * 1.2f);
+        statsView.setTextColor(Color.BLACK);
+        titleView.setGravity(Gravity.CENTER_HORIZONTAL);
+
+        linearLayout.addView(titleView);
+        linearLayout.addView(statsView);
         linearLayout.addView(chartClone);
 
         scrollView.addView(linearLayout);
@@ -662,14 +673,16 @@ public class GlanceFragment extends Fragment implements
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
 
         Chart mView;
+        String mTitle;
         String mStats;
 
         public OnSelectedChartOnGestureListener(Chart chart) {
             mView = chart;
-            mStats = chart.getDescription().getText() + chart.getTag();
+            mTitle = chart.getDescription().getText();
+            mStats = (String) chart.getTag();
         }
 
-        @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mStats); }
+        @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mTitle, mStats); }
         @Override public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) { }
         @Override public void onChartDoubleTapped(MotionEvent me) { }
         @Override public void onChartLongPressed(MotionEvent me) { }
