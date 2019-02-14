@@ -19,7 +19,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -624,8 +626,18 @@ public class GlanceFragment extends Fragment implements
         chartClone.setMinimumWidth(1000);
         chartClone.setMinimumHeight(1000);
 
-        mChartDialog.setMessage((String) chart.getTag());
-        mChartDialog.setView(chartClone);
+        ScrollView scrollView = new ScrollView(mParentActivity);
+        LinearLayout linearLayout = new LinearLayout(mParentActivity);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+
+        TextView textView = new TextView(mParentActivity);
+        textView.setText((String) chart.getTag());
+        textView.setTextSize(fontSize * 1.2f);
+        linearLayout.addView(textView);
+        linearLayout.addView(chartClone);
+
+        scrollView.addView(linearLayout);
+        mChartDialog.setView(scrollView);
         mChartDialog.show();
         mChartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
