@@ -381,6 +381,7 @@ public class GlanceFragment extends Fragment implements
             float percentage = entry.getValue();
             if (percentage < .01f) continue;
             percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(percentage), name));
+            if (percentage < .1) name = "";
             if (name.length() > 20) {
                 name = name.substring(0, 20);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("...");
@@ -401,8 +402,7 @@ public class GlanceFragment extends Fragment implements
                 getResources().getColor(R.color.colorHeat),
                 getResources().getColor(R.color.colorHeatDark),
                 getResources().getColor(R.color.colorComfort),
-                getResources().getColor(R.color.colorComfortDark),
-                getResources().getColor(R.color.colorSlate),
+                getResources().getColor(R.color.colorComfortDark)
         };
 
         int overviewColors[] = {
@@ -426,7 +426,6 @@ public class GlanceFragment extends Fragment implements
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
             mPercentageChart.setLayoutParams(params);
-
             labelSize = fontSize * 1.15f;
         }
 
