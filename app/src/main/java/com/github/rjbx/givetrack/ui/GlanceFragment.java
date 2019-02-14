@@ -370,7 +370,7 @@ public class GlanceFragment extends Fragment implements
             if (i < 8) donationAmount += a;
         }
 
-        StringBuilder percentageMessageBuilder = new StringBuilder();
+        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("\nPast 7 %ss\n\n\n", mIntervalLabel));
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
@@ -383,7 +383,7 @@ public class GlanceFragment extends Fragment implements
             float value = entry.getValue();
             float percent = value / recordsTotal;
             percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s %s\n\n", PERCENT_FORMATTER.format(percent), name, CURRENCY_FORMATTER.format(value)));
-            if (percent < .25f) name = "";
+            if (percent < .20f) name = "";
             if (name.length() > 20) {
                 name = name.substring(0, 20);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("...");
@@ -452,7 +452,7 @@ public class GlanceFragment extends Fragment implements
         String donationLabel = "Average Donation";
         float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
-        String averageMessage = String.format("%s %s\n%s %s", intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
+        String averageMessage = String.format(" %sly\n\n%s %s\n%s %s", mIntervalLabel, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(perInterval, intervalLabel));
@@ -483,7 +483,7 @@ public class GlanceFragment extends Fragment implements
 
         String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
         String currentLabel = getFormattedValue(1, null);
-        String usageMessage = String.format("%s %s\n%s %s", highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
+        String usageMessage = String.format(" %sly\n\n%s %s\n%s %s", mIntervalLabel, highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
 
         List<PieEntry> usageEntries = new ArrayList<>();
         usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
@@ -516,7 +516,7 @@ public class GlanceFragment extends Fragment implements
         String oldLabel = String.format("Over 7 %ss", mIntervalLabel);
         float percentRecent = donationAmount / recordsTotal;
         float percentOld = 1f - percentRecent;
-        String timingMessage = String.format("%s %s\n%s %s", recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+        String timingMessage = String.format("\nPast 7 %ss\n\n%s %s\n%s %s", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
         if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
@@ -555,7 +555,7 @@ public class GlanceFragment extends Fragment implements
         activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
         activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
-        StringBuilder activityMessageBuilder = new StringBuilder();
+        StringBuilder activityMessageBuilder = new StringBuilder(String.format("\nPast 7 %ss\n\n", mIntervalLabel));
         for (int i = 0; i < activityEntries.size(); i++) {
             String label = getFormattedValue(i, null);
             String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates[i - 1]);
@@ -666,7 +666,7 @@ public class GlanceFragment extends Fragment implements
 
         public OnSelectedChartOnGestureListener(Chart chart) {
             mView = chart;
-            mStats = chart.getDescription().getText() + "\n\n" + chart.getTag();
+            mStats = chart.getDescription().getText() + chart.getTag();
         }
 
         @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mStats); }
