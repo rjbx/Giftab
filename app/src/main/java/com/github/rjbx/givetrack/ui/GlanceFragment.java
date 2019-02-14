@@ -595,7 +595,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.invalidate();
     }
 
-    private void expandChart(Chart chart, String s) {
+    private void expandChart(Chart chart, String info) {
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
         mChartDialog = new AlertDialog.Builder(mParentActivity).create();
@@ -633,7 +633,7 @@ public class GlanceFragment extends Fragment implements
         linearLayout.setPadding(padding, padding, padding, padding);
 
         TextView textView = new TextView(mParentActivity);
-        textView.setText((String) chart.getTag());
+        textView.setText(info);
         textView.setTextSize(fontSize * 1.2f);
         textView.setTextColor(Color.BLACK);
         linearLayout.addView(textView);
@@ -664,7 +664,7 @@ public class GlanceFragment extends Fragment implements
 
         public OnSelectedChartOnGestureListener(Chart chart) {
             mView = chart;
-            mStats = chart.getDescription().toString() + chart.getData().toString();
+            mStats = chart.getDescription().getText() + mIntervalLabel + "ly" +"\n\n" + chart.getTag();
         }
 
         @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mStats); }
