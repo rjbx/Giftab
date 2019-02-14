@@ -141,6 +141,7 @@ public class GlanceFragment extends Fragment implements
         dateFormatter.setTimeZone(TimeZone.getDefault());
         String formattedDate = dateFormatter.format(date);
         mTimeTracked = String.format("since %s", formattedDate);
+        mViewTracked = UserPreferences.getViewtrack(getContext());
         mTotalTime = "all-time";
 
         return rootView;
@@ -163,7 +164,6 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        toggleAmount(mAmountLabel);
         toggleTime();
     }
 
@@ -241,12 +241,9 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_label)
     void toggleAmount(TextView label) {
-        if (mIntervalLabel == null) mViewTracked = UserPreferences.getViewtrack(mParentActivity);
-        else {
-            mViewTracked = !mViewTracked;
-            UserPreferences.setViewtrack(mParentActivity, mViewTracked);
-            UserPreferences.updateFirebaseUser(mParentActivity);
-        }
+        mViewTracked = !mViewTracked;
+        UserPreferences.setViewtrack(mParentActivity, mViewTracked);
+        UserPreferences.updateFirebaseUser(mParentActivity);
         if (mViewTracked) {
             label.setText(mTimeTracked.toUpperCase());
             mAmountView.setText(String.valueOf(mTracked));
@@ -382,6 +379,7 @@ public class GlanceFragment extends Fragment implements
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
+        toggleAmount(mAmountLabel);
 
         List<Map.Entry<String, Float>> entries = new ArrayList<>(recordAggregates.entrySet());
         Collections.sort(entries, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
