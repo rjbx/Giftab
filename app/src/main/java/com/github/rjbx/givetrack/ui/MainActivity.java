@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (dialog == currentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
+
                     UserPreferences.setHistorical(this, true);
                     UserPreferences.updateFirebaseUser(this);
                     break;

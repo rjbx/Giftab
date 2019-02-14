@@ -44,10 +44,14 @@ public final class DatabaseContract {
         public static final String COLUMN_NAVIGATOR_URL = "navigatorUrl";
         public static final String COLUMN_PHONE_NUMBER = "phoneNumber";
         public static final String COLUMN_EMAIL_ADDRESS = "emailAddress";
-        public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
         public static final String COLUMN_DONATION_IMPACT = "donationTotal";
-        public static final String COLUMN_DONATION_TIME = "donationTime";
+        public static final String COLUMN_DONATION_TYPE = "donationType";
+        public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
         public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
+        public static final String COLUMN_DONATION_NOTES = "donationNotes";
+        public static final String COLUMN_DONATION_HOURS = "donationHours";
+        public static final String COLUMN_DONATION_RATE = "donationRate";
+        public static final String COLUMN_DONATION_TIME = "donationTime";
 
         public static final int INDEX_EIN = 0;
         public static final int INDEX_CHARITY_NAME = 1;
@@ -58,11 +62,15 @@ public final class DatabaseContract {
         public static final int INDEX_LOCATION_ZIP = 6;
         public static final int INDEX_HOMEPAGE_URL = 7;
         public static final int INDEX_NAVIGATOR_URL = 8;
-        public static final int INDEX_DONATION_TIME = 9;
         public static final int INDEX_PHONE_NUMBER = 9;
         public static final int INDEX_EMAIL_ADDRESS = 10;
         public static final int INDEX_DONATION_IMPACT = 11;
-        public static final int INDEX_DONATION_PERCENTAGE = 12;
-        public static final int INDEX_DONATION_FREQUENCY = 13;
+        public static final int INDEX_DONATION_TYPE = 12;
+        public static final int INDEX_DONATION_PERCENTAGE = 13;
+        public static final int INDEX_DONATION_NOTES = 13;
+        public static final int INDEX_DONATION_FREQUENCY = 14;
+        public static final int INDEX_DONATION_HOURS = 15;
+        public static final int INDEX_DONATION_RATE = 16;
+        public static final int INDEX_DONATION_TIME = 17;
     }
 }

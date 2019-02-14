@@ -65,6 +65,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
                         Entry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"              +
 
@@ -88,7 +89,11 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_TIME          + " INTEGER PRIMARY KEY NOT NULL,"              +
+                        Entry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
+                        Entry.COLUMN_DONATION_NOTES         + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_HOURS         + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_RATE          + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_TIME          + " INTEGER PRIMARY KEY NOT NULL,"  +
 
                         "UNIQUE (" + Entry.COLUMN_DONATION_TIME +
                         ") ON CONFLICT REPLACE" + ");";
