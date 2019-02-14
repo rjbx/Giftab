@@ -646,7 +646,7 @@ public class GlanceFragment extends Fragment implements
         statsView.setText(stats);
         statsView.setTextSize(fontSize * 1.2f);
         statsView.setTextColor(Color.BLACK);
-        titleView.setGravity(Gravity.CENTER_HORIZONTAL);
+        statsView.setGravity(Gravity.CENTER_HORIZONTAL);
 
         linearLayout.addView(titleView);
         linearLayout.addView(statsView);
