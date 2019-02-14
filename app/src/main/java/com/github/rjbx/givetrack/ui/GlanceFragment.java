@@ -382,13 +382,13 @@ public class GlanceFragment extends Fragment implements
             String name = entry.getKey();
             float value = entry.getValue();
             float percent = value / recordsTotal;
-            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s\n", PERCENT_FORMATTER.format(value), name));
+            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s %s\n\n", PERCENT_FORMATTER.format(percent), name, CURRENCY_FORMATTER.format(value)));
             if (percent < .25f) name = "";
             if (name.length() > 20) {
                 name = name.substring(0, 20);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("...");
             }
-            percentageEntries.add(new PieEntry(value, name));
+            percentageEntries.add(new PieEntry(percent, name));
         }
         String percentMessage = percentageMessageBuilder.toString();
 
@@ -664,7 +664,7 @@ public class GlanceFragment extends Fragment implements
 
         public OnSelectedChartOnGestureListener(Chart chart) {
             mView = chart;
-            mStats = chart.getDescription().getText() + mIntervalLabel + "ly" +"\n\n" + chart.getTag();
+            mStats = chart.getDescription().getText() + "\n\n" + chart.getTag();
         }
 
         @Override public void onChartSingleTapped(MotionEvent me) {  expandChart(mView, mStats); }
