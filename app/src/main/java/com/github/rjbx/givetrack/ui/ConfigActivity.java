@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+// TODO: Add option to disable remote persistence for guest users
 /**
  * Presents a set of application settings.
  */
