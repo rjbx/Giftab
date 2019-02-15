@@ -111,7 +111,7 @@ public class AppWidget extends AppWidgetProvider {
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
-            else if (amountLength > 6) amountStr = "." + amountStr.substring(0, amountLength - 3);
+            else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
             Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
             String percentStr = NumberFormat.getPercentInstance().format(percentage);
