@@ -100,10 +100,12 @@ public class AppWidget extends AppWidgetProvider {
 
             String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
             Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
             remoteViews.setTextViewText(R.id.widget_item_percentage, NumberFormat.getPercentInstance().format(percentage));
+            remoteViews.setTextViewText(R.id.widget_item_amount, NumberFormat.getCurrencyInstance().format(amount));
             remoteViews.setOnClickFillInIntent(R.id.widget_item, new Intent());
 
             return remoteViews;
