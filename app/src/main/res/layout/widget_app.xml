@@ -27,14 +27,6 @@
         android:background="@color/colorConversion"
         tools:listitem="@layout/item_widget"/>
 
-    <Button
-        android:id="@+id/collection_add_button"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:gravity="center"
-        android:textColor="#555"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:text="@string/symbol_increment_button"/>
+    <include layout="@layout/button_widget"/>
 
 </LinearLayout>

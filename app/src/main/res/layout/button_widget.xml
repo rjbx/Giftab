@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/conversion_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/colorAccentDark">
+
+    <ImageButton
+        android:id="@+id/widget_search"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".4"
+        android:layout_gravity="start|center_vertical"
+        android:gravity="center"
+        android:layout_margin="6dp"
+        android:background="@color/colorAccent"
+        android:src="@drawable/baseline_search_24"
+        style="@style/Widget.AppCompat.Button" />
+
+    <ImageButton
+        android:id="@+id/widget_record"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight=".4"
+        android:layout_gravity="start|center_vertical"
+        android:gravity="center"
+        android:layout_margin="6dp"
+        android:background="@color/colorAccent"
+        android:src="@drawable/history"
+        style="@style/Widget.AppCompat.Button" />
+
+</LinearLayout>

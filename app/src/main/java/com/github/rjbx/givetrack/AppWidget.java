@@ -12,10 +12,10 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.ui.MainActivity;
+import com.github.rjbx.givetrack.ui.RecordActivity;
 import com.github.rjbx.givetrack.ui.SearchActivity;
 
 import java.text.NumberFormat;
-import java.util.Locale;
 
 //TODO: Populate RemoteViews
 /**
@@ -39,8 +39,12 @@ public class AppWidget extends AppWidgetProvider {
 
         Intent searchIntent = new Intent(context, SearchActivity.class);
         PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 0, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.collection_add_button, searchPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_search, searchPendingIntent);
 
+        Intent recordIntent = new Intent(context, RecordActivity.class);
+        PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+        
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
