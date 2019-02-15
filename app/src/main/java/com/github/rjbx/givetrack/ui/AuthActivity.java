@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Disable remote persistence for guests
 /**
  * Provides a login screen.
  */
