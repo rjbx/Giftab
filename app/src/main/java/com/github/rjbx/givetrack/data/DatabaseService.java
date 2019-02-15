@@ -608,7 +608,6 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, "");
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
@@ -843,7 +842,6 @@ public class DatabaseService extends IntentService {
                 float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
                 float transactionImpact = amount * percentage;
                 float totalImpact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
-
                 int affectedFrequency = cursor.getInt(affectedIndex) + (percentage < .01f ? 0 : f);
 
                 ContentValues values = new ContentValues();
@@ -851,7 +849,6 @@ public class DatabaseService extends IntentService {
                 values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
                 values.put(affectedColumn, affectedFrequency);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
-
                 charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
                 if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
@@ -865,6 +862,7 @@ public class DatabaseService extends IntentService {
                 values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, anchorTime++);
                 values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", transactionImpact));
+                values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, "");
                 getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
             } while (cursor.moveToNext());
