@@ -82,6 +82,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
                                             }));
                     break;
+                // TODO: Ensure all data is properly removed
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
@@ -102,6 +103,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
                                     })
                             );
                     break;
+                // TODO: Ensure new users are properly logged in
                 case Intent.ACTION_MAIN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
 
