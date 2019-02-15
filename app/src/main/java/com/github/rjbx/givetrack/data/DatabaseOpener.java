@@ -90,9 +90,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         Entry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
-                        Entry.COLUMN_DONATION_NOTES         + " TEXT NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_HOURS         + " TEXT NOT NULL,"                 +
-                        Entry.COLUMN_DONATION_RATE          + " TEXT NOT NULL,"                 +
+                        Entry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
                         Entry.COLUMN_DONATION_TIME          + " INTEGER PRIMARY KEY NOT NULL,"  +
 
                         "UNIQUE (" + Entry.COLUMN_DONATION_TIME +

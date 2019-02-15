@@ -17,6 +17,7 @@ import com.github.rjbx.givetrack.ui.SearchActivity;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+//TODO: Populate RemoteViews
 /**
  * Implements App Widget functionality.
  */

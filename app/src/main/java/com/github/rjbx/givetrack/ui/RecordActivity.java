@@ -61,6 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+//TODO: Implement toggle for type attribute and launcher for
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.

@@ -48,9 +48,7 @@ public final class DatabaseContract {
         public static final String COLUMN_DONATION_TYPE = "donationType";
         public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
         public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
-        public static final String COLUMN_DONATION_NOTES = "donationNotes";
-        public static final String COLUMN_DONATION_HOURS = "donationHours";
-        public static final String COLUMN_DONATION_RATE = "donationRate";
+        public static final String COLUMN_DONATION_MEMO = "donationNotes";
         public static final String COLUMN_DONATION_TIME = "donationTime";
 
         public static final int INDEX_EIN = 0;
@@ -69,8 +67,6 @@ public final class DatabaseContract {
         public static final int INDEX_DONATION_PERCENTAGE = 13;
         public static final int INDEX_DONATION_NOTES = 13;
         public static final int INDEX_DONATION_FREQUENCY = 14;
-        public static final int INDEX_DONATION_HOURS = 15;
-        public static final int INDEX_DONATION_RATE = 16;
-        public static final int INDEX_DONATION_TIME = 17;
+        public static final int INDEX_DONATION_TIME = 15;
     }
 }

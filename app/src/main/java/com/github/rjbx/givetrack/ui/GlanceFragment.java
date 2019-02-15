@@ -61,6 +61,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+// TODO: Add toggle for type as with interval attribute
 /**
  * Provides the logic and views for an activity overview screen.
  */
