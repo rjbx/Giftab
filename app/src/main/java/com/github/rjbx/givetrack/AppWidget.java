@@ -98,17 +98,22 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
 
-            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
-            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
             String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+            if (name.length() > 15) { name = name.substring(0, 15);
+                name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
-            if (name.length() > 30) { name = name.substring(0, 30);
-            name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+            String amountStr = NumberFormat.getCurrencyInstance().format(amount);
+            int amountLength = amountStr.length();
+            if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
+
+            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+            String percentStr = NumberFormat.getPercentInstance().format(percentage);
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
-            remoteViews.setTextViewText(R.id.widget_item_percentage, NumberFormat.getPercentInstance().format(percentage));
-            remoteViews.setTextViewText(R.id.widget_item_amount, NumberFormat.getCurrencyInstance().format(amount));
+            remoteViews.setTextViewText(R.id.widget_item_percentage, percentStr);
+            remoteViews.setTextViewText(R.id.widget_item_amount, amountStr);
             remoteViews.setOnClickFillInIntent(R.id.widget_item, new Intent());
 
             return remoteViews;
