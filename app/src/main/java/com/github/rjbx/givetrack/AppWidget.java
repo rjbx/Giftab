@@ -103,7 +103,7 @@ public class AppWidget extends AppWidgetProvider {
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
-            remoteViews.setTextViewText(R.id.widget_item_percentage, NumberFormat.getPercentInstance(Locale.US).format(percentage));
+            remoteViews.setTextViewText(R.id.widget_item_percentage, NumberFormat.getPercentInstance().format(percentage));
             remoteViews.setOnClickFillInIntent(R.id.widget_item, new Intent());
 
             return remoteViews;

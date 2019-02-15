@@ -547,6 +547,7 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
@@ -606,6 +607,7 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
