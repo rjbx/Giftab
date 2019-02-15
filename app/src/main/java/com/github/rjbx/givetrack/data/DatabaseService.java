@@ -608,6 +608,7 @@ public class DatabaseService extends IntentService {
             values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
             values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
+            values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, "");
 
             String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
             String phoneNumber = urlToPhoneNumber(navUrl);
