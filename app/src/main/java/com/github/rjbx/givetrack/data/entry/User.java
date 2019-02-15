@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.data;
+package com.github.rjbx.givetrack.data.entry;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties public class UserProfile {
+@IgnoreExtraProperties public class User {
 
     private String uid;
     private String email;
@@ -43,12 +43,12 @@ import java.util.Map;
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public UserProfile() {}
+    public User() {}
 
     /**
      * Provides POJO constructor required for object relational mapping.
      */
-    UserProfile(
+    public User(
             String uid,
             String email,
             String birthdate,

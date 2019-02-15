@@ -23,7 +23,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.UserPreferences;
-import com.github.rjbx.givetrack.data.UserProfile;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import com.google.firebase.auth.EmailAuthProvider;
@@ -68,7 +68,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         String launchingAction = getIntent().getAction();
-        final UserProfile user = UserPreferences.generateUserProfile(AuthActivity.this);
+        final User user = UserPreferences.generateUserProfile(AuthActivity.this);
 
         if (launchingAction != null) {
             switch (launchingAction) {
@@ -166,7 +166,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
-                        UserProfile user = dataSnapshot.child(firebaseUser.getUid()).getValue(UserProfile.class);
+                        User user = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
                         if (user == null) user = UserPreferences.generateUserProfile(AuthActivity.this);
                         UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
                     }

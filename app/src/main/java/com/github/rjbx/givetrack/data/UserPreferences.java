@@ -6,6 +6,7 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -305,9 +306,9 @@ public class UserPreferences {
     }
 
     /**
-     * Replaces {@link SharedPreferences} with attributes of the given {@link UserProfile}.
+     * Replaces {@link SharedPreferences} with attributes of the given {@link User}.
      */
-    public static void replaceSharedPreferences(@NonNull Context context, UserProfile user) {
+    public static void replaceSharedPreferences(@NonNull Context context, User user) {
 
         setBirthdate(context, user.getBirthdate());
         setGender(context, user.getGender());
@@ -334,13 +335,13 @@ public class UserPreferences {
     }
 
     /**
-     * Generates a {@link UserProfile} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
+     * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
      */
-    public static UserProfile generateUserProfile(@NonNull Context context) {
+    public static User generateUserProfile(@NonNull Context context) {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        return new UserProfile(
+        return new User(
                 firebaseUser == null ? "" : firebaseUser.getUid(),
                 firebaseUser == null ? "" : firebaseUser.getEmail(),
                 getBirthdate(context),
@@ -375,7 +376,7 @@ public class UserPreferences {
      */
     public static void updateFirebaseUser(@NonNull Context context) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final UserProfile user = UserPreferences.generateUserProfile(context);
+        final User user = UserPreferences.generateUserProfile(context);
         firebaseDatabase.getReference("users").child(user.getUid())
                 .updateChildren(user.toParameterMap());
     }
