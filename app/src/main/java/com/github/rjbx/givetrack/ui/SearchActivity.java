@@ -70,6 +70,7 @@ public class SearchActivity extends AppCompatActivity implements
     @BindView(R.id.search_list) RecyclerView mRecyclerView;
     @BindView(R.id.search_list_container) View mListContainer;
     @BindView(R.id.search_item_container) View mItemContainer;
+    @BindView(R.id.search_progress) View mSearchProgress;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -158,6 +159,7 @@ public class SearchActivity extends AppCompatActivity implements
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
+            mSearchProgress.setVisibility(View.VISIBLE);
             mSearchDialog.show();
             mSearchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
             mSearchDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
@@ -166,6 +168,7 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 if (cursor == null|| !cursor.moveToFirst()) return;
+                mSearchProgress.setVisibility(View.GONE);
                 ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
                 int i = 0;
                 do {
@@ -249,6 +252,7 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     private void fetchResults() {
+        mSearchProgress.setVisibility(View.VISIBLE);
         Context context = SearchActivity.this;
         HashMap<String, String> hashMap = new HashMap<>();
         if (UserPreferences.getFocus(context)) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
