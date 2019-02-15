@@ -52,12 +52,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ProgressBar
-                    android:id="@+id/search_progress"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:layout_marginTop="160dp"
-                    android:layout_gravity="center"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/search_list"
@@ -68,6 +62,11 @@
                     tools:context=".ui.SearchActivity"
                     tools:listitem="@layout/item_search"/>
 
+                <ProgressBar
+                    android:id="@+id/search_progress"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/search_fab"
