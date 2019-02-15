@@ -48,6 +48,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashMap;
 
+// TODO: Display progress bar during fetch
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
