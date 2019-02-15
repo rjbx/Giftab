@@ -1,15 +1,42 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Giving extends Company {
+public class Giving extends Company implements Parcelable {
 
     private int frequency;
     private String percent;
+
+
+    public static final Parcelable.Creator<Giving> CREATOR = new Parcelable.Creator<Giving>() {
+        @Override public Giving createFromParcel(Parcel source) {
+            return new Giving(source);
+        }
+        @Override public Giving[] newArray(int size) {
+            return new Giving[size];
+        }
+    };
+
+    Giving(Parcel source) {
+        frequency = source.readInt();
+        percent = source.readString();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(frequency);
+        dest.writeString(percent);
+    }
+
+    @Override public int describeContents() {
+        return 0;
+    }
 
     /**
      * Provides default constructor required for object relational mapping.

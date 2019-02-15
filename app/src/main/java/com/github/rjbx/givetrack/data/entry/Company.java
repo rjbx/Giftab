@@ -1,5 +1,8 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -7,7 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Company {
+public class Company implements Parcelable {
+
     private String ein;
     private String name;
     private String locationStreet;
@@ -22,6 +26,48 @@ public class Company {
     private String impact;
     private int type;
 
+    public static final Parcelable.Creator<Company> CREATOR = new Parcelable.Creator<Company>() {
+        @Override public Company createFromParcel(Parcel source) {
+            return new Company(source);
+        }
+        @Override public Company[] newArray(int size) {
+            return new Company[size];
+        }
+    };
+
+    Company(Parcel source) {
+        ein = source.readString();
+        name = source.readString();
+        locationCity = source.readString();
+        locationDetail = source.readString();
+        locationState = source.readString();
+        locationZip = source.readString();
+        homepageUrl = source.readString();
+        navigatorUrl = source.readString();
+        phone = source.readString();
+        email = source.readString();
+        impact = source.readString();
+        type = source.readInt();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ein);
+        dest.writeString(name);
+        dest.writeString(locationCity);
+        dest.writeString(locationState);
+        dest.writeString(locationDetail);
+        dest.writeString(locationZip);
+        dest.writeString(homepageUrl);
+        dest.writeString(navigatorUrl);
+        dest.writeString(phone);
+        dest.writeString(email);
+        dest.writeString(impact);
+        dest.writeInt(type);
+    }
+
+    @Override public int describeContents() {
+        return 0;
+    }
 
     /**
      * Provides default constructor required for object relational mapping.

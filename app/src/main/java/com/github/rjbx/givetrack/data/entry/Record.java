@@ -1,5 +1,8 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -12,6 +15,30 @@ public class Record extends Company {
     private String memo;
     private long time;
 
+
+    public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
+        @Override public Record createFromParcel(Parcel source) {
+            return new Record(source);
+        }
+        @Override public Record[] newArray(int size) {
+            return new Record[size];
+        }
+    };
+
+    Record(Parcel source) {
+        memo = source.readString();
+        time = source.readInt();
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(memo);
+        dest.writeLong(time);
+    }
+
+    @Override public int describeContents() {
+        return 0;
+    }
+    
     /**
      * Provides default constructor required for object relational mapping.
      */
