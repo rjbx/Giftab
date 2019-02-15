@@ -98,9 +98,12 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
 
-            String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
             Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
             Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+            String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+
+            if (name.length() > 30) { name = name.substring(0, 30);
+            name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
