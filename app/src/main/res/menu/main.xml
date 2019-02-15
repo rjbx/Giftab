@@ -29,6 +29,6 @@
         android:id="@+id/action_add"
         android:orderInCategory="0"
         android:title="Search Charities"
-        android:icon="@drawable/baseline_search_24"
+        android:icon="@drawable/search"
         app:showAsAction="always"/>
 </menu>
