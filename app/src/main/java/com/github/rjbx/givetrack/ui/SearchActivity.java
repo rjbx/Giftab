@@ -130,7 +130,7 @@ public class SearchActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
-                navigateUpTo(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_filter):
                 launchFilterPreferences(this);
