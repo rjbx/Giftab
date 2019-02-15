@@ -43,6 +43,7 @@ import java.util.Scanner;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
+// TODO: Add record and giving objects implementing ORM for remote persistence and Parcelable for bundling
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
