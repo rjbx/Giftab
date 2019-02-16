@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Search implements Parcelable {
+public class Search implements Company, Parcelable {
 
     private String ein;
     private String name;
@@ -127,7 +127,6 @@ public class Search implements Parcelable {
     public String getEin() {
         return ein;
     }
-
     public void setEin(String ein) {
         this.ein = ein;
     }

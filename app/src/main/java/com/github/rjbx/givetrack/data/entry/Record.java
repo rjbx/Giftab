@@ -11,7 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Record extends Search {
+public class Record extends Search implements Company, Parcelable {
 
     private String memo;
     private long time;

@@ -11,7 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Giving extends Search implements Parcelable {
+public class Giving extends Search implements Company, Parcelable {
 
     private int frequency;
     private String percent;
