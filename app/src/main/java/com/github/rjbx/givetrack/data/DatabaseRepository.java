@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.util.Log;
 
 import com.github.rjbx.givetrack.data.entry.Company;
 
@@ -16,13 +17,15 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 
+import timber.log.Timber;
+
 public final class DatabaseRepository {
 
     static <T extends Company> List<T> getCompaniesFromType(Context context, Class<T> entryType) {
-        List<T> entries = new ArrayList<>();
         Cursor cursor = context.getContentResolver().query(
                 getCompanyUriFromType(entryType), null, null, null, null
         );
+        List<T> entries = new ArrayList<>(cursor.getCount());
         if (cursor != null) cursorToCompanies(cursor, entries);
         return entries;
     }
@@ -40,16 +43,19 @@ public final class DatabaseRepository {
     }
 
     static <T extends Company> void cursorToCompanies(Cursor cursor, List<T> entries) {
+        if (cursor == null || !cursor.moveToFirst()) return;
         int i = 0;
         cursor.moveToFirst();
         do cursorRowToCompany(cursor, entries.get(i++));
         while (cursor.moveToNext());
     }
 
-    public static <T extends Company> Uri getCompanyUriFromType(Class<T> entryType) {
-        if (entryType.isInstance(Search.class)) return Entry.CONTENT_URI_SEARCH;
-        if (entryType.isInstance(Giving.class)) return Entry.CONTENT_URI_GIVING;
-        if (entryType.isInstance(Record.class)) return Entry.CONTENT_URI_RECORD;
+    static <T extends Company> Uri getCompanyUriFromType(Class<T> entryType) {
+        try {
+            if (entryType.isInstance(Search.class.newInstance())) return Entry.CONTENT_URI_SEARCH;
+            if (entryType.isInstance(Giving.class.newInstance())) return Entry.CONTENT_URI_GIVING;
+            if (entryType.isInstance(Record.class.newInstance())) return Entry.CONTENT_URI_RECORD;
+        } catch (IllegalAccessException|InstantiationException e) { Timber.e(e); }
         throw new IllegalArgumentException("T must implement Company interface");
     }
 }

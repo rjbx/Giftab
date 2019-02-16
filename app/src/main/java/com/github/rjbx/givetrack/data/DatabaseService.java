@@ -18,6 +18,7 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
+import com.github.rjbx.givetrack.data.entry.Giving;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1166,6 +1167,10 @@ public class DatabaseService extends IntentService {
         values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
         values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
         values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
+        values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, "");
+        values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, "");
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
 
         return values;
     }
