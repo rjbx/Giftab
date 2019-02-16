@@ -17,23 +17,66 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 
-import timber.log.Timber;
-
 public final class DatabaseRepository {
 
-    static <T extends Company> List<T> getCompaniesFromType(Context context, Class<T> entryType) {
+    static List<Search> getSearches(Context context) {
         Cursor cursor = context.getContentResolver().query(
-                getCompanyUriFromType(entryType), null, null, null, null
+                Entry.CONTENT_URI_SEARCH, null, null, null, null
         );
-        List<T> entries = new ArrayList<>(cursor.getCount());
-        if (cursor != null) cursorToCompanies(cursor, entries);
+        List<Search> entries = new ArrayList<>();
+        if (cursor != null) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                entries.add(new Search());
+            }
+            cursorToCompanies(cursor, entries);
+        }
         return entries;
     }
 
-    static <T extends Company> void setCompanies(Context context, List<T> companies) {
-        ContentValues[] values = new ContentValues[companies.size()];
-        for (int i = 0; i < companies.size(); i++) values[i] = companies.get(i).toContentValues();
-        context.getContentResolver().bulkInsert(getCompanyUriFromType(companies.get(0).getClass()), values);
+    static void setSearch(Context context, List<Search> entries) {
+        ContentValues[] values = new ContentValues[entries.size()];
+        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_SEARCH, values);
+    }
+
+    static List<Record> getRecords(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                Entry.CONTENT_URI_RECORD, null, null, null, null
+        );
+        List<Record> entries = new ArrayList<>();
+        if (cursor != null) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                entries.add(new Record());
+            }
+            cursorToCompanies(cursor, entries);
+        }
+        return entries;
+    }
+
+    static void setRecord(Context context, List<Record> entries) {
+        ContentValues[] values = new ContentValues[entries.size()];
+        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_RECORD, values);
+    }
+
+    static List<Giving> getGivings(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                Entry.CONTENT_URI_GIVING, null, null, null, null
+        );
+        List<Giving> entries = new ArrayList<>();
+        if (cursor != null) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                entries.add(new Giving());
+            }
+            cursorToCompanies(cursor, entries);
+        }
+        return entries;
+    }
+
+    static void setGiving(Context context, List<Giving> entries) {
+        ContentValues[] values = new ContentValues[entries.size()];
+        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_GIVING, values);
     }
 
     static <T extends Company> void cursorRowToCompany(Cursor cursor, T entry) {
@@ -48,14 +91,5 @@ public final class DatabaseRepository {
         cursor.moveToFirst();
         do cursorRowToCompany(cursor, entries.get(i++));
         while (cursor.moveToNext());
-    }
-
-    static <T extends Company> Uri getCompanyUriFromType(Class<T> entryType) {
-        try {
-            if (entryType.isInstance(Search.class.newInstance())) return Entry.CONTENT_URI_SEARCH;
-            if (entryType.isInstance(Giving.class.newInstance())) return Entry.CONTENT_URI_GIVING;
-            if (entryType.isInstance(Record.class.newInstance())) return Entry.CONTENT_URI_RECORD;
-        } catch (IllegalAccessException|InstantiationException e) { Timber.e(e); }
-        throw new IllegalArgumentException("T must implement Company interface");
     }
 }
