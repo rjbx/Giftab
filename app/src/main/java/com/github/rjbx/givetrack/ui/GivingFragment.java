@@ -533,16 +533,29 @@ public class GivingFragment extends Fragment implements
             }
             holder.mNameView.setText(mutableName);
 
+            String impactStr = NumberFormat.getCurrencyInstance().format(impact);
+            int impactLength = impactStr.length();
+            if (impactLength > 12) impactStr = String.format("%s%sM", impactStr.substring(0, impactLength - 11),
+                    impactLength > 14 ? "" : "." + impactStr.substring(impactLength - 9, impactLength - 7));
+            else if (impactLength > 6) impactStr = impactStr.substring(0, impactLength - 3);
+
             holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
-            holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), currencyInstance.format(impact)));
+            holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
             if (impact > 10)
                 if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
                 else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
 
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
+            double amount = sPercentages[position] * mAmountTotal;
+            String amountStr = NumberFormat.getCurrencyInstance().format(impact);
+            int amountLength = amountStr.length();
+            if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
+                    amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
+            else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
+
             holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
-            holder.mAmountView.setText(currencyInstance.format(sPercentages[position] * mAmountTotal));
+            holder.mAmountView.setText(currencyInstance.format(amount));
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
             else if (sDualPane && mPanePosition == position) {
