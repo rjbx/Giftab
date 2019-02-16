@@ -52,6 +52,7 @@ public class Giving extends Search implements Parcelable {
     }
 
     public Giving(ContentValues values) {
+        super(values);
         this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
     }

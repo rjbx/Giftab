@@ -46,6 +46,7 @@ public class Record extends Search {
     public Record() {}
 
     public Record(ContentValues values) {
+        super(values);
         this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
     }
