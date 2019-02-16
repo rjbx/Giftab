@@ -548,14 +548,14 @@ public class GivingFragment extends Fragment implements
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
             double amount = sPercentages[position] * mAmountTotal;
-            String amountStr = NumberFormat.getCurrencyInstance().format(impact);
+            String amountStr = NumberFormat.getCurrencyInstance().format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
             holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
-            holder.mAmountView.setText(currencyInstance.format(amount));
+            holder.mAmountView.setText(amountStr);
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
             else if (sDualPane && mPanePosition == position) {
