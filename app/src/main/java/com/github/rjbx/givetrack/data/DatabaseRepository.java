@@ -4,11 +4,15 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.net.Uri;
 
 import com.github.rjbx.givetrack.data.entry.Company;
 import java.util.List;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
+import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.Search;
 
 public final class DatabaseRepository {
 
@@ -38,5 +42,12 @@ public final class DatabaseRepository {
         cursor.moveToFirst();
         do cursorRowToEntry(cursor, entries.get(i++));
         while (cursor.moveToNext());
+    }
+
+    public static <T extends Company> Uri getUriFromEntryType(Class<T> entryType) {
+        if (entryType.isInstance(Search.class)) return Entry.CONTENT_URI_SEARCH;
+        if (entryType.isInstance(Giving.class)) return Entry.CONTENT_URI_GIVING;
+        if (entryType.isInstance(Record.class)) return Entry.CONTENT_URI_RECORD;
+        return null;
     }
 }
