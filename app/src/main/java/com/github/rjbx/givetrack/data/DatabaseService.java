@@ -18,9 +18,6 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
-import com.github.rjbx.givetrack.data.entry.Giving;
-import com.github.rjbx.givetrack.data.entry.Record;
-import com.github.rjbx.givetrack.data.entry.Search;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,7 +41,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
+// TODO: Add record and giving objects implementing ORM for remote persistence and Parcelable for bundling
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
@@ -120,7 +119,7 @@ public class DatabaseService extends IntentService {
         intent.setAction(ACTION_FETCH_RECORD);
         context.startService(intent);
     }
-    
+
     /**
      * Starts this service to perform action GiveSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -221,7 +220,7 @@ public class DatabaseService extends IntentService {
         intent.setAction(ACTION_RESET_RECORD);
         context.startService(intent);
     }
-    
+
     /**
      * Starts this service to perform action UpdateContact with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -400,12 +399,11 @@ public class DatabaseService extends IntentService {
             // Retrieve data
             String response = requestResponseFromUrl(url);
             if (response == null) return;
-            Search[] searches = parseSearches(response, single);
-            ContentValues[] values = new ContentValues[searches.length];
-            for (int i = 0; i < searches.length; i++) values[i] = searches[i].toContentValues();
+            ContentValues[] parsedResponse = parseJsonResponse(response, single);
+
             // Store data
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
-            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_SEARCH, values);
+            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_SEARCH, parsedResponse);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -447,12 +445,13 @@ public class DatabaseService extends IntentService {
                 Timber.e("Giving Fetched URL: %s", url);
                 String response = requestResponseFromUrl(url);
                 Timber.e("Giving Fetched Response: %s", response);
-                Search search = parseSearches(response, true)[0];
-                search.setPhone(charityData[1]);
-                search.setEmail(charityData[2]);
-                search.setImpact(charityData[4]);
-                Giving giving = new Giving(search, Integer.parseInt(charityData[5]), charityData[3]);
-                contentValuesArray[i] = giving.toContentValues();
+                ContentValues[] parsedResponse = parseJsonResponse(response, true);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
+                contentValuesArray[i] = parsedResponse[0];
             }
 
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
@@ -498,12 +497,13 @@ public class DatabaseService extends IntentService {
                 Timber.e("Record Fetched URL: %s", url);
                 String response = requestResponseFromUrl(url);
                 Timber.e("Record Fetched Response: %s", response);
-                Search search = parseSearches(response, true)[0];
-                search.setPhone(charityData[1]);
-                search.setEmail(charityData[2]);
-                search.setImpact(charityData[4]);
-                Record record = new Record(search, "", 0);
-                contentValuesArray[i] = record.toContentValues();
+                ContentValues[] parsedResponse = parseJsonResponse(response, true);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
+                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
+                contentValuesArray[i] = parsedResponse[0];
             }
 
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null);
@@ -1114,40 +1114,40 @@ public class DatabaseService extends IntentService {
      * This method parses JSON String of data API response and returns array of {@link ContentValues}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search[] parseSearches(@NonNull String jsonResponse, boolean single) {
+    private static ContentValues[] parseJsonResponse(@NonNull String jsonResponse, boolean single) {
 
-        Search[] searches = null;
+        ContentValues[] valuesArray = null;
         try {
             if (single) {
-                searches = new Search[1];
-                searches[0] = parseSearch(new JSONObject(jsonResponse));
-                Timber.v("Parsed Response: %s", searches[0].toString());
+                valuesArray = new ContentValues[1];
+                valuesArray[0] = parseContentValues(new JSONObject(jsonResponse));
+                Timber.v("Parsed Response: %s", valuesArray[0].toString());
             } else {
                 JSONArray charityArray = new JSONArray(jsonResponse);
-                searches = new Search[charityArray.length()];
+                valuesArray = new ContentValues[charityArray.length()];
                 for (int i = 0; i < charityArray.length(); i++) {
                     JSONObject charityObject = charityArray.getJSONObject(i);
-                    Search search = parseSearch(charityObject);
-                    searches[i] = search;
-                    Timber.v("Parsed Response: %s", search.toString());
+                    ContentValues values = parseContentValues(charityObject);
+                    valuesArray[i] = values;
+                    Timber.v("Parsed Response: %s", values.toString());
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Timber.e(e);
         }
-        return searches;
+        return valuesArray;
     }
 
     /**
      * This method parses JSONObject of JSONArray and returns {@link ContentValues}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search parseSearch(JSONObject charityObject) throws JSONException {
+    private static ContentValues parseContentValues(JSONObject charityObject) throws JSONException {
 
         JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
         String ein = charityObject.getString(FetchContract.KEY_EIN);
-        String name = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
+        String charityName = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
         String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
         String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
         String city = locationObject.getString(FetchContract.KEY_CITY);
@@ -1156,7 +1156,18 @@ public class DatabaseService extends IntentService {
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STREET, nullToDefaultStr(street));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
+        values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
+        values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
+
+        return values;
     }
 
     /**
