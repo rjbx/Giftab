@@ -1,8 +1,10 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -10,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Company implements Parcelable {
+public class Search implements Parcelable {
 
     private String ein;
     private String name;
@@ -26,16 +28,16 @@ public class Company implements Parcelable {
     private String impact;
     private int type;
 
-    public static final Parcelable.Creator<Company> CREATOR = new Parcelable.Creator<Company>() {
-        @Override public Company createFromParcel(Parcel source) {
-            return new Company(source);
+    public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
+        @Override public Search createFromParcel(Parcel source) {
+            return new Search(source);
         }
-        @Override public Company[] newArray(int size) {
-            return new Company[size];
+        @Override public Search[] newArray(int size) {
+            return new Search[size];
         }
     };
 
-    Company(Parcel source) {
+    Search(Parcel source) {
         ein = source.readString();
         name = source.readString();
         locationCity = source.readString();
@@ -72,12 +74,28 @@ public class Company implements Parcelable {
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public Company() {}
+    public Search() {}
+
+    public Search(Search search) {
+        this.ein = search.ein;
+        this.name = search.name;
+        this.locationStreet = search.locationStreet;
+        this.locationDetail = search.locationDetail;
+        this.locationCity = search.locationCity;
+        this.locationState = search.locationState;
+        this.locationZip = search.locationZip;
+        this.homepageUrl = search.homepageUrl;
+        this.navigatorUrl = search.navigatorUrl;
+        this.phone = search.phone;
+        this.email = search.email;
+        this.impact = search.impact;
+        this.type = search.type;
+    }
 
     /**
      * Provides POJO constructor required for object relational mapping.
      */
-    public Company(
+    public Search(
             String ein,
             String name,
             String locationStreet,
@@ -202,5 +220,24 @@ public class Company implements Parcelable {
         map.put("impact", impact);
         map.put("type", type);
         return map;
+    }
+
+    @Exclude
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.Entry.COLUMN_CHARITY_NAME, name);
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STREET, locationStreet);
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL, locationDetail);
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_CITY, locationCity);
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STATE, locationState);
+        values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, locationZip);
+        values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, homepageUrl);
+        values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, navigatorUrl);
+        values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phone);
+        values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, email);
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, type);
+        return values;
     }
 }

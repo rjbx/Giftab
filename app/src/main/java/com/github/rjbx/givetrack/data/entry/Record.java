@@ -6,11 +6,10 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Record extends Company {
+public class Record extends Search {
 
     private String memo;
     private long time;
@@ -43,6 +42,12 @@ public class Record extends Company {
      * Provides default constructor required for object relational mapping.
      */
     public Record() {}
+
+    public Record(Search search, String memo, long time) {
+        super(search);
+        this.memo = memo;
+        this.time = time;
+    }
 
     /**
      * Provides POJO constructor required for object relational mapping.

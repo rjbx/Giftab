@@ -9,7 +9,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Giving extends Company implements Parcelable {
+public class Giving extends Search implements Parcelable {
 
     private int frequency;
     private String percent;
@@ -42,6 +42,12 @@ public class Giving extends Company implements Parcelable {
      * Provides default constructor required for object relational mapping.
      */
     public Giving() {}
+
+    public Giving(Search search, int frequency, String percent) {
+        super(search);
+        this.frequency = frequency;
+        this.percent = percent;
+    }
 
     /**
      * Provides POJO constructor required for object relational mapping.
