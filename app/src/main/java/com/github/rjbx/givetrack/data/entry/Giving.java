@@ -51,12 +51,6 @@ public class Giving extends Search implements Parcelable {
         this.percent = percent;
     }
 
-    public Giving(ContentValues values) {
-        super(values);
-        this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
-        this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
-    }
-
     /**
      * Provides POJO constructor required for object relational mapping.
      */
@@ -98,6 +92,7 @@ public class Giving extends Search implements Parcelable {
     public int getFrequency() {
         return frequency;
     }
+
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
@@ -107,12 +102,24 @@ public class Giving extends Search implements Parcelable {
     public void setPercent(String percent) {
         this.percent = percent;
     }
-
     @Exclude
     public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("frequency", frequency);
         map.put("percent", percent);
         return map;
+    }
+
+    @Exclude public ContentValues toContentValues() {
+        ContentValues values = super.toContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percent);
+        return values;
+    }
+
+    @Exclude public void fromContentValues(ContentValues values) {
+        super.fromContentValues(values);
+        this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+        this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
     }
 }

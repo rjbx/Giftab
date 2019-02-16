@@ -45,12 +45,6 @@ public class Record extends Search {
      */
     public Record() {}
 
-    public Record(ContentValues values) {
-        super(values);
-        this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
-        this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-    }
-
     public Record(Search search, String memo, long time) {
         super(search);
         this.memo = memo;
@@ -98,6 +92,7 @@ public class Record extends Search {
     public String getmemo() {
         return memo;
     }
+
     public void setmemo(String memo) {
         this.memo = memo;
     }
@@ -107,11 +102,23 @@ public class Record extends Search {
     public void settime(long time) {
         this.time = time;
     }
-
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
         map.put("time", time);
         return map;
+    }
+
+    @Exclude public ContentValues toContentValues() {
+        ContentValues values = super.toContentValues();
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, memo);
+        values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, time);
+        return values;
+    }
+
+    @Exclude public void fromContentValues(ContentValues values) {
+        super.fromContentValues(values);
+        this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
+        this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
     }
 }

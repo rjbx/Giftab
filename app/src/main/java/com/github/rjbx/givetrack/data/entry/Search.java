@@ -124,25 +124,10 @@ public class Search implements Parcelable {
         this.type = type;
     }
     
-    public Search(ContentValues values) {
-        this.ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-        this.name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-        this.locationStreet = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
-        this.locationDetail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
-        this.locationCity = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-        this.locationState = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-        this.locationZip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
-        this.homepageUrl = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
-        this.navigatorUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
-        this.phone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
-        this.email = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
-        this.impact = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
-        this.type = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_TYPE);
-    }
-
     public String getEin() {
         return ein;
     }
+
     public void setEin(String ein) {
         this.ein = ein;
     }
@@ -218,7 +203,6 @@ public class Search implements Parcelable {
     public void setType(int type) {
         this.type = type;
     }
-
     @Exclude
     public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
@@ -255,5 +239,22 @@ public class Search implements Parcelable {
         values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
         values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, type);
         return values;
+    }
+
+    @Exclude
+    public void fromContentValues(ContentValues values) {
+        this.ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+        this.name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+        this.locationStreet = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
+        this.locationDetail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
+        this.locationCity = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
+        this.locationState = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
+        this.locationZip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
+        this.homepageUrl = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
+        this.navigatorUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+        this.phone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
+        this.email = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
+        this.impact = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+        this.type = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_TYPE);
     }
 }
