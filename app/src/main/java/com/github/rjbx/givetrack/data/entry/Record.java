@@ -1,8 +1,10 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -42,6 +44,11 @@ public class Record extends Search {
      * Provides default constructor required for object relational mapping.
      */
     public Record() {}
+
+    public Record(ContentValues values) {
+        this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
+        this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+    }
 
     public Record(Search search, String memo, long time) {
         super(search);

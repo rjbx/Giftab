@@ -1,8 +1,10 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -47,6 +49,11 @@ public class Giving extends Search implements Parcelable {
         super(search);
         this.frequency = frequency;
         this.percent = percent;
+    }
+
+    public Giving(ContentValues values) {
+        this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+        this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
     }
 
     /**
