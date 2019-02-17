@@ -353,7 +353,7 @@ public class GivingFragment extends Fragment implements
         Giving[] valuesArray = new Giving[sPercentages.length];
         for (int i = 0; i < sPercentages.length; i++) {
             Giving values = new Giving();
-            values.setPercent(String.valueOf(sPercentages[i]));
+            values.setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
             valuesArray[i] = values;
         }
@@ -582,7 +582,7 @@ public class GivingFragment extends Fragment implements
             if (sPercentages.length != sValuesArray.length)
                 sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
             for (int i = 0; i < sPercentages.length; i++) {
-                sPercentages[i] = Float.parseFloat(sValuesArray[i].getPercent());
+                sPercentages[i] = sValuesArray[i].getPercent();
             }
             boolean adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) syncPercentages();

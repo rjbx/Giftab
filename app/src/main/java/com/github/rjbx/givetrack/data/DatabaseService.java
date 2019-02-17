@@ -726,8 +726,8 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionUpdatePercentages(Giving... charityValues) {
 
-        boolean recalibrate = charityValues[0].getPercent() == null;
-        if (recalibrate) for (Giving giving : charityValues) giving.setPercent(String.valueOf(1d / charityValues.length));
+        boolean recalibrate = charityValues[0].getPercent() == -1d;
+        if (recalibrate) for (Giving giving : charityValues) giving.setPercent(1d / charityValues.length);
 
         DISK_IO.execute(() -> {
 
@@ -739,14 +739,14 @@ public class DatabaseService extends IntentService {
                 String ein = giving.getEin();
                 String phone = giving.getPhone();
                 String email = giving.getEmail();
-                String percentage = giving.getPercent();
+                double percentage = giving.getPercent();
                 String impact = giving.getImpact();
                 int frequency = giving.getFrequency();
                 giving.setPercent(percentage);
                 giving.setImpact(impact);
                 giving.setFrequency(frequency);
 
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, Float.parseFloat(percentage), Float.parseFloat(impact), frequency));
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
             }
             DatabaseRepository.addGiving(this, charityValues);
             UserPreferences.setCharities(this, charities);
@@ -781,9 +781,9 @@ public class DatabaseService extends IntentService {
                 String name = giving.getName();
                 String phone = giving.getPhone();
                 String email = giving.getEmail();
-                float percentage = Float.parseFloat(giving.getPercent());
-                float transactionImpact = amount * percentage;
-                float totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
+                double percentage = giving.getPercent();
+                double transactionImpact = amount * percentage;
+                double totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
                 int affectedFrequency = giving.getFrequency() + (percentage < .01f ? 0 : f);
 
                 giving.setFrequency(affectedFrequency);

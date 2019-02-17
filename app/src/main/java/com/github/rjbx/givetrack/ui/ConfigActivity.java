@@ -434,7 +434,7 @@ public class ConfigActivity extends PreferenceActivity {
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         Giving values = new Giving();
-                        values.setPercent(null);
+                        values.setPercent(-1);
                         DatabaseService.startActionUpdatePercentages(getActivity(), values);
                         break;
                     default:

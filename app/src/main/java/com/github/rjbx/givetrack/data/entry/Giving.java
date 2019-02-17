@@ -13,7 +13,7 @@ import java.util.Map;
 
 // TODO: Replace percent getter and setter definitions and invocations to implement RatedObject
 @IgnoreExtraProperties
-public class Giving extends Search implements Company, /*Rateraid.RatedObject, */Parcelable {
+public class Giving extends Search implements Company, Rateraid.RatedObject<Giving>, Parcelable {
 
     private int frequency;
     private String percent;
@@ -97,10 +97,11 @@ public class Giving extends Search implements Company, /*Rateraid.RatedObject, *
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
-    public String getPercent() { return percent; }
-    public void setPercent(String percent) {
-        this.percent = percent;
+    @Override public double getPercent() { return Double.parseDouble(percent); }
+    @Override public void setPercent(double percent) {
+        this.percent = String.valueOf(percent);
     }
+    @Override public Giving getObject() { return this; }
 
     @Exclude
     public Map<String, Object> toParameterMap() {
