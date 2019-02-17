@@ -43,6 +43,7 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
@@ -134,7 +135,7 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null)
-            sValuesArray = (Record[]) args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
+            sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);

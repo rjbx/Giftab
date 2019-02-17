@@ -45,6 +45,7 @@ import butterknife.Optional;
 import timber.log.Timber;
 
 import com.github.rjbx.calibrater.Calibrater;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
@@ -133,7 +134,7 @@ public class GivingFragment extends Fragment implements
         if (args != null) {
             Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVING_ATTRIBUTES);
             if (parcelableArray != null) {
-                Giving[] valuesArray = (Giving[]) parcelableArray;
+                Giving[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Giving.class);
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
                 }
