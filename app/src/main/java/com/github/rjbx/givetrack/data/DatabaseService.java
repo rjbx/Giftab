@@ -611,7 +611,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveSearch(String charityId) {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, charityId);
+        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, charityId));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -623,7 +623,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveGiving(String charityId) {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId);
+        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId));
 
         Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
                 null, null, null, null);
