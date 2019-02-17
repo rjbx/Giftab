@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
@@ -329,7 +330,9 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    final Giving[] updatePercentagesValuesArray = (Giving[]) intent.getParcelableArrayExtra(EXTRA_LIST_VALUES);
+                    Parcelable[] updatePercentagesParcelableValuesArray = intent.getParcelableArrayExtra(EXTRA_LIST_VALUES);
+                    Giving[] updatePercentagesValuesArray = new Giving[updatePercentagesParcelableValuesArray.length];
+                    parcelablesToTypedArray(updatePercentagesParcelableValuesArray, updatePercentagesValuesArray);
                     handleActionUpdatePercentages(updatePercentagesValuesArray);
                 } else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
@@ -734,8 +737,8 @@ public class DatabaseService extends IntentService {
             for (int i = 0; i < charityValues.length; i++) {
                 Giving giving = charityValues[i];
                 String ein = giving.getEin();
-                String phone = giving.getPhone();
-                String email = giving.getEmail();
+                String phone = "";
+                String email = "";
                 double percentage = giving.getPercent();
                 String impact = giving.getImpact();
                 int frequency = giving.getFrequency();
@@ -1087,6 +1090,9 @@ public class DatabaseService extends IntentService {
         return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
     }
 
+    private static <T extends Parcelable> void parcelablesToTypedArray(Parcelable[] parcelables, T[] typedArray) {
+        System.arraycopy(parcelables, 0, typedArray, 0, typedArray.length);
+    }
 
     /**
      * Converts a null value returned from API response to default value.
