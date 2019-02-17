@@ -242,10 +242,8 @@ public class DatabaseService extends IntentService {
     public static void startActionUpdatePercentages(Context context, Giving... charityValues) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_PERCENTAGES);
-        if (charityValues.length > 1) {
-            ArrayList<Giving> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
-            intent.putParcelableArrayListExtra(EXTRA_LIST_VALUES, charityValuesArrayList);
-        } else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
+        if (charityValues.length > 1) intent.putExtra(EXTRA_LIST_VALUES, charityValues);
+        else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
         context.startService(intent);
     }
 
@@ -331,8 +329,8 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    final ArrayList<Giving> updatePercentagesValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
-                    handleActionUpdatePercentages(updatePercentagesValuesArray.toArray(new Giving[updatePercentagesValuesArray.size()]));
+                    final Giving[] updatePercentagesValuesArray = (Giving[]) intent.getParcelableArrayExtra(EXTRA_LIST_VALUES);
+                    handleActionUpdatePercentages(updatePercentagesValuesArray);
                 } else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
@@ -733,9 +731,8 @@ public class DatabaseService extends IntentService {
 
             List<String> charities = new ArrayList<>();
 
-            int i = 0;
-            for (int j = 0; j < charityValues.length; j++) {
-                Giving giving = charityValues[i++];
+            for (int i = 0; i < charityValues.length; i++) {
+                Giving giving = charityValues[i];
                 String ein = giving.getEin();
                 String phone = giving.getPhone();
                 String email = giving.getEmail();
