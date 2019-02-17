@@ -37,7 +37,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -329,16 +328,12 @@ public class DatabaseService extends IntentService {
                 handleActionUpdateFrequency();
                 break;
             case ACTION_UPDATE_PERCENTAGES:
-                if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    Parcelable[] updatePercentagesParcelableValuesArray = intent.getParcelableArrayExtra(EXTRA_LIST_VALUES);
-                    Giving[] updatePercentagesValuesArray = new Giving[updatePercentagesParcelableValuesArray.length];
-                    parcelablesToTypedArray(updatePercentagesParcelableValuesArray, updatePercentagesValuesArray);
-                    handleActionUpdatePercentages(updatePercentagesValuesArray);
-                } else {
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionUpdatePercentages(getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
-                }
-                break;
+                } break;
             case ACTION_UPDATE_TIME:
                 long timeId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
                 long newTime = intent.getLongExtra(EXTRA_ITEM_VALUES, 0);
@@ -1090,8 +1085,10 @@ public class DatabaseService extends IntentService {
         return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
     }
 
-    private static <T extends Parcelable> void parcelablesToTypedArray(Parcelable[] parcelables, T[] typedArray) {
-        System.arraycopy(parcelables, 0, typedArray, 0, typedArray.length);
+    private static <T extends Parcelable> T[] getTypedArrayFromParcelables(Parcelable[] parcelables, Class<T> arrayType) {
+        T[] typedArray = (T[]) new Object[parcelables.length];
+        System.arraycopy(parcelables, 0, typedArray, 0, parcelables.length);
+        return typedArray;
     }
 
     /**
