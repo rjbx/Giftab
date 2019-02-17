@@ -653,9 +653,8 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveRecord(long time) {
 
-        String formattedTime = String.valueOf(time);
-        Uri recordUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> {
+            String formattedTime = String.valueOf(time);
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
@@ -697,6 +696,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetSearch in the provided background thread with the provided parameters.
      */
     private void handleActionResetSearch() {
+
         DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -708,6 +708,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetGiving in the provided background thread with the provided parameters.
      */
     private void handleActionResetGiving() {
+
         DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, null));
 
         UserPreferences.setCharities(this, new ArrayList<>());
@@ -721,6 +722,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetRecord in the provided background thread with the provided parameters.
      */
     private void handleActionResetRecord() {
+
         DISK_IO.execute(() -> DatabaseRepository.removeRecord(this, null));
 
         UserPreferences.setRecords(this, new ArrayList<>());
@@ -743,32 +745,32 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
     private void handleActionUpdatePercentages(ContentValues... charityValues) {
+
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
-                    null, null, null, null);
-            if (cursor == null || !cursor.moveToFirst()) return;
+
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
 
             boolean recalibrate = charityValues[0].get(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
-            if (recalibrate) charityValues[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(1f / cursor.getCount()));
+            if (recalibrate) givings.get(0).setPercent(String.valueOf(1f / givings.size()));
             int i = 0;
 
             List<String> charities = new ArrayList<>();
 
-            do {
-                ContentValues values = recalibrate ? charityValues[0] : charityValues[i++];
-                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
-                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
-                float impact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
-                int frequency = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, impact, frequency));
+            for (int j = 0; j < givings.size(); j++) {
+                Giving giving = recalibrate ? givings.get(0) : givings.get(i++);
+                String ein = giving.getEin();
+                String phone = giving.getPhone();
+                String email = giving.getEmail();
+                String percentage = giving.getPercent();
+                String impact = giving.getImpact();
+                int frequency = giving.getFrequency();
+                giving.setPercent(percentage);
+                giving.setImpact(impact);
+                giving.setFrequency(frequency);
+                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, Float.parseFloat(percentage), Float.parseFloat(impact), frequency));
 
-                Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
-                getContentResolver().update(uri, values, null, null);
-
-            } while (cursor.moveToNext());
-            cursor.close();
+                DatabaseRepository.addGiving(this, giving);
+            }
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
@@ -779,63 +781,48 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    // TODO: Replace ContentValues with entity class parameter
     /**
      * Handles action UpdateFrequency in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateFrequency(ContentValues charityValues) {
 
-        String affectedColumn;
-        int affectedIndex;
-        if (charityValues.containsKey(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY)) {
-            affectedColumn = DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY;
-            affectedIndex = DatabaseContract.Entry.INDEX_DONATION_FREQUENCY;
-        } else return;
-
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null, null, null);
-            if (cursor == null || !cursor.moveToFirst()) return;
+
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
 
             long anchorTime = UserPreferences.getAnchor(this);
 
-            int f = charityValues.getAsInteger(affectedColumn);
+            int f = charityValues.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
             List<String> charities = new ArrayList<>();
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
 
             float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
-            do {
-                String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
-                String name = cursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
-                String phone = cursor.getString(DatabaseContract.Entry.INDEX_PHONE_NUMBER);
-                String email = cursor.getString(DatabaseContract.Entry.INDEX_EMAIL_ADDRESS);
-                float percentage = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+            for (int j = 0; j < givings.size(); j++) {
+                Giving giving = givings.get(j);
+                String ein = giving.getEin();
+                String name = giving.getName();
+                String phone = giving.getPhone();
+                String email = giving.getEmail();
+                float percentage = Float.parseFloat(giving.getPercent());
                 float transactionImpact = amount * percentage;
-                float totalImpact = Float.parseFloat(cursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT)) + transactionImpact;
-                int affectedFrequency = cursor.getInt(affectedIndex) + (percentage < .01f ? 0 : f);
+                float totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
+                int affectedFrequency = giving.getFrequency() + (percentage < .01f ? 0 : f);
 
-                ContentValues values = new ContentValues();
-                DatabaseUtils.cursorRowToContentValues(cursor, values);
-                values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
-                values.put(affectedColumn, affectedFrequency);
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", totalImpact));
+                giving.setFrequency(affectedFrequency);
+                giving.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
                 charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
                 if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
-
-                Uri uri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(ein).build();
-                getContentResolver().update(uri, values, null, null);
+                DatabaseRepository.addGiving(this, giving);
 
                 if (percentage < .01f) continue;
-                values.remove(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
-                values.remove(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
-                values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, anchorTime++);
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, String.format(Locale.getDefault(), "%.2f", transactionImpact));
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, "");
-                getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_RECORD, values);
 
-            } while (cursor.moveToNext());
-            cursor.close();
+                Record record = new Record(giving.clone(), "", anchorTime++);
+                record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+                DatabaseRepository.addRecord(this, record);
+            }
 
             updateTimePreferences(anchorTime, amount);
 
@@ -853,26 +840,27 @@ public class DatabaseService extends IntentService {
      * Handles action UpdateTime in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateTime(long oldTime, long newTime) {
-        String formattedTime = String.valueOf(oldTime);
 
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, newTime);
-        Uri entryUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
-        DISK_IO.execute(() -> getContentResolver().update(entryUri, values, null, null));
+        DISK_IO.execute(() -> {
+            String formattedTime = String.valueOf(oldTime);
+            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            record.settime(newTime);
+            DatabaseRepository.addRecord(this, record);
 
-        List<String> records = UserPreferences.getRecords(this);
-        for (String record : records) {
-            String[] recordFields = record.split(":");
-            if (recordFields[0].equals(formattedTime)) {
-                String newRecord = record.replaceFirst(formattedTime, String.valueOf(newTime));
-                int index = records.indexOf(record);
-                records.set(index, newRecord);
+            List<String> records = UserPreferences.getRecords(this);
+            for (String r : records) {
+                String[] recordFields = r.split(":");
+                if (recordFields[0].equals(formattedTime)) {
+                    String newRecord = r.replaceFirst(formattedTime, String.valueOf(newTime));
+                    int index = records.indexOf(record);
+                    records.set(index, newRecord);
+                }
             }
-        }
-        UserPreferences.setRecords(this, records);
+            UserPreferences.setRecords(this, records);
 
-        updateTimePreferences(UserPreferences.getAnchor(this), 0);
-        UserPreferences.updateFirebaseUser(this);
+            updateTimePreferences(UserPreferences.getAnchor(this), 0);
+            UserPreferences.updateFirebaseUser(this);
+        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -883,6 +871,7 @@ public class DatabaseService extends IntentService {
      * Handles action UpdateAmount in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateAmount(long id, float amount) {
+
         String formattedTime = String.valueOf(id);
 
         String ein = "";
@@ -890,7 +879,7 @@ public class DatabaseService extends IntentService {
         List<String> records = UserPreferences.getRecords(this);
         for (String record : records) {
             String[] recordFields = record.split(":");
-            if(recordFields[0].equals(formattedTime)) {
+            if (recordFields[0].equals(formattedTime)) {
                 String oldAmountStr = recordFields[1];
                 String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
                 String newRecord = String.format("%s:%s:%s:%s",
@@ -922,15 +911,13 @@ public class DatabaseService extends IntentService {
 
         String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
 
-        ContentValues recordValues = new ContentValues();
-        ContentValues givingValues = new ContentValues();
-        recordValues.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, recordAmountStr);
-        givingValues.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, newGivingAmountStr);
-        Uri recordUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
-        Uri givingUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendEncodedPath(ein).build();
+        Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+        Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
+        record.setImpact(recordAmountStr);
+        giving.setImpact(newGivingAmountStr);
         DISK_IO.execute(() -> {
-            getContentResolver().update(recordUri, recordValues, null, null);
-            getContentResolver().update(givingUri, givingValues, null, null);
+            DatabaseRepository.addRecord(this, record);
+            DatabaseRepository.addGiving(this, giving);
         });
 
         updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
@@ -945,6 +932,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetData in the provided background thread.
      */
     private void handleActionResetData() {
+
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
             DatabaseRepository.removeSearch(this, null);
