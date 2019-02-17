@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Giving;
@@ -330,7 +331,7 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    handleActionUpdatePercentages(getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                    handleActionUpdatePercentages(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
                 } else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
@@ -1085,12 +1086,6 @@ public class DatabaseService extends IntentService {
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
         return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
-    }
-
-    private static <T extends Parcelable> T[] getTypedArrayFromParcelables(Parcelable[] parcelables, Class<T> arrayType) {
-        T[] typedArray = (T[]) Array.newInstance(arrayType, parcelables.length);
-        System.arraycopy(parcelables, 0, typedArray, 0, parcelables.length);
-        return typedArray;
     }
 
     /**

@@ -39,6 +39,7 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseRepository;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null) {
-            mGivingArray = (Giving[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
-            mRecordArray = (Record[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
+            mGivingArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY), Giving.class);
+            mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
