@@ -404,8 +404,8 @@ public class DatabaseService extends IntentService {
             Search[] parsedResponse = parseSearches(response, single);
 
             // Store data
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
-            DatabaseRepository.setSearch(this, parsedResponse);
+            DatabaseRepository.removeSearch(this, null);
+            DatabaseRepository.addSearch(this, parsedResponse);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -455,8 +455,8 @@ public class DatabaseService extends IntentService {
                 givings[i] = giving;
             }
 
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
-            DatabaseRepository.setGiving(this, givings);
+            DatabaseRepository.removeGiving(this, null);
+            DatabaseRepository.addGiving(this, givings);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -506,8 +506,8 @@ public class DatabaseService extends IntentService {
                 records[i] = record;
             }
 
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null);
-            DatabaseRepository.setRecord(this, records);
+            DatabaseRepository.removeSearch(this, null);
+            DatabaseRepository.addRecord(this, records);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -519,11 +519,10 @@ public class DatabaseService extends IntentService {
      * Handles action GiveSearch in the provided background thread with the provided parameters.
      */
     private void handleActionGiveSearch(String charityId) {
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
 
         NETWORK_IO.execute(() -> {
 
-            Search search = DatabaseRepository.getSearchs(this, charityId).get(0);
+            Search search = DatabaseRepository.getSearch(this, charityId).get(0);
 
             List<String> charities = UserPreferences.getCharities(this);
 
@@ -555,7 +554,7 @@ public class DatabaseService extends IntentService {
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            DatabaseRepository.setGiving(this, giving);
+            DatabaseRepository.addGiving(this, giving);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -567,13 +566,12 @@ public class DatabaseService extends IntentService {
      * Handles action GiveRecord in the provided background thread with the provided parameters.
      */
     private void handleActionGiveRecord(String charityId) {
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(charityId).build();
 
-        NETWORK_IO.execute(() -> {
+         NETWORK_IO.execute(() -> {
 
             List<String> charities = UserPreferences.getCharities(this);
 
-            Record record = DatabaseRepository.getRecords(this, charityId).get(0);
+            Record record = DatabaseRepository.getRecord(this, charityId).get(0);
 
             float impact = 0;
             int frequency = 0;
@@ -585,23 +583,22 @@ public class DatabaseService extends IntentService {
                     frequency++;
                 }
             }
-
-
+            
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
             Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
 
-            String phoneNumber = urlToPhoneNumber(record.getNavigatorUrl());
-            record.setPhone(phoneNumber);
+            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
+            giving.setPhone(phoneNumber);
 
-            String emailAddress = urlToEmailAddress(record.getHomepageUrl());
-            record.setEmail(emailAddress);
+            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
+            giving.setEmail(emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", record.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            DatabaseRepository.setRecord(this, record);
+            DatabaseRepository.addGiving(this, giving);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -613,8 +610,8 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveSearch in the provided background thread with the provided parameters.
      */
     private void handleActionRemoveSearch(String charityId) {
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_SEARCH.buildUpon().appendPath(charityId).build();
-        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
+
+        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, charityId);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -626,8 +623,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveGiving(String charityId) {
 
-        Uri charityUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendPath(charityId).build();
-        DISK_IO.execute(() -> getContentResolver().delete(charityUri, null, null));
+        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId);
 
         Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
                 null, null, null, null);
@@ -660,23 +656,18 @@ public class DatabaseService extends IntentService {
         String formattedTime = String.valueOf(time);
         Uri recordUri = DatabaseContract.Entry.CONTENT_URI_RECORD.buildUpon().appendPath(formattedTime).build();
         DISK_IO.execute(() -> {
-            Cursor cursor = getContentResolver().query(recordUri, null, null, null, null);
-            if (cursor == null || !cursor.moveToFirst()) return;
-            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
-            float rI = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
-            cursor.close();
-            Uri givingUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon().appendEncodedPath(ein).build();
-            cursor = getContentResolver().query(givingUri, null, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                int f = cursor.getInt(DatabaseContract.Entry.INDEX_DONATION_FREQUENCY);
-                float i = cursor.getFloat(DatabaseContract.Entry.INDEX_DONATION_IMPACT);
-                ContentValues values = new ContentValues();
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, i - rI);
-                values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, --f);
-                getContentResolver().update(givingUri, values, null, null);
-            }
-            cursor.close();
-            getContentResolver().delete(recordUri, null, null);
+            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            String ein = record.getEin();
+            float rI = Float.parseFloat(record.getImpact());
+
+
+            Giving giving =DatabaseRepository.getGiving(this, ein).get(0);
+
+            giving.setFrequency(giving.getFrequency() - 1);
+            giving.setImpact(String.valueOf(Float.parseFloat(giving.getImpact()) - rI));
+            DatabaseRepository.addGiving(this, giving);
+
+            DatabaseRepository.removeRecord(this, formattedTime);
 
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
@@ -706,7 +697,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetSearch in the provided background thread with the provided parameters.
      */
     private void handleActionResetSearch() {
-        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null));
+        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -717,7 +708,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetGiving in the provided background thread with the provided parameters.
      */
     private void handleActionResetGiving() {
-        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null));
+        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, null));
 
         UserPreferences.setCharities(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
@@ -730,7 +721,7 @@ public class DatabaseService extends IntentService {
      * Handles action ResetRecord in the provided background thread with the provided parameters.
      */
     private void handleActionResetRecord() {
-        DISK_IO.execute(() -> getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null));
+        DISK_IO.execute(() -> DatabaseRepository.removeRecord(this, null));
 
         UserPreferences.setRecords(this, new ArrayList<>());
         UserPreferences.updateFirebaseUser(this);
@@ -956,8 +947,9 @@ public class DatabaseService extends IntentService {
     private void handleActionResetData() {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
-            getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
+            DatabaseRepository.removeSearch(this, null);
+            DatabaseRepository.removeGiving(this, null);
+            DatabaseRepository.removeRecord(this, null);
         });
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));

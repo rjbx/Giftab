@@ -21,9 +21,9 @@ import androidx.annotation.Nullable;
 
 public final class DatabaseRepository {
 
-    static List<Search> getSearchs(Context context, @Nullable String ein) {
+    static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_SEARCH;
-        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 Entry.CONTENT_URI_SEARCH, null, null, null, null
         );
@@ -38,38 +38,21 @@ public final class DatabaseRepository {
         return entries;
     }
 
-    static void setSearch(Context context, Search... entries) {
+    static void addSearch(Context context, Search... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(Entry.CONTENT_URI_SEARCH, values);
     }
 
-    static List<Record> getRecords(Context context, @Nullable String ein) {
-        Uri contentUri = Entry.CONTENT_URI_RECORD;
-        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
-        Cursor cursor = context.getContentResolver().query(
-                Entry.CONTENT_URI_RECORD, null, null, null, null
-        );
-        List<Record> entries = new ArrayList<>();
-        if (cursor != null) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                entries.add(new Record());
-            }
-            cursorToCompanies(cursor, entries);
-            cursor.close();
-        }
-        return entries;
+    static void removeSearch(Context context, @Nullable String id) {
+        Uri contentUri = Entry.CONTENT_URI_SEARCH;
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        context.getContentResolver().delete(Entry.CONTENT_URI_SEARCH, null, null);
     }
 
-    static void setRecord(Context context, Record... entries) {
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_RECORD, values);
-    }
-
-    static List<Giving> getGivings(Context context, @Nullable String ein) {
+    static List<Giving> getGiving(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_GIVING;
-        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 Entry.CONTENT_URI_GIVING, null, null, null, null
         );
@@ -84,10 +67,45 @@ public final class DatabaseRepository {
         return entries;
     }
 
-    static void setGiving(Context context, Giving... entries) {
+    static void addGiving(Context context, Giving... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(Entry.CONTENT_URI_GIVING, values);
+    }
+
+    static void removeGiving(Context context, @Nullable String id) {
+        Uri contentUri = Entry.CONTENT_URI_GIVING;
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        context.getContentResolver().delete(Entry.CONTENT_URI_GIVING, null, null);
+    }
+
+    static List<Record> getRecord(Context context, @Nullable String id) {
+        Uri contentUri = Entry.CONTENT_URI_RECORD;
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        Cursor cursor = context.getContentResolver().query(
+                Entry.CONTENT_URI_RECORD, null, null, null, null
+        );
+        List<Record> entries = new ArrayList<>();
+        if (cursor != null) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                entries.add(new Record());
+            }
+            cursorToCompanies(cursor, entries);
+            cursor.close();
+        }
+        return entries;
+    }
+
+    static void addRecord(Context context, Record... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
+        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_RECORD, values);
+    }
+
+    static void removeRecord(Context context, @Nullable String id) {
+        Uri contentUri = Entry.CONTENT_URI_RECORD;
+        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        context.getContentResolver().delete(Entry.CONTENT_URI_RECORD, null, null);
     }
 
     static <T extends Company> void cursorRowToCompany(Cursor cursor, T entry) {
