@@ -721,14 +721,18 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetRecord() {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeRecord(this, null));
+        DISK_IO.execute(() -> {
+            DatabaseRepository.removeRecord(this, null);
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            for (Giving giving : givings) {
+                giving.setImpact("0");
+                giving.setFrequency(0);
+            } DatabaseRepository.addGiving(this, givings.toArray(new Giving[givings.size()]));
+        });
 
         UserPreferences.setRecords(this, new ArrayList<>());
+
         UserPreferences.updateFirebaseUser(this);
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 0);
-        getContentResolver().update(DatabaseContract.Entry.CONTENT_URI_GIVING, values, null, null);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
