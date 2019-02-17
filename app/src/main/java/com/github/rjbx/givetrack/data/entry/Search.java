@@ -40,8 +40,9 @@ public class Search implements Company, Parcelable, Cloneable {
     Search(Parcel source) {
         ein = source.readString();
         name = source.readString();
-        locationCity = source.readString();
+        locationStreet = source.readString();
         locationDetail = source.readString();
+        locationCity = source.readString();
         locationState = source.readString();
         locationZip = source.readString();
         homepageUrl = source.readString();
@@ -55,9 +56,10 @@ public class Search implements Company, Parcelable, Cloneable {
     @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(ein);
         dest.writeString(name);
+        dest.writeString(locationStreet);
+        dest.writeString(locationDetail);
         dest.writeString(locationCity);
         dest.writeString(locationState);
-        dest.writeString(locationDetail);
         dest.writeString(locationZip);
         dest.writeString(homepageUrl);
         dest.writeString(navigatorUrl);

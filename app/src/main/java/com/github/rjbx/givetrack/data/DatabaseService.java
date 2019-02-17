@@ -484,7 +484,7 @@ public class DatabaseService extends IntentService {
                 records[i] = record;
             }
 
-            DatabaseRepository.removeSearch(this, null);
+            DatabaseRepository.removeRecord(this, null);
             DatabaseRepository.addRecord(this, records);
         });
 

@@ -16,7 +16,6 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     private String memo;
     private long time;
 
-
     public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
         @Override public Record createFromParcel(Parcel source) {
             return new Record(source);
