@@ -243,13 +243,7 @@ public class DatabaseService extends IntentService {
     public static void startActionUpdatePercentages(Context context, Giving... charityValues) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_PERCENTAGES);
-        if (charityValues.length > 1) {
-            Giving[] clones = new Giving[charityValues.length];
-            for (int i = 0; i < charityValues.length; i++) {
-                clones[i] = charityValues[i].clone();
-            }
-            intent.putExtra(EXTRA_LIST_VALUES, charityValues);
-        }
+        if (charityValues.length > 1) intent.putExtra(EXTRA_LIST_VALUES, charityValues);
         else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
         context.startService(intent);
     }

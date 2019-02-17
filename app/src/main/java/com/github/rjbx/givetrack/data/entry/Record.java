@@ -11,7 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Record extends Search implements Company, Parcelable {
+public class Record extends Search implements Company, Parcelable, Cloneable {
 
     private String memo;
     private long time;
@@ -27,11 +27,13 @@ public class Record extends Search implements Company, Parcelable {
     };
 
     Record(Parcel source) {
+        super(source);
         memo = source.readString();
         time = source.readInt();
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         dest.writeString(memo);
         dest.writeLong(time);
     }
@@ -124,5 +126,10 @@ public class Record extends Search implements Company, Parcelable {
 
     @Exclude public Search getSearch() {
         return super.clone();
+    }
+
+    @Override public Record clone() {
+        super.clone();
+        return new Record(this, this.memo, this.time);
     }
 }
