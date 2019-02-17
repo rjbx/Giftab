@@ -841,56 +841,57 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionUpdateAmount(long id, float amount) {
 
-        String formattedTime = String.valueOf(id);
-
-        String ein = "";
-        float oldAmount = 0;
-        List<String> records = UserPreferences.getRecords(this);
-        for (String record : records) {
-            String[] recordFields = record.split(":");
-            if (recordFields[0].equals(formattedTime)) {
-                String oldAmountStr = recordFields[1];
-                String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-                String newRecord = String.format("%s:%s:%s:%s",
-                        recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
-                int index = records.indexOf(record);
-                records.set(index, newRecord);
-                oldAmount = Float.parseFloat(oldAmountStr);
-                ein = recordFields[3];
-            }
-        }
-        UserPreferences.setRecords(this, records);
-        float amountChange = amount - oldAmount;
-
-        String newGivingAmountStr = "";
-        List<String> charities = UserPreferences.getCharities(this);
-        for (String charity : charities) {
-            String[] charityFields = charity.split(":");
-            if (charityFields[0].equals(ein)) {
-                String givingAmountStr = charityFields[4];
-                float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
-                newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
-                String newCharity = String.format("%s:%s:%s:%s:%s:%s",
-                        charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
-                int index = charities.indexOf(charity);
-                charities.set(index, newCharity);
-            }
-        }
-        UserPreferences.setCharities(this, charities);
-
-        String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-
-        Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
-        Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
-        record.setImpact(recordAmountStr);
-        giving.setImpact(newGivingAmountStr);
         DISK_IO.execute(() -> {
+            String formattedTime = String.valueOf(id);
+
+            String ein = "";
+            float oldAmount = 0;
+            List<String> records = UserPreferences.getRecords(this);
+            for (String record : records) {
+                String[] recordFields = record.split(":");
+                if (recordFields[0].equals(formattedTime)) {
+                    String oldAmountStr = recordFields[1];
+                    String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
+                    String newRecord = String.format("%s:%s:%s:%s",
+                            recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
+                    int index = records.indexOf(record);
+                    records.set(index, newRecord);
+                    oldAmount = Float.parseFloat(oldAmountStr);
+                    ein = recordFields[3];
+                }
+            }
+            UserPreferences.setRecords(this, records);
+            float amountChange = amount - oldAmount;
+
+            String newGivingAmountStr = "";
+            List<String> charities = UserPreferences.getCharities(this);
+            for (String charity : charities) {
+                String[] charityFields = charity.split(":");
+                if (charityFields[0].equals(ein)) {
+                    String givingAmountStr = charityFields[4];
+                    float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
+                    newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
+                    String newCharity = String.format("%s:%s:%s:%s:%s:%s",
+                            charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
+                    int index = charities.indexOf(charity);
+                    charities.set(index, newCharity);
+                    Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
+                    giving.setImpact(newGivingAmountStr);
+                    DatabaseRepository.addGiving(this, giving);
+                }
+            }
+            UserPreferences.setCharities(this, charities);
+
+            String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
+
+            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            record.setImpact(recordAmountStr);
+
             DatabaseRepository.addRecord(this, record);
-            DatabaseRepository.addGiving(this, giving);
+            updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
+            UserPreferences.updateFirebaseUser(this);
         });
 
-        updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
-        UserPreferences.updateFirebaseUser(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
