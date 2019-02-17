@@ -821,7 +821,7 @@ public class DatabaseService extends IntentService {
                 String[] recordFields = r.split(":");
                 if (recordFields[0].equals(formattedTime)) {
                     String newRecord = r.replaceFirst(formattedTime, String.valueOf(newTime));
-                    int index = records.indexOf(record);
+                    int index = records.indexOf(r);
                     records.set(index, newRecord);
                 }
             }
