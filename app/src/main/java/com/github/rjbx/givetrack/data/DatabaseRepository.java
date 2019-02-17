@@ -17,9 +17,13 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 
+import androidx.annotation.Nullable;
+
 public final class DatabaseRepository {
 
-    static List<Search> getSearches(Context context) {
+    static List<Search> getSearchs(Context context, @Nullable String ein) {
+        Uri contentUri = Entry.CONTENT_URI_SEARCH;
+        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
         Cursor cursor = context.getContentResolver().query(
                 Entry.CONTENT_URI_SEARCH, null, null, null, null
         );
@@ -29,17 +33,20 @@ public final class DatabaseRepository {
                 entries.add(new Search());
             }
             cursorToCompanies(cursor, entries);
+            cursor.close();
         }
         return entries;
     }
 
-    static void setSearch(Context context, List<Search> entries) {
-        ContentValues[] values = new ContentValues[entries.size()];
-        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+    static void setSearch(Context context, Search... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(Entry.CONTENT_URI_SEARCH, values);
     }
 
-    static List<Record> getRecords(Context context) {
+    static List<Record> getRecords(Context context, @Nullable String ein) {
+        Uri contentUri = Entry.CONTENT_URI_RECORD;
+        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
         Cursor cursor = context.getContentResolver().query(
                 Entry.CONTENT_URI_RECORD, null, null, null, null
         );
@@ -49,17 +56,20 @@ public final class DatabaseRepository {
                 entries.add(new Record());
             }
             cursorToCompanies(cursor, entries);
+            cursor.close();
         }
         return entries;
     }
 
-    static void setRecord(Context context, List<Record> entries) {
-        ContentValues[] values = new ContentValues[entries.size()];
-        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+    static void setRecord(Context context, Record... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(Entry.CONTENT_URI_RECORD, values);
     }
 
-    static List<Giving> getGivings(Context context) {
+    static List<Giving> getGivings(Context context, @Nullable String ein) {
+        Uri contentUri = Entry.CONTENT_URI_GIVING;
+        if (ein != null) contentUri.buildUpon().appendPath(ein).build();
         Cursor cursor = context.getContentResolver().query(
                 Entry.CONTENT_URI_GIVING, null, null, null, null
         );
@@ -69,13 +79,14 @@ public final class DatabaseRepository {
                 entries.add(new Giving());
             }
             cursorToCompanies(cursor, entries);
+            cursor.close();
         }
         return entries;
     }
 
-    static void setGiving(Context context, List<Giving> entries) {
-        ContentValues[] values = new ContentValues[entries.size()];
-        for (int i = 0; i < entries.size(); i++) values[i] = entries.get(i).toContentValues();
+    static void setGiving(Context context, Giving... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(Entry.CONTENT_URI_GIVING, values);
     }
 

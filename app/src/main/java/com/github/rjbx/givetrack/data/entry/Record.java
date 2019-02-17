@@ -121,4 +121,8 @@ public class Record extends Search implements Company, Parcelable {
         this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
     }
+
+    @Exclude public Search getSearch() {
+        return super.clone();
+    }
 }

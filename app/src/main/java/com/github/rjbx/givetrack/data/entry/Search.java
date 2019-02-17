@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Search implements Company, Parcelable {
+public class Search implements Company, Parcelable, Cloneable {
 
     private String ein;
     private String name;
@@ -255,5 +255,16 @@ public class Search implements Company, Parcelable {
         this.email = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
         this.impact = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
         this.type = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_TYPE);
+    }
+
+    @Override public Search clone() {
+        Search clone  = new Search(
+                this
+        );
+        try { super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Class must implement Cloneable interface");
+        }
+        return clone;
     }
 }

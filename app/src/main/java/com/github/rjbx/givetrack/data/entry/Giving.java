@@ -122,4 +122,8 @@ public class Giving extends Search implements Company, Parcelable {
         this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
         this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
     }
+
+    @Exclude public Search getSuper() {
+        return super.clone();
+    }
 }

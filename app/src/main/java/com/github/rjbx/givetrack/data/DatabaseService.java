@@ -19,6 +19,8 @@ import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.Search;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,7 +44,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 
 // TODO: Add record and giving objects implementing ORM for remote persistence and Parcelable for bundling
 /**
@@ -400,11 +401,11 @@ public class DatabaseService extends IntentService {
             // Retrieve data
             String response = requestResponseFromUrl(url);
             if (response == null) return;
-            ContentValues[] parsedResponse = parseJsonResponse(response, single);
+            Search[] parsedResponse = parseSearches(response, single);
 
             // Store data
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_SEARCH, null, null);
-            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_SEARCH, parsedResponse);
+            DatabaseRepository.setSearch(this, parsedResponse);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -425,7 +426,7 @@ public class DatabaseService extends IntentService {
         if (charities.isEmpty() || charities.get(0).isEmpty()) return;
 
         int charityCount = charities.size();
-        ContentValues[] contentValuesArray = new ContentValues[charityCount];
+        Giving[] givings = new Giving[charityCount];
 
         NETWORK_IO.execute(() -> {
 
@@ -446,17 +447,16 @@ public class DatabaseService extends IntentService {
                 Timber.e("Giving Fetched URL: %s", url);
                 String response = requestResponseFromUrl(url);
                 Timber.e("Giving Fetched Response: %s", response);
-                ContentValues[] parsedResponse = parseJsonResponse(response, true);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
-                contentValuesArray[i] = parsedResponse[0];
+                Search search = parseSearches(response, true)[0];
+                search.setPhone(charityData[1]);
+                search.setEmail(charityData[2]);
+                search.setImpact(charityData[4]);
+                Giving giving = new Giving(search, Integer.parseInt(charityData[5]), charityData[3]);
+                givings[i] = giving;
             }
 
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_GIVING, null, null);
-            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_GIVING, contentValuesArray);
+            DatabaseRepository.setGiving(this, givings);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -477,7 +477,7 @@ public class DatabaseService extends IntentService {
         if (charities.isEmpty() || charities.get(0).isEmpty()) return;
 
         int charityCount = charities.size();
-        ContentValues[] contentValuesArray = new ContentValues[charityCount];
+        Record[] records = new Record[charityCount];
 
         NETWORK_IO.execute(() -> {
 
@@ -498,17 +498,16 @@ public class DatabaseService extends IntentService {
                 Timber.e("Record Fetched URL: %s", url);
                 String response = requestResponseFromUrl(url);
                 Timber.e("Record Fetched Response: %s", response);
-                ContentValues[] parsedResponse = parseJsonResponse(response, true);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, charityData[1]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, charityData[2]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, charityData[3]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, charityData[4]);
-                parsedResponse[0].put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, charityData[5]);
-                contentValuesArray[i] = parsedResponse[0];
+                Search search = parseSearches(response, true)[0];
+                search.setPhone(charityData[1]);
+                search.setEmail(charityData[2]);
+                search.setImpact(charityData[4]);
+                Record record = new Record(search, "", 0);
+                records[i] = record;
             }
 
             getContentResolver().delete(DatabaseContract.Entry.CONTENT_URI_RECORD, null, null);
-            getContentResolver().bulkInsert(DatabaseContract.Entry.CONTENT_URI_RECORD, contentValuesArray);
+            DatabaseRepository.setRecord(this, records);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -524,15 +523,11 @@ public class DatabaseService extends IntentService {
 
         NETWORK_IO.execute(() -> {
 
-            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-            if (cursor == null) return;
-            if (cursor.getCount() > 0) cursor.moveToFirst();
-            ContentValues values = new ContentValues();
-            DatabaseUtils.cursorRowToContentValues(cursor, values);
+            Search search = DatabaseRepository.getSearchs(this, charityId).get(0);
 
             List<String> charities = UserPreferences.getCharities(this);
 
-            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
+            String ein = search.getEin();
             float impact = 0;
             int frequency = 0;
 
@@ -545,18 +540,14 @@ public class DatabaseService extends IntentService {
             }
 
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
+            Giving giving = new Giving(search, frequency, percentage);
+            giving.setImpact(String.valueOf(impact));
 
-            String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
-            String phoneNumber = urlToPhoneNumber(navUrl);
-            values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
+            giving.setPhone(phoneNumber);
 
-            String orgUrl = cursor.getString(DatabaseContract.Entry.INDEX_HOMEPAGE_URL);
-            String emailAddress = urlToEmailAddress(orgUrl);
-            values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
+            giving.setEmail(emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
 
@@ -564,8 +555,7 @@ public class DatabaseService extends IntentService {
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_GIVING, values);
-            cursor.close();
+            DatabaseRepository.setGiving(this, giving);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -583,48 +573,35 @@ public class DatabaseService extends IntentService {
 
             List<String> charities = UserPreferences.getCharities(this);
 
-            Cursor cursor = getContentResolver().query(charityUri, null, null, null, null);
-            if (cursor == null) return;
-            if (cursor.getCount() > 0) cursor.moveToFirst();
-            ContentValues values = new ContentValues();
-            DatabaseUtils.cursorRowToContentValues(cursor, values);
+            Record record = DatabaseRepository.getRecords(this, charityId).get(0);
 
-            values.remove(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-            values.remove(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
-
-            String ein = cursor.getString(DatabaseContract.Entry.INDEX_EIN);
             float impact = 0;
             int frequency = 0;
 
-            for (String record : UserPreferences.getRecords(this)) {
-                String[] recordFields = record.split(":");
-                if (recordFields[3].equals(ein)) {
+            for (String r : UserPreferences.getRecords(this)) {
+                String[] recordFields = r.split(":");
+                if (recordFields[3].equals(record.getEin())) {
                     impact += Float.parseFloat(recordFields[1]);
                     frequency++;
                 }
             }
 
+
             String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percentage);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
+            Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
 
-            String navUrl = cursor.getString(DatabaseContract.Entry.INDEX_NAVIGATOR_URL);
-            String phoneNumber = urlToPhoneNumber(navUrl);
-            values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phoneNumber);
+            String phoneNumber = urlToPhoneNumber(record.getNavigatorUrl());
+            record.setPhone(phoneNumber);
 
-            String orgUrl = cursor.getString(DatabaseContract.Entry.INDEX_HOMEPAGE_URL);
-            String emailAddress = urlToEmailAddress(orgUrl);
-            values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, emailAddress);
+            String emailAddress = urlToEmailAddress(record.getHomepageUrl());
+            record.setEmail(emailAddress);
 
             if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
+            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", record.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
-            getContentResolver().insert(DatabaseContract.Entry.CONTENT_URI_GIVING, values);
-            cursor.close();
+            DatabaseRepository.setRecord(this, record);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -1174,6 +1151,56 @@ public class DatabaseService extends IntentService {
 
         return values;
     }
+
+    /**
+     * This method parses JSON String of data API response and returns array of {@link ContentValues}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static Search[] parseSearches(@NonNull String jsonResponse, boolean single) {
+
+        Search[] searches = null;
+        try {
+            if (single) {
+                searches = new Search[1];
+                searches[0] = parseSearch(new JSONObject(jsonResponse));
+                Timber.v("Parsed Response: %s", searches[0].toString());
+            } else {
+                JSONArray charityArray = new JSONArray(jsonResponse);
+                searches = new Search[charityArray.length()];
+                for (int i = 0; i < charityArray.length(); i++) {
+                    JSONObject charityObject = charityArray.getJSONObject(i);
+                    Search search = parseSearch(charityObject);
+                    searches[i] = search;
+                    Timber.v("Parsed Response: %s", search.toString());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Timber.e(e);
+        }
+        return searches;
+    }
+
+    /**
+     * This method parses JSONObject of JSONArray and returns {@link ContentValues}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static Search parseSearch(JSONObject charityObject) throws JSONException {
+
+        JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
+        String ein = charityObject.getString(FetchContract.KEY_EIN);
+        String name = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
+        String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
+        String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
+        String city = locationObject.getString(FetchContract.KEY_CITY);
+        String state = locationObject.getString(FetchContract.KEY_STATE);
+        String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
+        String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
+        String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
+
+        return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+    }
+
 
     /**
      * Converts a null value returned from API response to default value.
