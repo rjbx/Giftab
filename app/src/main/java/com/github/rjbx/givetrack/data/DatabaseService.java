@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
@@ -242,10 +241,9 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionUpdateFrequency(Context context, ContentValues charityValues) {
+    public static void startActionUpdateFrequency(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_FREQUENCY);
-        intent.putExtra(EXTRA_ITEM_VALUES, charityValues);
         context.startService(intent);
     }
 
@@ -255,11 +253,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionUpdatePercentages(Context context, ContentValues... charityValues) {
+    public static void startActionUpdatePercentages(Context context, Giving... charityValues) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_PERCENTAGES);
         if (charityValues.length > 1) {
-            ArrayList<ContentValues> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
+            ArrayList<Giving> charityValuesArrayList = new ArrayList<>(Arrays.asList(charityValues));
             intent.putParcelableArrayListExtra(EXTRA_LIST_VALUES, charityValuesArrayList);
         } else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
         context.startService(intent);
@@ -345,15 +343,14 @@ public class DatabaseService extends IntentService {
             case ACTION_UPDATE_CONTACT:
                 break;
             case ACTION_UPDATE_FREQUENCY:
-                final ContentValues updateFrequencyValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
-                handleActionUpdateFrequency(updateFrequencyValues);
+                handleActionUpdateFrequency();
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    final ArrayList<ContentValues> updatePercentagesValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
-                    handleActionUpdatePercentages(updatePercentagesValuesArray.toArray(new ContentValues[updatePercentagesValuesArray.size()]));
+                    final ArrayList<Giving> updatePercentagesValuesArray = intent.getParcelableArrayListExtra(EXTRA_LIST_VALUES);
+                    handleActionUpdatePercentages(updatePercentagesValuesArray.toArray(new Giving[updatePercentagesValuesArray.size()]));
                 } else {
-                    ContentValues updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
+                    Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
                 }
                 break;
@@ -744,20 +741,16 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdatePercentages(ContentValues... charityValues) {
+    private void handleActionUpdatePercentages(Giving... charityValues) {
 
         DISK_IO.execute(() -> {
 
             List<Giving> givings = DatabaseRepository.getGiving(this, null);
-
-            boolean recalibrate = charityValues[0].get(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE) == null;
-            if (recalibrate) givings.get(0).setPercent(String.valueOf(1f / givings.size()));
-            int i = 0;
-
             List<String> charities = new ArrayList<>();
 
+            int i = 0;
             for (int j = 0; j < givings.size(); j++) {
-                Giving giving = recalibrate ? givings.get(0) : givings.get(i++);
+                Giving giving = givings.get(i++);
                 String ein = giving.getEin();
                 String phone = giving.getPhone();
                 String email = giving.getEmail();
@@ -768,9 +761,8 @@ public class DatabaseService extends IntentService {
                 giving.setImpact(impact);
                 giving.setFrequency(frequency);
                 charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, Float.parseFloat(percentage), Float.parseFloat(impact), frequency));
-
-                DatabaseRepository.addGiving(this, giving);
             }
+            DatabaseRepository.addGiving(this, charityValues);
 
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
@@ -785,7 +777,7 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdateFrequency in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdateFrequency(ContentValues charityValues) {
+    private void handleActionUpdateFrequency() {
 
         DISK_IO.execute(() -> {
 
@@ -793,7 +785,7 @@ public class DatabaseService extends IntentService {
 
             long anchorTime = UserPreferences.getAnchor(this);
 
-            int f = charityValues.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
+            int f = 1;
             List<String> charities = new ArrayList<>();
             List<String> records = UserPreferences.getRecords(this);
             if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();

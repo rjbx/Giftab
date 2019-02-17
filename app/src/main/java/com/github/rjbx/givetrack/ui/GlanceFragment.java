@@ -1,6 +1,5 @@
 package com.github.rjbx.givetrack.ui;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -47,6 +46,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
+import com.github.rjbx.givetrack.data.entry.Record;
 
 import java.text.DateFormat;
 import java.text.NumberFormat;
@@ -80,7 +80,7 @@ public class GlanceFragment extends Fragment implements
     };
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
-    private static ContentValues[] sValuesArray;
+    private static Record[] sValuesArray;
     private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
@@ -134,7 +134,7 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null)
-            sValuesArray = (ContentValues[]) args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
+            sValuesArray = (Record[]) args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
         DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
@@ -307,12 +307,14 @@ public class GlanceFragment extends Fragment implements
         String labelStr;
         if (viewTracked) {
             labelStr = mTimeTracked.toUpperCase();
+            amountStr = String.valueOf(mTracked);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
         } else {
             labelStr = mTotalTime.toUpperCase();
+            amountStr = String.valueOf(mTotal);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
@@ -351,10 +353,10 @@ public class GlanceFragment extends Fragment implements
         if (donationFrequency == 0) return;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
         for (int j = 0; j < sValuesArray.length; j++) {
-            ContentValues record = sValuesArray[j];
-            Long time = record.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-            Float amount = Float.parseFloat(record.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
-            String name = record.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+            Record record = sValuesArray[j];
+            Long time = record.gettime();
+            Float amount = Float.parseFloat(record.getImpact());
+            String name = record.getName();
 
             recordsTotal += amount;
             if (time >= tracktime) tracked += amount;

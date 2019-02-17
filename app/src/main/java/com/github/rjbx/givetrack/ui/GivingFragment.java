@@ -1,14 +1,12 @@
 package com.github.rjbx.givetrack.ui;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -51,6 +49,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.NumberFormat;
@@ -77,7 +76,7 @@ public class GivingFragment extends Fragment implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
-    private static ContentValues[] sValuesArray;
+    private static Giving[] sValuesArray;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private static double[] sPercentages;
@@ -134,7 +133,7 @@ public class GivingFragment extends Fragment implements
         if (args != null) {
             Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVING_ATTRIBUTES);
             if (parcelableArray != null) {
-                ContentValues[] valuesArray = (ContentValues[]) parcelableArray;
+                Giving[] valuesArray = (Giving[]) parcelableArray;
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
                 }
@@ -351,14 +350,14 @@ public class GivingFragment extends Fragment implements
      */
     private void syncPercentages() {
         if (sPercentages == null || sPercentages.length == 0) return;
-        ContentValues[] valuesArray = new ContentValues[sPercentages.length];
+        Giving[] valuesArray = new Giving[sPercentages.length];
         for (int i = 0; i < sPercentages.length; i++) {
-            ContentValues values = new ContentValues();
-            values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, String.valueOf(sPercentages[i]));
+            Giving values = new Giving();
+            values.setPercent(String.valueOf(sPercentages[i]));
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
             valuesArray[i] = values;
         }
-        DatabaseService.startActionUpdatePercentages(getContext(), valuesArray);
+        DatabaseService.startActionUpdatePercentages(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -366,9 +365,9 @@ public class GivingFragment extends Fragment implements
      * Syncs donations to database.
      */
     private void syncDonations() {
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, 1);
-        DatabaseService.startActionUpdateFrequency(getContext(), values);
+        Giving values = new Giving();
+        values.setFrequency(1);
+        DatabaseService.startActionUpdateFrequency(getContext());
         UserPreferences.updateFirebaseUser(mParentActivity);
     }
 
@@ -520,11 +519,11 @@ public class GivingFragment extends Fragment implements
             final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
             final NumberFormat percentInstance = NumberFormat.getPercentInstance();
 
-            ContentValues values = sValuesArray[position];
-            final String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+            Giving values = sValuesArray[position];
+            final String name = values.getName();
             final int frequency =
-                    values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
-            final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
+                    values.getFrequency();
+            final float impact = Float.parseFloat(values.getImpact());
 
             String mutableName = name;
             if (mutableName.length() > 30) {
@@ -583,7 +582,7 @@ public class GivingFragment extends Fragment implements
             if (sPercentages.length != sValuesArray.length)
                 sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
             for (int i = 0; i < sPercentages.length; i++) {
-                sPercentages[i] = Float.parseFloat(sValuesArray[i].getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE));
+                sPercentages[i] = Float.parseFloat(sValuesArray[i].getPercent());
             }
             boolean adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) syncPercentages();
@@ -642,9 +641,9 @@ public class GivingFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.collection_remove_button) void removeGiving(View v) {
 
-                ContentValues values = sValuesArray[(int) v.getTag()];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                mEin = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
+                Giving values = sValuesArray[(int) v.getTag()];
+                String name = values.getName();
+                mEin = values.getEin();
 
                 mRemoveDialog = new AlertDialog.Builder(getContext()).create();
                 mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_charity, name));
@@ -661,10 +660,10 @@ public class GivingFragment extends Fragment implements
             @Optional @OnClick(R.id.inspect_button) void inspectGiving(View v) {
 
                 int position = (int) v.getTag();
-                ContentValues values = sValuesArray[position];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+                Giving values = sValuesArray[position];
+                String name = values.getName();
+                String ein = values.getEin();
+                String navUrl = values.getNavigatorUrl();
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -689,10 +688,10 @@ public class GivingFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.share_button) void shareGiving(View v) {
 
-                ContentValues values = sValuesArray[(int) v.getTag()];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                int frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
-                float impact = values.getAsFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+                Giving values = sValuesArray[(int) v.getTag()];
+                String name = values.getName();
+                int frequency = values.getFrequency();
+                float impact = Float.parseFloat(values.getImpact());
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                         .setType("text/plain")
@@ -763,11 +762,11 @@ public class GivingFragment extends Fragment implements
         /**
          * Initializes value instance fields and generates an instance of this layout.
          */
-        public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Giving values) {
             mAlertDialog = alertDialog;
-            mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
-            mPhone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
-            mWebsite = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
+            mEmail = values.getEmail();
+            mPhone = values.getPhone();
+            mWebsite = values.getHomepageUrl();
             mLocation = valuesToAddress(values);
             return new ContactDialogLayout(mAlertDialog.getContext());
         }
@@ -775,12 +774,12 @@ public class GivingFragment extends Fragment implements
         /**
          * Converts a set of ContentValues to a single formatted String.
          */
-        private static String valuesToAddress(ContentValues values) {
-            String street = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
-            String detail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
-            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
+        private static String valuesToAddress(Giving values) {
+            String street = values.getLocationStreet();
+            String detail = values.getLocationDetail();
+            String city = values.getLocationCity();
+            String state = values.getLocationState();
+            String zip = values.getLocationZip();
             return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
         }
 
