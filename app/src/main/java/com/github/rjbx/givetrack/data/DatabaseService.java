@@ -32,6 +32,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -1086,7 +1087,7 @@ public class DatabaseService extends IntentService {
     }
 
     private static <T extends Parcelable> T[] getTypedArrayFromParcelables(Parcelable[] parcelables, Class<T> arrayType) {
-        T[] typedArray = (T[]) new Object[parcelables.length];
+        T[] typedArray = (T[]) Array.newInstance(arrayType, parcelables.length);
         System.arraycopy(parcelables, 0, typedArray, 0, parcelables.length);
         return typedArray;
     }
