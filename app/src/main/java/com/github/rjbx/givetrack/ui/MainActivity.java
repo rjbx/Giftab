@@ -1,11 +1,9 @@
 package com.github.rjbx.givetrack.ui;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DatePickerDialog;
@@ -242,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case (R.id.nav_search): startActivity(new Intent(this, SearchActivity.class)); break;
+            case (R.id.nav_record): startActivity(new Intent(this, RecordActivity.class)); break;
             case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;

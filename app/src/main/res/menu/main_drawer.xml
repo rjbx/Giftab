@@ -17,7 +17,7 @@
                     android:title="@string/nav_item_search" />
 
                 <item
-                    android:id="@+id/nav_history"
+                    android:id="@+id/nav_record"
                     android:icon="@drawable/history"
                     android:title="@string/nav_item_history" />
             </menu>
