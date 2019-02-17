@@ -243,7 +243,13 @@ public class DatabaseService extends IntentService {
     public static void startActionUpdatePercentages(Context context, Giving... charityValues) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_PERCENTAGES);
-        if (charityValues.length > 1) intent.putExtra(EXTRA_LIST_VALUES, charityValues);
+        if (charityValues.length > 1) {
+            Giving[] clones = new Giving[charityValues.length];
+            for (int i = 0; i < charityValues.length; i++) {
+                clones[i] = charityValues[i].clone();
+            }
+            intent.putExtra(EXTRA_LIST_VALUES, charityValues);
+        }
         else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
         context.startService(intent);
     }
@@ -329,9 +335,9 @@ public class DatabaseService extends IntentService {
                 handleActionUpdateFrequency();
                 break;
             case ACTION_UPDATE_PERCENTAGES:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                if (intent.hasExtra(EXTRA_LIST_VALUES)) {
                     handleActionUpdatePercentages(getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
-                else {
+                } else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
                     handleActionUpdatePercentages(updatePercentagesValues);
                 } break;
@@ -733,8 +739,8 @@ public class DatabaseService extends IntentService {
             for (int i = 0; i < charityValues.length; i++) {
                 Giving giving = charityValues[i];
                 String ein = giving.getEin();
-                String phone = "";
-                String email = "";
+                String phone = giving.getPhone();
+                String email = giving.getEmail();
                 double percentage = giving.getPercent();
                 String impact = giving.getImpact();
                 int frequency = giving.getFrequency();

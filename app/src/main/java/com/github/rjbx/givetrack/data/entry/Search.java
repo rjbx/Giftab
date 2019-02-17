@@ -110,7 +110,7 @@ public class Search implements Company, Parcelable, Cloneable {
             String impact,
             int type) {
         this.ein = ein;
-        this.name = name ;
+        this.name = name;
         this.locationStreet = locationStreet;
         this.locationDetail = locationDetail;
         this.locationCity = locationCity;
@@ -258,13 +258,10 @@ public class Search implements Company, Parcelable, Cloneable {
     }
 
     @Override public Search clone() {
-        Search clone  = new Search(
-                this
-        );
+        Search clone  = new Search(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
-        }
-        return clone;
+        } return clone;
     }
 }
