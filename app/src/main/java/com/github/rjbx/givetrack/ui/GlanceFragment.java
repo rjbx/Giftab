@@ -303,13 +303,23 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void toggleAmount(TextView amountLabel, boolean viewTracked) {
+        String amountStr;
+        String labelStr;
         if (viewTracked) {
-            amountLabel.setText(mTimeTracked.toUpperCase());
-            mAmountView.setText(String.valueOf(mTracked));
+            labelStr = mTimeTracked.toUpperCase();
+            int amountLength = amountStr.length();
+            if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
+                    amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
+            else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
         } else {
-            amountLabel.setText(mTotalTime.toUpperCase());
-            mAmountView.setText(String.valueOf(mTotal));
+            labelStr = mTotalTime.toUpperCase();
+            int amountLength = amountStr.length();
+            if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
+                    amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
+            else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
         }
+        amountLabel.setText(labelStr);
+        mAmountView.setText(String.valueOf(amountStr));
     }
 
     /**
