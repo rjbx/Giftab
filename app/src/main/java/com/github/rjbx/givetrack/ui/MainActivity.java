@@ -41,6 +41,9 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.github.rjbx.givetrack.data.DatabaseRepository;
+import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Record;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -74,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
     private SectionsPagerAdapter mPagerAdapter;
-    private ContentValues[] mGivingArray;
-    private ContentValues[] mRecordArray;
+    private Giving[] mGivingArray;
+    private Record[] mRecordArray;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -95,8 +98,8 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null) {
-            mGivingArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
-            mRecordArray = (ContentValues[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
+            mGivingArray = (Giving[]) savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY);
+            mRecordArray = (Record[]) savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -191,25 +194,25 @@ public class MainActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
         switch (loader.getId()) {
             case DatabaseContract.LOADER_ID_GIVING:
-                mGivingArray = new ContentValues[cursor.getCount()];
+                mGivingArray = new Giving[cursor.getCount()];
                 if (cursor.moveToFirst()) {
                     int i = 0;
                     do {
-                        ContentValues values = new ContentValues();
-                        DatabaseUtils.cursorRowToContentValues(cursor, values);
-                        mGivingArray[i++] = values;
+                        Giving giving = new Giving();
+                        DatabaseRepository.cursorRowToCompany(cursor, giving);
+                        mGivingArray[i++] = giving;
                     } while (cursor.moveToNext());
                 }
                 new StatusAsyncTask(this).execute(mGivingArray);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
-                mRecordArray = new ContentValues[cursor.getCount()];
+                mRecordArray = new Record[cursor.getCount()];
                 if (cursor.moveToFirst()) {
                     int i = 0;
                     do {
-                        ContentValues values = new ContentValues();
-                        DatabaseUtils.cursorRowToContentValues(cursor, values);
-                        mRecordArray[i++] = values;
+                        Record record = new Record();
+                        DatabaseRepository.cursorRowToCompany(cursor, record);
+                        mRecordArray[i++] = record;
                     } while (cursor.moveToNext());
                 }
                 break;
@@ -435,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Confirms whether item exists in collection table and updates status accordingly.
      */
-    private static class StatusAsyncTask extends AsyncTask<ContentValues[], Void, Boolean> {
+    private static class StatusAsyncTask extends AsyncTask<Giving[], Void, Boolean> {
 
         private WeakReference<MainActivity> mActivity;
 
@@ -450,18 +453,18 @@ public class MainActivity extends AppCompatActivity implements
         /**
          * Retrieves the item collection status.
          */
-        @Override protected Boolean doInBackground(ContentValues[]... valueArrays) {
+        @Override protected Boolean doInBackground(Giving[]... givingArray) {
 
             Context context = mActivity.get().getBaseContext();
             List<String> charities = UserPreferences.getCharities(context);
             List<String> eins = new ArrayList<>();
             for (String charity : charities) eins.add(charity.split(":")[0]);
             if (context == null) return false;
-            ContentValues[] valuesArray = valueArrays[0];
+            Giving[] valuesArray = givingArray[0];
             if (valuesArray == null || valuesArray.length == 0) return false;
             Boolean isCurrent = true;
-            for (ContentValues values : valuesArray) {
-               isCurrent = eins.contains(values.getAsString(DatabaseContract.Entry.COLUMN_EIN));
+            for (Giving giving: valuesArray) {
+               isCurrent = eins.contains(giving.getEin());
             }
             if (!isCurrent) DatabaseService.startActionFetchGiving(mActivity.get());
             return isCurrent;

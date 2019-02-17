@@ -50,8 +50,10 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseRepository;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
+import com.github.rjbx.givetrack.data.entry.Record;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
@@ -174,14 +176,14 @@ public class RecordActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
+                Record[] records = new Record[cursor.getCount()];
                 int i = 0;
                 do {
-                    ContentValues values = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cursor, values);
-                    valuesArray[i++] = values;
+                    Record record = new Record();
+                    DatabaseRepository.cursorRowToCompany(cursor, record);
+                    records[i++] = record;
                 } while (cursor.moveToNext());
-                mAdapter.swapValues(valuesArray);
+                mAdapter.swapValues(records);
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -259,13 +261,13 @@ public class RecordActivity extends AppCompatActivity implements
 
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = (int) viewHolder.itemView.getTag();
-                ContentValues values = mAdapter.mValuesArray[position];
+                Record values = mAdapter.mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        String amount = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
-                        String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
+                        String amount = values.getImpact();
+                        String name = values.getName();
                         String formattedDate = DateFormat.getDateInstance().format(mDeletedTime);
-                        mDeletedTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                        mDeletedTime = values.gettime();
                         mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
                         String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
                         mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, messageArgs));
@@ -276,7 +278,7 @@ public class RecordActivity extends AppCompatActivity implements
                         mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         break;
                     case ItemTouchHelper.RIGHT:
-                        final String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+                        final String url = values.getNavigatorUrl();
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
                                 .build()
@@ -306,7 +308,7 @@ public class RecordActivity extends AppCompatActivity implements
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        private ContentValues[] mValuesArray;
+        private Record[] mValuesArray;
         private int mLastPosition;
 
         /**
@@ -339,11 +341,11 @@ public class RecordActivity extends AppCompatActivity implements
                 holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
             }
 
-            ContentValues values = mValuesArray[position];
-            String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-            String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-            final float impact = Float.parseFloat(values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT));
-            final long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+            Record values = mValuesArray[position];
+            String ein = values.getEin();
+            String name = values.getName();
+            final float impact = Float.parseFloat(values.getImpact());
+            final long time = values.gettime();
 
             if (name.length() > 35) { name = name.substring(0, 35);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
@@ -371,7 +373,7 @@ public class RecordActivity extends AppCompatActivity implements
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        private void swapValues(ContentValues[] valuesArray) {
+        private void swapValues(Record[] valuesArray) {
             mValuesArray = valuesArray;
             notifyDataSetChanged();
         }
@@ -426,8 +428,8 @@ public class RecordActivity extends AppCompatActivity implements
             @OnClick(R.id.record_time_text) void editTime(View v) {
                 if (isDualPane()) togglePane(v);
                 else {
-                    ContentValues values = ListAdapter.this.mValuesArray[(int) v.getTag()];
-                    mOldTime = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                    Record values = ListAdapter.this.mValuesArray[(int) v.getTag()];
+                    mOldTime = values.gettime();
 
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
@@ -451,10 +453,10 @@ public class RecordActivity extends AppCompatActivity implements
              */
             @Optional @OnClick(R.id.record_share_button) void shareRecord(View v) {
 
-                ContentValues values = mValuesArray[(int) v.getTag()];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                long time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
-                float impact = values.getAsFloat(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
+                Record values = mValuesArray[(int) v.getTag()];
+                String name = values.getName();
+                long time = values.gettime();
+                float impact = Float.parseFloat(values.getImpact());
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(RecordActivity.this)
                         .setType("text/plain")
@@ -481,7 +483,7 @@ public class RecordActivity extends AppCompatActivity implements
              * Listens for and persists changes to text editor value.
              */
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                long time = mValuesArray[(int) v.getTag()].getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+                long time = mValuesArray[(int) v.getTag()].gettime();
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;
@@ -543,10 +545,10 @@ public class RecordActivity extends AppCompatActivity implements
 
             private void togglePane(View v) {
                 int position = (int) v.getTag();
-                ContentValues values = mValuesArray[position];
-                String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-                String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-                String navUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+                Record values = mValuesArray[position];
+                String name = values.getName();
+                String ein = values.getEin();
+                String navUrl = values.getNavigatorUrl();
                 if (mLastPosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -607,11 +609,11 @@ public class RecordActivity extends AppCompatActivity implements
         /**
          * Initializes value instance fields and generates an instance of this layout.
          */
-        public static ContactDialogLayout getInstance(AlertDialog alertDialog, ContentValues values) {
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Record values) {
             mAlertDialog = alertDialog;
-            mEmail = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
-            mPhone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
-            mWebsite = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
+            mEmail = values.getEmail();
+            mPhone = values.getPhone();
+            mWebsite = values.getHomepageUrl();
             mLocation = valuesToAddress(values);
             return new ContactDialogLayout(mAlertDialog.getContext());
         }
@@ -619,12 +621,12 @@ public class RecordActivity extends AppCompatActivity implements
         /**
          * Converts a set of ContentValues to a single formatted String.
          */
-        private static String valuesToAddress(ContentValues values) {
-            String street = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
-            String detail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
-            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
+        private static String valuesToAddress(Record values) {
+            String street = values.getLocationStreet();
+            String detail = values.getLocationDetail();
+            String city = values.getLocationCity();
+            String state = values.getLocationState();
+            String zip = values.getLocationZip();
             return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
         }
 

@@ -108,13 +108,13 @@ public final class DatabaseRepository {
         context.getContentResolver().delete(Entry.CONTENT_URI_RECORD, null, null);
     }
 
-    static <T extends Company> void cursorRowToCompany(Cursor cursor, T entry) {
+    public static <T extends Company> void cursorRowToCompany(Cursor cursor, T entry) {
         ContentValues values = new ContentValues();
         DatabaseUtils.cursorRowToContentValues(cursor, values);
         entry.fromContentValues(values);
     }
 
-    static <T extends Company> void cursorToCompanies(Cursor cursor, List<T> entries) {
+    public static <T extends Company> void cursorToCompanies(Cursor cursor, List<T> entries) {
         if (cursor == null || !cursor.moveToFirst()) return;
         int i = 0;
         cursor.moveToFirst();

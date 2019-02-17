@@ -41,8 +41,10 @@ import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseRepository;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Search;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -168,14 +170,14 @@ public class SearchActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_SEARCH:
                 if (cursor == null|| !cursor.moveToFirst()) return;
                 mSearchProgress.setVisibility(View.GONE);
-                ContentValues[] valuesArray = new ContentValues[cursor.getCount()];
+                Search[] searches = new Search[cursor.getCount()];
                 int i = 0;
                 do {
-                    ContentValues values = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cursor, values);
-                    valuesArray[i++] = values;
+                    Search search = new Search();
+                    DatabaseRepository.cursorRowToCompany(cursor, search);
+                    searches[i++] = search;
                 } while (cursor.moveToNext());
-                mAdapter.swapValues(valuesArray);
+                mAdapter.swapValues(searches);
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -314,7 +316,7 @@ public class SearchActivity extends AppCompatActivity implements
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        private ContentValues[] mValuesArray;
+        private Search[] mValuesArray;
 
         private View mLastClicked;
 
@@ -335,14 +337,14 @@ public class SearchActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
-            ContentValues values = mValuesArray[position];
-            String ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-            String name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-            String city = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-            String state = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-            String zip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
-            String homepage = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
-            String url = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
+            Search values = mValuesArray[position];
+            String ein = values.getEin();
+            String name = values.getName();
+            String city = values.getLocationCity();
+            String state = values.getLocationState();
+            String zip = values.getLocationZip();
+            String homepage = values.getHomepageUrl();
+            String url = values.getNavigatorUrl();
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));
@@ -370,7 +372,7 @@ public class SearchActivity extends AppCompatActivity implements
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        private void swapValues(ContentValues[] valuesArray) {
+        private void swapValues(Search[] valuesArray) {
             mValuesArray = valuesArray;
             notifyDataSetChanged();
         }
