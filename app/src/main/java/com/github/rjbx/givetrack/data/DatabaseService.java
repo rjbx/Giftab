@@ -739,9 +739,6 @@ public class DatabaseService extends IntentService {
                 double percentage = giving.getPercent();
                 String impact = giving.getImpact();
                 int frequency = giving.getFrequency();
-                giving.setPercent(percentage);
-                giving.setImpact(impact);
-                giving.setFrequency(frequency);
 
                 charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
             }

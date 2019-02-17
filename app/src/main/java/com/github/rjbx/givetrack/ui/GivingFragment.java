@@ -350,12 +350,9 @@ public class GivingFragment extends Fragment implements
      */
     private void syncPercentages() {
         if (sPercentages == null || sPercentages.length == 0) return;
-        Giving[] valuesArray = new Giving[sPercentages.length];
         for (int i = 0; i < sPercentages.length; i++) {
-            Giving values = new Giving();
-            values.setPercent(sPercentages[i]);
+            sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
-            valuesArray[i] = values;
         }
         DatabaseService.startActionUpdatePercentages(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
