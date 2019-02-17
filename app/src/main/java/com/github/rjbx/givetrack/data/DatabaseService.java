@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.data;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.Context;
 import android.database.Cursor;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
@@ -224,19 +222,6 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdateContact with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionUpdateContact(Context context, ContentValues charityValues) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_CONTACT);
-        intent.putExtra(EXTRA_ITEM_VALUES, charityValues);
-        context.startService(intent);
-    }
-
-    /**
      * Starts this service to perform action UpdateFrequency with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -274,8 +259,6 @@ public class DatabaseService extends IntentService {
 
     public static void startActionUpdateAmount(Context context, long id, float amount) {
         Intent intent = new Intent(context, DatabaseService.class);
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, amount);
         intent.setAction(ACTION_UPDATE_AMOUNT);
         intent.putExtra(EXTRA_ITEM_ID, id);
         intent.putExtra(EXTRA_ITEM_VALUES, amount);
@@ -741,11 +724,6 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdateContact(ContentValues... charityValues) {}
-
-    /**
-     * Handles action UpdatePercentages in the provided background thread with the provided parameters.
-     */
     private void handleActionUpdatePercentages(Giving... charityValues) {
 
         boolean recalibrate = charityValues[0].getPercent() == null;
@@ -780,7 +758,6 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    // TODO: Replace ContentValues with entity class parameter
     /**
      * Handles action UpdateFrequency in the provided background thread with the provided parameters.
      */
@@ -1068,71 +1045,7 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * This method parses JSON String of data API response and returns array of {@link ContentValues}.
-     * @throws JSONException if JSON data cannot be properly parsed.
-     */
-    private static ContentValues[] parseJsonResponse(@NonNull String jsonResponse, boolean single) {
-
-        ContentValues[] valuesArray = null;
-        try {
-            if (single) {
-                valuesArray = new ContentValues[1];
-                valuesArray[0] = parseContentValues(new JSONObject(jsonResponse));
-                Timber.v("Parsed Response: %s", valuesArray[0].toString());
-            } else {
-                JSONArray charityArray = new JSONArray(jsonResponse);
-                valuesArray = new ContentValues[charityArray.length()];
-                for (int i = 0; i < charityArray.length(); i++) {
-                    JSONObject charityObject = charityArray.getJSONObject(i);
-                    ContentValues values = parseContentValues(charityObject);
-                    valuesArray[i] = values;
-                    Timber.v("Parsed Response: %s", values.toString());
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Timber.e(e);
-        }
-        return valuesArray;
-    }
-
-    /**
-     * This method parses JSONObject of JSONArray and returns {@link ContentValues}.
-     * @throws JSONException if JSON data cannot be properly parsed.
-     */
-    private static ContentValues parseContentValues(JSONObject charityObject) throws JSONException {
-
-        JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
-        String ein = charityObject.getString(FetchContract.KEY_EIN);
-        String charityName = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
-        String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
-        String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
-        String city = locationObject.getString(FetchContract.KEY_CITY);
-        String state = locationObject.getString(FetchContract.KEY_STATE);
-        String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
-        String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
-        String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
-
-        ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
-        values.put(DatabaseContract.Entry.COLUMN_CHARITY_NAME, nullToDefaultStr(charityName));
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STREET, nullToDefaultStr(street));
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL, nullToDefaultStr(detail));
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_CITY, nullToDefaultStr(city));
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STATE, nullToDefaultStr(state));
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, nullToDefaultStr(zip));
-        values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, nullToDefaultStr(homepageUrl));
-        values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, nullToDefaultStr(navigatorUrl));
-        values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, "");
-        values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, "");
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, "0");
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, 0);
-
-        return values;
-    }
-
-    /**
-     * This method parses JSON String of data API response and returns array of {@link ContentValues}.
+     * This method parses JSON String of data API response and returns array of {@link Search}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
     private static Search[] parseSearches(@NonNull String jsonResponse, boolean single) {
@@ -1161,7 +1074,7 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * This method parses JSONObject of JSONArray and returns {@link ContentValues}.
+     * This method parses JSONObject of JSONArray and returns {@link Search}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
     private static Search parseSearch(JSONObject charityObject) throws JSONException {
