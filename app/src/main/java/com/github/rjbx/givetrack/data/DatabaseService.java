@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
@@ -743,14 +744,16 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionUpdatePercentages(Giving... charityValues) {
 
+        boolean recalibrate = charityValues[0].getPercent() == null;
+        if (recalibrate) for (Giving giving : charityValues) giving.setPercent(String.valueOf(1d / charityValues.length));
+
         DISK_IO.execute(() -> {
 
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
             List<String> charities = new ArrayList<>();
 
             int i = 0;
-            for (int j = 0; j < givings.size(); j++) {
-                Giving giving = givings.get(i++);
+            for (int j = 0; j < charityValues.length; j++) {
+                Giving giving = charityValues[i++];
                 String ein = giving.getEin();
                 String phone = giving.getPhone();
                 String email = giving.getEmail();
@@ -760,10 +763,10 @@ public class DatabaseService extends IntentService {
                 giving.setPercent(percentage);
                 giving.setImpact(impact);
                 giving.setFrequency(frequency);
+
                 charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, Float.parseFloat(percentage), Float.parseFloat(impact), frequency));
             }
             DatabaseRepository.addGiving(this, charityValues);
-
             UserPreferences.setCharities(this, charities);
             UserPreferences.updateFirebaseUser(this);
         });

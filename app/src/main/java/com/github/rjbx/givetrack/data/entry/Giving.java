@@ -5,13 +5,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.rateraid.Rateraid;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+// TODO: Replace percent getter and setter definitions and invocations to implement RatedObject
 @IgnoreExtraProperties
-public class Giving extends Search implements Company, Parcelable {
+public class Giving extends Search implements Company, /*Rateraid.RatedObject, */Parcelable {
 
     private int frequency;
     private String percent;
@@ -92,16 +94,14 @@ public class Giving extends Search implements Company, Parcelable {
     public int getFrequency() {
         return frequency;
     }
-
     public void setFrequency(int frequency) {
         this.frequency = frequency;
     }
-    public String getPercent() {
-        return percent;
-    }
+    public String getPercent() { return percent; }
     public void setPercent(String percent) {
         this.percent = percent;
     }
+
     @Exclude
     public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
