@@ -653,15 +653,18 @@ public class DatabaseService extends IntentService {
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
-
-            Giving giving =DatabaseRepository.getGiving(this, ein).get(0);
-
-            giving.setFrequency(giving.getFrequency() - 1);
-            float impact = Float.parseFloat(giving.getImpact()) - rI;
-            giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-            DatabaseRepository.addGiving(this, giving);
-
             DatabaseRepository.removeRecord(this, formattedTime);
+
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            for (Giving giving : givings) {
+                if (giving.getEin().equals(ein)) {
+                    giving.setFrequency(giving.getFrequency() - 1);
+                    float impact = Float.parseFloat(giving.getImpact()) - rI;
+                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+                    DatabaseRepository.addGiving(this, giving);
+                    break;
+                }
+            }
 
 //            List<String> records = UserPreferences.getRecords(this);
 //            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
