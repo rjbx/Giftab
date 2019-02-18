@@ -159,7 +159,6 @@ public class SearchActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
-                if (cursor == null|| !cursor.moveToFirst()) return;
                 mSearchProgress.setVisibility(View.GONE);
                 Search[] searches = new Search[cursor.getCount()];
                 int i = 0;
@@ -224,7 +223,7 @@ public class SearchActivity extends AppCompatActivity implements
         if (dialog == mSearchDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    fetchResults();
+//                    fetchResults();
                     mSearchDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
@@ -284,8 +283,8 @@ public class SearchActivity extends AppCompatActivity implements
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        final String ein =  bundle.getString(DetailFragment.ARG_ITEM_EIN);
-                        DatabaseService.startActionRemoveSearch(getBaseContext(), ein);
+                        final Search values =  bundle.getParcelable(DetailFragment.ARG_ITEM_COMPANY);
+                        DatabaseService.startActionRemoveSearch(getBaseContext(), values.getEin());
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
