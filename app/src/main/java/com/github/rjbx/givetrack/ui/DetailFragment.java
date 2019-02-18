@@ -162,10 +162,10 @@ public class DetailFragment extends Fragment {
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
     @Override public void onStop() {
-        if (sInitialState != sCurrentState)
+        if (sInitialState != sCurrentState) {
             if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), sCompany);
             else DatabaseService.startActionRemoveGiving(mParentActivity, sCompany.getEin());
-        super.onDestroy();
+        }
         mUnbinder.unbind();
         super.onStop();
     }

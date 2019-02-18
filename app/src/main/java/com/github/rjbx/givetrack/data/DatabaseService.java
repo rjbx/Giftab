@@ -523,7 +523,7 @@ public class DatabaseService extends IntentService {
             List<Giving> givings = DatabaseRepository.getGiving(this, null);
             int size = givings.size();
             Giving giving = new Giving(search, frequency, size == 0 ? "1" :"0");
-            giving.setImpact(String.valueOf(impact));
+            giving.setImpact(String.format("%.2f", impact));
 
             String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
             giving.setPhone(phoneNumber);
@@ -654,11 +654,11 @@ public class DatabaseService extends IntentService {
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
 
-
             Giving giving =DatabaseRepository.getGiving(this, ein).get(0);
 
             giving.setFrequency(giving.getFrequency() - 1);
-            giving.setImpact(String.valueOf(Float.parseFloat(giving.getImpact()) - rI));
+            float impact = Float.parseFloat(giving.getImpact()) - rI;
+            giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
             DatabaseRepository.addGiving(this, giving);
 
             DatabaseRepository.removeRecord(this, formattedTime);
@@ -917,7 +917,7 @@ public class DatabaseService extends IntentService {
             for (Giving giving : givings) {
                 String ein = giving.getEin();
                 if (ein.equals(record.getEin())) {
-                    giving.setImpact(String.valueOf(Float.valueOf(giving.getImpact())) + amountChange);
+                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", Float.valueOf(giving.getImpact())) + amountChange);
                     DatabaseRepository.removeGiving(this, ein);
                     DatabaseRepository.addGiving(this, giving);
                     break;
