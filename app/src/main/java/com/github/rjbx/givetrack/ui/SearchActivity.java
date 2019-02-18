@@ -90,10 +90,8 @@ public class SearchActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
-        mSearchDialog = new AlertDialog.Builder(this).create();
-        mSearchDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mSearchDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
-        mSearchDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
+        showDialog();
+
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -157,12 +155,7 @@ public class SearchActivity extends AppCompatActivity implements
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        if (cursor == null || (!cursor.moveToFirst() && !sDialogShown)) {
-            mSearchProgress.setVisibility(View.VISIBLE);
-            mSearchDialog.show();
-            mSearchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            mSearchDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        }
+        if (cursor == null || !cursor.moveToFirst()) return;
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
@@ -248,6 +241,16 @@ public class SearchActivity extends AppCompatActivity implements
      */
     @OnClick(R.id.search_fab) public void refreshResults() {
         fetchResults();
+    }
+
+    private void showDialog() {
+        mSearchDialog = new AlertDialog.Builder(this).create();
+        mSearchDialog.setMessage(getString(R.string.dialog_filter_setup));
+        mSearchDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
+        mSearchDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
+        mSearchDialog.show();
+        mSearchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+        mSearchDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
     }
 
     private void fetchResults() {
