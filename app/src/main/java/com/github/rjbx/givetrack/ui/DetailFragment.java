@@ -33,6 +33,7 @@ import butterknife.OnClick;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Search;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,7 +44,7 @@ import java.lang.ref.WeakReference;
  */
 public class DetailFragment extends Fragment {
 
-    static final String ARG_ITEM_NAME = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
+    static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
     static final String ARG_ITEM_EIN = "com.github.rjbx.givetrack.ui.arg.ITEM_EIN";
     static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
@@ -59,6 +60,7 @@ public class DetailFragment extends Fragment {
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebview;
     private Unbinder mUnbinder;
+    private Search mCompany;
     @BindView(R.id.detail_fab) FloatingActionButton mFab;
     @BindView(R.id.detail_progress) ProgressBar mProgress;
     @BindView(R.id.detail_frame) FrameLayout mFrame;
@@ -122,13 +124,13 @@ public class DetailFragment extends Fragment {
             sScrollState = savedInstanceState.getInt(SCROLL_STATE);
             sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
             sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
-            sName = savedInstanceState.getString(ARG_ITEM_NAME);
+            mCompany = savedInstanceState.getParcelable(ARG_ITEM_COMPANY);
             sEin = savedInstanceState.getString(ARG_ITEM_EIN);
             sUrl = savedInstanceState.getString(ARG_ITEM_URL);
             drawActionButton();
         } else if (getArguments() != null && getArguments().getString(ARG_ITEM_EIN) != null) {
 
-            sName = getArguments().getString(ARG_ITEM_NAME);
+            sName = getArguments().getString(ARG_ITEM_COMPANY);
             sEin = getArguments().getString(ARG_ITEM_EIN);
             sUrl = getArguments().getString(ARG_ITEM_URL);
             sScrollState = 0;
@@ -167,13 +169,9 @@ public class DetailFragment extends Fragment {
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
     @Override public void onDestroy() {
-        if (sInitialState != sCurrentState) {
-            if (sCurrentState) {
-                if (mParentActivity instanceof SearchActivity) DatabaseService.startActionGiveSearch(mParentActivity, sEin);
-                else if (mParentActivity instanceof RecordActivity) DatabaseService.startActionGiveRecord(mParentActivity, sEin);
-            }
+        if (sInitialState != sCurrentState)
+            if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), mCompany);
             else DatabaseService.startActionRemoveGiving(mParentActivity, sEin);
-        }
         super.onDestroy();
         mUnbinder.unbind();
     }

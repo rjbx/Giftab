@@ -1,12 +1,10 @@
 package com.github.rjbx.givetrack.ui;
 
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -554,9 +552,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                 mLastPosition = position;
                 Bundle arguments = new Bundle();
-                arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
-                arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
-                arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
+                arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSearch());
                 if (sDualPane) showDualPane(arguments);
                 else showSinglePane();
             }

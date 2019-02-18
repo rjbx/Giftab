@@ -1,11 +1,9 @@
 package com.github.rjbx.givetrack.ui;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -354,9 +352,7 @@ public class SearchActivity extends AppCompatActivity implements
                     .into(holder.mLogoView);
 
             Bundle arguments = new Bundle();
-            arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
-            arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
-            arguments.putString(DetailFragment.ARG_ITEM_URL, url);
+            arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
 
             holder.itemView.setTag(arguments);
         }

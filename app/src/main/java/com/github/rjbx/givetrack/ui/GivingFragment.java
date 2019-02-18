@@ -47,7 +47,6 @@ import timber.log.Timber;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Giving;
@@ -674,7 +673,7 @@ public class GivingFragment extends Fragment implements
                 mLastClicked.invalidate();
 
                 Bundle arguments = new Bundle();
-                arguments.putString(DetailFragment.ARG_ITEM_NAME, name);
+                arguments.putString(DetailFragment.ARG_ITEM_COMPANY, name);
                 arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
                 arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
                 if (sDualPane) showDualPane(arguments);

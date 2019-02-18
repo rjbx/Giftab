@@ -5,10 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +30,6 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Repeatable;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -129,7 +124,7 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGiveSearch(Context context, Search search) {
+    public static void startActionGiveCompany(Context context, Search search) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_VALUES, search);
@@ -297,7 +292,7 @@ public class DatabaseService extends IntentService {
                 handleActionFetchRecord();
                 break;
             case ACTION_GIVE_SEARCH:
-                handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                handleActionGiveCompany(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_GIVE_RECORD:
                 handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
@@ -496,7 +491,7 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionGiveSearch(Search search) {
+    private void handleActionGiveCompany(Search search) {
 
         NETWORK_IO.execute(() -> {
 //
@@ -550,6 +545,7 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    // TODO: Factor out
     /**
      * Handles action GiveRecord in the provided background thread with the provided parameters.
      */
