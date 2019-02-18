@@ -42,6 +42,7 @@ public class UserPreferences {
     public static final String KEY_EIN = "ein";
     public static final String KEY_VIEWTRACK = "viewtrack";
     public static final String KEY_RECORDS = "records";
+    public static final String KEY_SEARCHGUIDE = "searchguide";
     public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMETRACK = "timetrack";
@@ -112,14 +113,14 @@ public class UserPreferences {
         sp.edit().putString(KEY_MINRATING, minrating).apply();
     }
 
-    public static boolean getFilter(Context context) {
+    public static boolean getSearchguide(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(KEY_FILTER, true);
+        return sp.getBoolean(KEY_SEARCHGUIDE, true);
     }
 
-    public static void setFilter(Context context, boolean filter) {
+    public static void setSearchguide(Context context, boolean searchguide) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(KEY_FILTER, filter).apply();
+        sp.edit().putBoolean(KEY_SEARCHGUIDE, searchguide).apply();
     }
 
     public static String getSearchSort(Context context) {
@@ -235,6 +236,16 @@ public class UserPreferences {
         sp.edit().putStringSet(KEY_RECORDS, value).apply();
     }
 
+    public static boolean getFocus(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(KEY_FOCUS, false);
+    }
+
+    public static void setFocus(Context context, boolean focus) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_FOCUS, focus).apply();
+    }
+
     public static int getTheme(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getInt(KEY_THEME, 0);
@@ -245,14 +256,14 @@ public class UserPreferences {
         sp.edit().putInt(KEY_THEME, theme).apply();
     }
 
-    public static boolean getFocus(Context context) {
+    public static boolean getFilter(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(KEY_FOCUS, false);
+        return sp.getBoolean(KEY_FILTER, true);
     }
 
-    public static void setFocus(Context context, boolean focus) {
+    public static void setFilter(Context context, boolean filter) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(KEY_FOCUS, focus).apply();
+        sp.edit().putBoolean(KEY_FILTER, filter).apply();
     }
 
     public static boolean getViewtrack(Context context) {
@@ -329,6 +340,7 @@ public class UserPreferences {
         setEin(context, user.getEin());
         setViewtrack(context, user.getViewtrack());
         setRecords(context, user.getRecords());
+        setSearchguide(context, user.getSearchguide());
         setHistorical(context, user.getHistorical());
         setAnchor(context, user.getAnchor());
         setTimetrack(context, user.getTimetrack());
@@ -366,6 +378,7 @@ public class UserPreferences {
                 getEin(context),
                 getViewtrack(context),
                 getRecords(context),
+                getFilter(context),
                 getHistorical(context),
                 getAnchor(context),
                 getTimetrack(context));

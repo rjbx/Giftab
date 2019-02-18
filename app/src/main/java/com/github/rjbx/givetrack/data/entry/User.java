@@ -36,6 +36,7 @@ import java.util.Map;
     private String ein;
     private boolean viewtrack;
     private List<String> records;
+    private boolean searchguide;
     private boolean historical;
     private long anchor;
     private long timetrack;
@@ -73,6 +74,7 @@ import java.util.Map;
             String ein,
             boolean viewtrack,
             List<String> records,
+            boolean searchguide,
             boolean historical,
             long anchor,
             long timetrack) {
@@ -100,6 +102,7 @@ import java.util.Map;
         this.ein = ein;
         this.viewtrack = viewtrack;
         this.records = records;
+        this.searchguide = searchguide;
         this.historical = historical;
         this.anchor = anchor;
         this.timetrack = timetrack;
@@ -229,6 +232,8 @@ import java.util.Map;
     }
     public List<String> getRecords() { return records; }
     public void setRecords(List<String> records) { this.records = records; }
+    public boolean getSearchguide() { return searchguide; }
+    public void setSearchguide(boolean searchguide) { this.searchguide = searchguide; }
     public boolean getHistorical() {
         return historical;
     }
@@ -271,6 +276,7 @@ import java.util.Map;
         map.put("ein", ein);
         map.put("viewtrack", viewtrack);
         map.put("records", records);
+        map.put("searchguide", searchguide);
         map.put("historical", historical);
         map.put("anchor", anchor);
         map.put("timetrack", timetrack);
