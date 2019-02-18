@@ -910,8 +910,11 @@ public class DatabaseService extends IntentService {
 
             List<Giving> givings = DatabaseRepository.getGiving(this, null);
             for (Giving giving : givings) {
-                if (giving.getEin().equals(record.getEin())) {
-                    giving.setImpact(giving.getImpact() + amountChange);
+                String ein = giving.getEin();
+                if (ein.equals(record.getEin())) {
+                    giving.setImpact(String.valueOf(Float.valueOf(giving.getImpact())) + amountChange);
+                    DatabaseRepository.removeGiving(this, ein);
+                    DatabaseRepository.addGiving(this, giving);
                     break;
                 }
             }
