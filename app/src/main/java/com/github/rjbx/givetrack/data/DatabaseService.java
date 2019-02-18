@@ -778,7 +778,7 @@ public class DatabaseService extends IntentService {
 
             List<Giving> givings = DatabaseRepository.getGiving(this, null);
 
-//            long anchorTime = UserPreferences.getAnchor(this);
+            long anchorTime = UserPreferences.getAnchor(this);
 
             int f = 1;
 //            List<String> charities = new ArrayList<>();
@@ -810,13 +810,12 @@ public class DatabaseService extends IntentService {
 
                 if (percentage < .01f) continue;
 
-                long anchorTime = UserPreferences.getAnchor(this);
-                Record record = new Record(giving.getSuper(), "", anchorTime);
+                Record record = new Record(giving.getSuper(), "", anchorTime++);
                 record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
                 DatabaseRepository.addRecord(this, record);
             }
 //
-//            updateTimePreferences(anchorTime, amount);
+            updateTimePreferences(anchorTime);
 //
 //            UserPreferences.setRecords(this, records);
 //            UserPreferences.setCharities(this, charities);
@@ -851,7 +850,7 @@ public class DatabaseService extends IntentService {
 //            }
 //            UserPreferences.setRecords(this, records);
 //
-//            updateTimePreferences(UserPreferences.getAnchor(this), 0);
+            updateTimePreferences(UserPreferences.getAnchor(this));
 //            UserPreferences.updateFirebaseUser(this);
         });
 
@@ -924,7 +923,7 @@ public class DatabaseService extends IntentService {
                 }
             }
 
-//            updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
+            updateTimePreferences(UserPreferences.getAnchor(this));
 //            UserPreferences.updateFirebaseUser(this);
         });
 
@@ -949,10 +948,12 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    private void updateTimePreferences(long anchorTime, float amount) {
+    private void updateTimePreferences(long anchorTime) {
 
-//        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
-//        else UserPreferences.setAnchor(this, anchorTime);
+        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
+        else UserPreferences.setAnchor(this, anchorTime);
+
+        UserPreferences.updateFirebaseUser(this);
     }
 
     private String urlToEmailAddress(String url) {
