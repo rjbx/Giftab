@@ -800,7 +800,7 @@ public class DatabaseService extends IntentService {
                 double totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
                 giving.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
 
-                giving.setFrequency(f);
+                giving.setFrequency(giving.getFrequency() + f);
 //                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 //
 //                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
