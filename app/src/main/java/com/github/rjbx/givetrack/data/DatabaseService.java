@@ -832,7 +832,7 @@ public class DatabaseService extends IntentService {
             String formattedTime = String.valueOf(oldTime);
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
             record.settime(newTime);
-            DatabaseRepository.removeRecord(this, String.valueOf(record.gettime()));
+            DatabaseRepository.removeRecord(this, String.valueOf(oldTime));
             DatabaseRepository.addRecord(this, record);
 
             List<String> records = UserPreferences.getRecords(this);
