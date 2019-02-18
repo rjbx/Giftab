@@ -161,12 +161,13 @@ public class DetailFragment extends Fragment {
      * Syncs item collection status only onDestroy in order to prevent multithreading issues on
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
-    @Override public void onDestroy() {
+    @Override public void onStop() {
         if (sInitialState != sCurrentState)
             if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), sCompany);
             else DatabaseService.startActionRemoveGiving(mParentActivity, sCompany.getEin());
         super.onDestroy();
         mUnbinder.unbind();
+        super.onStop();
     }
 
     /**
