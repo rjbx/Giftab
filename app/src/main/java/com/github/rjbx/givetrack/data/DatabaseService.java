@@ -907,7 +907,7 @@ public class DatabaseService extends IntentService {
 
             String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
-            float amountChange = Float.valueOf(record.getImpact()) - amount;
+            float amountChange = amount - Float.valueOf(record.getImpact());
             record.setImpact(recordAmountStr);
             DatabaseRepository.removeRecord(this, String.valueOf(id));
             DatabaseRepository.addRecord(this, record);
@@ -916,7 +916,8 @@ public class DatabaseService extends IntentService {
             for (Giving giving : givings) {
                 String ein = giving.getEin();
                 if (ein.equals(record.getEin())) {
-                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", Float.valueOf(giving.getImpact())) + amountChange);
+                    float newAmount = Float.valueOf(giving.getImpact()) + amountChange;
+                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", newAmount));
                     DatabaseRepository.removeGiving(this, ein);
                     DatabaseRepository.addGiving(this, giving);
                     break;
