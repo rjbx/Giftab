@@ -50,9 +50,7 @@ public class DetailFragment extends Fragment {
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
-    private static String sName;
-    private static String sEin;
-    private static String sUrl;
+    private static Search sCompany;
     private static boolean sInitialState;
     private static boolean sCurrentState;
     private static int sScrollState = 0;
@@ -60,7 +58,6 @@ public class DetailFragment extends Fragment {
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebview;
     private Unbinder mUnbinder;
-    private Search mCompany;
     @BindView(R.id.detail_fab) FloatingActionButton mFab;
     @BindView(R.id.detail_progress) ProgressBar mProgress;
     @BindView(R.id.detail_frame) FrameLayout mFrame;
@@ -124,18 +121,14 @@ public class DetailFragment extends Fragment {
             sScrollState = savedInstanceState.getInt(SCROLL_STATE);
             sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
             sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
-            mCompany = savedInstanceState.getParcelable(ARG_ITEM_COMPANY);
-            sEin = savedInstanceState.getString(ARG_ITEM_EIN);
-            sUrl = savedInstanceState.getString(ARG_ITEM_URL);
+            sCompany = savedInstanceState.getParcelable(ARG_ITEM_COMPANY);
             drawActionButton();
-        } else if (getArguments() != null && getArguments().getString(ARG_ITEM_EIN) != null) {
+        } else if (getArguments() != null && getArguments().getParcelable(ARG_ITEM_COMPANY) != null) {
 
-            sName = getArguments().getString(ARG_ITEM_COMPANY);
-            sEin = getArguments().getString(ARG_ITEM_EIN);
-            sUrl = getArguments().getString(ARG_ITEM_URL);
+            sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
             Uri collectionUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon()
-                    .appendPath(sEin).build();
+                    .appendPath(sCompany.getEin()).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }
 
@@ -149,7 +142,7 @@ public class DetailFragment extends Fragment {
         mWebview.setWebChromeClient(new WebChromeClient());
 
         mFrame.addView(mWebview);
-        mWebview.loadUrl(sUrl);
+        mWebview.loadUrl(sCompany.getNavigatorUrl());
 
         if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
@@ -170,8 +163,8 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onDestroy() {
         if (sInitialState != sCurrentState)
-            if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), mCompany);
-            else DatabaseService.startActionRemoveGiving(mParentActivity, sEin);
+            if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), sCompany);
+            else DatabaseService.startActionRemoveGiving(mParentActivity, sCompany.getEin());
         super.onDestroy();
         mUnbinder.unbind();
     }
@@ -182,17 +175,16 @@ public class DetailFragment extends Fragment {
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
-        outState.putString(ARG_ITEM_EIN, sEin);
-        outState.putString(ARG_ITEM_URL, sUrl);
         outState.putBoolean(INITIAL_STATE, sInitialState);
         outState.putBoolean(CURRENT_STATE, sCurrentState);
+        outState.putParcelable(ARG_ITEM_COMPANY, sCompany);
     }
 
     /**
      * Generates {@link Snackbar} based on item collection status.
      */
     private void drawSnackbar() {
-        String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sName);
+        String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sCompany.getName());
         Snackbar sb = Snackbar.make(mFab, message, Snackbar.LENGTH_LONG);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         sb.show();
@@ -227,7 +219,7 @@ public class DetailFragment extends Fragment {
                 .setToolbarColor(getResources()
                         .getColor(R.color.colorPrimaryDark))
                 .build()
-                .launchUrl(mParentActivity, Uri.parse(sUrl));
+                .launchUrl(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
         mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
     }
 

@@ -124,7 +124,7 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGiveCompany(Context context, Search search) {
+    public static void startActionGiveSearch(Context context, Search search) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_VALUES, search);
@@ -292,7 +292,7 @@ public class DatabaseService extends IntentService {
                 handleActionFetchRecord();
                 break;
             case ACTION_GIVE_SEARCH:
-                handleActionGiveCompany(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_GIVE_RECORD:
                 handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
@@ -491,7 +491,7 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionGiveCompany(Search search) {
+    private void handleActionGiveSearch(Search search) {
 
         NETWORK_IO.execute(() -> {
 //
@@ -551,8 +551,8 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionGiveRecord(Record record) {
 
-         NETWORK_IO.execute(() -> {
-
+//         NETWORK_IO.execute(() -> {
+//
 //            List<String> charities = UserPreferences.getCharities(this);
 //
 //            Record record = DatabaseRepository.getRecord(this, charityId).get(0);
@@ -567,38 +567,38 @@ public class DatabaseService extends IntentService {
 //                    frequency++;
 //                }
 //            }
-
-            int frequency = 0;
-            float impact = 0f;
-            List<Record> records = DatabaseRepository.getRecord(this, null);
-            for (Record r : records) {
-                if (r.getEin().equals(record.getEin())) {
-                    impact += Float.parseFloat(r.getImpact());
-                    frequency++;
-                }
-            }
-
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
-            int size = givings.size();
-            Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
-
-            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
-            giving.setPhone(phoneNumber);
-
-            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
-            giving.setEmail(emailAddress);
+//
+//            int frequency = 0;
+//            float impact = 0f;
+//            List<Record> records = DatabaseRepository.getRecord(this, null);
+//            for (Record r : records) {
+//                if (r.getEin().equals(record.getEin())) {
+//                    impact += Float.parseFloat(r.getImpact());
+//                    frequency++;
+//                }
+//            }
+//
+//            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+//            int size = givings.size();
+//            Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
+//
+//            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
+//            giving.setPhone(phoneNumber);
+//
+//            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
+//            giving.setEmail(emailAddress);
 //
 //            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
 //            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
 //
 //            UserPreferences.setCharities(this, charities);
 //            UserPreferences.updateFirebaseUser(this);
-            DatabaseRepository.addGiving(this, giving);
-        });
-
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+//            DatabaseRepository.addGiving(this, giving);
+//        });
+//
+//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     /**
