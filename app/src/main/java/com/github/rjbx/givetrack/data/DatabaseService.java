@@ -778,44 +778,49 @@ public class DatabaseService extends IntentService {
 
             List<Giving> givings = DatabaseRepository.getGiving(this, null);
 
-            long anchorTime = UserPreferences.getAnchor(this);
+//            long anchorTime = UserPreferences.getAnchor(this);
 
             int f = 1;
-            List<String> charities = new ArrayList<>();
-            List<String> records = UserPreferences.getRecords(this);
-            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
-
-            float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
-            for (int j = 0; j < givings.size(); j++) {
-                Giving giving = givings.get(j);
-                String ein = giving.getEin();
-                String name = giving.getName();
-                String phone = giving.getPhone();
-                String email = giving.getEmail();
+//            List<String> charities = new ArrayList<>();
+//            List<String> records = UserPreferences.getRecords(this);
+//            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
+//
+//            float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
+            for (Giving giving : givings) {
+//                String ein = giving.getEin();
+//                String name = giving.getName();
+//                String phone = giving.getPhone();
+//                String email = giving.getEmail();
                 double percentage = giving.getPercent();
+                if (percentage <= 0) continue;
+
+                float amount = Float.valueOf(UserPreferences.getDonation(this));
                 double transactionImpact = amount * percentage;
+
                 double totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
-                int affectedFrequency = giving.getFrequency() + (percentage < .01f ? 0 : f);
-
-                giving.setFrequency(affectedFrequency);
                 giving.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
-                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
 
-                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
+                giving.setFrequency(f);
+//                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
+//
+//                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
+                String ein = giving.getEin();
+                DatabaseRepository.removeGiving(this, );
                 DatabaseRepository.addGiving(this, giving);
 
                 if (percentage < .01f) continue;
 
-                Record record = new Record(giving.clone(), "", anchorTime++);
+                long anchorTime = UserPreferences.getAnchor(this);
+                Record record = new Record(giving.getSuper(), "", anchorTime);
                 record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
                 DatabaseRepository.addRecord(this, record);
             }
-
-            updateTimePreferences(anchorTime, amount);
-
-            UserPreferences.setRecords(this, records);
-            UserPreferences.setCharities(this, charities);
-            UserPreferences.updateFirebaseUser(this);
+//
+//            updateTimePreferences(anchorTime, amount);
+//
+//            UserPreferences.setRecords(this, records);
+//            UserPreferences.setCharities(this, charities);
+//            UserPreferences.updateFirebaseUser(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
