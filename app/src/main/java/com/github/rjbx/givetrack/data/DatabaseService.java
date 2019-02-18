@@ -33,6 +33,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Repeatable;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -128,10 +129,10 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGiveSearch(Context context, String charityId) {
+    public static void startActionGiveSearch(Context context, Search search) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_SEARCH);
-        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        intent.putExtra(EXTRA_ITEM_VALUES, search);
         context.startService(intent);
     }
 
@@ -141,10 +142,10 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGiveRecord(Context context, String charityId) {
+    public static void startActionGiveRecord(Context context, Record record) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_RECORD);
-        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
     }
 
@@ -296,12 +297,10 @@ public class DatabaseService extends IntentService {
                 handleActionFetchRecord();
                 break;
             case ACTION_GIVE_SEARCH:
-                final String collectSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionGiveSearch(collectSearchString);
+                handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_GIVE_RECORD:
-                final String collectRecordString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionGiveRecord(collectRecordString);
+                handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_SEARCH:
                 final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
@@ -397,50 +396,50 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchGiving() {
 
-        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
-        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
-        Uri template = templateBuilder.build();
-
-        List<String> charities = UserPreferences.getCharities(this);
-        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
-
-        int charityCount = charities.size();
-        Giving[] givings = new Giving[charityCount];
-
-        NETWORK_IO.execute(() -> {
-
-            for (int i = 0; i < charityCount; i++) {
-
-                String[] charityData = charities.get(i).split(":");
-                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
-
-                charityBuilder.appendPath(charityData[0]);
-
-                // Append required parameters
-                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
-
-                Uri charityUri = charityBuilder.build();
-
-                URL url = getUrl(charityUri);
-                Timber.e("Giving Fetched URL: %s", url);
-                String response = requestResponseFromUrl(url);
-                Timber.e("Giving Fetched Response: %s", response);
-                Search search = parseSearches(response, true)[0];
-                search.setPhone(charityData[1]);
-                search.setEmail(charityData[2]);
-                search.setImpact(charityData[4]);
-                Giving giving = new Giving(search, Integer.parseInt(charityData[5]), charityData[3]);
-                givings[i] = giving;
-            }
-
-            DatabaseRepository.removeGiving(this, null);
-            DatabaseRepository.addGiving(this, givings);
-        });
-
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+//        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+//        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+//        Uri template = templateBuilder.build();
+//
+//        List<String> charities = UserPreferences.getCharities(this);
+//        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
+//
+//        int charityCount = charities.size();
+//        Giving[] givings = new Giving[charityCount];
+//
+//        NETWORK_IO.execute(() -> {
+//
+//            for (int i = 0; i < charityCount; i++) {
+//
+//                String[] charityData = charities.get(i).split(":");
+//                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
+//
+//                charityBuilder.appendPath(charityData[0]);
+//
+//                // Append required parameters
+//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+//
+//                Uri charityUri = charityBuilder.build();
+//
+//                URL url = getUrl(charityUri);
+//                Timber.e("Giving Fetched URL: %s", url);
+//                String response = requestResponseFromUrl(url);
+//                Timber.e("Giving Fetched Response: %s", response);
+//                Search search = parseSearches(response, true)[0];
+//                search.setPhone(charityData[1]);
+//                search.setEmail(charityData[2]);
+//                search.setImpact(charityData[4]);
+//                Giving giving = new Giving(search, Integer.parseInt(charityData[5]), charityData[3]);
+//                givings[i] = giving;
+//            }
+//
+//            DatabaseRepository.removeGiving(this, null);
+//            DatabaseRepository.addGiving(this, givings);
+//        });
+//
+//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     /**
@@ -448,77 +447,87 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchRecord() {
 
-        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
-        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
-        Uri template = templateBuilder.build();
-
-        List<String> charities = UserPreferences.getCharities(this);
-        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
-
-        int charityCount = charities.size();
-        Record[] records = new Record[charityCount];
-
-        NETWORK_IO.execute(() -> {
-
-            for (int i = 0; i < charityCount; i++) {
-
-                String[] charityData = charities.get(i).split(":");
-                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
-
-                charityBuilder.appendPath(charityData[0]);
-
-                // Append required parameters
-                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
-
-                Uri charityUri = charityBuilder.build();
-
-                URL url = getUrl(charityUri);
-                Timber.e("Record Fetched URL: %s", url);
-                String response = requestResponseFromUrl(url);
-                Timber.e("Record Fetched Response: %s", response);
-                Search search = parseSearches(response, true)[0];
-                search.setPhone(charityData[1]);
-                search.setEmail(charityData[2]);
-                search.setImpact(charityData[4]);
-                Record record = new Record(search, "", 0);
-                records[i] = record;
-            }
-
-            DatabaseRepository.removeRecord(this, null);
-            DatabaseRepository.addRecord(this, records);
-        });
-
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+//        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+//        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+//        Uri template = templateBuilder.build();
+//
+//        List<String> charities = UserPreferences.getCharities(this);
+//        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
+//
+//        int charityCount = charities.size();
+//        Record[] records = new Record[charityCount];
+//
+//        NETWORK_IO.execute(() -> {
+//
+//            for (int i = 0; i < charityCount; i++) {
+//
+//                String[] charityData = charities.get(i).split(":");
+//                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
+//
+//                charityBuilder.appendPath(charityData[0]);
+//
+//                // Append required parameters
+//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
+//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
+//
+//                Uri charityUri = charityBuilder.build();
+//
+//                URL url = getUrl(charityUri);
+//                Timber.e("Record Fetched URL: %s", url);
+//                String response = requestResponseFromUrl(url);
+//                Timber.e("Record Fetched Response: %s", response);
+//                Search search = parseSearches(response, true)[0];
+//                search.setPhone(charityData[1]);
+//                search.setEmail(charityData[2]);
+//                search.setImpact(charityData[4]);
+//                Record record = new Record(search, "", 0);
+//                records[i] = record;
+//            }
+//
+//            DatabaseRepository.removeRecord(this, null);
+//            DatabaseRepository.addRecord(this, records);
+//        });
+//
+//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionGiveSearch(String charityId) {
+    private void handleActionGiveSearch(Search search) {
 
         NETWORK_IO.execute(() -> {
+//
+//            List<String> charities = UserPreferences.getCharities(this);
+//
+//            String ein = search.getEin();
+//            float impact = 0;
+//            int frequency = 0;
+//
+//            for (String record : UserPreferences.getRecords(this)) {
+//                String[] recordFields = record.split(":");
+//                if (recordFields[3].equals(ein)) {
+//                    impact += Float.parseFloat(recordFields[1]);
+//                    frequency++;
+//                }
+//            }
 
-            Search search = DatabaseRepository.getSearch(this, charityId).get(0);
-
-            List<String> charities = UserPreferences.getCharities(this);
-
-            String ein = search.getEin();
-            float impact = 0;
+            float impact = 0f;
             int frequency = 0;
 
-            for (String record : UserPreferences.getRecords(this)) {
-                String[] recordFields = record.split(":");
-                if (recordFields[3].equals(ein)) {
-                    impact += Float.parseFloat(recordFields[1]);
+            List<Record> records = DatabaseRepository.getRecord(this, null);
+            for (Record record : records) {
+                if (record.getEin().equals(search.getEin())) {
+                    impact += Float.parseFloat(record.getImpact());
                     frequency++;
                 }
             }
 
-            String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
-            Giving giving = new Giving(search, frequency, percentage);
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            int size = givings.size();
+            Giving giving = new Giving(search, frequency, size == 0 ? "1" :"0");
             giving.setImpact(String.valueOf(impact));
 
             String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
@@ -526,13 +535,13 @@ public class DatabaseService extends IntentService {
 
             String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
             giving.setEmail(emailAddress);
-
-            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
-
-            UserPreferences.setCharities(this, charities);
-            UserPreferences.updateFirebaseUser(this);
+//
+//            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
+//
+//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
+//
+//            UserPreferences.setCharities(this, charities);
+//            UserPreferences.updateFirebaseUser(this);
             DatabaseRepository.addGiving(this, giving);
         });
 
@@ -544,26 +553,37 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action GiveRecord in the provided background thread with the provided parameters.
      */
-    private void handleActionGiveRecord(String charityId) {
+    private void handleActionGiveRecord(Record record) {
 
          NETWORK_IO.execute(() -> {
 
-            List<String> charities = UserPreferences.getCharities(this);
+//            List<String> charities = UserPreferences.getCharities(this);
+//
+//            Record record = DatabaseRepository.getRecord(this, charityId).get(0);
+//
+//            float impact = 0;
+//            int frequency = 0;
+//
+//            for (String r : UserPreferences.getRecords(this)) {
+//                String[] recordFields = r.split(":");
+//                if (recordFields[3].equals(record.getEin())) {
+//                    impact += Float.parseFloat(recordFields[1]);
+//                    frequency++;
+//                }
+//            }
 
-            Record record = DatabaseRepository.getRecord(this, charityId).get(0);
-
-            float impact = 0;
             int frequency = 0;
-
-            for (String r : UserPreferences.getRecords(this)) {
-                String[] recordFields = r.split(":");
-                if (recordFields[3].equals(record.getEin())) {
-                    impact += Float.parseFloat(recordFields[1]);
+            float impact = 0f;
+            List<Record> records = DatabaseRepository.getRecord(this, null);
+            for (Record r : records) {
+                if (r.getEin().equals(record.getEin())) {
+                    impact += Float.parseFloat(r.getImpact());
                     frequency++;
                 }
             }
-            
-            String percentage = charities.isEmpty() || charities.get(0).isEmpty() ? "1" : "0";
+
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            int size = givings.size();
             Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
 
             String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
@@ -571,12 +591,12 @@ public class DatabaseService extends IntentService {
 
             String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
             giving.setEmail(emailAddress);
-
-            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
-
-            UserPreferences.setCharities(this, charities);
-            UserPreferences.updateFirebaseUser(this);
+//
+//            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
+//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
+//
+//            UserPreferences.setCharities(this, charities);
+//            UserPreferences.updateFirebaseUser(this);
             DatabaseRepository.addGiving(this, giving);
         });
 
@@ -604,23 +624,23 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId));
 
-        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
-                null, null, null, null);
-        if (cursor == null) return;
-
-        List<String> charities = UserPreferences.getCharities(this);
-        int removeIndex = 0;
-        boolean notFound = true;
-        for (int i = 0; i < charities.size(); i++) {
-            if (charities.get(i).split(":")[0].contains(charityId)) {
-                removeIndex = i;
-                notFound = false;
-                break;
-            }
-        } if (notFound) return;
-        charities.remove(charities.get(removeIndex));
-        UserPreferences.setCharities(this, charities);
-        UserPreferences.updateFirebaseUser(this);
+//        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
+//                null, null, null, null);
+//        if (cursor == null) return;
+//
+//        List<String> charities = UserPreferences.getCharities(this);
+//        int removeIndex = 0;
+//        boolean notFound = true;
+//        for (int i = 0; i < charities.size(); i++) {
+//            if (charities.get(i).split(":")[0].contains(charityId)) {
+//                removeIndex = i;
+//                notFound = false;
+//                break;
+//            }
+//        } if (notFound) return;
+//        charities.remove(charities.get(removeIndex));
+//        UserPreferences.setCharities(this, charities);
+//        UserPreferences.updateFirebaseUser(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -647,23 +667,23 @@ public class DatabaseService extends IntentService {
 
             DatabaseRepository.removeRecord(this, formattedTime);
 
-            List<String> records = UserPreferences.getRecords(this);
-            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
-            int removeIndex = 0;
-            boolean found = false;
-            for (int i = 0; i < records.size(); i++) {
-                if (Float.parseFloat(records.get(i).split(":")[0]) == time) {
-                    removeIndex = i;
-                    found = true;
-                    break;
-                }
-            }
-            if (found) {
-                records.remove(records.get(removeIndex));
-                UserPreferences.setRecords(this, records);
-            }
-
-            UserPreferences.updateFirebaseUser(this);
+//            List<String> records = UserPreferences.getRecords(this);
+//            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
+//            int removeIndex = 0;
+//            boolean found = false;
+//            for (int i = 0; i < records.size(); i++) {
+//                if (Float.parseFloat(records.get(i).split(":")[0]) == time) {
+//                    removeIndex = i;
+//                    found = true;
+//                    break;
+//                }
+//            }
+//            if (found) {
+//                records.remove(records.get(removeIndex));
+//                UserPreferences.setRecords(this, records);
+//            }
+//
+//            UserPreferences.updateFirebaseUser(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -690,8 +710,8 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, null));
 
-        UserPreferences.setCharities(this, new ArrayList<>());
-        UserPreferences.updateFirebaseUser(this);
+//        UserPreferences.setCharities(this, new ArrayList<>());
+//        UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -711,9 +731,9 @@ public class DatabaseService extends IntentService {
             } DatabaseRepository.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
 
-        UserPreferences.setRecords(this, new ArrayList<>());
-
-        UserPreferences.updateFirebaseUser(this);
+//        UserPreferences.setRecords(this, new ArrayList<>());
+//
+//        UserPreferences.updateFirebaseUser(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -722,29 +742,29 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdatePercentages(Giving... charityValues) {
+    private void handleActionUpdatePercentages(Giving... givings) {
 
-        boolean recalibrate = charityValues[0].getPercent() == -1d;
-        if (recalibrate) for (Giving giving : charityValues) giving.setPercent(1d / charityValues.length);
+        boolean recalibrate = givings[0].getPercent() == -1d;
+        if (recalibrate) for (Giving giving : givings) giving.setPercent(1d / givings.length);
 
         DISK_IO.execute(() -> {
-
-            List<String> charities = new ArrayList<>();
-
-            for (int i = 0; i < charityValues.length; i++) {
-                Giving giving = charityValues[i];
-                String ein = giving.getEin();
-                String phone = giving.getPhone();
-                String email = giving.getEmail();
-                double percentage = giving.getPercent();
-                String impact = giving.getImpact();
-                int frequency = giving.getFrequency();
-
-                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
-            }
-            DatabaseRepository.addGiving(this, charityValues);
-            UserPreferences.setCharities(this, charities);
-            UserPreferences.updateFirebaseUser(this);
+//
+//            List<String> charities = new ArrayList<>();
+//
+//            for (int i = 0; i < givings.length; i++) {
+//                Giving giving = givings[i];
+//                String ein = giving.getEin();
+//                String phone = giving.getPhone();
+//                String email = giving.getEmail();
+//                double percentage = giving.getPercent();
+//                String impact = giving.getImpact();
+//                int frequency = giving.getFrequency();
+//
+//                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
+//            }
+            DatabaseRepository.addGiving(this, givings);
+//            UserPreferences.setCharities(this, charities);
+//            UserPreferences.updateFirebaseUser(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -752,6 +772,7 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    // TODO: Replace with single update method per entry class
     /**
      * Handles action UpdateFrequency in the provided background thread with the provided parameters.
      */
@@ -893,7 +914,6 @@ public class DatabaseService extends IntentService {
             UserPreferences.updateFirebaseUser(this);
         });
 
-
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -904,7 +924,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetData() {
 
-        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
             DatabaseRepository.removeSearch(this, null);
             DatabaseRepository.removeGiving(this, null);
@@ -917,8 +937,8 @@ public class DatabaseService extends IntentService {
 
     private void updateTimePreferences(long anchorTime, float amount) {
 
-        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
-        else UserPreferences.setAnchor(this, anchorTime);
+//        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
+//        else UserPreferences.setAnchor(this, anchorTime);
     }
 
     private String urlToEmailAddress(String url) {
