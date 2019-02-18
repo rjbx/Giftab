@@ -59,6 +59,7 @@ public class SearchActivity extends AppCompatActivity implements
 
     public static final String ACTION_SEARCH_INTENT = "com.github.rjbx.givetrack.ui.action.SEARCH_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
+    private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
     private ListAdapter mAdapter;
@@ -82,6 +83,7 @@ public class SearchActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
+            sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
         Bundle bundle = getIntent().getExtras();
@@ -90,7 +92,7 @@ public class SearchActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
-        showDialog();
+        if (!sDialogShown) showDialog();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
@@ -110,6 +112,7 @@ public class SearchActivity extends AppCompatActivity implements
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
+        outState.putBoolean(STATE_SHOWN, sDialogShown);
     }
 
     /**
