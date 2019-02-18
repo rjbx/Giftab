@@ -805,7 +805,7 @@ public class DatabaseService extends IntentService {
 //
 //                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
                 String ein = giving.getEin();
-                DatabaseRepository.removeGiving(this, );
+                DatabaseRepository.removeGiving(this, ein);
                 DatabaseRepository.addGiving(this, giving);
 
                 if (percentage < .01f) continue;
