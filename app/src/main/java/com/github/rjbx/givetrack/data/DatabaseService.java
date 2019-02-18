@@ -654,7 +654,6 @@ public class DatabaseService extends IntentService {
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
 
-
             Giving giving =DatabaseRepository.getGiving(this, ein).get(0);
 
             giving.setFrequency(giving.getFrequency() - 1);
@@ -833,21 +832,21 @@ public class DatabaseService extends IntentService {
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
             record.settime(newTime);
             DatabaseRepository.removeRecord(this, String.valueOf(oldTime));
-            DatabaseRepository.addRecord(this, record);
+//            DatabaseRepository.addRecord(this, record);
 
-            List<String> records = UserPreferences.getRecords(this);
-            for (String r : records) {
-                String[] recordFields = r.split(":");
-                if (recordFields[0].equals(formattedTime)) {
-                    String newRecord = r.replaceFirst(formattedTime, String.valueOf(newTime));
-                    int index = records.indexOf(r);
-                    records.set(index, newRecord);
-                }
-            }
-            UserPreferences.setRecords(this, records);
-
-            updateTimePreferences(UserPreferences.getAnchor(this), 0);
-            UserPreferences.updateFirebaseUser(this);
+//            List<String> records = UserPreferences.getRecords(this);
+//            for (String r : records) {
+//                String[] recordFields = r.split(":");
+//                if (recordFields[0].equals(formattedTime)) {
+//                    String newRecord = r.replaceFirst(formattedTime, String.valueOf(newTime));
+//                    int index = records.indexOf(r);
+//                    records.set(index, newRecord);
+//                }
+//            }
+//            UserPreferences.setRecords(this, records);
+//
+//            updateTimePreferences(UserPreferences.getAnchor(this), 0);
+//            UserPreferences.updateFirebaseUser(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);

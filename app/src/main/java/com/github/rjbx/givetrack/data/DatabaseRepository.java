@@ -23,7 +23,7 @@ public final class DatabaseRepository {
 
     static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_SEARCH;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
@@ -46,13 +46,13 @@ public final class DatabaseRepository {
 
     static void removeSearch(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_SEARCH;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
 
     static List<Giving> getGiving(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_GIVING;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
@@ -75,13 +75,13 @@ public final class DatabaseRepository {
 
     static void removeGiving(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_GIVING;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
 
     static List<Record> getRecord(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_RECORD;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
@@ -104,7 +104,7 @@ public final class DatabaseRepository {
 
     static void removeRecord(Context context, @Nullable String id) {
         Uri contentUri = Entry.CONTENT_URI_RECORD;
-        if (id != null) contentUri.buildUpon().appendPath(id).build();
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
 
