@@ -673,9 +673,7 @@ public class GivingFragment extends Fragment implements
                 mLastClicked.invalidate();
 
                 Bundle arguments = new Bundle();
-                arguments.putString(DetailFragment.ARG_ITEM_COMPANY, name);
-                arguments.putString(DetailFragment.ARG_ITEM_EIN, ein);
-                arguments.putString(DetailFragment.ARG_ITEM_URL, navUrl);
+                arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
                 if (sDualPane) showDualPane(arguments);
                 else showSinglePane();
             }
