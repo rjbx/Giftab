@@ -654,6 +654,7 @@ public class DatabaseService extends IntentService {
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
 
+
             Giving giving =DatabaseRepository.getGiving(this, ein).get(0);
 
             giving.setFrequency(giving.getFrequency() - 1);
@@ -832,7 +833,7 @@ public class DatabaseService extends IntentService {
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
             record.settime(newTime);
             DatabaseRepository.removeRecord(this, String.valueOf(oldTime));
-//            DatabaseRepository.addRecord(this, record);
+            DatabaseRepository.addRecord(this, record);
 
 //            List<String> records = UserPreferences.getRecords(this);
 //            for (String r : records) {
@@ -862,52 +863,61 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> {
             String formattedTime = String.valueOf(id);
 
-            String ein = "";
-            float oldAmount = 0;
-            List<String> records = UserPreferences.getRecords(this);
-            for (String record : records) {
-                String[] recordFields = record.split(":");
-                if (recordFields[0].equals(formattedTime)) {
-                    String oldAmountStr = recordFields[1];
-                    String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-                    String newRecord = String.format("%s:%s:%s:%s",
-                            recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
-                    int index = records.indexOf(record);
-                    records.set(index, newRecord);
-                    oldAmount = Float.parseFloat(oldAmountStr);
-                    ein = recordFields[3];
-                }
-            }
-            UserPreferences.setRecords(this, records);
-            float amountChange = amount - oldAmount;
-
-            String newGivingAmountStr = "";
-            List<String> charities = UserPreferences.getCharities(this);
-            for (String charity : charities) {
-                String[] charityFields = charity.split(":");
-                if (charityFields[0].equals(ein)) {
-                    String givingAmountStr = charityFields[4];
-                    float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
-                    newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
-                    String newCharity = String.format("%s:%s:%s:%s:%s:%s",
-                            charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
-                    int index = charities.indexOf(charity);
-                    charities.set(index, newCharity);
-                    Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
-                    giving.setImpact(newGivingAmountStr);
-                    DatabaseRepository.addGiving(this, giving);
-                }
-            }
-            UserPreferences.setCharities(this, charities);
+//            String ein = "";
+//            float oldAmount = 0;
+//            List<String> records = UserPreferences.getRecords(this);
+//            for (String record : records) {
+//                String[] recordFields = record.split(":");
+//                if (recordFields[0].equals(formattedTime)) {
+//                    String oldAmountStr = recordFields[1];
+//                    String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
+//                    String newRecord = String.format("%s:%s:%s:%s",
+//                            recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
+//                    int index = records.indexOf(record);
+//                    records.set(index, newRecord);
+//                    oldAmount = Float.parseFloat(oldAmountStr);
+//                    ein = recordFields[3];
+//                }
+//            }
+//            UserPreferences.setRecords(this, records);
+//            float amountChange = amount - oldAmount;
+//
+//            String newGivingAmountStr = "";
+//            List<String> charities = UserPreferences.getCharities(this);
+//            for (String charity : charities) {
+//                String[] charityFields = charity.split(":");
+//                if (charityFields[0].equals(ein)) {
+//                    String givingAmountStr = charityFields[4];
+//                    float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
+//                    newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
+//                    String newCharity = String.format("%s:%s:%s:%s:%s:%s",
+//                            charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
+//                    int index = charities.indexOf(charity);
+//                    charities.set(index, newCharity);
+//                    Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
+//                    giving.setImpact(newGivingAmountStr);
+//                    DatabaseRepository.addGiving(this, giving);
+//                }
+//            }
+//            UserPreferences.setCharities(this, charities);
 
             String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-
             Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            float amountChange = Float.valueOf(record.getImpact()) - amount;
             record.setImpact(recordAmountStr);
-
+            DatabaseRepository.removeRecord(this, String.valueOf(id));
             DatabaseRepository.addRecord(this, record);
-            updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
-            UserPreferences.updateFirebaseUser(this);
+
+            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            for (Giving giving : givings) {
+                if (giving.getEin().equals(record.getEin())) {
+                    giving.setImpact(giving.getImpact() + amountChange);
+                    break;
+                }
+            }
+
+//            updateTimePreferences(UserPreferences.getAnchor(this), amountChange);
+//            UserPreferences.updateFirebaseUser(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
