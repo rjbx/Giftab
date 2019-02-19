@@ -15,6 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+// TODO: Replace with direct changes to User objects synced with DatabaseService and accessed with LoaderCallbacks
 /**
  * Provides constants and static helpers for retrieving and setting {@link SharedPreferences}.
  */
