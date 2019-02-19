@@ -15,7 +15,8 @@ import com.github.rjbx.givetrack.ui.MainActivity;
 import com.github.rjbx.givetrack.ui.RecordActivity;
 import com.github.rjbx.givetrack.ui.SearchActivity;
 
-import java.text.NumberFormat;
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 /**
  * Implements App Widget functionality.
@@ -106,14 +107,14 @@ public class AppWidget extends AppWidgetProvider {
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
             Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
-            String amountStr = NumberFormat.getCurrencyInstance().format(amount);
+            String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
             Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
-            String percentStr = NumberFormat.getPercentInstance().format(percentage);
+            String percentStr = PERCENT_FORMATTER.format(percentage);
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);

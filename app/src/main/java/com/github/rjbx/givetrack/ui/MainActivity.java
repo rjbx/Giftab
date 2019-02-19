@@ -47,7 +47,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -57,6 +56,8 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
+
+import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 /**
  * Provides the main screen for this application.
@@ -260,9 +261,8 @@ public class MainActivity extends AppCompatActivity implements
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
         mAnchorTime = calendar.getTimeInMillis();
-        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
-        dateFormatter.setTimeZone(TimeZone.getDefault());
-        String formattedDate = dateFormatter.format(mAnchorTime);
+        DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
+        String formattedDate = DATE_FORMATTER.format(mAnchorTime);
         
         mDateDifference = calendar.compareTo(Calendar.getInstance());
         String qualifier = mDateDifference < 2 ? "" : "past ";

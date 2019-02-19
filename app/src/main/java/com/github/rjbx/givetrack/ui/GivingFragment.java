@@ -52,12 +52,14 @@ import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.rateraid.Rateraid;
 
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
@@ -72,7 +74,6 @@ public class GivingFragment extends Fragment implements
         SharedPreferences.OnSharedPreferenceChangeListener,
         TextView.OnEditorActionListener {
 
-    private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
@@ -513,9 +514,6 @@ public class GivingFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            final NumberFormat currencyInstance = NumberFormat.getCurrencyInstance();
-            final NumberFormat percentInstance = NumberFormat.getPercentInstance();
-
             Giving values = sValuesArray[position];
             final String name = values.getName();
             final int frequency =
@@ -529,7 +527,7 @@ public class GivingFragment extends Fragment implements
             }
             holder.mNameView.setText(mutableName);
 
-            String impactStr = NumberFormat.getCurrencyInstance().format(impact);
+            String impactStr = CURRENCY_FORMATTER.format(impact);
             int impactLength = impactStr.length();
             if (impactLength > 12) impactStr = String.format("%s%sM", impactStr.substring(0, impactLength - 11),
                     impactLength > 14 ? "" : "." + impactStr.substring(impactLength - 9, impactLength - 7));
@@ -544,13 +542,13 @@ public class GivingFragment extends Fragment implements
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
             double amount = sPercentages[position] * mAmountTotal;
-            String amountStr = NumberFormat.getCurrencyInstance().format(amount);
+            String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            holder.mPercentageView.setText(percentInstance.format(sPercentages[position]));
+            holder.mPercentageView.setText(PERCENT_FORMATTER.format(sPercentages[position]));
             holder.mAmountView.setText(amountStr);
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);

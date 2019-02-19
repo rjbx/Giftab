@@ -45,12 +45,9 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
 
-import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -61,6 +58,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 // TODO: Add toggle for type as with interval attribute
 /**
@@ -79,8 +80,6 @@ public class GlanceFragment extends Fragment implements
             R.color.colorComfort,
             R.color.colorNeutral
     };
-    private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
-    private static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();
     private static Record[] sValuesArray;
     private static boolean mViewTracked;
     private static boolean mShowYears;
@@ -138,9 +137,8 @@ public class GlanceFragment extends Fragment implements
             sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
 
         Date date = new Date(UserPreferences.getTimetrack(getContext()));
-        DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
-        dateFormatter.setTimeZone(TimeZone.getDefault());
-        String formattedDate = dateFormatter.format(date);
+        DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
+        String formattedDate = DATE_FORMATTER.format(date);
         mTimeTracked = String.format("since %s", formattedDate);
         mViewTracked = UserPreferences.getViewtrack(getContext());
         mTotalTime = "all-time";

@@ -227,7 +227,6 @@ public class SearchActivity extends AppCompatActivity implements
         if (dialog == mSearchDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-//                    fetchResults();
                     mSearchDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:

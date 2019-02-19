@@ -3,11 +3,9 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -32,14 +30,15 @@ import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Giving;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+
+import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
 /**
@@ -189,7 +188,7 @@ public class ConfigActivity extends PreferenceActivity {
             String birthdate = UserPreferences.getBirthdate(getActivity());
             String[] birthdateParams = birthdate.split("/");
             calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-            datePreference.setSummary(SimpleDateFormat.getDateInstance().format(calendar.getTime()));
+            datePreference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
             datePreference.setOnPreferenceClickListener(clickedPreference -> {
                     DatePickerDialog datePicker = new DatePickerDialog(
                             getActivity(),

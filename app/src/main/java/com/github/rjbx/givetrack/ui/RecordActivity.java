@@ -54,12 +54,12 @@ import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
+
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 //TODO: Implement toggle for type attribute and launcher for
 /**
@@ -264,7 +264,7 @@ public class RecordActivity extends AppCompatActivity implements
                     case ItemTouchHelper.LEFT:
                         String amount = values.getImpact();
                         String name = values.getName();
-                        String formattedDate = DateFormat.getDateInstance().format(mDeletedTime);
+                        String formattedDate = DATE_FORMATTER.getDateInstance().format(mDeletedTime);
                         mDeletedTime = values.gettime();
                         mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
                         String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
@@ -350,8 +350,8 @@ public class RecordActivity extends AppCompatActivity implements
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));
-            holder.mTimeView.setText(DateFormat.getDateInstance().format(new Date(time)));
-            holder.mAmountView.setText(NumberFormat.getCurrencyInstance().format(impact));
+            holder.mTimeView.setText(DATE_FORMATTER.format(new Date(time)));
+            holder.mAmountView.setText(CURRENCY_FORMATTER.format(impact));
             holder.mAmountView.setFocusableInTouchMode(!isDualPane());
             holder.mAmountView.setFocusable(!isDualPane());
             holder.mAmountView.setClickable(true);
@@ -459,8 +459,8 @@ public class RecordActivity extends AppCompatActivity implements
                 Intent shareIntent = ShareCompat.IntentBuilder.from(RecordActivity.this)
                         .setType("text/plain")
                         .setText(String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
-                                DateFormat.getDateInstance().format(new Date(time)),
-                                NumberFormat.getCurrencyInstance().format(impact),
+                                DATE_FORMATTER.format(new Date(time)),
+                                CURRENCY_FORMATTER.format(impact),
                                 name,
                                 getString(R.string.app_name)))
                         .getIntent();
@@ -485,18 +485,18 @@ public class RecordActivity extends AppCompatActivity implements
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;
-                        NumberFormat formatter = NumberFormat.getCurrencyInstance();
                         try {
                             String viewText = mAmountView.getText().toString();
-                            if (viewText.contains("$")) amountTotal = formatter.parse(viewText).floatValue();
+                            if (viewText.contains("$")) amountTotal = CURRENCY_FORMATTER.parse(viewText).floatValue();
                             else amountTotal = Float.parseFloat(viewText);
                         } catch (ParseException e) {
                             Timber.e(e);
                             return false;
                         }
                         DatabaseService.startActionUpdateAmount(RecordActivity.this, time, amountTotal);
-                        mAmountView.setText(formatter.format(amountTotal));
-                        mAmountView.setContentDescription(getString(R.string.description_donation_text, formatter.format(amountTotal)));
+                        String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
+                        mAmountView.setText(CURRENCY_FORMATTER.format(formattedAmount));
+                        mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
                         InputMethodManager inputMethodManager =
                                 (InputMethodManager) RecordActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (inputMethodManager == null) return false;
@@ -512,10 +512,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
-                DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.SHORT);
-                dateFormatter.setTimeZone(TimeZone.getDefault());
                 mTime = calendar.getTimeInMillis();
-                String formattedDate = dateFormatter.format(mTime);
 
                 Context context = view.getContext();
                 mDateDialog = new AlertDialog.Builder(context).create();
@@ -544,9 +541,6 @@ public class RecordActivity extends AppCompatActivity implements
             private void togglePane(View v) {
                 int position = (int) v.getTag();
                 Record values = mValuesArray[position];
-                String name = values.getName();
-                String ein = values.getEin();
-                String navUrl = values.getNavigatorUrl();
                 if (mLastPosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
