@@ -12,6 +12,10 @@ import androidx.annotation.NonNull;
 
 import timber.log.Timber;
 
+import static com.github.rjbx.givetrack.data.DatabaseContract.*;
+import static com.github.rjbx.givetrack.data.DatabaseContract.CompanyEntry.*;
+import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
+
 /**
  * Provides data in response to requests generated from {@link android.content.ContentResolver}.
  */
@@ -20,9 +24,11 @@ public class DatabaseProvider extends ContentProvider {
     private static final int CODE_GIVING = 100;
     private static final int CODE_SEARCH = 101;
     private static final int CODE_RECORD = 102;
+    private static final int CODE_USER = 103;
     private static final int CODE_GIVING_WITH_ID = 200;
     private static final int CODE_SEARCH_WITH_ID = 201;
     private static final int CODE_RECORD_WITH_ID = 202;
+    private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
     /**
@@ -32,14 +38,16 @@ public class DatabaseProvider extends ContentProvider {
     private static UriMatcher buildUriMatcher() {
 
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        final String authority = DatabaseContract.AUTHORITY;
+        final String authority = AUTHORITY;
 
-        matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE, CODE_SEARCH);
-        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE, CODE_GIVING);
-        matcher.addURI(authority, DatabaseContract.PATH_RECORD_TABLE, CODE_RECORD);
-        matcher.addURI(authority, DatabaseContract.PATH_SEARCH_TABLE + "/#", CODE_SEARCH_WITH_ID);
-        matcher.addURI(authority, DatabaseContract.PATH_GIVING_TABLE + "/#", CODE_GIVING_WITH_ID);
-        matcher.addURI(authority, DatabaseContract.PATH_RECORD_TABLE + "/#", CODE_RECORD_WITH_ID);
+        matcher.addURI(authority, PATH_SEARCH_TABLE, CODE_SEARCH);
+        matcher.addURI(authority, PATH_GIVING_TABLE, CODE_GIVING);
+        matcher.addURI(authority, PATH_RECORD_TABLE, CODE_RECORD);
+        matcher.addURI(authority, PATH_RECORD_TABLE, CODE_USER);
+        matcher.addURI(authority, PATH_SEARCH_TABLE + "/#", CODE_SEARCH_WITH_ID);
+        matcher.addURI(authority, PATH_GIVING_TABLE + "/#", CODE_GIVING_WITH_ID);
+        matcher.addURI(authority, PATH_RECORD_TABLE + "/#", CODE_RECORD_WITH_ID);
+        matcher.addURI(authority, PATH_USER_TABLE + "/#", CODE_USER_WITH_ID);
 
         return matcher;
     }
@@ -70,9 +78,10 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
         
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
+            case CODE_USER: tableName = TABLE_NAME_USER; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -102,9 +111,10 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
+            case CODE_USER: tableName = TABLE_NAME_USER; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -137,26 +147,33 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
+            case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING;
+                tableName = TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH;
+                tableName = TABLE_NAME_SEARCH;
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD;
+                tableName = TABLE_NAME_RECORD;
+                break;
+
+            case CODE_USER_WITH_ID:
+                selection = COLUMN_EMAIL + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = TABLE_NAME_USER;
                 break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -191,26 +208,33 @@ public class DatabaseProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
 
-            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
-            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
-            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+            case CODE_GIVING: tableName = TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
+            case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING;
+                tableName = TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH;
+                tableName = TABLE_NAME_SEARCH;
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD;
+                tableName = TABLE_NAME_RECORD;
+                break;
+
+            case CODE_USER_WITH_ID:
+                selection = COLUMN_EMAIL + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = TABLE_NAME_USER;
                 break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -242,24 +266,31 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
-            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
-            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+            case CODE_GIVING: tableName = TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
+            case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+                tableName = TABLE_NAME_GIVING; break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
+                selection = COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+                tableName = TABLE_NAME_SEARCH; break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
+                tableName = TABLE_NAME_RECORD; break;
+
+            case CODE_USER_WITH_ID:
+                selection = COLUMN_EMAIL + " = ? ";
+                selectionArgs = new String[]{ Id };
+                tableName = TABLE_NAME_USER;
+                break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

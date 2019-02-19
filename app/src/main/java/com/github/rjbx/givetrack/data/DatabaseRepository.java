@@ -15,6 +15,7 @@ import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
+import com.github.rjbx.givetrack.data.entry.User;
 
 import androidx.annotation.Nullable;
 
@@ -103,6 +104,35 @@ public final class DatabaseRepository {
 
     static void removeRecord(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
+        context.getContentResolver().delete(contentUri, null, null);
+    }
+
+    static List<User> getUser(Context context, @Nullable String id) {
+        Uri contentUri = UserEntry.CONTENT_URI_USER;
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
+        Cursor cursor = context.getContentResolver().query(
+                contentUri, null, null, null, null
+        );
+        List<User> entries = new ArrayList<>();
+        if (cursor != null) {
+            for (int i = 0; i < cursor.getCount(); i++) {
+                entries.add(new User());
+            }
+//            cursorToCompanies(cursor, entries);
+            cursor.close();
+        }
+        return entries;
+    }
+
+    static void addUser(Context context, User... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+//        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
+        context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
+    }
+
+    static void removeUser(Context context, @Nullable String id) {
+        Uri contentUri = UserEntry.CONTENT_URI_USER;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }

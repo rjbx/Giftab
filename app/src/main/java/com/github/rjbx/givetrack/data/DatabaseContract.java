@@ -77,5 +77,31 @@ public final class DatabaseContract {
 
         public static final Uri CONTENT_URI_USER =
                 BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
+
+        public static final String COLUMN_EMAIL = "email";
+        public static final String COLUMN_BIRTHDATE = "birthdate";
+        public static final String COLUMN_GENDER = "gender";
+        public static final String COLUMN_THEME = "theme";
+        public static final String COLUMN_MAGNITUDE = "magnitude";
+        public static final String COLUMN_DONATION = "donation";
+        public static final String COLUMN_TERM = "term";
+        public static final String COLUMN_CITY = "city";
+        public static final String COLUMN_STATE = "state";
+        public static final String COLUMN_ZIP = "zip";
+        public static final String COLUMN_MINRATING = "minrating";
+        public static final String COLUMN_FILTER = "filter";
+        public static final String COLUMN_RECORDSORT = "sortRecord";
+        public static final String COLUMN_SEARCHSORT = "sortSearch";
+        public static final String COLUMN_RECORDORDER = "orderRecord";
+        public static final String COLUMN_SEARCHORDER = "orderSearch";
+        public static final String COLUMN_PAGES = "pages";
+        public static final String COLUMN_ROWS = "rows";
+        public static final String COLUMN_FOCUS = "focus";
+        public static final String COLUMN_COMPANY = "company";
+        public static final String COLUMN_VIEWTRACK = "viewtrack";
+        public static final String COLUMN_SEARCHGUIDE = "searchguide";
+        public static final String COLUMN_HISTORICAL = "historical";
+        public static final String COLUMN_ANCHOR = "anchor";
+        public static final String COLUMN_TIMETRACK = "timetrack";
     }
 }
