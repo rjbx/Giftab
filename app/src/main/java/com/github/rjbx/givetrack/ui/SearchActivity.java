@@ -39,7 +39,9 @@ import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Search;
@@ -53,7 +55,8 @@ import java.util.HashMap;
  * item details side-by-side using two vertical panes.
  */
 public class SearchActivity extends AppCompatActivity implements
-        DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
+        DatabaseController,
+        DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
 
@@ -81,7 +84,8 @@ public class SearchActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         sDialogShown = UserPreferences.getSearchguide(this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
@@ -141,26 +145,10 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     /**
-     * Instantiates and returns a new {@link Loader} for the given ID.
-     */
-    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
-        switch (id) {
-            case DatabaseContract.LOADER_ID_SEARCH:
-                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH;
-                return new CursorLoader(
-                        this, ratingUri,
-                        null, null, null, null);
-            default:
-                throw new RuntimeException(getString(R.string.loader_error_message, id));
-        }
-    }
-
-    /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    @Override public void onLoadFinished(int id, Cursor cursor) {
         if (cursor == null || !cursor.moveToFirst()) return;
-        int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
@@ -185,7 +173,7 @@ public class SearchActivity extends AppCompatActivity implements
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    @Override public void onLoaderReset() {
         mAdapter.swapValues(null);
     }
 

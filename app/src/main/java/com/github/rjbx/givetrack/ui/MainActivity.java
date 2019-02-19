@@ -116,6 +116,11 @@ public class MainActivity extends AppCompatActivity implements
         mNavigation.setNavigationItemSelectedListener(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, DatabaseCallbacks.getInstance(this));
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+    }
+
+    public Context getContext() {
+        return this;
     }
 
     /**

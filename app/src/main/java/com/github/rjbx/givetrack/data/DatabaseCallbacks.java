@@ -28,7 +28,7 @@ public class DatabaseCallbacks implements LoaderManager.LoaderCallbacks<Cursor> 
     DatabaseCallbacks(DatabaseController controller) {
         mContext = controller.getBaseContext();
         mController = controller;
-        
+
     }
 
     public static DatabaseCallbacks getInstance(DatabaseController controller) {
@@ -39,8 +39,9 @@ public class DatabaseCallbacks implements LoaderManager.LoaderCallbacks<Cursor> 
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_RECORD: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
             case LOADER_ID_SEARCH: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
+            case LOADER_ID_RECORD: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
             case LOADER_ID_USER: return new CursorLoader(mContext, UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(mContext.getString(R.string.loader_error_message, id));
         }

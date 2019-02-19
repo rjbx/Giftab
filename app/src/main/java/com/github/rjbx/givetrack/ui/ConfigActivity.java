@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -29,6 +30,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseCallbacks;
+import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Giving;
@@ -44,7 +48,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 /**
  * Presents a set of application settings.
  */
-public class ConfigActivity extends PreferenceActivity {
+public class ConfigActivity extends PreferenceActivity implements DatabaseController {
 
     /**
      * Constructs the Settings UI.
@@ -52,6 +56,17 @@ public class ConfigActivity extends PreferenceActivity {
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+//        getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+    }
+
+    @Override
+    public void onLoadFinished(int id, Cursor cursor) {
+
+    }
+
+    @Override
+    public void onLoaderReset() {
+
     }
 
     /**

@@ -47,8 +47,10 @@ import timber.log.Timber;
 
 import com.github.rjbx.givetrack.R;
 
+import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -67,7 +69,8 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  * item details side-by-side using two vertical panes.
  */
 public class RecordActivity extends AppCompatActivity implements
-        DetailFragment.MasterDetailFlow, LoaderManager.LoaderCallbacks<Cursor>,
+        DatabaseController,
+        DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
     public static final String ACTION_RECORD_INTENT = "com.github.rjbx.givetrack.ui.action.RECORD_INTENT";
@@ -90,7 +93,8 @@ public class RecordActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_record);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
@@ -147,31 +151,10 @@ public class RecordActivity extends AppCompatActivity implements
     }
 
     /**
-     * Instantiates and returns a new {@link Loader} for the given ID.
-     */
-    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
-
-        switch (id) {
-            case DatabaseContract.LOADER_ID_RECORD:
-                String sort = UserPreferences.getRecordSort(this);
-                String order = UserPreferences.getRecordOrder(this);
-                String sortOrder = String.format("%s %s", sort, order);
-                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_RECORD;
-                return new CursorLoader(
-                        this, ratingUri,
-                        null, null, null, sortOrder);
-            default:
-                throw new RuntimeException(getString(R.string.loader_error_message, id));
-        }
-
-    }
-
-    /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
+    @Override public void onLoadFinished(int id, Cursor cursor) {
         if (cursor == null || (!cursor.moveToFirst())) return;
-        int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
                 Record[] records = new Record[cursor.getCount()];
@@ -195,7 +178,7 @@ public class RecordActivity extends AppCompatActivity implements
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    @Override public void onLoaderReset() {
         mAdapter.swapValues(null);
     }
 
