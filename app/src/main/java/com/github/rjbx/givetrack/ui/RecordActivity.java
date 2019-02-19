@@ -151,12 +151,11 @@ public class RecordActivity extends AppCompatActivity implements
      */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
 
-        String sort = UserPreferences.getRecordSort(this);
-        String order = UserPreferences.getRecordOrder(this);
-        String sortOrder = String.format("%s %s", sort, order);
-
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
+                String sort = UserPreferences.getRecordSort(this);
+                String order = UserPreferences.getRecordOrder(this);
+                String sortOrder = String.format("%s %s", sort, order);
                 Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_RECORD;
                 return new CursorLoader(
                         this, ratingUri,
@@ -164,6 +163,7 @@ public class RecordActivity extends AppCompatActivity implements
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
         }
+
     }
 
     /**

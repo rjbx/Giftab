@@ -1,5 +1,10 @@
 package com.github.rjbx.givetrack.data;
 
-public interface DatabaseController {
+import android.content.Context;
+import android.database.Cursor;
 
+public interface DatabaseController {
+    Context getBaseContext();
+    void onLoadFinished(int id, Cursor cursor);
+    void onLoaderReset();
 }

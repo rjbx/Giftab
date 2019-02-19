@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.annotation.Nullable;
@@ -41,6 +40,8 @@ import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseCallbacks;
+import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.google.android.material.navigation.NavigationView;
@@ -63,8 +64,8 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  * Provides the main screen for this application.
  */
 public class MainActivity extends AppCompatActivity implements
+        DatabaseController,
         NavigationView.OnNavigationItemSelectedListener,
-        LoaderManager.LoaderCallbacks<Cursor>,
         DialogInterface.OnClickListener,
         DatePickerDialog.OnDateSetListener {
 
@@ -113,8 +114,8 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, DatabaseCallbacks.getInstance(this));
     }
 
     /**
@@ -169,30 +170,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Instantiates and returns a new {@link Loader} for the given ID.
-     */
-    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
-        switch (id) {
-            case DatabaseContract.LOADER_ID_GIVING:
-                return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
-                        null, null, null, null);
-            case DatabaseContract.LOADER_ID_RECORD:
-                String sort = getResources().getStringArray(R.array.list_preference_sortRecord_values)[1];
-                String order = getResources().getStringArray(R.array.list_preference_orderRecord_values)[0];
-                String sortOrder = String.format("%s %s", sort, order);
-                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_RECORD;
-                return new CursorLoader(
-                        this, ratingUri,
-                        null, null, null, sortOrder);
-            default: throw new RuntimeException(getString(R.string.loader_error_message, id));
-        }
-    }
-
-    /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor cursor) {
-        switch (loader.getId()) {
+    @Override public void onLoadFinished(int id, Cursor cursor) {
+        switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
                 mGivingArray = new Giving[cursor.getCount()];
                 if (cursor.moveToFirst()) {
@@ -229,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    @Override public void onLoaderReset() {
         mGivingArray = null;
         mRecordArray = null;
     }
