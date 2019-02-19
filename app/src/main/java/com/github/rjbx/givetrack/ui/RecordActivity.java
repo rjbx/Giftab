@@ -93,8 +93,8 @@ public class RecordActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_record);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, DatabaseCallbacks.getInstance(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;

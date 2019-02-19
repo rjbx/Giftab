@@ -56,7 +56,7 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-//        getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+//        getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
     }
 
     @Override

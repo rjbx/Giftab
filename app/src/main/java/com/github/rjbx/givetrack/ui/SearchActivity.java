@@ -84,8 +84,8 @@ public class SearchActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         sDialogShown = UserPreferences.getSearchguide(this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, DatabaseCallbacks.getInstance(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);

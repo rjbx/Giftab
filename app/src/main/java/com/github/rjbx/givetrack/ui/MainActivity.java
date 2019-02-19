@@ -114,9 +114,9 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, DatabaseCallbacks.getInstance(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, DatabaseCallbacks.getInstance(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, DatabaseCallbacks.getInstance(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
     }
 
     public Context getContext() {

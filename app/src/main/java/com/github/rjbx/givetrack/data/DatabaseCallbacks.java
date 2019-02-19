@@ -19,31 +19,20 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.*;
 
 public class DatabaseCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final Object LOCK = new Object();
-    private static DatabaseCallbacks sInstance;
     private DatabaseController mController;
-    private Context mContext;
-    
 
-    DatabaseCallbacks(DatabaseController controller) {
-        mContext = controller.getBaseContext();
+    public DatabaseCallbacks(DatabaseController controller) {
         mController = controller;
-
-    }
-
-    public static DatabaseCallbacks getInstance(DatabaseController controller) {
-        if (sInstance == null) synchronized (LOCK) {
-            if (sInstance == null) sInstance = new DatabaseCallbacks(controller);
-        } return sInstance;
     }
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        Context context = mController.getBaseContext();
         switch (id) {
-            case LOADER_ID_SEARCH: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
-            case LOADER_ID_GIVING: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
-            case LOADER_ID_RECORD: return new CursorLoader(mContext, CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
-            case LOADER_ID_USER: return new CursorLoader(mContext, UserEntry.CONTENT_URI_USER, null, null, null, null);
-            default: throw new RuntimeException(mContext.getString(R.string.loader_error_message, id));
+            case LOADER_ID_SEARCH: return new CursorLoader(context, CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(context, CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
+            case LOADER_ID_RECORD: return new CursorLoader(context, CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
+            case LOADER_ID_USER: return new CursorLoader(context, UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default: throw new RuntimeException(context.getString(R.string.loader_error_message, id));
         }
     }
 
