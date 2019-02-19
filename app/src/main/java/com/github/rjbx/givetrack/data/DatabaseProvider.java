@@ -43,7 +43,7 @@ public class DatabaseProvider extends ContentProvider {
         matcher.addURI(authority, PATH_SEARCH_TABLE, CODE_SEARCH);
         matcher.addURI(authority, PATH_GIVING_TABLE, CODE_GIVING);
         matcher.addURI(authority, PATH_RECORD_TABLE, CODE_RECORD);
-        matcher.addURI(authority, PATH_RECORD_TABLE, CODE_USER);
+        matcher.addURI(authority, PATH_USER_TABLE, CODE_USER);
         matcher.addURI(authority, PATH_SEARCH_TABLE + "/#", CODE_SEARCH_WITH_ID);
         matcher.addURI(authority, PATH_GIVING_TABLE + "/#", CODE_GIVING_WITH_ID);
         matcher.addURI(authority, PATH_RECORD_TABLE + "/#", CODE_RECORD_WITH_ID);
