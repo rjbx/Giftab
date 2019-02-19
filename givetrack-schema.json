@@ -1,11 +1,11 @@
 {
   "users" : {
     "SWVAc7UPm9UTaM1XzzoHnu3MRCQ2" : {
-      "anchor" : 1550527129991,
+      "anchor" : 1550584611945,
       "birthdate" : "0/0/2000",
       "charities" : [ "" ],
       "city" : "",
-      "donation" : "0.049999997",
+      "donation" : "0.04",
       "ein" : "",
       "email" : "rjblearn@gmail.com",
       "filter" : true,
@@ -21,11 +21,12 @@
       "rows" : "",
       "searchOrder" : "DESC",
       "searchSort" : "RATING",
+      "searchguide" : true,
       "state" : "",
       "term" : "",
-      "theme" : 0,
+      "theme" : 1,
       "timetrack" : 1550514556225,
-      "viewtrack" : true,
+      "viewtrack" : false,
       "zip" : ""
     },
     "XuEDZMFXHDMLzHCSJYtIsoyyWzq2" : {
@@ -86,8 +87,8 @@
       "birthdate" : "0/0/2000",
       "charities" : [ "" ],
       "city" : "",
+      "company" : "",
       "donation" : "0",
-      "ein" : "",
       "email" : "",
       "filter" : true,
       "focus" : false,

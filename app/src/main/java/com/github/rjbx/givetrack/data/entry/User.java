@@ -1,5 +1,7 @@
 package com.github.rjbx.givetrack.data.entry;
 
+import android.content.ContentValues;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -7,10 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
+
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties public class User {
+@IgnoreExtraProperties public class User implements Entry {
 
     private String uid;
     private String email;
@@ -33,7 +37,7 @@ import java.util.Map;
     private String pages;
     private String rows;
     private boolean focus;
-    private String ein;
+    private String company;
     private boolean viewtrack;
     private List<String> records;
     private boolean searchguide;
@@ -71,7 +75,7 @@ import java.util.Map;
             String pages,
             String rows,
             boolean focus,
-            String ein,
+            String company,
             boolean viewtrack,
             List<String> records,
             boolean searchguide,
@@ -99,7 +103,7 @@ import java.util.Map;
         this.pages = pages;
         this.rows = rows;
         this.focus = focus;
-        this.ein = ein;
+        this.company = company;
         this.viewtrack = viewtrack;
         this.records = records;
         this.searchguide = searchguide;
@@ -218,11 +222,11 @@ import java.util.Map;
     public void setFocus(boolean focus) {
         this.focus = focus;
     }
-    public String getEin() {
-        return ein;
+    public String getCompany() {
+        return company;
     }
-    public void setEin(String ein) {
-        this.ein = ein;
+    public void setCompany(String company) {
+        this.company = company;
     }
     public boolean getViewtrack() {
         return viewtrack;
@@ -273,7 +277,7 @@ import java.util.Map;
         map.put("pages", pages);
         map.put("rows", rows);
         map.put("focus", focus);
-        map.put("ein", ein);
+        map.put("company", company);
         map.put("viewtrack", viewtrack);
         map.put("records", records);
         map.put("searchguide", searchguide);
@@ -281,5 +285,66 @@ import java.util.Map;
         map.put("anchor", anchor);
         map.put("timetrack", timetrack);
         return map;
+    }
+
+    @Override
+    public ContentValues toContentValues() {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_UID, uid);
+        values.put(COLUMN_EMAIL, email);
+        values.put(COLUMN_BIRTHDATE, birthdate);
+        values.put(COLUMN_GENDER, gender);
+        values.put(COLUMN_THEME, theme);
+        values.put(COLUMN_MAGNITUDE, magnitude);
+        values.put(COLUMN_DONATION, donation);
+        values.put(COLUMN_TERM, term);
+        values.put(COLUMN_CITY, city);
+        values.put(COLUMN_STATE,state);
+        values.put(COLUMN_ZIP, zip);
+        values.put(COLUMN_MINRATING, minrating);
+        values.put(COLUMN_FILTER, filter);
+        values.put(COLUMN_SEARCHSORT, searchSort);
+        values.put(COLUMN_SEARCHORDER, searchOrder);
+        values.put(COLUMN_RECORDSORT, recordSort);
+        values.put(COLUMN_PAGES, pages);
+        values.put(COLUMN_ROWS, rows);
+        values.put(COLUMN_FOCUS, focus);
+        values.put(COLUMN_COMPANY, company);
+        values.put(COLUMN_VIEWTRACK, viewtrack);
+        values.put(COLUMN_SEARCHGUIDE, searchguide);
+        values.put(COLUMN_HISTORICAL, historical);
+        values.put(COLUMN_ANCHOR, anchor);
+        values.put(COLUMN_TIMETRACK, timetrack);
+        return values;
+    }
+
+    @Override
+    public void fromContentValues(ContentValues values) {
+        this.uid = values.getAsString(COLUMN_UID);
+        this.email = values.getAsString(COLUMN_EMAIL);
+        this.birthdate = values.getAsString(COLUMN_BIRTHDATE);
+        this.gender = values.getAsString(COLUMN_GENDER);
+        this.theme = values.getAsInteger(COLUMN_THEME);
+        this.magnitude = values.getAsString(COLUMN_MAGNITUDE);
+        this.donation = values.getAsString(COLUMN_DONATION);
+        this.term = values.getAsString(COLUMN_TERM);
+        this.city = values.getAsString(COLUMN_CITY);
+        this.state = values.getAsString(COLUMN_STATE);
+        this.zip = values.getAsString(COLUMN_ZIP);
+        this.minrating = values.getAsString(COLUMN_MINRATING);
+        this.filter = values.getAsInteger(COLUMN_FILTER) == 1;
+        this.searchSort = values.getAsString(COLUMN_SEARCHSORT);
+        this.searchOrder = values.getAsString(COLUMN_SEARCHORDER);
+        this.recordSort = values.getAsString(COLUMN_RECORDSORT);
+        this.recordOrder = values.getAsString(COLUMN_RECORDORDER);
+        this.pages = values.getAsString(COLUMN_PAGES);
+        this.rows = values.getAsString(COLUMN_ROWS);
+        this.focus = values.getAsInteger(COLUMN_FOCUS) == 1;
+        this.company = values.getAsString(COLUMN_COMPANY);
+        this.viewtrack = values.getAsInteger(COLUMN_VIEWTRACK) == 1;
+        this.searchguide = values.getAsInteger(COLUMN_SEARCHGUIDE) == 1;
+        this.historical = values.getAsInteger(COLUMN_HISTORICAL) == 1;
+        this.anchor = values.getAsInteger(COLUMN_ANCHOR);
+        this.timetrack = values.getAsInteger(COLUMN_TIMETRACK);
     }
 }

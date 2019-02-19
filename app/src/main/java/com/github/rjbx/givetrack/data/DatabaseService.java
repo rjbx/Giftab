@@ -377,8 +377,8 @@ public class DatabaseService extends IntentService {
             Search[] parsedResponse = parseSearches(response, single);
 
             // Store data
-            DatabaseRepository.removeSearch(this, null);
-            DatabaseRepository.addSearch(this, parsedResponse);
+            DatabaseAccessor.removeSearch(this, null);
+            DatabaseAccessor.addSearch(this, parsedResponse);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -428,8 +428,8 @@ public class DatabaseService extends IntentService {
 //                givings[i] = giving;
 //            }
 //
-//            DatabaseRepository.removeGiving(this, null);
-//            DatabaseRepository.addGiving(this, givings);
+//            DatabaseAccessor.removeGiving(this, null);
+//            DatabaseAccessor.addGiving(this, givings);
 //        });
 //
 //        AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -479,8 +479,8 @@ public class DatabaseService extends IntentService {
 //                records[i] = record;
 //            }
 //
-//            DatabaseRepository.removeRecord(this, null);
-//            DatabaseRepository.addRecord(this, records);
+//            DatabaseAccessor.removeRecord(this, null);
+//            DatabaseAccessor.addRecord(this, records);
 //        });
 //
 //        AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -497,7 +497,7 @@ public class DatabaseService extends IntentService {
 //
 //            List<String> charities = UserPreferences.getCharities(this);
 //
-//            String ein = search.getEin();
+//            String ein = search.getCompany();
 //            float impact = 0;
 //            int frequency = 0;
 //
@@ -512,7 +512,7 @@ public class DatabaseService extends IntentService {
             float impact = 0f;
             int frequency = 0;
 
-            List<Record> records = DatabaseRepository.getRecord(this, null);
+            List<Record> records = DatabaseAccessor.getRecord(this, null);
             for (Record record : records) {
                 if (record.getEin().equals(search.getEin())) {
                     impact += Float.parseFloat(record.getImpact());
@@ -520,7 +520,7 @@ public class DatabaseService extends IntentService {
                 }
             }
 
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             int size = givings.size();
             Giving giving = new Giving(search, frequency, size == 0 ? "1" :"0");
             giving.setImpact(String.format("%.2f", impact));
@@ -537,7 +537,7 @@ public class DatabaseService extends IntentService {
 //
 //            UserPreferences.setCharities(this, charities);
 //            UserPreferences.updateFirebaseUser(this);
-            DatabaseRepository.addGiving(this, giving);
+            DatabaseAccessor.addGiving(this, giving);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -555,14 +555,14 @@ public class DatabaseService extends IntentService {
 //
 //            List<String> charities = UserPreferences.getCharities(this);
 //
-//            Record record = DatabaseRepository.getRecord(this, charityId).get(0);
+//            Record record = DatabaseAccessor.getRecord(this, charityId).get(0);
 //
 //            float impact = 0;
 //            int frequency = 0;
 //
 //            for (String r : UserPreferences.getRecords(this)) {
 //                String[] recordFields = r.split(":");
-//                if (recordFields[3].equals(record.getEin())) {
+//                if (recordFields[3].equals(record.getCompany())) {
 //                    impact += Float.parseFloat(recordFields[1]);
 //                    frequency++;
 //                }
@@ -570,15 +570,15 @@ public class DatabaseService extends IntentService {
 //
 //            int frequency = 0;
 //            float impact = 0f;
-//            List<Record> records = DatabaseRepository.getRecord(this, null);
+//            List<Record> records = DatabaseAccessor.getRecord(this, null);
 //            for (Record r : records) {
-//                if (r.getEin().equals(record.getEin())) {
+//                if (r.getCompany().equals(record.getCompany())) {
 //                    impact += Float.parseFloat(r.getImpact());
 //                    frequency++;
 //                }
 //            }
 //
-//            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+//            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
 //            int size = givings.size();
 //            Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
 //
@@ -589,11 +589,11 @@ public class DatabaseService extends IntentService {
 //            giving.setEmail(emailAddress);
 //
 //            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getEin(), phoneNumber, emailAddress, percentage, 0f, 0));
+//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getCompany(), phoneNumber, emailAddress, percentage, 0f, 0));
 //
 //            UserPreferences.setCharities(this, charities);
 //            UserPreferences.updateFirebaseUser(this);
-//            DatabaseRepository.addGiving(this, giving);
+//            DatabaseAccessor.addGiving(this, giving);
 //        });
 //
 //        AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -606,7 +606,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveSearch(String charityId) {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, charityId));
+        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, charityId));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -618,7 +618,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveGiving(String charityId) {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId));
+        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, charityId));
 
 //        Cursor cursor = getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
 //                null, null, null, null);
@@ -650,18 +650,18 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
             String formattedTime = String.valueOf(time);
-            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
             String ein = record.getEin();
             float rI = Float.parseFloat(record.getImpact());
-            DatabaseRepository.removeRecord(this, formattedTime);
+            DatabaseAccessor.removeRecord(this, formattedTime);
 
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             for (Giving giving : givings) {
                 if (giving.getEin().equals(ein)) {
                     giving.setFrequency(giving.getFrequency() - 1);
                     float impact = Float.parseFloat(giving.getImpact()) - rI;
                     giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                    DatabaseRepository.addGiving(this, giving);
+                    DatabaseAccessor.addGiving(this, giving);
                     break;
                 }
             }
@@ -695,7 +695,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetSearch() {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeSearch(this, null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, null));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -707,7 +707,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetGiving() {
 
-        DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, null));
 
 //        UserPreferences.setCharities(this, new ArrayList<>());
 //        UserPreferences.updateFirebaseUser(this);
@@ -722,12 +722,12 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
 
         DISK_IO.execute(() -> {
-            DatabaseRepository.removeRecord(this, null);
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            DatabaseAccessor.removeRecord(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             for (Giving giving : givings) {
                 giving.setImpact("0");
                 giving.setFrequency(0);
-            } DatabaseRepository.addGiving(this, givings.toArray(new Giving[givings.size()]));
+            } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
 
 //        UserPreferences.setRecords(this, new ArrayList<>());
@@ -752,7 +752,7 @@ public class DatabaseService extends IntentService {
 //
 //            for (int i = 0; i < givings.length; i++) {
 //                Giving giving = givings[i];
-//                String ein = giving.getEin();
+//                String ein = giving.getCompany();
 //                String phone = giving.getPhone();
 //                String email = giving.getEmail();
 //                double percentage = giving.getPercent();
@@ -761,7 +761,7 @@ public class DatabaseService extends IntentService {
 //
 //                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
 //            }
-            DatabaseRepository.addGiving(this, givings);
+            DatabaseAccessor.addGiving(this, givings);
 //            UserPreferences.setCharities(this, charities);
 //            UserPreferences.updateFirebaseUser(this);
         });
@@ -779,7 +779,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
 
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
 
             long anchorTime = UserPreferences.getAnchor(this);
 
@@ -790,7 +790,7 @@ public class DatabaseService extends IntentService {
 //
 //            float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
             for (Giving giving : givings) {
-//                String ein = giving.getEin();
+//                String ein = giving.getCompany();
 //                String name = giving.getName();
 //                String phone = giving.getPhone();
 //                String email = giving.getEmail();
@@ -808,14 +808,14 @@ public class DatabaseService extends IntentService {
 //
 //                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
                 String ein = giving.getEin();
-                DatabaseRepository.removeGiving(this, ein);
-                DatabaseRepository.addGiving(this, giving);
+                DatabaseAccessor.removeGiving(this, ein);
+                DatabaseAccessor.addGiving(this, giving);
 
                 if (percentage < .01f) continue;
 
                 Record record = new Record(giving.getSuper(), "", anchorTime++);
                 record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
-                DatabaseRepository.addRecord(this, record);
+                DatabaseAccessor.addRecord(this, record);
             }
 //
             updateTimePreferences(anchorTime);
@@ -837,10 +837,10 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
             String formattedTime = String.valueOf(oldTime);
-            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
             record.settime(newTime);
-            DatabaseRepository.removeRecord(this, String.valueOf(oldTime));
-            DatabaseRepository.addRecord(this, record);
+            DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
+            DatabaseAccessor.addRecord(this, record);
 
 //            List<String> records = UserPreferences.getRecords(this);
 //            for (String r : records) {
@@ -901,28 +901,28 @@ public class DatabaseService extends IntentService {
 //                            charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
 //                    int index = charities.indexOf(charity);
 //                    charities.set(index, newCharity);
-//                    Giving giving = DatabaseRepository.getGiving(this, ein).get(0);
+//                    Giving giving = DatabaseAccessor.getGiving(this, ein).get(0);
 //                    giving.setImpact(newGivingAmountStr);
-//                    DatabaseRepository.addGiving(this, giving);
+//                    DatabaseAccessor.addGiving(this, giving);
 //                }
 //            }
 //            UserPreferences.setCharities(this, charities);
 
             String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-            Record record = DatabaseRepository.getRecord(this, formattedTime).get(0);
+            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
             float amountChange = amount - Float.valueOf(record.getImpact());
             record.setImpact(recordAmountStr);
-            DatabaseRepository.removeRecord(this, String.valueOf(id));
-            DatabaseRepository.addRecord(this, record);
+            DatabaseAccessor.removeRecord(this, String.valueOf(id));
+            DatabaseAccessor.addRecord(this, record);
 
-            List<Giving> givings = DatabaseRepository.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             for (Giving giving : givings) {
                 String ein = giving.getEin();
                 if (ein.equals(record.getEin())) {
                     float newAmount = Float.valueOf(giving.getImpact()) + amountChange;
                     giving.setImpact(String.format(Locale.getDefault(), "%.2f", newAmount));
-                    DatabaseRepository.removeGiving(this, ein);
-                    DatabaseRepository.addGiving(this, giving);
+                    DatabaseAccessor.removeGiving(this, ein);
+                    DatabaseAccessor.addGiving(this, giving);
                     break;
                 }
             }
@@ -943,9 +943,9 @@ public class DatabaseService extends IntentService {
 
 //        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         DISK_IO.execute(() -> {
-            DatabaseRepository.removeSearch(this, null);
-            DatabaseRepository.removeGiving(this, null);
-            DatabaseRepository.removeRecord(this, null);
+            DatabaseAccessor.removeSearch(this, null);
+            DatabaseAccessor.removeGiving(this, null);
+            DatabaseAccessor.removeRecord(this, null);
         });
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));

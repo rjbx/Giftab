@@ -6,12 +6,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 
-import com.github.rjbx.givetrack.data.entry.Company;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
+import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
@@ -19,7 +18,7 @@ import com.github.rjbx.givetrack.data.entry.User;
 
 import androidx.annotation.Nullable;
 
-public final class DatabaseRepository {
+public final class DatabaseAccessor {
 
     static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
@@ -32,7 +31,7 @@ public final class DatabaseRepository {
             for (int i = 0; i < cursor.getCount(); i++) {
                 entries.add(new Search());
             }
-            cursorToCompanies(cursor, entries);
+            cursorToEntries(cursor, entries);
             cursor.close();
         }
         return entries;
@@ -61,7 +60,7 @@ public final class DatabaseRepository {
             for (int i = 0; i < cursor.getCount(); i++) {
                 entries.add(new Giving());
             }
-            cursorToCompanies(cursor, entries);
+            cursorToEntries(cursor, entries);
             cursor.close();
         }
         return entries;
@@ -90,7 +89,7 @@ public final class DatabaseRepository {
             for (int i = 0; i < cursor.getCount(); i++) {
                 entries.add(new Record());
             }
-            cursorToCompanies(cursor, entries);
+            cursorToEntries(cursor, entries);
             cursor.close();
         }
         return entries;
@@ -119,7 +118,7 @@ public final class DatabaseRepository {
             for (int i = 0; i < cursor.getCount(); i++) {
                 entries.add(new User());
             }
-//            cursorToCompanies(cursor, entries);
+            cursorToEntries(cursor, entries);
             cursor.close();
         }
         return entries;
@@ -127,7 +126,7 @@ public final class DatabaseRepository {
 
     static void addUser(Context context, User... entries) {
         ContentValues[] values = new ContentValues[entries.length];
-//        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
+        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
     }
 
@@ -137,17 +136,17 @@ public final class DatabaseRepository {
         context.getContentResolver().delete(contentUri, null, null);
     }
 
-    public static <T extends Company> void cursorRowToCompany(Cursor cursor, T entry) {
+    public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
         ContentValues values = new ContentValues();
         DatabaseUtils.cursorRowToContentValues(cursor, values);
         entry.fromContentValues(values);
     }
 
-    public static <T extends Company> void cursorToCompanies(Cursor cursor, List<T> entries) {
+    public static <T extends Entry> void cursorToEntries(Cursor cursor, List<T> entries) {
         if (cursor == null || !cursor.moveToFirst()) return;
         int i = 0;
         cursor.moveToFirst();
-        do cursorRowToCompany(cursor, entries.get(i++));
+        do cursorRowToEntry(cursor, entries.get(i++));
         while (cursor.moveToNext());
     }
 }

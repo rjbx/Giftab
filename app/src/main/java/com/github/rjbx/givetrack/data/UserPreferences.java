@@ -39,7 +39,7 @@ public class UserPreferences {
     public static final String KEY_PAGES = "pages";
     public static final String KEY_ROWS = "rows";
     public static final String KEY_FOCUS = "focus";
-    public static final String KEY_EIN = "ein";
+    public static final String KEY_COMPANY = "company";
     public static final String KEY_VIEWTRACK = "viewtrack";
     public static final String KEY_RECORDS = "records";
     public static final String KEY_SEARCHGUIDE = "searchguide";
@@ -288,12 +288,12 @@ public class UserPreferences {
 
     public static String getEin(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_EIN, "");
+        return sp.getString(KEY_COMPANY, "");
     }
 
     public static void setEin(Context context, String ein) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putString(KEY_EIN, ein).apply();
+        sp.edit().putString(KEY_COMPANY, ein).apply();
     }
 
     public static long getAnchor(Context context) {
@@ -337,7 +337,7 @@ public class UserPreferences {
         setPages(context, user.getPages());
         setRows(context, user.getRows());
         setFocus(context, user.getFocus());
-        setEin(context, user.getEin());
+        setEin(context, user.getCompany());
         setViewtrack(context, user.getViewtrack());
         setRecords(context, user.getRecords());
         setSearchguide(context, user.getSearchguide());

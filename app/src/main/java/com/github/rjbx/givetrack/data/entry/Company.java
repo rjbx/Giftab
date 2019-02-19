@@ -3,7 +3,7 @@ package com.github.rjbx.givetrack.data.entry;
 import android.content.ContentValues;
 import java.util.Map;
 
-public interface Company {
+public interface Company extends Entry {
 
     String getEin();
     void setEin(String ein);

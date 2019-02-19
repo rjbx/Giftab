@@ -48,7 +48,7 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseRepository;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -178,7 +178,7 @@ public class RecordActivity extends AppCompatActivity implements
                 int i = 0;
                 do {
                     Record record = new Record();
-                    DatabaseRepository.cursorRowToCompany(cursor, record);
+                    DatabaseAccessor.cursorRowToEntry(cursor, record);
                     records[i++] = record;
                 } while (cursor.moveToNext());
                 mAdapter.swapValues(records);

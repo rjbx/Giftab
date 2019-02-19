@@ -38,8 +38,8 @@ import butterknife.OnClick;
 import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.R;
 
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseRepository;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Search;
@@ -168,7 +168,7 @@ public class SearchActivity extends AppCompatActivity implements
                 int i = 0;
                 do {
                     Search search = new Search();
-                    DatabaseRepository.cursorRowToCompany(cursor, search);
+                    DatabaseAccessor.cursorRowToEntry(cursor, search);
                     searches[i++] = search;
                 } while (cursor.moveToNext());
                 mAdapter.swapValues(searches);

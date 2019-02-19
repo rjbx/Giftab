@@ -40,7 +40,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
-import com.github.rjbx.givetrack.data.DatabaseRepository;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.google.android.material.navigation.NavigationView;
@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
                     int i = 0;
                     do {
                         Giving giving = new Giving();
-                        DatabaseRepository.cursorRowToCompany(cursor, giving);
+                        DatabaseAccessor.cursorRowToEntry(cursor, giving);
                         mGivingArray[i++] = giving;
                     } while (cursor.moveToNext());
                 }
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                     int i = 0;
                     do {
                         Record record = new Record();
-                        DatabaseRepository.cursorRowToCompany(cursor, record);
+                        DatabaseAccessor.cursorRowToEntry(cursor, record);
                         mRecordArray[i++] = record;
                     } while (cursor.moveToNext());
                 }
