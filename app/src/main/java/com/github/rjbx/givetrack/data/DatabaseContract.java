@@ -12,6 +12,7 @@ public final class DatabaseContract {
     static final String PATH_SEARCH_TABLE = "search.table";
     static final String PATH_GIVING_TABLE = "giving.table";
     static final String PATH_RECORD_TABLE = "record.table";
+    static final String PATH_USER_TABLE = "user.table";
 
     private static final String SCHEME = "content";
     private static final Uri BASE_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
@@ -19,8 +20,9 @@ public final class DatabaseContract {
     public static final int LOADER_ID_SEARCH = 1;
     public static final int LOADER_ID_GIVING = 2;
     public static final int LOADER_ID_RECORD = 3;
+    public static final int LOADER_ID_USER = 4;
 
-    public static final class Entry implements BaseColumns {
+    public static final class CompanyEntry implements BaseColumns {
 
         static final String TABLE_NAME_SEARCH = "search";
         static final String TABLE_NAME_GIVING = "giving";
@@ -68,5 +70,12 @@ public final class DatabaseContract {
         public static final int INDEX_DONATION_NOTES = 13;
         public static final int INDEX_DONATION_FREQUENCY = 14;
         public static final int INDEX_DONATION_TIME = 15;
+    }
+
+    public static final class UserEntry implements BaseColumns {
+        static final String TABLE_NAME_USER = "user";
+
+        public static final Uri CONTENT_URI_USER =
+                BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
     }
 }

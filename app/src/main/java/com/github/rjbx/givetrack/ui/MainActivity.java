@@ -174,13 +174,13 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                return new CursorLoader(this, DatabaseContract.Entry.CONTENT_URI_GIVING,
+                return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
                         null, null, null, null);
             case DatabaseContract.LOADER_ID_RECORD:
                 String sort = getResources().getStringArray(R.array.list_preference_sortRecord_values)[1];
                 String order = getResources().getStringArray(R.array.list_preference_orderRecord_values)[0];
                 String sortOrder = String.format("%s %s", sort, order);
-                Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_RECORD;
+                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_RECORD;
                 return new CursorLoader(
                         this, ratingUri,
                         null, null, null, sortOrder);

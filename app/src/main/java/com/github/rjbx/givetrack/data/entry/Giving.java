@@ -11,8 +11,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
-import timber.log.Timber;
-
 // TODO: Replace percent getter and setter definitions and invocations to implement RatedObject
 @IgnoreExtraProperties
 public class Giving extends Search implements Company, Rateraid.RatedObject<Giving>, Parcelable, Cloneable {
@@ -117,15 +115,15 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Exclude public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY, frequency);
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE, percent);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY, frequency);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE, percent);
         return values;
     }
 
     @Exclude public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.frequency = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_FREQUENCY);
-        this.percent = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_PERCENTAGE);
+        this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY);
+        this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);
     }
 
     @Exclude public Search getSuper() {

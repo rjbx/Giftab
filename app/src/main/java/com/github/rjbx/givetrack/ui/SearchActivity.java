@@ -146,7 +146,7 @@ public class SearchActivity extends AppCompatActivity implements
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle bundle) {
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
-                Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_SEARCH;
+                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH;
                 return new CursorLoader(
                         this, ratingUri,
                         null, null, null, null);

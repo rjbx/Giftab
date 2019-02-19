@@ -112,15 +112,15 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Exclude public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_MEMO, memo);
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_TIME, time);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
         return values;
     }
 
     @Exclude public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.memo = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_MEMO);
-        this.time = values.getAsLong(DatabaseContract.Entry.COLUMN_DONATION_TIME);
+        this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
+        this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
     }
 
     @Exclude public Search getSearch() {

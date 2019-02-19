@@ -70,9 +70,9 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
         
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -102,9 +102,9 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
@@ -137,26 +137,26 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
-            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
-            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH;
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD;
                 break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -191,26 +191,26 @@ public class DatabaseProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
 
-            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
-            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
-            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH;
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD;
                 break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -242,24 +242,24 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_GIVING: tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
-            case CODE_SEARCH: tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
-            case CODE_RECORD: tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+            case CODE_GIVING: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
+            case CODE_SEARCH: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
+            case CODE_RECORD: tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_GIVING; break;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_GIVING; break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_EIN + " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_SEARCH; break;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_SEARCH; break;
 
             case CODE_RECORD_WITH_ID:
-                selection = DatabaseContract.Entry.COLUMN_DONATION_TIME+ " = ? ";
+                selection = DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME+ " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = DatabaseContract.Entry.TABLE_NAME_RECORD; break;
+                tableName = DatabaseContract.CompanyEntry.TABLE_NAME_RECORD; break;
 
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
         }

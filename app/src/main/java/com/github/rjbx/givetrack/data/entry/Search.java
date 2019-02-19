@@ -226,37 +226,37 @@ public class Search implements Company, Parcelable, Cloneable {
     @Exclude
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.Entry.COLUMN_EIN, ein);
-        values.put(DatabaseContract.Entry.COLUMN_CHARITY_NAME, name);
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STREET, locationStreet);
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL, locationDetail);
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_CITY, locationCity);
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_STATE, locationState);
-        values.put(DatabaseContract.Entry.COLUMN_LOCATION_ZIP, locationZip);
-        values.put(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL, homepageUrl);
-        values.put(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL, navigatorUrl);
-        values.put(DatabaseContract.Entry.COLUMN_PHONE_NUMBER, phone);
-        values.put(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS, email);
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_IMPACT, impact);
-        values.put(DatabaseContract.Entry.COLUMN_DONATION_TYPE, type);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY, locationCity);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STATE, locationState);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP, locationZip);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL, homepageUrl);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL, navigatorUrl);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER, phone);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS, email);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT, impact);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE, type);
         return values;
     }
 
     @Exclude
     public void fromContentValues(ContentValues values) {
-        this.ein = values.getAsString(DatabaseContract.Entry.COLUMN_EIN);
-        this.name = values.getAsString(DatabaseContract.Entry.COLUMN_CHARITY_NAME);
-        this.locationStreet = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STREET);
-        this.locationDetail = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_DETAIL);
-        this.locationCity = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_CITY);
-        this.locationState = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_STATE);
-        this.locationZip = values.getAsString(DatabaseContract.Entry.COLUMN_LOCATION_ZIP);
-        this.homepageUrl = values.getAsString(DatabaseContract.Entry.COLUMN_HOMEPAGE_URL);
-        this.navigatorUrl = values.getAsString(DatabaseContract.Entry.COLUMN_NAVIGATOR_URL);
-        this.phone = values.getAsString(DatabaseContract.Entry.COLUMN_PHONE_NUMBER);
-        this.email = values.getAsString(DatabaseContract.Entry.COLUMN_EMAIL_ADDRESS);
-        this.impact = values.getAsString(DatabaseContract.Entry.COLUMN_DONATION_IMPACT);
-        this.type = values.getAsInteger(DatabaseContract.Entry.COLUMN_DONATION_TYPE);
+        this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
+        this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
+        this.locationStreet = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
+        this.locationDetail = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
+        this.locationCity = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY);
+        this.locationState = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STATE);
+        this.locationZip = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP);
+        this.homepageUrl = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL);
+        this.navigatorUrl = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL);
+        this.phone = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER);
+        this.email = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS);
+        this.impact = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT);
+        this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
     }
 
     @Override public Search clone() {

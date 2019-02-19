@@ -157,7 +157,7 @@ public class RecordActivity extends AppCompatActivity implements
 
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                Uri ratingUri = DatabaseContract.Entry.CONTENT_URI_RECORD;
+                Uri ratingUri = DatabaseContract.CompanyEntry.CONTENT_URI_RECORD;
                 return new CursorLoader(
                         this, ratingUri,
                         null, null, null, sortOrder);

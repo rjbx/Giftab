@@ -620,7 +620,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseRepository.removeGiving(this, charityId));
 
-//        Cursor cursor = getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
+//        Cursor cursor = getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
 //                null, null, null, null);
 //        if (cursor == null) return;
 //

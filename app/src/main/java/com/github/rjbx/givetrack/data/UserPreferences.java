@@ -145,7 +145,7 @@ public class UserPreferences {
 
     public static String getRecordSort(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(KEY_RECORDSORT, DatabaseContract.Entry.COLUMN_DONATION_TIME);
+        return sp.getString(KEY_RECORDSORT, DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
     }
 
     public static void setRecordSort(Context context, String sort) {

@@ -127,7 +127,7 @@ public class DetailFragment extends Fragment {
 
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
-            Uri collectionUri = DatabaseContract.Entry.CONTENT_URI_GIVING.buildUpon()
+            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_GIVING.buildUpon()
                     .appendPath(sCompany.getEin()).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }

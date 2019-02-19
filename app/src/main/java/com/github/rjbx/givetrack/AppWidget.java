@@ -89,7 +89,7 @@ public class AppWidget extends AppWidgetProvider {
         @Override public void onDataSetChanged() {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
-            mCursor = mContext.getContentResolver().query(DatabaseContract.Entry.CONTENT_URI_GIVING,
+            mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
                     null, null, null, null);
             Binder.restoreCallingIdentity(token);
         }
@@ -102,18 +102,18 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
 
-            String name = mCursor.getString(DatabaseContract.Entry.INDEX_CHARITY_NAME);
+            String name = mCursor.getString(DatabaseContract.CompanyEntry.INDEX_CHARITY_NAME);
             if (name.length() > 15) { name = name.substring(0, 15);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
-            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_IMPACT));
+            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.CompanyEntry.INDEX_DONATION_IMPACT));
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.Entry.INDEX_DONATION_PERCENTAGE));
+            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.CompanyEntry.INDEX_DONATION_PERCENTAGE));
             String percentStr = PERCENT_FORMATTER.format(percentage);
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.util.Log;
 
 import com.github.rjbx.givetrack.data.entry.Company;
 
@@ -22,7 +21,7 @@ import androidx.annotation.Nullable;
 public final class DatabaseRepository {
 
     static List<Search> getSearch(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_SEARCH;
+        Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
@@ -41,17 +40,17 @@ public final class DatabaseRepository {
     static void addSearch(Context context, Search... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_SEARCH, values);
+        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_SEARCH, values);
     }
 
     static void removeSearch(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_SEARCH;
+        Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
 
     static List<Giving> getGiving(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_GIVING;
+        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
@@ -70,17 +69,17 @@ public final class DatabaseRepository {
     static void addGiving(Context context, Giving... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_GIVING, values);
+        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
     }
 
     static void removeGiving(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_GIVING;
+        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
 
     static List<Record> getRecord(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_RECORD;
+        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
@@ -99,11 +98,11 @@ public final class DatabaseRepository {
     static void addRecord(Context context, Record... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(Entry.CONTENT_URI_RECORD, values);
+        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
     }
 
     static void removeRecord(Context context, @Nullable String id) {
-        Uri contentUri = Entry.CONTENT_URI_RECORD;
+        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
