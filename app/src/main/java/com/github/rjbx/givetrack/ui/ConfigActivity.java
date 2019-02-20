@@ -39,8 +39,10 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
@@ -54,10 +56,12 @@ public class ConfigActivity extends PreferenceActivity {
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static User mUser;
+
     /**
      * Constructs the Settings UI.
      */
-    @Override protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         mUser = getIntent().getParcelableExtra(ARG_ITEM_USER);
@@ -67,21 +71,24 @@ public class ConfigActivity extends PreferenceActivity {
      * Renders preference headers and related Fragments in dual panes
      * when device orientation is landscape.
      */
-    @Override public boolean onIsMultiPane() {
+    @Override
+    public boolean onIsMultiPane() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     /**
      * {@inheritDoc}
      */
-    @Override public void onBuildHeaders(List<Header> target) {
+    @Override
+    public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
     /**
      * Stops fragment injection in malicious applications.
      */
-    @Override protected boolean isValidFragment(String fragmentName) {
+    @Override
+    protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || UserPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
@@ -106,33 +113,38 @@ public class ConfigActivity extends PreferenceActivity {
      * Updates the preference summary to reflect its new value.
      */
     private static boolean changePreference(Preference changedPreference, Object newValue) {
-        String stringValue = newValue.toString();
 
-        if (changedPreference instanceof ListPreference) {
-            ListPreference listPreference = (ListPreference) changedPreference;
-            int index = listPreference.findIndexOfValue(stringValue);
+        changeUser(changedPreference.getKey(), newValue);
+        if (newValue instanceof String) {
+            String stringValue = newValue.toString();
 
-            changedPreference.setSummary(
-                    index >= 0
-                            ? listPreference.getEntries()[index]
-                            : null);
+            if (changedPreference instanceof ListPreference) {
+                ListPreference listPreference = (ListPreference) changedPreference;
+                int index = listPreference.findIndexOfValue(stringValue);
 
-        } else if (changedPreference instanceof RingtonePreference) {
-            if (TextUtils.isEmpty(stringValue)) {
-                changedPreference.setSummary(R.string.pref_ringtone_silent);
+                changedPreference.setSummary(
+                        index >= 0
+                                ? listPreference.getEntries()[index]
+                                : null);
 
-            } else {
-                Ringtone ringtone = RingtoneManager.getRingtone(
-                        changedPreference.getContext(), Uri.parse(stringValue));
+            } else if (changedPreference instanceof RingtonePreference) {
+                if (TextUtils.isEmpty(stringValue)) {
+                    changedPreference.setSummary(R.string.pref_ringtone_silent);
 
-                if (ringtone == null) {
-                    changedPreference.setSummary(null);
                 } else {
-                    String name = ringtone.getTitle(changedPreference.getContext());
-                    changedPreference.setSummary(name);
+                    Ringtone ringtone = RingtoneManager.getRingtone(
+                            changedPreference.getContext(), Uri.parse(stringValue));
+
+                    if (ringtone == null) {
+                        changedPreference.setSummary(null);
+                    } else {
+                        String name = ringtone.getTitle(changedPreference.getContext());
+                        changedPreference.setSummary(name);
+                    }
                 }
-            }
-        } else changedPreference.setSummary(stringValue);
+            } else changedPreference.setSummary(stringValue);
+        }
+
 //        UserPreferences.updateFirebaseUser(changedPreference.getContext());
         DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
         return true;
@@ -154,7 +166,8 @@ public class ConfigActivity extends PreferenceActivity {
     /**
      * Defines behavior onClick of each MenuItem.
      */
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
             String action = getIntent().getAction();
@@ -183,7 +196,8 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Inflates and provides logic for updating values of preference.
          */
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
@@ -200,22 +214,23 @@ public class ConfigActivity extends PreferenceActivity {
             calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
             datePreference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
             datePreference.setOnPreferenceClickListener(clickedPreference -> {
-                    DatePickerDialog datePicker = new DatePickerDialog(
-                            getActivity(),
-                            UserPreferenceFragment.this,
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH));
-                    datePicker.show();
-                    return false;
-                });
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        getActivity(),
+                        UserPreferenceFragment.this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.show();
+                return false;
+            });
             datePreference.setOnPreferenceChangeListener((changedPreference, newValue) -> false);
         }
 
         /**
          * Updates the DatePicker with the date selected from the Dialog.
          */
-        @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
             mUser.setBirthdate(birthdate);
             DatabaseService.startActionUpdateUser(getContext(), mUser);
@@ -225,7 +240,8 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
     }
@@ -242,31 +258,36 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Inflates and provides logic for updating values of preference.
          */
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_search);
             setHasOptionsMenu(true);
 
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_state_key));
-            if (statePref.getValue() == null) statePref.setValueIndex(statePref.getEntries().length - 1);
+            if (statePref.getValue() == null)
+                statePref.setValueIndex(statePref.getEntries().length - 1);
 
             ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_minrating_key));
-            if (ratingPref.getValue() == null) ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
+            if (ratingPref.getValue() == null)
+                ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
             ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortSearch_key));
-            if (sortPref.getValue() == null) sortPref.setValueIndex(sortPref.getEntries().length - 1);
+            if (sortPref.getValue() == null)
+                sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
             ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderSearch_key));
-            if (orderPref.getValue() == null) orderPref.setValueIndex(orderPref.getEntries().length - 1);
+            if (orderPref.getValue() == null)
+                orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
             EditTextPreference einPref = (EditTextPreference) findPreference(getString(R.string.pref_ein_key));
 
             SwitchPreference focusPref = (SwitchPreference) findPreference(getString(R.string.pref_focus_key));
             focusPref.setOnPreferenceChangeListener((changedPreference, newValue) -> {
-                    if ((boolean) newValue) {
-                        einPref.setEnabled(true);
-                    } else einPref.setEnabled(false);
-                    return true;
+                if ((boolean) newValue) {
+                    einPref.setEnabled(true);
+                } else einPref.setEnabled(false);
+                return true;
             });
 
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
@@ -304,14 +325,16 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
-        @Override public void onClick(DialogInterface dialog, int which) {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
             if (dialog == mClearDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -344,7 +367,8 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Inflates and provides logic for updating values of preference.
          */
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
@@ -406,24 +430,33 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
         /**
          * Updates dialog readout to reflect adjustment.
          */
-        @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        @Override
+        public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             mSeekProgress = progress;
             mSeekReadout.setText(percentIntToDecimalString(progress));
         }
-        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+
+        @Override
+        public void onStartTrackingTouch(SeekBar seekBar) {
+        }
+
+        @Override
+        public void onStopTrackingTouch(SeekBar seekBar) {
+        }
 
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
-        @Override public void onClick(DialogInterface dialog, int which) {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
             if (dialog == mMagnitudeDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -485,19 +518,22 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Inflates and provides logic for updating values of preference.
          */
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_record);
             setHasOptionsMenu(true);
 
             ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortRecord_key));
-            if (sortPref.getValue() == null) sortPref.setValueIndex(sortPref.getEntries().length - 1);
+            if (sortPref.getValue() == null)
+                sortPref.setValueIndex(sortPref.getEntries().length - 1);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortRecord_key)), this);
 
             ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderRecord_key));
-            if (orderPref.getValue() == null) orderPref.setValueIndex(orderPref.getEntries().length - 1);
+            if (orderPref.getValue() == null)
+                orderPref.setValueIndex(orderPref.getEntries().length - 1);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_orderRecord_key)), this);
-            
+
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
@@ -522,14 +558,19 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (newValue instanceof String) {
+
+            }
             return ConfigActivity.changePreference(preference, newValue);
         }
 
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
-        @Override public void onClick(DialogInterface dialog, int which) {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
             if (dialog == mClearDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -550,7 +591,8 @@ public class ConfigActivity extends PreferenceActivity {
      */
     public static class NotificationPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener {
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
@@ -560,7 +602,8 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
     }
@@ -577,7 +620,8 @@ public class ConfigActivity extends PreferenceActivity {
         /**
          * Inflates and provides logic for updating values of preference.
          */
-        @Override public void onCreate(Bundle savedInstanceState) {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
@@ -585,28 +629,30 @@ public class ConfigActivity extends PreferenceActivity {
 
             Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
             deletePreference.setOnPreferenceClickListener(clickedPreference -> {
-                    mDeleteDialog = new AlertDialog.Builder(getActivity()).create();
-                    mDeleteDialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
-                    mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                    mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
-                    mDeleteDialog.show();
-                    mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                    mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                    return false;
+                mDeleteDialog = new AlertDialog.Builder(getActivity()).create();
+                mDeleteDialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
+                mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
+                mDeleteDialog.show();
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                return false;
             });
         }
 
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
-        @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
             return ConfigActivity.changePreference(preference, newValue);
         }
 
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
-        @Override public void onClick(DialogInterface dialog, int which) {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
             if (dialog == mDeleteDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -619,5 +665,13 @@ public class ConfigActivity extends PreferenceActivity {
                 }
             }
         }
+    }
+
+    private static void changeUser(String preferenceKey, Object value) {
+
+        Map<String, Object> map = mUser.toParameterMap();
+        map.put(preferenceKey, value);
+        // TODO: Implement mUser.fromParameterMap();
+
     }
 }
