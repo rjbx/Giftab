@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,10 @@ import com.firebase.ui.auth.IdpResponse;
 
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseCallbacks;
+import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
@@ -41,7 +46,9 @@ import java.util.List;
 /**
  * Provides a login screen.
  */
-public class AuthActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class AuthActivity extends AppCompatActivity implements
+        DatabaseController,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -49,6 +56,7 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
+    private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
     @BindView(R.id.auth_progress) ProgressBar mProgressbar;
@@ -61,6 +69,8 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
+
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
 
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
@@ -192,5 +202,16 @@ public class AuthActivity extends AppCompatActivity implements SharedPreferences
         Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class).setAction(ACTION_SIGN_IN));
         finish();
+    }
+
+    @Override
+    public void onLoadFinished(int id, Cursor cursor) {
+        DatabaseAccessor.cursorToEntries(cursor, mUsers);
+        if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
+    }
+
+    @Override
+    public void onLoaderReset() {
+        mUsers = null;
     }
 }
