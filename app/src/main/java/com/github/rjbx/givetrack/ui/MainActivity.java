@@ -203,6 +203,15 @@ public class MainActivity extends AppCompatActivity implements
                     } while (cursor.moveToNext());
                 }
                 break;
+            case DatabaseContract.LOADER_ID_USER:
+                if (cursor.moveToFirst()) {
+                    do {
+                        User user = new User();
+                        DatabaseAccessor.cursorRowToEntry(cursor, user);
+                        if (user.getActive()) mUser = user;
+                    } while (cursor.moveToNext());
+                }
+                break;
         }
         if (mGivingArray != null && mRecordArray != null) {
             Intent intent = getIntent();

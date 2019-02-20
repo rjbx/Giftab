@@ -171,6 +171,15 @@ public class RecordActivity extends AppCompatActivity implements
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 sb.show();
                 break;
+            case DatabaseContract.LOADER_ID_USER:
+                if (cursor.moveToFirst()) {
+                    do {
+                        User user = new User();
+                        DatabaseAccessor.cursorRowToEntry(cursor, user);
+                        if (user.getActive()) mUser = user;
+                    } while (cursor.moveToNext());
+                }
+                break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
         }
