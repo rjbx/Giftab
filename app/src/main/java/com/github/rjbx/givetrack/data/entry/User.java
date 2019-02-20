@@ -23,7 +23,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private int theme;
     private String donation;
     private String magnitude;
-    private List<String> charities;
     private String term;
     private String city;
     private String state;
@@ -39,7 +38,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private boolean focus;
     private String company;
     private boolean viewtrack;
-    private List<String> records;
     private boolean searchguide;
     private boolean historical;
     private long anchor;
@@ -89,7 +87,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.theme = theme;
         this.magnitude = magnitude;
         this.donation = donation;
-        this.charities = charities;
         this.term = term;
         this.city = city;
         this.state = state;
@@ -105,7 +102,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.focus = focus;
         this.company = company;
         this.viewtrack = viewtrack;
-        this.records = records;
         this.searchguide = searchguide;
         this.historical = historical;
         this.anchor = anchor;
@@ -140,10 +136,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
     public String getDonation() { return donation; }
     public void setDonation(String donation) { this.donation = donation; }
-    public List<String> getCharities() { return charities; }
-    public void setCharities(List<String> charities) {
-        this.charities = charities;
-    }
     public String getTerm() {
         return term;
     }
@@ -234,8 +226,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setViewtrack(boolean viewtrack) {
         this.viewtrack = viewtrack;
     }
-    public List<String> getRecords() { return records; }
-    public void setRecords(List<String> records) { this.records = records; }
     public boolean getSearchguide() { return searchguide; }
     public void setSearchguide(boolean searchguide) { this.searchguide = searchguide; }
     public boolean getHistorical() {
@@ -257,13 +247,13 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
+        map.put("uid", uid);
         map.put("email", email);
         map.put("birthdate", birthdate);
         map.put("gender", gender);
         map.put("theme", theme);
         map.put("magnitude", magnitude);
         map.put("donation", donation);
-        map.put("charities", charities);
         map.put("term", term);
         map.put("city", city);
         map.put("state", state);
@@ -279,7 +269,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         map.put("focus", focus);
         map.put("company", company);
         map.put("viewtrack", viewtrack);
-        map.put("records", records);
         map.put("searchguide", searchguide);
         map.put("historical", historical);
         map.put("anchor", anchor);
@@ -306,6 +295,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         values.put(COLUMN_SEARCHSORT, searchSort);
         values.put(COLUMN_SEARCHORDER, searchOrder);
         values.put(COLUMN_RECORDSORT, recordSort);
+        values.put(COLUMN_RECORDORDER, recordOrder);
         values.put(COLUMN_PAGES, pages);
         values.put(COLUMN_ROWS, rows);
         values.put(COLUMN_FOCUS, focus);
