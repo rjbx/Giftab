@@ -105,31 +105,33 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " +
                         UserEntry.TABLE_NAME_USER                   + " ("                              +
 
-                        UserEntry.COLUMN_EMAIL                      + " TEXT PRIMARY KEY NOT NULL, "    +
+                        UserEntry.COLUMN_UID                        + " TEXT PRIMARY KEY NOT NULL, "    +
+                        UserEntry.COLUMN_ACTIVE                     + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_EMAIL                      + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_BIRTHDATE                  + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GENDER                     + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_THEME                      + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_MAGNITUDE                  + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_DONATION                   + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_TERM                       + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_CITY                       + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_STATE                      + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_ZIP                        + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_MINRATING                  + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_FILTER                     + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_RECORDSORT                 + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_SEARCHSORT                 + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_RECORDORDER                + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_SEARCHORDER                + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_PAGES                      + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_ROWS                       + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_FOCUS                      + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_COMPANY                        + " TEXT NOT NULL, "                 +
-                        UserEntry.COLUMN_VIEWTRACK                  + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_SEARCHGUIDE                + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_HISTORICAL                 + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_ANCHOR                     + " INTEGER NOT NULL, "                 +
-                        UserEntry.COLUMN_TIMETRACK                  + " INTEGER NOT NULL, "                 +
+                        UserEntry.COLUMN_MAGNITUDE                  + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_DONATION                   + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_TERM                       + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_CITY                       + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_STATE                      + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_ZIP                        + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_MINRATING                  + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_FILTER                     + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_RECORDSORT                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCHSORT                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_RECORDORDER                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCHORDER                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_PAGES                      + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_ROWS                       + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_FOCUS                      + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_COMPANY                    + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_VIEWTRACK                  + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCHGUIDE                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_HISTORICAL                 + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_ANCHOR                     + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_TIMETRACK                  + " INTEGER NOT NULL, "             +
 
                         "UNIQUE (" + UserEntry.COLUMN_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";

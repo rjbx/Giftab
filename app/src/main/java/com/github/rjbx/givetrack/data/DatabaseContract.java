@@ -79,6 +79,7 @@ public final class DatabaseContract {
                 BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
 
         public static final String COLUMN_UID = "uid";
+        public static final String COLUMN_ACTIVE = "active";
         public static final String COLUMN_EMAIL = "email";
         public static final String COLUMN_BIRTHDATE = "birthdate";
         public static final String COLUMN_GENDER = "gender";

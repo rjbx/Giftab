@@ -16,6 +16,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 @IgnoreExtraProperties public class User implements Entry {
 
     private String uid = "";
+    private boolean active = false;
     private String email = "";
     private String birthdate = "";
     private String gender = "";
@@ -52,6 +53,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
      */
     public User(
             String uid,
+            boolean active,
             String email,
             String birthdate,
             String gender,
@@ -78,6 +80,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             long anchor,
             long timetrack) {
         this.uid = uid;
+        this.active = active;
         this.email = email;
         this.birthdate = birthdate;
         this.gender = gender;
@@ -111,6 +114,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     @Exclude public void setUid(String uid) {
         this.uid = uid;
     }
+    public boolean getActive() { return active; }
+    public void setActive(boolean active) { this.active = historical; }
     public String getEmail() {
         return email;
     }
@@ -245,6 +250,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
+        map.put("active", active);
         map.put("email", email);
         map.put("birthdate", birthdate);
         map.put("gender", gender);
@@ -277,6 +283,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
+        values.put(COLUMN_ACTIVE, active);
         values.put(COLUMN_EMAIL, email);
         values.put(COLUMN_BIRTHDATE, birthdate);
         values.put(COLUMN_GENDER, gender);
@@ -308,6 +315,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     @Override
     public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(COLUMN_UID);
+        this.active = values.getAsInteger(COLUMN_ACTIVE) == 1;
         this.email = values.getAsString(COLUMN_EMAIL);
         this.birthdate = values.getAsString(COLUMN_BIRTHDATE);
         this.gender = values.getAsString(COLUMN_GENDER);
