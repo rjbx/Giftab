@@ -18,6 +18,7 @@ import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
+import com.github.rjbx.givetrack.data.entry.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +62,8 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
     private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
-    private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
+    private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_GIVING";
+    private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
     private static final String ACTION_UPDATE_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
     private static final String ACTION_UPDATE_AMOUNT = "com.github.rjbx.givetrack.data.action.UPDATE_AMOUNT";
@@ -224,6 +226,32 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
+    public static void startActionUpdateGiving(Context context, Giving giving) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UPDATE_GIVING);
+        intent.putExtra(EXTRA_ITEM_VALUES, giving);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UpdateFrequency with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUpdateUser(Context context, User user) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UPDATE_USER);
+        intent.putExtra(EXTRA_ITEM_VALUES, user);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UpdateFrequency with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
     public static void startActionUpdateFrequency(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_GIVING);
@@ -317,6 +345,10 @@ public class DatabaseService extends IntentService {
             case ACTION_UPDATE_CONTACT:
                 break;
             case ACTION_UPDATE_GIVING:
+                handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
+            case ACTION_UPDATE_USER:
+                handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
@@ -699,6 +731,14 @@ public class DatabaseService extends IntentService {
 //            UserPreferences.setCharities(this, charities);
 //            UserPreferences.updateFirebaseUser(this);
         });
+
+        AppWidgetManager awm = AppWidgetManager.getInstance(this);
+        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
+        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+    }
+
+    private void handleActionUpdateUser(User user) {
+        DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));

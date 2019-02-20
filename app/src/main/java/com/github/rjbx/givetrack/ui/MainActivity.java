@@ -284,7 +284,8 @@ public class MainActivity extends AppCompatActivity implements
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    UserPreferences.setAnchor(this, mAnchorTime);
+//                    UserPreferences.setAnchor(this, mAnchorTime);
+                    mUser.setAnchor(mAnchorTime);
                     if (mDateDifference < 2) {
                         currentDialog.setMessage(getString(R.string.historical_dialog_message));
                         currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -292,21 +293,25 @@ public class MainActivity extends AppCompatActivity implements
                         currentDialog.show();
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                    } else UserPreferences.setHistorical(this, true);
-                    UserPreferences.updateFirebaseUser(this);
+                    } else mUser.setHistorical(true);/* UserPreferences.setHistorical(this, true);*/
+//                    UserPreferences.updateFirebaseUser(this);
+                    DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
             }
         } else if (dialog == currentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-
-                    UserPreferences.setHistorical(this, true);
-                    UserPreferences.updateFirebaseUser(this);
+                    mUser.setHistorical(true);
+                    DatabaseService.startActionUpdateUser(this, mUser);
+//                    UserPreferences.setHistorical(this, true);
+//                    UserPreferences.updateFirebaseUser(this);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    UserPreferences.setHistorical(this, false);
-                    UserPreferences.updateFirebaseUser(this);
+                    mUser.setHistorical(false);
+                    DatabaseService.startActionUpdateUser(this, mUser);
+//                    UserPreferences.setHistorical(this, false);
+//                    UserPreferences.updateFirebaseUser(this);
                     break;
                 default:
             }
