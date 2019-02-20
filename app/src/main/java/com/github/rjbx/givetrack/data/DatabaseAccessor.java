@@ -18,6 +18,7 @@ import com.github.rjbx.givetrack.data.entry.User;
 
 import androidx.annotation.Nullable;
 
+// TODO: For each getter and setter method, add remote persistence logic
 public final class DatabaseAccessor {
 
     static List<Search> getSearch(Context context, @Nullable String id) {

@@ -158,7 +158,7 @@ public class AuthActivity extends AppCompatActivity implements
 
         String launchingAction = getIntent().getAction();
 
-        // TODO: Enable user selection
+        // TODO: Enable user selection and persist preference to active attribute across users
         final User user = mUsers.get(0);
 
         if (launchingAction != null) {
