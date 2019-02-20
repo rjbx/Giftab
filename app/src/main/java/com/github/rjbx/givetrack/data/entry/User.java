@@ -6,7 +6,6 @@ import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
@@ -16,32 +15,32 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  */
 @IgnoreExtraProperties public class User implements Entry {
 
-    private String uid;
-    private String email;
-    private String birthdate;
-    private String gender;
-    private int theme;
-    private String donation;
-    private String magnitude;
-    private String term;
-    private String city;
-    private String state;
-    private String zip;
-    private String minrating;
-    private boolean filter;
-    private String searchSort;
-    private String searchOrder;
-    private String recordSort;
-    private String recordOrder;
-    private String pages;
-    private String rows;
-    private boolean focus;
-    private String company;
-    private boolean viewtrack;
-    private boolean searchguide;
-    private boolean historical;
-    private long anchor;
-    private long timetrack;
+    private String uid = "";
+    private String email = "";
+    private String birthdate = "";
+    private String gender = "";
+    private int theme = 0;
+    private String donation = "";
+    private String magnitude = "";
+    private String term = "";
+    private String city = "";
+    private String state = "";
+    private String zip = "";
+    private String minrating = "";
+    private boolean filter = false;
+    private String searchSort = "";
+    private String searchOrder = "";
+    private String recordSort = "";
+    private String recordOrder = "";
+    private String pages = "";
+    private String rows = "";
+    private boolean focus = false;
+    private String company = "";
+    private boolean viewtrack = false;
+    private boolean searchguide = false;
+    private boolean historical = false;
+    private long anchor = 0;
+    private long timetrack = 0;
 
     /**
      * Provides default constructor required for object relational mapping.
@@ -59,7 +58,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             int theme,
             String donation,
             String magnitude,
-            List<String> charities,
             String term,
             String city,
             String state,
@@ -75,7 +73,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             boolean focus,
             String company,
             boolean viewtrack,
-            List<String> records,
             boolean searchguide,
             boolean historical,
             long anchor,
