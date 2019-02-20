@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements
         mRecordArray = null;
     }
 
+    // TODO: Bundle active User to ConfigActivty launching Intent
     /**
      * Defines behavior onClick of each Navigation MenuItem.
      */

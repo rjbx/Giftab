@@ -45,6 +45,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
+// TODO: Replace updates to User preferences with those to active User
 /**
  * Presents a set of application settings.
  */
