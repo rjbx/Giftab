@@ -45,6 +45,7 @@ import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Search;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -68,6 +69,7 @@ public class SearchActivity extends AppCompatActivity implements
     private ListAdapter mAdapter;
     private AlertDialog mSearchDialog;
     private String mSnackbar;
+    private User mUser;
     @BindView(R.id.search_fab) FloatingActionButton mFab;
     @BindView(R.id.search_toolbar) Toolbar mToolbar;
     @BindView(R.id.search_list) RecyclerView mRecyclerView;
@@ -296,10 +298,11 @@ public class SearchActivity extends AppCompatActivity implements
     /**
      * Defines and launches Intent for displaying {@link ConfigActivity.SearchPreferenceFragment}.
      */
-    private static void launchFilterPreferences(Context context) {
+    private void launchFilterPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.SearchPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
         filterIntent.setAction(ACTION_SEARCH_INTENT);
         context.startActivity(filterIntent);
     }

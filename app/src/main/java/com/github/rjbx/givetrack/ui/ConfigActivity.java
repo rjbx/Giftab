@@ -36,6 +36,7 @@ import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.Calendar;
 import java.util.List;
@@ -51,13 +52,15 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  */
 public class ConfigActivity extends PreferenceActivity implements DatabaseController {
 
+    public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
+    private static User mUser;
     /**
      * Constructs the Settings UI.
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-//        getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
+        mUser = getIntent().getParcelableExtra(ARG_ITEM_USER);
     }
 
     @Override

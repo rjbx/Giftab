@@ -16,7 +16,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -44,6 +43,7 @@ import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
     private SectionsPagerAdapter mPagerAdapter;
     private Giving[] mGivingArray;
     private Record[] mRecordArray;
+    private User mUser;
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements
         switch (id) {
             case (R.id.nav_search): startActivity(new Intent(this, SearchActivity.class)); break;
             case (R.id.nav_record): startActivity(new Intent(this, RecordActivity.class)); break;
-            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT)); break;
+            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;

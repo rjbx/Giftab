@@ -1,6 +1,8 @@
 package com.github.rjbx.givetrack.data.entry;
 
 import android.content.ContentValues;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
@@ -13,7 +15,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties public class User implements Entry {
+@IgnoreExtraProperties public class User implements Entry, Parcelable {
 
     private String uid = "";
     private boolean active = false;
@@ -42,6 +44,16 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private boolean historical = false;
     private long anchor = 0;
     private long timetrack = 0;
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
+    }
 
     /**
      * Provides default constructor required for object relational mapping.

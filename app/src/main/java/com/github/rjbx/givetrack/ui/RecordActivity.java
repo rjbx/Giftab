@@ -15,8 +15,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.app.ShareCompat;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -54,6 +52,7 @@ import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
@@ -80,6 +79,7 @@ public class RecordActivity extends AppCompatActivity implements
     private ListAdapter mAdapter;
     private AlertDialog mRemoveDialog;
     private String mSnackbar;
+    private User mUser;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
     @BindView(R.id.record_list_container) View mListContainer;
@@ -277,10 +277,11 @@ public class RecordActivity extends AppCompatActivity implements
      * Defines and launches Intent for displaying {@link ConfigActivity.RecordPreferenceFragment}.
      */
 
-    private static void launchFilterPreferences(Context context) {
+    private void launchFilterPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.RecordPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
         filterIntent.setAction(ACTION_RECORD_INTENT);
         context.startActivity(filterIntent);
     }
