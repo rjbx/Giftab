@@ -15,8 +15,6 @@ import androidx.loader.content.Loader;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.*;
 
-// TODO: Handle cases based on Loader ID passed from UI classes
-
 public class DatabaseCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private DatabaseController mController;

@@ -11,7 +11,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
-// TODO: Replace percent getter and setter definitions and invocations to implement RatedObject
 @IgnoreExtraProperties
 public class Giving extends Search implements Company, Rateraid.RatedObject<Giving>, Parcelable, Cloneable {
 

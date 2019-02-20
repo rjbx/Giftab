@@ -15,6 +15,7 @@ import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
@@ -41,7 +42,6 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
-// TODO: Add record and giving objects implementing ORM for remote persistence and Parcelable for bundling
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
@@ -294,9 +294,6 @@ public class DatabaseService extends IntentService {
             case ACTION_GIVE_SEARCH:
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_GIVE_RECORD:
-                handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
             case ACTION_REMOVE_SEARCH:
                 final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
                 handleActionRemoveSearch(removeSearchString);
@@ -543,62 +540,6 @@ public class DatabaseService extends IntentService {
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-    }
-
-    // TODO: Factor out
-    /**
-     * Handles action GiveRecord in the provided background thread with the provided parameters.
-     */
-    private void handleActionGiveRecord(Record record) {
-
-//         NETWORK_IO.execute(() -> {
-//
-//            List<String> charities = UserPreferences.getCharities(this);
-//
-//            Record record = DatabaseAccessor.getRecord(this, charityId).get(0);
-//
-//            float impact = 0;
-//            int frequency = 0;
-//
-//            for (String r : UserPreferences.getRecords(this)) {
-//                String[] recordFields = r.split(":");
-//                if (recordFields[3].equals(record.getCompany())) {
-//                    impact += Float.parseFloat(recordFields[1]);
-//                    frequency++;
-//                }
-//            }
-//
-//            int frequency = 0;
-//            float impact = 0f;
-//            List<Record> records = DatabaseAccessor.getRecord(this, null);
-//            for (Record r : records) {
-//                if (r.getCompany().equals(record.getCompany())) {
-//                    impact += Float.parseFloat(r.getImpact());
-//                    frequency++;
-//                }
-//            }
-//
-//            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-//            int size = givings.size();
-//            Giving giving = new Giving(record.getSearch(), frequency, String.valueOf(impact));
-//
-//            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
-//            giving.setPhone(phoneNumber);
-//
-//            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
-//            giving.setEmail(emailAddress);
-//
-//            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", giving.getCompany(), phoneNumber, emailAddress, percentage, 0f, 0));
-//
-//            UserPreferences.setCharities(this, charities);
-//            UserPreferences.updateFirebaseUser(this);
-//            DatabaseAccessor.addGiving(this, giving);
-//        });
-//
-//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
     /**
