@@ -21,6 +21,7 @@ import java.util.Set;
  */
 public class UserPreferences {
 
+    public static final String KEY_ACTIVE = "active";
     public static final String KEY_BIRTHDATE = "birthdate";
     public static final String KEY_GENDER = "gender";
     public static final String KEY_THEME = "theme";
@@ -62,6 +63,16 @@ public class UserPreferences {
         Set<String> value = new LinkedHashSet<>(charities);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putStringSet(KEY_CHARITIES, value).apply();
+    }
+
+    public static boolean getActive(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(, true);
+    }
+
+    public static void setActive(Context context, boolean active) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(KEY_ACTIVE, active).apply();
     }
 
     public static String getTerm(Context context) {
@@ -323,6 +334,7 @@ public class UserPreferences {
     public static void replaceSharedPreferences(@NonNull Context context, User user) {
 
         setBirthdate(context, user.getBirthdate());
+        setActive(context, user.getActive());
         setGender(context, user.getGender());
         setTheme(context, user.getTheme());
         setDonation(context, user.getDonation());
@@ -354,6 +366,7 @@ public class UserPreferences {
 
         return new User(
                 firebaseUser == null ? "" : firebaseUser.getUid(),
+                getActive(context),
                 firebaseUser == null ? "" : firebaseUser.getEmail(),
                 getBirthdate(context),
                 getGender(context),
