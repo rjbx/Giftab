@@ -351,6 +351,36 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         map.put("timetrack", timetrack);
         return map;
     }
+    
+    @Exclude public void fromParameterMap(Map<String, Object> map) {
+        uid = (String) map.get("uid");
+        active = (boolean) map.get("active");
+        email = (String) map.get("email");
+        birthdate = (String) map.get("birthdate");
+        gender = (String) map.get("gender");
+        theme = (int) map.get("theme");
+        magnitude = (String) map.get("magnitude");
+        donation = (String) map.get("donation");
+        term = (String) map.get("term");
+        city = (String) map.get("city");
+        state = (String) map.get("state");
+        zip = (String) map.get("zip");
+        minrating = (String) map.get("minrating");
+        filter = (boolean) map.get("filter");
+        searchSort = (String) map.get("searchSort");
+        searchOrder = (String) map.get("searchOrder");
+        recordSort = (String) map.get("recordSort");
+        recordOrder = (String) map.get("recordOrder");
+        pages = (String) map.get("pages");
+        rows = (String) map.get("rows");
+        focus = (boolean) map.get("focus");
+        company = (String) map.get("company");
+        viewtrack = (boolean) map.get("viewtrack");
+        searchguide = (boolean) map.get("searchguide");
+        historical = (boolean) map.get("historical");
+        anchor = (long) map.get("anchor");
+        timetrack = (long) map.get("timetrack");
+    }
 
     @Override
     public ContentValues toContentValues() {

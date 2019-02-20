@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -30,16 +29,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseCallbacks;
-import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -48,7 +42,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
-// TODO: Reformulate value persistence mechanism to interface with User entries from database rather than preferences from SharedPreferences
+// TODO: Attach preference change listener to all preference for invoking logic to updating Users
 /**
  * Presents a set of application settings.
  */
@@ -671,7 +665,6 @@ public class ConfigActivity extends PreferenceActivity {
 
         Map<String, Object> map = mUser.toParameterMap();
         map.put(preferenceKey, value);
-        // TODO: Implement mUser.fromParameterMap();
-
+        mUser.fromParameterMap(map);
     }
 }
