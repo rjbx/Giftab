@@ -67,7 +67,7 @@ public class UserPreferences {
 
     public static boolean getActive(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(, true);
+        return sp.getBoolean(KEY_ACTIVE, true);
     }
 
     public static void setActive(Context context, boolean active) {
