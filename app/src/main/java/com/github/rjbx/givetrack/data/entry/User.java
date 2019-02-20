@@ -45,14 +45,75 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private long anchor = 0;
     private long timetrack = 0;
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override public User createFromParcel(Parcel source) { return new User(source); }
+        @Override public User[] newArray(int size) { return new User[size]; }
+    };
+
+    User (Parcel source) {
+         uid = source.readString();
+         active = source.readInt() == 1;
+         email = source.readString();
+         birthdate = source.readString();
+         gender = source.readString();
+         theme = source.readInt();
+         donation = source.readString();
+         magnitude = source.readString();
+         term = source.readString();
+         city = source.readString();
+         state = source.readString();
+         zip = source.readString();
+         minrating = source.readString();
+         filter = source.readInt() == 1;
+         searchSort = source.readString();
+         searchOrder = source.readString();
+         recordSort = source.readString();
+         recordOrder = source.readString();
+         pages = source.readString();
+         rows = source.readString();
+         focus = source.readInt() == 1;
+         company = source.readString();
+         viewtrack = source.readInt() == 1;
+         searchguide = source.readInt() == 1;
+         historical = source.readInt() == 1;
+         anchor = source.readLong();
+         timetrack = source.readLong();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+         dest.writeString(uid);
+         dest.writeInt(active ? 0 : 1);
+         dest.writeString(email);
+         dest.writeString(birthdate);
+         dest.writeString(gender);
+         dest.writeInt(theme);
+         dest.writeString(donation);
+         dest.writeString(magnitude);
+         dest.writeString(term);
+         dest.writeString(city);
+         dest.writeString(state);
+         dest.writeString(zip);
+         dest.writeString(minrating);
+         dest.writeInt(filter ? 0 : 1);
+         dest.writeString(searchSort);
+         dest.writeString(searchOrder);
+         dest.writeString(recordSort);
+         dest.writeString(recordOrder);
+         dest.writeString(pages);
+         dest.writeString(rows);
+         dest.writeInt(focus ? 0 : 1);
+         dest.writeString(company);
+         dest.writeInt(viewtrack ? 0 : 1);
+         dest.writeInt(searchguide ? 0 : 1);
+         dest.writeInt(historical ? 0 : 1);
+         dest.writeLong(anchor);
+         dest.writeLong(timetrack);
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     /**

@@ -249,7 +249,7 @@ public class RecordActivity extends AppCompatActivity implements
                         String amount = values.getImpact();
                         String name = values.getName();
                         String formattedDate = DATE_FORMATTER.getDateInstance().format(mDeletedTime);
-                        mDeletedTime = values.gettime();
+                        mDeletedTime = values.getTime();
                         mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
                         String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
                         mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, messageArgs));
@@ -328,7 +328,7 @@ public class RecordActivity extends AppCompatActivity implements
             String ein = values.getEin();
             String name = values.getName();
             final float impact = Float.parseFloat(values.getImpact());
-            final long time = values.gettime();
+            final long time = values.getTime();
 
             if (name.length() > 35) { name = name.substring(0, 35);
             name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
@@ -412,7 +412,7 @@ public class RecordActivity extends AppCompatActivity implements
                 if (isDualPane()) togglePane(v);
                 else {
                     Record values = ListAdapter.this.mValuesArray[(int) v.getTag()];
-                    mOldTime = values.gettime();
+                    mOldTime = values.getTime();
 
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
@@ -438,7 +438,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                 Record values = mValuesArray[(int) v.getTag()];
                 String name = values.getName();
-                long time = values.gettime();
+                long time = values.getTime();
                 float impact = Float.parseFloat(values.getImpact());
 
                 Intent shareIntent = ShareCompat.IntentBuilder.from(RecordActivity.this)
@@ -466,7 +466,7 @@ public class RecordActivity extends AppCompatActivity implements
              * Listens for and persists changes to text editor value.
              */
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                long time = mValuesArray[(int) v.getTag()].gettime();
+                long time = mValuesArray[(int) v.getTag()].getTime();
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;

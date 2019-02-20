@@ -28,7 +28,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     Record(Parcel source) {
         super(source);
         memo = source.readString();
-        time = source.readInt();
+        time = source.readLong();
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
@@ -90,17 +90,14 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         this.time = time;
     }
 
-    public String getmemo() {
+    public String getMemo() {
         return memo;
     }
-
-    public void setmemo(String memo) {
-        this.memo = memo;
-    }
-    public long gettime() {
+    public void setMemo(String memo) { this.memo = memo; }
+    public long getTime() {
         return time;
     }
-    public void settime(long time) {
+    public void setTime(long time) {
         this.time = time;
     }
     @Exclude public Map<String, Object> toParameterMap() {

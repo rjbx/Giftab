@@ -353,7 +353,7 @@ public class GlanceFragment extends Fragment implements
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
         for (int j = 0; j < sValuesArray.length; j++) {
             Record record = sValuesArray[j];
-            Long time = record.gettime();
+            Long time = record.getTime();
             Float amount = Float.parseFloat(record.getImpact());
             String name = record.getName();
 

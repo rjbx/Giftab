@@ -715,7 +715,7 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> {
             String formattedTime = String.valueOf(oldTime);
             Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-            record.settime(newTime);
+            record.setTime(newTime);
             DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
             DatabaseAccessor.addRecord(this, record);
 
