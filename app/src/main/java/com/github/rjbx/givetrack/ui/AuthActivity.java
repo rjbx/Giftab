@@ -27,7 +27,6 @@ import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseController;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
@@ -71,6 +70,7 @@ public class AuthActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
+        mUsers = new ArrayList<>();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
