@@ -266,26 +266,40 @@ public class ConfigActivity extends PreferenceActivity {
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortSearch_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSearch_key));
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderSearch_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_searchOrder_key));
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
-            EditTextPreference einPref = (EditTextPreference) findPreference(getString(R.string.pref_ein_key));
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_filter_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_city_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_state_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_zip_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_minrating_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_pages_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchSearch_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchOrder_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_company_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_focus_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+        }
 
-            SwitchPreference focusPref = (SwitchPreference) findPreference(getString(R.string.pref_focus_key));
-            focusPref.setOnPreferenceChangeListener((changedPreference, newValue) -> {
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (preference.getKey().equals(getString(R.string.pref_focus_key))) {
                 if ((boolean) newValue) {
-                    einPref.setEnabled(true);
-                } else einPref.setEnabled(false);
+                    preference.setEnabled(true);
+                } else preference.setEnabled(false);
                 return true;
-            });
-
-            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
-            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (preference.getKey().equals(getString(R.string.pref_clear_key))) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -294,33 +308,12 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            });
-
-            Preference showPreference = findPreference("showAll");
-            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (preference.getKey().equals(getString(R.string.pref_show_key))) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return false;
-            });
-
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_city_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_state_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_zip_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_minrating_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_pages_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortSearch_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_orderSearch_key)), this);
-        }
-
-        /**
-         * Invokes helper method for setting preference summary to new preference value.
-         */
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            }
             return ConfigActivity.changePreference(preference, newValue);
         }
 
@@ -518,15 +511,15 @@ public class ConfigActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_record);
             setHasOptionsMenu(true);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_sortRecord_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_recordSort_key));
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortRecord_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordSort_key)), this);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_orderRecord_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_recordOrder_key));
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_orderRecord_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordOrder_key)), this);
 
             Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
             unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
@@ -662,8 +655,8 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     private static void changeUser(String preferenceKey, Object value) {
-
         Map<String, Object> map = mUser.toParameterMap();
+        if (!map.containsKey(preferenceKey)) return;
         map.put(preferenceKey, value);
         mUser.fromParameterMap(map);
     }

@@ -92,6 +92,7 @@ public final class DatabaseContract {
         public static final String COLUMN_ZIP = "zip";
         public static final String COLUMN_MINRATING = "minrating";
         public static final String COLUMN_FILTER = "filter";
+        public static final String COLUMN_FUNDRAISING = "fundraising";
         public static final String COLUMN_RECORDSORT = "sortRecord";
         public static final String COLUMN_SEARCHSORT = "sortSearch";
         public static final String COLUMN_RECORDORDER = "orderRecord";
