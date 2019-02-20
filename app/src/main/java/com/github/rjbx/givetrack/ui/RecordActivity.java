@@ -50,7 +50,6 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
@@ -425,7 +424,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(UserPreferences.getAnchor(context));
+                    calendar.setTimeInMillis(mUser.getAnchor()/*UserPreferences.getAnchor(context)*/);
                     DatePickerDialog datePicker = new DatePickerDialog(
                             context,
                             this,

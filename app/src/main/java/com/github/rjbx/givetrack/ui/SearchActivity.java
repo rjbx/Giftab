@@ -42,7 +42,6 @@ import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseController;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -85,7 +84,7 @@ public class SearchActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        sDialogShown = UserPreferences.getSearchguide(this);
+//        sDialogShown = UserPreferences.getSearchguide(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, new DatabaseCallbacks(this));
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
         if (savedInstanceState != null) {
@@ -176,6 +175,7 @@ public class SearchActivity extends AppCompatActivity implements
                         if (user.getActive()) mUser = user;
                     } while (cursor.moveToNext());
                 }
+                sDialogShown = mUser.getSearchguide();
                 break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
@@ -231,7 +231,9 @@ public class SearchActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
-                    UserPreferences.setSearchguide(this, sDialogShown);
+//                    UserPreferences.setSearchguide(this, sDialogShown);
+                    mUser.setSearchguide(sDialogShown);
+                    DatabaseService.startActionUpdateUser(this, mUser);
                     launchFilterPreferences(this);
                     break;
                 default:
@@ -260,17 +262,17 @@ public class SearchActivity extends AppCompatActivity implements
         mSearchProgress.setVisibility(View.VISIBLE);
         Context context = SearchActivity.this;
         HashMap<String, String> hashMap = new HashMap<>();
-        if (UserPreferences.getFocus(context)) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, UserPreferences.getEin(context));
+        if (mUser.getFocus()/*UserPreferences.getFocus(context)*/) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, mUser.getCompany()/*UserPreferences.getEin(context)*/);
         else {
-            hashMap.put(DatabaseService.FetchContract.PARAM_SEARCH, UserPreferences.getTerm(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_CITY, UserPreferences.getCity(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_STATE, UserPreferences.getState(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, UserPreferences.getZip(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, UserPreferences.getMinrating(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, UserPreferences.getFilter(context) ? "1" : "0");
-            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, UserPreferences.getSearchSort(context) + ":" + UserPreferences.getSearchOrder(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, UserPreferences.getPages(context));
-            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, UserPreferences.getRows(context));
+            hashMap.put(DatabaseService.FetchContract.PARAM_SEARCH, mUser.getTerm()/* UserPreferences.getTerm(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_CITY, mUser.getCity() /* UserPreferences.getCity(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_STATE, mUser.getState() /* UserPreferences.getState(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, mUser.getZip() /* UserPreferences.getZip(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, mUser.getMinrating() /* UserPreferences.getMinrating(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, mUser.getFilter() /* UserPreferences.getFilter(context) */ ? "1" : "0");
+            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, mUser.getSearchSort() /* UserPreferences.getSearchSort(context) */ + ":" + mUser.getSearchOrder() /* UserPreferences.getSearchOrder(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, mUser.getPages() /* UserPreferences.getPages(context) */);
+            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, mUser.getRows() /* UserPreferences.getRows(context) */);
         }
         DatabaseService.startActionFetchSearch(getBaseContext(), hashMap);
         mSnackbar = getString(R.string.message_search_refresh);
