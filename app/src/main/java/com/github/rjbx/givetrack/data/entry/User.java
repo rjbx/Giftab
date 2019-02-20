@@ -115,7 +115,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.uid = uid;
     }
     public boolean getActive() { return active; }
-    public void setActive(boolean active) { this.active = historical; }
+    public void setActive(boolean active) { this.active = active; }
     public String getEmail() {
         return email;
     }
