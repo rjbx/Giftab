@@ -46,11 +46,11 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
-// TODO: Replace updates to User preferences with those to active User
+// TODO: Reformulate value persistence mechanism to interface with User entries from database rather than preferences from SharedPreferences
 /**
  * Presents a set of application settings.
  */
-public class ConfigActivity extends PreferenceActivity implements DatabaseController {
+public class ConfigActivity extends PreferenceActivity {
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static User mUser;
@@ -61,16 +61,6 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
         super.onCreate(savedInstanceState);
         setupActionBar();
         mUser = getIntent().getParcelableExtra(ARG_ITEM_USER);
-    }
-
-    @Override
-    public void onLoadFinished(int id, Cursor cursor) {
-
-    }
-
-    @Override
-    public void onLoaderReset() {
-
     }
 
     /**
@@ -143,7 +133,8 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
                 }
             }
         } else changedPreference.setSummary(stringValue);
-        UserPreferences.updateFirebaseUser(changedPreference.getContext());
+//        UserPreferences.updateFirebaseUser(changedPreference.getContext());
+        DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
         return true;
     }
 
@@ -204,7 +195,7 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
 
             Preference datePreference = findPreference(getString(R.string.pref_birthdate_key));
             Calendar calendar = Calendar.getInstance();
-            String birthdate = UserPreferences.getBirthdate(getActivity());
+            String birthdate = mUser.getBirthdate();
             String[] birthdateParams = birthdate.split("/");
             calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
             datePreference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
@@ -226,8 +217,9 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
          */
         @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
-            UserPreferences.setBirthdate(getActivity(), birthdate);
-            UserPreferences.updateFirebaseUser(getActivity());
+            mUser.setBirthdate(birthdate);
+            DatabaseService.startActionUpdateUser(getContext(), mUser);
+//            UserPreferences.updateFirebaseUser(getActivity());
         }
 
         /**
@@ -358,7 +350,7 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
             setHasOptionsMenu(true);
 
             Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
-            mSeekProgress = Math.round(Float.parseFloat(UserPreferences.getMagnitude(getActivity())) * 1000f);
+            mSeekProgress = Math.round(Float.parseFloat(/*UserPreferences.getMagnitude(getActivity())) */ mUser.getMagnitude()) * 1000f);
             magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
             magnitudePreference.setOnPreferenceClickListener(clickedPreference -> {
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
@@ -438,8 +430,9 @@ public class ConfigActivity extends PreferenceActivity implements DatabaseContro
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        UserPreferences.setMagnitude(getActivity(), percentIntToDecimalString(mSeekProgress));
-                        UserPreferences.updateFirebaseUser(getActivity());
+                        mUser.setMagnitude(percentIntToDecimalString(mSeekProgress));
+                        DatabaseService.startActionUpdateUser(getContext(), mUser);
+//                        UserPreferences.updateFirebaseUser(getActivity());
                         Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
                         magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                         break;
