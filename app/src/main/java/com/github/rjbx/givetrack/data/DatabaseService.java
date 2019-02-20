@@ -15,7 +15,6 @@ import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
-import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
@@ -62,7 +61,7 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
     private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
-    private static final String ACTION_UPDATE_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
+    private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_FREQUENCY";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
     private static final String ACTION_UPDATE_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
     private static final String ACTION_UPDATE_AMOUNT = "com.github.rjbx.givetrack.data.action.UPDATE_AMOUNT";
@@ -227,7 +226,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionUpdateFrequency(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_FREQUENCY);
+        intent.setAction(ACTION_UPDATE_GIVING);
         context.startService(intent);
     }
 
@@ -317,25 +316,19 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_CONTACT:
                 break;
-            case ACTION_UPDATE_FREQUENCY:
-                handleActionUpdateFrequency();
+            case ACTION_UPDATE_GIVING:
                 break;
             case ACTION_UPDATE_PERCENTAGES:
                 if (intent.hasExtra(EXTRA_LIST_VALUES)) {
-                    handleActionUpdatePercentages(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                    handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
                 } else {
                     Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
-                    handleActionUpdatePercentages(updatePercentagesValues);
+                    handleActionUpdateGiving(updatePercentagesValues);
                 } break;
             case ACTION_UPDATE_TIME:
                 long timeId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
                 long newTime = intent.getLongExtra(EXTRA_ITEM_VALUES, 0);
                 handleActionUpdateTime(timeId, newTime);
-                break;
-            case ACTION_UPDATE_AMOUNT:
-                long amountId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
-                float amount = intent.getFloatExtra(EXTRA_ITEM_VALUES, 0f);
-                handleActionUpdateAmount(amountId, amount);
                 break;
             case ACTION_RESET_DATA: handleActionResetData();
         }
@@ -682,13 +675,13 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdatePercentages(Giving... givings) {
+    private void handleActionUpdateGiving(Giving... givings) {
 
         boolean recalibrate = givings[0].getPercent() == -1d;
         if (recalibrate) for (Giving giving : givings) giving.setPercent(1d / givings.length);
 
         DISK_IO.execute(() -> {
-//
+
 //            List<String> charities = new ArrayList<>();
 //
 //            for (int i = 0; i < givings.length; i++) {
@@ -712,65 +705,8 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    // TODO: Replace with single update method per entry class
-    /**
-     * Handles action UpdateFrequency in the provided background thread with the provided parameters.
-     */
-    private void handleActionUpdateFrequency() {
 
-        DISK_IO.execute(() -> {
-
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-
-            long anchorTime = UserPreferences.getAnchor(this);
-
-            int f = 1;
-//            List<String> charities = new ArrayList<>();
-//            List<String> records = UserPreferences.getRecords(this);
-//            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
-//
-//            float amount = Float.parseFloat(UserPreferences.getDonation(this)) * f;
-            for (Giving giving : givings) {
-//                String ein = giving.getCompany();
-//                String name = giving.getName();
-//                String phone = giving.getPhone();
-//                String email = giving.getEmail();
-                double percentage = giving.getPercent();
-                if (percentage <= 0) continue;
-
-                float amount = Float.valueOf(UserPreferences.getDonation(this));
-                double transactionImpact = amount * percentage;
-
-                double totalImpact = Float.parseFloat(giving.getImpact()) + transactionImpact;
-                giving.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
-
-                giving.setFrequency(giving.getFrequency() + f);
-//                charities.add(String.format(Locale.getDefault(), "%s:%s:%s:%f:%.2f:%d", ein, phone, email, percentage, totalImpact, affectedFrequency));
-//
-//                if (transactionImpact != 0) records.add(String.format(Locale.getDefault(), "%d:%s:%s:%s", anchorTime, transactionImpact, name, ein));
-                String ein = giving.getEin();
-                DatabaseAccessor.removeGiving(this, ein);
-                DatabaseAccessor.addGiving(this, giving);
-
-                if (percentage < .01f) continue;
-
-                Record record = new Record(giving.getSuper(), "", anchorTime++);
-                record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
-                DatabaseAccessor.addRecord(this, record);
-            }
-//
-            updateTimePreferences(anchorTime);
-//
-//            UserPreferences.setRecords(this, records);
-//            UserPreferences.setCharities(this, charities);
-//            UserPreferences.updateFirebaseUser(this);
-        });
-
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-    }
-
+    // TODO: Replace record primary key of time with autoincremented ID
     /**
      * Handles action UpdateTime in the provided background thread with the provided parameters.
      */
@@ -803,79 +739,6 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    /**
-     * Handles action UpdateAmount in the provided background thread with the provided parameters.
-     */
-    private void handleActionUpdateAmount(long id, float amount) {
-
-        DISK_IO.execute(() -> {
-            String formattedTime = String.valueOf(id);
-
-//            String ein = "";
-//            float oldAmount = 0;
-//            List<String> records = UserPreferences.getRecords(this);
-//            for (String record : records) {
-//                String[] recordFields = record.split(":");
-//                if (recordFields[0].equals(formattedTime)) {
-//                    String oldAmountStr = recordFields[1];
-//                    String newAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-//                    String newRecord = String.format("%s:%s:%s:%s",
-//                            recordFields[0], newAmountStr, recordFields[2], recordFields[3]);
-//                    int index = records.indexOf(record);
-//                    records.set(index, newRecord);
-//                    oldAmount = Float.parseFloat(oldAmountStr);
-//                    ein = recordFields[3];
-//                }
-//            }
-//            UserPreferences.setRecords(this, records);
-//            float amountChange = amount - oldAmount;
-//
-//            String newGivingAmountStr = "";
-//            List<String> charities = UserPreferences.getCharities(this);
-//            for (String charity : charities) {
-//                String[] charityFields = charity.split(":");
-//                if (charityFields[0].equals(ein)) {
-//                    String givingAmountStr = charityFields[4];
-//                    float newGivingAmount = Float.parseFloat(givingAmountStr) + amountChange;
-//                    newGivingAmountStr = String.format(Locale.getDefault(), "%.2f", newGivingAmount);
-//                    String newCharity = String.format("%s:%s:%s:%s:%s:%s",
-//                            charityFields[0], charityFields[1], charityFields[2], charityFields[3], newGivingAmountStr, charityFields[5]);
-//                    int index = charities.indexOf(charity);
-//                    charities.set(index, newCharity);
-//                    Giving giving = DatabaseAccessor.getGiving(this, ein).get(0);
-//                    giving.setImpact(newGivingAmountStr);
-//                    DatabaseAccessor.addGiving(this, giving);
-//                }
-//            }
-//            UserPreferences.setCharities(this, charities);
-
-            String recordAmountStr = String.format(Locale.getDefault(), "%.2f", amount);
-            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-            float amountChange = amount - Float.valueOf(record.getImpact());
-            record.setImpact(recordAmountStr);
-            DatabaseAccessor.removeRecord(this, String.valueOf(id));
-            DatabaseAccessor.addRecord(this, record);
-
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-            for (Giving giving : givings) {
-                String ein = giving.getEin();
-                if (ein.equals(record.getEin())) {
-                    float newAmount = Float.valueOf(giving.getImpact()) + amountChange;
-                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", newAmount));
-                    DatabaseAccessor.removeGiving(this, ein);
-                    DatabaseAccessor.addGiving(this, giving);
-                    break;
-                }
-            }
-
-            updateTimePreferences(UserPreferences.getAnchor(this));
-//            UserPreferences.updateFirebaseUser(this);
-        });
-
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-    }
 
     /**
      * Handles action ResetData in the provided background thread.
