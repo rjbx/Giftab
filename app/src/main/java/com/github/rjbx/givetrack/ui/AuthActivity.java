@@ -78,7 +78,9 @@ public class AuthActivity extends AppCompatActivity implements
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         String launchingAction = getIntent().getAction();
-        final User user = UserPreferences.generateUserProfile(AuthActivity.this);
+
+        // TODO: Enable user selection
+        final User user = mUsers.get(0);
 
         if (launchingAction != null) {
             switch (launchingAction) {
@@ -177,8 +179,10 @@ public class AuthActivity extends AppCompatActivity implements
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
                         User user = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
-                        if (user == null) user = UserPreferences.generateUserProfile(AuthActivity.this);
-                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
+                        if (user == null) user = new User();
+//                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
+                        startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
+                        finish();
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { Timber.e(databaseError.getMessage()); }
                 });
@@ -198,8 +202,8 @@ public class AuthActivity extends AppCompatActivity implements
      * {@link #onActivityResult(int, int, Intent)} during sign-in sequence
      */
     @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (!key.equals(UserPreferences.LAST_PREFERENCE)) return;
-        Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+//        if (!key.equals(UserPreferences.LAST_PREFERENCE)) return;
+//        Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, MainActivity.class).setAction(ACTION_SIGN_IN));
         finish();
     }

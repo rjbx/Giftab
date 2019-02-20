@@ -326,7 +326,6 @@ public class UserPreferences {
         setGender(context, user.getGender());
         setTheme(context, user.getTheme());
         setDonation(context, user.getDonation());
-        setCharities(context, user.getCharities());
         setTerm(context, user.getTerm());
         setCity(context, user.getCity());
         setState(context, user.getState());
@@ -340,7 +339,6 @@ public class UserPreferences {
         setFocus(context, user.getFocus());
         setEin(context, user.getCompany());
         setViewtrack(context, user.getViewtrack());
-        setRecords(context, user.getRecords());
         setSearchguide(context, user.getSearchguide());
         setHistorical(context, user.getHistorical());
         setAnchor(context, user.getAnchor());
@@ -362,7 +360,6 @@ public class UserPreferences {
                 getTheme(context),
                 getDonation(context),
                 getMagnitude(context),
-                getCharities(context),
                 getTerm(context),
                 getCity(context),
                 getState(context),
@@ -378,7 +375,6 @@ public class UserPreferences {
                 getFocus(context),
                 getEin(context),
                 getViewtrack(context),
-                getRecords(context),
                 getFilter(context),
                 getHistorical(context),
                 getAnchor(context),
