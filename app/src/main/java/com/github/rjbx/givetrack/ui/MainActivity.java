@@ -230,7 +230,6 @@ public class MainActivity extends AppCompatActivity implements
         mRecordArray = null;
     }
 
-    // TODO: Bundle active User to ConfigActivty launching Intent
     /**
      * Defines behavior onClick of each Navigation MenuItem.
      */
@@ -321,10 +320,11 @@ public class MainActivity extends AppCompatActivity implements
     /**
      * Defines and launches Intent for displaying the {@link ConfigActivity.GivingPreferenceFragment} screen.
      */
-    private static void launchTunerPreferences(Context context) {
+    private void launchTunerPreferences(Context context) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.GivingPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
         filterIntent.setAction(ACTION_MAIN_INTENT);
         context.startActivity(filterIntent);
     }
