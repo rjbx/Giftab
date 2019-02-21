@@ -146,7 +146,6 @@ public final class DatabaseAccessor {
     public static <T extends Entry> void cursorToEntries(Cursor cursor, List<T> entries) {
         if (cursor == null || !cursor.moveToFirst()) return;
         int i = 0;
-        cursor.moveToFirst();
         do cursorRowToEntry(cursor, entries.get(i++));
         while (cursor.moveToNext());
     }
