@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                launchTunerPreferences(this);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_MAIN_INTENT);
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
@@ -315,18 +315,6 @@ public class MainActivity extends AppCompatActivity implements
                 default:
             }
         }
-    }
-    
-    /**
-     * Defines and launches Intent for displaying the {@link ConfigActivity.GivingPreferenceFragment} screen.
-     */
-    private void launchTunerPreferences(Context context) {
-        Intent filterIntent = new Intent(context, ConfigActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.GivingPreferenceFragment.class.getName());
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
-        filterIntent.setAction(ACTION_MAIN_INTENT);
-        context.startActivity(filterIntent);
     }
 
     /**

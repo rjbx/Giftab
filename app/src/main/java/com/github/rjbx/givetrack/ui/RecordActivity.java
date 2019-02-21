@@ -43,6 +43,7 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import timber.log.Timber;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseCallbacks;
@@ -144,7 +145,7 @@ public class RecordActivity extends AppCompatActivity implements
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_record):
-                launchFilterPreferences(this);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_RECORD_INTENT);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -279,19 +280,6 @@ public class RecordActivity extends AppCompatActivity implements
                 }
             }
         };
-    }
-
-    /**
-     * Defines and launches Intent for displaying {@link ConfigActivity.RecordPreferenceFragment}.
-     */
-
-    private void launchFilterPreferences(Context context) {
-        Intent filterIntent = new Intent(context, ConfigActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.RecordPreferenceFragment.class.getName());
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
-        filterIntent.setAction(ACTION_RECORD_INTENT);
-        context.startActivity(filterIntent);
     }
 
     /**

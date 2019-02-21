@@ -36,6 +36,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import com.bumptech.glide.Glide;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
@@ -141,7 +142,7 @@ public class SearchActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_filter):
-                launchFilterPreferences(this);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -234,7 +235,7 @@ public class SearchActivity extends AppCompatActivity implements
 //                    UserPreferences.setSearchguide(this, sDialogShown);
                     mUser.setSearchguide(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
-                    launchFilterPreferences(this);
+                    AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
                     break;
                 default:
             }
@@ -304,18 +305,6 @@ public class SearchActivity extends AppCompatActivity implements
                 }
             }
         };
-    }
-
-    /**
-     * Defines and launches Intent for displaying {@link ConfigActivity.SearchPreferenceFragment}.
-     */
-    private void launchFilterPreferences(Context context) {
-        Intent filterIntent = new Intent(context, ConfigActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.SearchPreferenceFragment.class.getName());
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, mUser);
-        filterIntent.setAction(ACTION_SEARCH_INTENT);
-        context.startActivity(filterIntent);
     }
 
     /**
