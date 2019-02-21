@@ -113,12 +113,13 @@ public class AuthActivity extends AppCompatActivity implements
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
                         boolean uidFound = false;
-                        for (int i = 0; i < mUsers.size() ; i++)
+                        for (int i = 0; i < mUsers.size(); i++)
                             if (mUsers.get(i).getUid().equals(firebaseUser.getUid())) {
                                 uidFound = true;
                                 mUsers.set(i, dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
-                            } if (!uidFound) mUsers.add(dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
-                            DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
+                            } else mUsers.get(i).setActive(false);
+                        if (!uidFound) mUsers.add(dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
+                        DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
                             //                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
@@ -164,7 +165,8 @@ public class AuthActivity extends AppCompatActivity implements
         String launchingAction = getIntent().getAction();
 
         // TODO: Enable user selection and persist preference to active attribute across users
-        final User user = mUsers.get(0);
+        User user = null;
+        for (User u : mUsers) if (u.getActive()) user = u;
 
         if (launchingAction != null) {
             switch (launchingAction) {
