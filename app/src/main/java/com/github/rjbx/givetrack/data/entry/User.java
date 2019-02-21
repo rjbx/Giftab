@@ -20,7 +20,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private String uid = "";
     private boolean active = false;
     private String email = "";
-    private String birthdate = "";
+    private String birthdate = "0/0/2000";
     private String gender = "";
     private int theme = 0;
     private String donation = "";

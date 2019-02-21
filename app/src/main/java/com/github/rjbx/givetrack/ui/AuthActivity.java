@@ -112,9 +112,14 @@ public class AuthActivity extends AppCompatActivity implements
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
-                        User user = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
-                        if (user == null) user = new User();
-//                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
+                        boolean uidFound = false;
+                        for (int i = 0; i < mUsers.size() ; i++)
+                            if (mUsers.get(i).getUid().equals(firebaseUser.getUid())) {
+                                uidFound = true;
+                                mUsers.set(i, dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
+                            } if (!uidFound) mUsers.add(dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
+                            DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
+                            //                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
                     }
@@ -145,8 +150,7 @@ public class AuthActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(int id, Cursor cursor) {
         DatabaseAccessor.cursorToEntries(cursor, mUsers);
-        if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
-        DatabaseService.startActionUpdateUser(this, mUsers.toArray(new User[mUsers.size()]));
+//        if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
         handleAction();
     }
 
