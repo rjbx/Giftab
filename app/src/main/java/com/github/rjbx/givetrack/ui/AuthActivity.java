@@ -56,6 +56,7 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
+    private boolean mPendingResult;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -147,7 +148,7 @@ public class AuthActivity extends AppCompatActivity implements
     public void onLoadFinished(int id, Cursor cursor) {
         DatabaseAccessor.cursorToEntries(cursor, mUsers);
 //        if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
-        handleAction();
+        if (!mPendingResult) handleAction();
     }
 
     @Override
@@ -214,7 +215,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 .setAvailableProviders(providers)
                                 .build();
                         startActivityForResult(signIn, REQUEST_SIGN_IN);
-
+                        mPendingResult = true;
                     } else {
                         finish();
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();

@@ -50,7 +50,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         @Override public User[] newArray(int size) { return new User[size]; }
     };
 
-    User (Parcel source) {
+    private User (Parcel source) {
          uid = source.readString();
          active = source.readInt() == 1;
          email = source.readString();
