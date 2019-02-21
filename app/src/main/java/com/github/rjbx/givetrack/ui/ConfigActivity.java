@@ -292,12 +292,14 @@ public class ConfigActivity extends PreferenceActivity {
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            if (preference.getKey().equals(getString(R.string.pref_focus_key))) {
+
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_focus_key).equals(preferenceKey)) {
                 if ((boolean) newValue) {
                     preference.setEnabled(true);
                 } else preference.setEnabled(false);
                 return true;
-            } else if (preference.getKey().equals(getString(R.string.pref_clear_key))) {
+            } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -306,7 +308,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            } else if (preference.getKey().equals(getString(R.string.pref_show_key))) {
+            } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
@@ -380,7 +382,8 @@ public class ConfigActivity extends PreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-            if (getString(R.string.pref_magnitude_key).equals(preference.getKey())) {
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
                 mSeekProgress = Math.round(Float.parseFloat(/*UserPreferences.getMagnitude(getActivity())) */ mUser.getMagnitude()) * 1000f);
                 preference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
@@ -398,7 +401,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                 return false;
-            } else if (getString(R.string.pref_magnitude_key).equals(preference.getKey())) {
+            } else if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
                 mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
                 mRecalibrateDialog.setMessage(getActivity().getString(R.string.dialog_message_recalibrate));
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -407,7 +410,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                 return false;
-            } else if (getString(R.string.pref_clear_key).equals(preference.getKey())) {
+            } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -416,7 +419,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            } else if (getString(R.string.pref_show_key).equals(preference.getKey())) {
+            } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
@@ -535,7 +538,8 @@ public class ConfigActivity extends PreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-            if (getString(R.string.pref_clear_key).equals(preference.getKey())) {
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -544,7 +548,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            } else if (getString(R.string.pref_show_key).equals(preference.getKey())) {
+            } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
