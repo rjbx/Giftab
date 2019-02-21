@@ -143,7 +143,7 @@
     <string name="pref_size_key" translatable="false">rows</string>
     <string name="pref_minrating_key" translatable="false">minrating</string>
     <string name="pref_filter_key" translatable="false">fundraising</string>
-    <string name="pref_searchSearch_key" translatable="false">searchSort</string>
+    <string name="pref_searchSort_key" translatable="false">searchSort</string>
     <string name="pref_searchOrder_key" translatable="false">searchOrder</string>
     <string name="pref_recordSort_key" translatable="false">recordSort</string>
     <string name="pref_recordOrder_key" translatable="false">recordOrder</string>

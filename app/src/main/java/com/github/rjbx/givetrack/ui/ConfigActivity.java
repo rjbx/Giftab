@@ -11,7 +11,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -19,7 +18,6 @@ import android.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
-import android.preference.SwitchPreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -266,7 +264,7 @@ public class ConfigActivity extends PreferenceActivity {
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSearch_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSort_key));
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
@@ -282,7 +280,7 @@ public class ConfigActivity extends PreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_minrating_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_pages_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchSearch_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchSort_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchOrder_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_company_key)), this);
             bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_focus_key)), this);
@@ -360,10 +358,31 @@ public class ConfigActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
 
-            Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
-            mSeekProgress = Math.round(Float.parseFloat(/*UserPreferences.getMagnitude(getActivity())) */ mUser.getMagnitude()) * 1000f);
-            magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
-            magnitudePreference.setOnPreferenceClickListener(clickedPreference -> {
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSort_key));
+            if (sortPref.getValue() == null) {
+                sortPref.setValueIndex(sortPref.getEntries().length - 1);
+            }
+
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_searchOrder_key));
+            if (orderPref.getValue() == null) {
+                orderPref.setValueIndex(orderPref.getEntries().length - 1);
+            }
+
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recalibrate_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_magnitude_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_clear_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+        }
+
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+            if (getString(R.string.pref_magnitude_key).equals(preference.getKey())) {
+                mSeekProgress = Math.round(Float.parseFloat(/*UserPreferences.getMagnitude(getActivity())) */ mUser.getMagnitude()) * 1000f);
+                preference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
@@ -379,10 +398,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                 return false;
-            });
-
-            Preference recalibratePreference = findPreference(getString(R.string.pref_recalibrate_key));
-            recalibratePreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (getString(R.string.pref_magnitude_key).equals(preference.getKey())) {
                 mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
                 mRecalibrateDialog.setMessage(getActivity().getString(R.string.dialog_message_recalibrate));
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -391,10 +407,7 @@ public class ConfigActivity extends PreferenceActivity {
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                 return false;
-            });
-
-            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
-            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (getString(R.string.pref_clear_key).equals(preference.getKey())) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -403,22 +416,12 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            });
-
-            Preference showPreference = findPreference("showAll");
-            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (getString(R.string.pref_show_key).equals(preference.getKey())) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return false;
-            });
-        }
-
-        /**
-         * Invokes helper method for setting preference summary to new preference value.
-         */
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
+            }
             return ConfigActivity.changePreference(preference, newValue);
         }
 
@@ -432,12 +435,10 @@ public class ConfigActivity extends PreferenceActivity {
         }
 
         @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {
-        }
+        public void onStartTrackingTouch(SeekBar seekBar) {}
 
         @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {
-        }
+        public void onStopTrackingTouch(SeekBar seekBar) {}
 
         /**
          * Defines behavior onClick of each DialogInterface option.
@@ -493,6 +494,7 @@ public class ConfigActivity extends PreferenceActivity {
         }
     }
 
+
     /**
      * Fragment bound to preference header for updating giving settings.
      */
@@ -512,17 +514,28 @@ public class ConfigActivity extends PreferenceActivity {
             setHasOptionsMenu(true);
 
             ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_recordSort_key));
-            if (sortPref.getValue() == null)
+            if (sortPref.getValue() == null) {
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordSort_key)), this);
+            }
 
             ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_recordOrder_key));
-            if (orderPref.getValue() == null)
+            if (orderPref.getValue() == null) {
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            }
 
-            Preference unsavePreference = findPreference(getString(R.string.pref_clear_key));
-            unsavePreference.setOnPreferenceClickListener(clickedPreference -> {
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordSort_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_clear_key)), this);
+            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+        }
+
+        /**
+         * Invokes helper method for setting preference summary to new preference value.
+         */
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object newValue) {
+
+            if (getString(R.string.pref_clear_key).equals(preference.getKey())) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -531,24 +544,11 @@ public class ConfigActivity extends PreferenceActivity {
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                 return false;
-            });
-
-            Preference showPreference = findPreference("showAll");
-            showPreference.setOnPreferenceClickListener(clickedPreference -> {
+            } else if (getString(R.string.pref_show_key).equals(preference.getKey())) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return false;
-            });
-        }
-
-        /**
-         * Invokes helper method for setting preference summary to new preference value.
-         */
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object newValue) {
-            if (newValue instanceof String) {
-
             }
             return ConfigActivity.changePreference(preference, newValue);
         }
