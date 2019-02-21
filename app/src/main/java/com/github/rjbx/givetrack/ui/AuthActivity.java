@@ -146,6 +146,7 @@ public class AuthActivity extends AppCompatActivity implements
     public void onLoadFinished(int id, Cursor cursor) {
         DatabaseAccessor.cursorToEntries(cursor, mUsers);
         if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
+        DatabaseService.startActionUpdateUser(this, mUsers.toArray(new User[mUsers.size()]));
         handleAction();
     }
 

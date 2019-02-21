@@ -15,7 +15,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties public class User implements Entry, Parcelable {
+@IgnoreExtraProperties public class User implements Entry, Parcelable, Cloneable {
 
     private String uid = "";
     private boolean active = false;
@@ -179,6 +179,36 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.historical = historical;
         this.anchor = anchor;
         this.timetrack = timetrack;
+    }
+    
+    public User(User user) {
+        this.uid = user.uid;
+        this.active = user.active;
+        this.email = user.email;
+        this.birthdate = user.birthdate;
+        this.gender = user.gender;
+        this.theme = user.theme;
+        this.magnitude = user.magnitude;
+        this.donation = user.donation;
+        this.term = user.term;
+        this.city = user.city;
+        this.state = user.state;
+        this.zip = user.zip;
+        this.minrating = user.minrating;
+        this.filter = user.filter;
+        this.searchSort = user.searchSort;
+        this.searchOrder = user.searchOrder;
+        this.recordSort = user.recordSort;
+        this.recordOrder = user.recordOrder;
+        this.pages = user.pages;
+        this.rows = user.rows;
+        this.focus = user.focus;
+        this.company = user.company;
+        this.viewtrack = user.viewtrack;
+        this.searchguide = user.searchguide;
+        this.historical = user.historical;
+        this.anchor = user.anchor;
+        this.timetrack = user.timetrack;
     }
 
     @Exclude public String getUid() {
@@ -444,5 +474,13 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.historical = values.getAsInteger(COLUMN_HISTORICAL) == 1;
         this.anchor = values.getAsInteger(COLUMN_ANCHOR);
         this.timetrack = values.getAsInteger(COLUMN_TIMETRACK);
+    }
+
+    @Override public User clone() {
+        User clone  = new User(this);
+        try { super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException("Class must implement Cloneable interface");
+        } return clone;
     }
 }

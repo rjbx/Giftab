@@ -226,10 +226,13 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionUpdateGiving(Context context, Giving giving) {
+    public static void startActionUpdateGiving(Context context, Giving... giving) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_GIVING);
         intent.putExtra(EXTRA_ITEM_VALUES, giving);
+        if (giving.length > 1) intent.putExtra(EXTRA_LIST_VALUES, giving);
+        else intent.putExtra(EXTRA_ITEM_VALUES, giving[0]);
+
         context.startService(intent);
     }
 
@@ -239,10 +242,13 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionUpdateUser(Context context, User user) {
+    public static void startActionUpdateUser(Context context, User... user) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_USER);
         intent.putExtra(EXTRA_ITEM_VALUES, user);
+        if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
+        else intent.putExtra(EXTRA_ITEM_VALUES, user[0]);
+
         context.startService(intent);
     }
 
@@ -345,18 +351,20 @@ public class DatabaseService extends IntentService {
             case ACTION_UPDATE_CONTACT:
                 break;
             case ACTION_UPDATE_GIVING:
-                handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                else handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_UPDATE_USER:
-                handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
+                else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_UPDATE_PERCENTAGES:
-                if (intent.hasExtra(EXTRA_LIST_VALUES)) {
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
-                } else {
-                    Giving updatePercentagesValues = intent.getParcelableExtra(EXTRA_ITEM_VALUES);
-                    handleActionUpdateGiving(updatePercentagesValues);
-                } break;
+                else handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
             case ACTION_UPDATE_TIME:
                 long timeId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
                 long newTime = intent.getLongExtra(EXTRA_ITEM_VALUES, 0);
@@ -737,7 +745,7 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    private void handleActionUpdateUser(User user) {
+    private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
