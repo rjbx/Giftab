@@ -72,7 +72,6 @@ public class AuthActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
-        mUsers = new ArrayList<>();
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
@@ -146,6 +145,7 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override
     public void onLoadFinished(int id, Cursor cursor) {
+        mUsers = new ArrayList<>(cursor.getCount());
         DatabaseAccessor.cursorToEntries(cursor, mUsers);
 //        if (mUsers == null || mUsers.isEmpty()) mUsers.add(new User());
         if (!mPendingResult) handleAction();
