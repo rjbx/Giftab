@@ -45,7 +45,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private long anchor;
     private long timetrack;
 
-    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+    @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
         @Override public User[] newArray(int size) { return new User[size]; }
     };
@@ -80,8 +80,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          timetrack = source.readLong();
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
+    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
          dest.writeString(uid);
          dest.writeInt(active ? 0 : 1);
          dest.writeString(email);
@@ -111,43 +110,14 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          dest.writeLong(timetrack);
     }
 
-    @Override
-    public int describeContents() {
+    @Exclude @Override public int describeContents() {
         return 0;
     }
 
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public User() {
-        active = false;
-        anchor = 0;
-        birthdate = "0/0/2000";
-        city = "";
-        company = "";
-        donation = "";
-        email = "";
-        filter = true;
-        focus = false;
-        gender = "";
-        historical = false;
-        magnitude = "";
-        minrating = "";
-        pages = "";
-        recordOrder = "";
-        recordSort = "";
-        rows = "";
-        searchOrder = "";
-        searchSort = "";
-        searchguide = false;
-        state = "";
-        term = "";
-        theme = 0;
-        timetrack = 0;
-        uid = "";
-        viewtrack = false;
-        zip = "";
-    }
+    public User() { }
 
     /**
      * Provides POJO constructor required for object relational mapping.
@@ -207,36 +177,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.historical = historical;
         this.anchor = anchor;
         this.timetrack = timetrack;
-    }
-    
-    public User(User user) {
-        this.uid = user.uid;
-        this.active = user.active;
-        this.email = user.email;
-        this.birthdate = user.birthdate;
-        this.gender = user.gender;
-        this.theme = user.theme;
-        this.magnitude = user.magnitude;
-        this.donation = user.donation;
-        this.term = user.term;
-        this.city = user.city;
-        this.state = user.state;
-        this.zip = user.zip;
-        this.minrating = user.minrating;
-        this.filter = user.filter;
-        this.searchSort = user.searchSort;
-        this.searchOrder = user.searchOrder;
-        this.recordSort = user.recordSort;
-        this.recordOrder = user.recordOrder;
-        this.pages = user.pages;
-        this.rows = user.rows;
-        this.focus = user.focus;
-        this.company = user.company;
-        this.viewtrack = user.viewtrack;
-        this.searchguide = user.searchguide;
-        this.historical = user.historical;
-        this.anchor = user.anchor;
-        this.timetrack = user.timetrack;
     }
 
     @Exclude public String getUid() {
@@ -440,8 +380,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         timetrack = (long) map.get("timetrack");
     }
 
-    @Exclude @Override
-    public ContentValues toContentValues() {
+    @Exclude @Override public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
         values.put(COLUMN_ACTIVE, active);
@@ -473,8 +412,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         return values;
     }
 
-    @Exclude @Override
-    public void fromContentValues(ContentValues values) {
+    @Exclude @Override public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(COLUMN_UID);
         this.active = values.getAsInteger(COLUMN_ACTIVE) == 1;
         this.email = values.getAsString(COLUMN_EMAIL);
@@ -505,10 +443,73 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     }
 
     @Exclude @Override public User clone() {
-        User clone  = new User(this);
+        User clone  = fromUser(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
+    }
+
+    @Exclude public User fromUser(User user) {
+        this.uid = user.uid;
+        this.active = user.active;
+        this.email = user.email;
+        this.birthdate = user.birthdate;
+        this.gender = user.gender;
+        this.theme = user.theme;
+        this.magnitude = user.magnitude;
+        this.donation = user.donation;
+        this.term = user.term;
+        this.city = user.city;
+        this.state = user.state;
+        this.zip = user.zip;
+        this.minrating = user.minrating;
+        this.filter = user.filter;
+        this.searchSort = user.searchSort;
+        this.searchOrder = user.searchOrder;
+        this.recordSort = user.recordSort;
+        this.recordOrder = user.recordOrder;
+        this.pages = user.pages;
+        this.rows = user.rows;
+        this.focus = user.focus;
+        this.company = user.company;
+        this.viewtrack = user.viewtrack;
+        this.searchguide = user.searchguide;
+        this.historical = user.historical;
+        this.anchor = user.anchor;
+        this.timetrack = user.timetrack;
+        return this;
+    }
+    
+    @Exclude public static User getDefault() {
+        User user = new User();
+        user.active = false;
+        user.anchor = 0;
+        user.birthdate = "0/0/2000";
+        user.city = "";
+        user.company = "";
+        user.donation = "";
+        user.email = "";
+        user.filter = true;
+        user.focus = false;
+        user.gender = "";
+        user.historical = false;
+        user.magnitude = "";
+        user.minrating = "";
+        user.pages = "";
+        user.recordOrder = "";
+        user.recordSort = "";
+        user.rows = "";
+        user.searchOrder = "";
+        user.searchSort = "";
+        user.searchguide = false;
+        user.state = "";
+        user.term = "";
+        user.theme = 0;
+        user.timetrack = 0;
+        user.uid = "";
+        user.viewtrack = false;
+        user.zip = "";
+        return user;
     }
 }

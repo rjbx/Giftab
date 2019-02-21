@@ -363,7 +363,7 @@ public class UserPreferences {
     public static User generateUserProfile() {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        User user = new User();
+        User user = User.getDefault();
         user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
         user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
         return user;

@@ -174,7 +174,7 @@ public class RecordActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_USER:
                 if (cursor.moveToFirst()) {
                     do {
-                        User user = new User();
+                        User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(cursor, user);
                         if (user.getActive()) mUser = user;
                     } while (cursor.moveToNext());
