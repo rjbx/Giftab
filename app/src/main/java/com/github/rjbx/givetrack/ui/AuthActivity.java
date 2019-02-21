@@ -27,6 +27,7 @@ import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseController;
+import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
@@ -113,14 +114,18 @@ public class AuthActivity extends AppCompatActivity implements
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
                         boolean uidFound = false;
+                        User activeUser = null;
                         for (int i = 0; i < mUsers.size(); i++)
                             if (mUsers.get(i).getUid().equals(firebaseUser.getUid())) {
                                 uidFound = true;
                                 mUsers.set(i, dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
+                                mUsers.get(i);
                             } else mUsers.get(i).setActive(false);
                         if (!uidFound) mUsers.add(dataSnapshot.child(firebaseUser.getUid()).getValue(User.class));
+                        activeUser = mUsers.get(mUsers.size() - 1);
                         DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
                             //                        UserPreferences.replaceSharedPreferences(AuthActivity.this, user);
+                        UserPreferences.updateFirebaseUser(activeUser);
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
                     }

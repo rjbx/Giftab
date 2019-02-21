@@ -809,7 +809,7 @@ public class DatabaseService extends IntentService {
         if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
         else UserPreferences.setAnchor(this, anchorTime);
 
-        UserPreferences.updateFirebaseUser(this);
+//        UserPreferences.updateFirebaseUser(this);
     }
 
     private String urlToEmailAddress(String url) {

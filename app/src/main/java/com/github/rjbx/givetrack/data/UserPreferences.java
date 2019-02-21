@@ -397,9 +397,11 @@ public class UserPreferences {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static void updateFirebaseUser(@NonNull Context context) {
+    public static void updateFirebaseUser(User user) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
+        user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        final User user = UserPreferences.generateUserProfile(context);
         firebaseDatabase.getReference("users").child(user.getUid())
                 .updateChildren(user.toParameterMap());
     }
