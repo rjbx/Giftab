@@ -103,13 +103,14 @@ public class ConfigActivity extends PreferenceActivity {
     /**
      * Fragment bound to preference header for updating advanced settings.
      */
-    private static void changeUser(Preference preference, Object newValue) {
+    private static void changeUser(Preference changedPreference, Object newValue) {
 
-        String preferenceKey = preference.getKey();
+        String preferenceKey = changedPreference.getKey();
         Map<String, Object> map = mUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
         map.put(preferenceKey, newValue);
         mUser.fromParameterMap(map);
+        DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
     }
 
     /**
@@ -148,7 +149,6 @@ public class ConfigActivity extends PreferenceActivity {
         }
 
 //        UserPreferences.updateFirebaseUser(changedPreference.getContext());
-        DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
     }
 
     /**

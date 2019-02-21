@@ -77,7 +77,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_RECORD_TABLE =
-
+// TODO: Add autoincremented Entry._ID column
                 "CREATE TABLE IF NOT EXISTS " +
                         CompanyEntry.TABLE_NAME_RECORD             + " ("                              +
 

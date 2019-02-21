@@ -144,6 +144,7 @@ public final class DatabaseAccessor {
     }
 
     public static <T extends Entry> void cursorToEntries(Cursor cursor, List<T> entries) {
+        // TODO: Initialize ArrayList elements
         if (cursor == null || !cursor.moveToFirst()) return;
         int i = 0;
         do cursorRowToEntry(cursor, entries.get(i++));

@@ -350,6 +350,9 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_CONTACT:
                 break;
+
+            // TODO: Add update record
+
             case ACTION_UPDATE_GIVING:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
