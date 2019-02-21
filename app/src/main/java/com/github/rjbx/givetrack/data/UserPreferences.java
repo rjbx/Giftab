@@ -360,38 +360,13 @@ public class UserPreferences {
     /**
      * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
      */
-    public static User generateUserProfile(@NonNull Context context) {
+    public static User generateUserProfile() {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        return new User(
-                firebaseUser == null ? "" : firebaseUser.getUid(),
-                getActive(context),
-                firebaseUser == null ? "" : firebaseUser.getEmail(),
-                getBirthdate(context),
-                getGender(context),
-                getTheme(context),
-                getDonation(context),
-                getMagnitude(context),
-                getTerm(context),
-                getCity(context),
-                getState(context),
-                getZip(context),
-                getMinrating(context),
-                getFilter(context),
-                getSearchSort(context),
-                getSearchOrder(context),
-                getRecordSort(context),
-                getRecordOrder(context),
-                getPages(context),
-                getRows(context),
-                getFocus(context),
-                getEin(context),
-                getViewtrack(context),
-                getFilter(context),
-                getHistorical(context),
-                getAnchor(context),
-                getTimetrack(context));
+        User user = new User();
+        user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
+        user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+        return user;
     }
 
     /**
