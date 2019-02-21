@@ -40,13 +40,12 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
-// TODO: Attach preference change listener to all preference for invoking logic to updating Users
 /**
  * Presents a set of application settings.
  */
 public class ConfigActivity extends PreferenceActivity {
-
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
+
     private static User mUser;
 
     /**
@@ -102,11 +101,22 @@ public class ConfigActivity extends PreferenceActivity {
     }
 
     /**
+     * Fragment bound to preference header for updating advanced settings.
+     */
+    private static void changeUser(Preference preference, Object newValue) {
+
+        String preferenceKey = preference.getKey();
+        Map<String, Object> map = mUser.toParameterMap();
+        if (!map.containsKey(preferenceKey)) return;
+        map.put(preferenceKey, newValue);
+        mUser.fromParameterMap(map);
+    }
+
+    /**
      * Updates the preference summary to reflect its new value.
      */
-    private static boolean changePreference(Preference changedPreference, Object newValue) {
+    private static void changeSummary(Preference changedPreference, Object newValue) {
 
-        changeUser(changedPreference.getKey(), newValue);
         if (newValue instanceof String) {
             String stringValue = newValue.toString();
 
@@ -139,7 +149,6 @@ public class ConfigActivity extends PreferenceActivity {
 
 //        UserPreferences.updateFirebaseUser(changedPreference.getContext());
         DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
-        return true;
     }
 
     /**
@@ -147,7 +156,7 @@ public class ConfigActivity extends PreferenceActivity {
      *
      * @see #PreferenceActivity
      */
-    private static void bindPreferenceSummaryToValue(Preference preference, Preference.OnPreferenceChangeListener listener) {
+    private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
         preference.setOnPreferenceChangeListener(listener);
         listener.onPreferenceChange(preference,
                 PreferenceManager
@@ -177,13 +186,13 @@ public class ConfigActivity extends PreferenceActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
     /**
      * Fragment bound to preference header for updating user settings.
      */
     public static class UserPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DatePickerDialog.OnDateSetListener {
+
 
         /**
          * Inflates and provides logic for updating values of preference.
@@ -194,28 +203,10 @@ public class ConfigActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
 
-            bindPreferenceSummaryToValue(findPreference("example_text"), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_gender_key)), this);
-            bindPreferenceSummaryToValue(findPreference("example_list"), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_birthdate_key)), this);
-
-            Preference datePreference = findPreference(getString(R.string.pref_birthdate_key));
-            Calendar calendar = Calendar.getInstance();
-            String birthdate = mUser.getBirthdate();
-            String[] birthdateParams = birthdate.split("/");
-            calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-            datePreference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
-            datePreference.setOnPreferenceClickListener(clickedPreference -> {
-                DatePickerDialog datePicker = new DatePickerDialog(
-                        getActivity(),
-                        UserPreferenceFragment.this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH));
-                datePicker.show();
-                return false;
-            });
-            datePreference.setOnPreferenceChangeListener((changedPreference, newValue) -> false);
+            handlePreferenceChange(findPreference("example_text"), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_gender_key)), this);
+            handlePreferenceChange(findPreference("example_list"), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
         }
 
         /**
@@ -228,22 +219,41 @@ public class ConfigActivity extends PreferenceActivity {
             DatabaseService.startActionUpdateUser(getContext(), mUser);
 //            UserPreferences.updateFirebaseUser(getActivity());
         }
-
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return ConfigActivity.changePreference(preference, newValue);
+
+            if (getString(R.string.pref_birthdate_key).equals(preference.getKey()));
+            Calendar calendar = Calendar.getInstance();
+            String birthdate = mUser.getBirthdate();
+            String[] birthdateParams = birthdate.split("/");
+            calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
+            preference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
+            preference.setOnPreferenceClickListener(clickedPreference -> {
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        getActivity(),
+                        UserPreferenceFragment.this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.show();
+                return false;
+            });
+
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
     }
-
     /**
      * Fragment bound to preference header for updating search settings.
      */
     public static class SearchPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Dialog.OnClickListener {
+
 
         AlertDialog mClearDialog;
 
@@ -272,19 +282,19 @@ public class ConfigActivity extends PreferenceActivity {
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_filter_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_term_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_city_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_state_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_zip_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_minrating_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_pages_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_size_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchSort_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_searchOrder_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_company_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_focus_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_filter_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_term_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_city_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_state_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_zip_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_minrating_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_pages_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_size_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_searchSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_searchOrder_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_company_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_focus_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -314,9 +324,10 @@ public class ConfigActivity extends PreferenceActivity {
                 startActivity(intent);
                 return false;
             }
-            return ConfigActivity.changePreference(preference, newValue);
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
-
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
@@ -335,8 +346,8 @@ public class ConfigActivity extends PreferenceActivity {
                 }
             }
         }
-    }
 
+    }
     /**
      * Fragment bound to preference header for updating giving settings.
      */
@@ -349,6 +360,7 @@ public class ConfigActivity extends PreferenceActivity {
         AlertDialog mRecalibrateDialog;
         AlertDialog mClearDialog;
         TextView mSeekReadout;
+
         int mSeekProgress;
 
         /**
@@ -370,10 +382,10 @@ public class ConfigActivity extends PreferenceActivity {
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recalibrate_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_magnitude_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_clear_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_recalibrate_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -425,7 +437,9 @@ public class ConfigActivity extends PreferenceActivity {
                 startActivity(intent);
                 return false;
             }
-            return ConfigActivity.changePreference(preference, newValue);
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
 
         /**
@@ -487,7 +501,6 @@ public class ConfigActivity extends PreferenceActivity {
                 }
             }
         }
-
         /**
          * Converts whole number percentage to its decimal equivalent,
          * formatted as a String to preserve its precision.
@@ -495,8 +508,8 @@ public class ConfigActivity extends PreferenceActivity {
         private static String percentIntToDecimalString(int percentInt) {
             return String.format(Locale.getDefault(), "%.2f", percentInt / 1000f);
         }
-    }
 
+    }
 
     /**
      * Fragment bound to preference header for updating giving settings.
@@ -504,6 +517,7 @@ public class ConfigActivity extends PreferenceActivity {
     public static class RecordPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DialogInterface.OnClickListener {
+
 
         AlertDialog mClearDialog;
 
@@ -526,10 +540,10 @@ public class ConfigActivity extends PreferenceActivity {
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordSort_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_recordOrder_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_clear_key)), this);
-            bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_recordSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -554,9 +568,10 @@ public class ConfigActivity extends PreferenceActivity {
                 startActivity(intent);
                 return false;
             }
-            return ConfigActivity.changePreference(preference, newValue);
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
-
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
@@ -575,36 +590,36 @@ public class ConfigActivity extends PreferenceActivity {
                 }
             }
         }
-    }
 
+    }
     /**
      * Fragment bound to preference header for updating notification settings.
      */
     public static class NotificationPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener {
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"), this);
+            handlePreferenceChange(findPreference("notifications_new_message_ringtone"), this);
         }
-
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return ConfigActivity.changePreference(preference, newValue);
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
-    }
 
-    /**
-     * Fragment bound to preference header for updating advanced settings.
-     */
+    }
     public static class AdvancedPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DialogInterface.OnClickListener {
+
 
         AlertDialog mDeleteDialog;
 
@@ -616,7 +631,7 @@ public class ConfigActivity extends PreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"), this);
+            handlePreferenceChange(findPreference("sync_frequency"), this);
 
             Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
             deletePreference.setOnPreferenceClickListener(clickedPreference -> {
@@ -636,9 +651,10 @@ public class ConfigActivity extends PreferenceActivity {
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            return ConfigActivity.changePreference(preference, newValue);
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
         }
-
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
@@ -656,12 +672,6 @@ public class ConfigActivity extends PreferenceActivity {
                 }
             }
         }
-    }
 
-    private static void changeUser(String preferenceKey, Object value) {
-        Map<String, Object> map = mUser.toParameterMap();
-        if (!map.containsKey(preferenceKey)) return;
-        map.put(preferenceKey, value);
-        mUser.fromParameterMap(map);
     }
 }
