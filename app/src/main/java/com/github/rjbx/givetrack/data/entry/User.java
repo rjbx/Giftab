@@ -17,33 +17,33 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  */
 @IgnoreExtraProperties public class User implements Entry, Parcelable, Cloneable {
 
-    private String uid = "";
-    private boolean active = false;
-    private String email = "";
-    private String birthdate = "0/0/2000";
-    private String gender = "";
-    private int theme = 0;
-    private String donation = "";
-    private String magnitude = "";
-    private String term = "";
-    private String city = "";
-    private String state = "";
-    private String zip = "";
-    private String minrating = "";
-    private boolean filter = false;
-    private String searchSort = "";
-    private String searchOrder = "";
-    private String recordSort = "";
-    private String recordOrder = "";
-    private String pages = "";
-    private String rows = "";
-    private boolean focus = false;
-    private String company = "";
-    private boolean viewtrack = false;
-    private boolean searchguide = false;
-    private boolean historical = false;
-    private long anchor = 0;
-    private long timetrack = 0;
+    private String uid;
+    private boolean active;
+    private String email;
+    private String birthdate;
+    private String gender;
+    private int theme;
+    private String donation;
+    private String magnitude;
+    private String term;
+    private String city;
+    private String state;
+    private String zip;
+    private String minrating;
+    private boolean filter;
+    private String searchSort;
+    private String searchOrder;
+    private String recordSort;
+    private String recordOrder;
+    private String pages;
+    private String rows;
+    private boolean focus;
+    private String company;
+    private boolean viewtrack;
+    private boolean searchguide;
+    private boolean historical;
+    private long anchor;
+    private long timetrack;
 
     public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
@@ -119,7 +119,35 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public User() {}
+    public User() {
+        active = false;
+        anchor = 0;
+        birthdate = "0/0/2000";
+        city = "";
+        company = "";
+        donation = "";
+        email = "";
+        filter = true;
+        focus = false;
+        gender = "";
+        historical = false;
+        magnitude = "";
+        minrating = "";
+        pages = "";
+        recordOrder = "";
+        recordSort = "";
+        rows = "";
+        searchOrder = "";
+        searchSort = "";
+        searchguide = false;
+        state = "";
+        term = "";
+        theme = 0;
+        timetrack = 0;
+        uid = "";
+        viewtrack = false;
+        zip = "";
+    }
 
     /**
      * Provides POJO constructor required for object relational mapping.
@@ -412,7 +440,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         timetrack = (long) map.get("timetrack");
     }
 
-    @Override
+    @Exclude @Override
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
@@ -445,7 +473,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         return values;
     }
 
-    @Override
+    @Exclude @Override
     public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(COLUMN_UID);
         this.active = values.getAsInteger(COLUMN_ACTIVE) == 1;
@@ -476,7 +504,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.timetrack = values.getAsInteger(COLUMN_TIMETRACK);
     }
 
-    @Override public User clone() {
+    @Exclude @Override public User clone() {
         User clone  = new User(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
