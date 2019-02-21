@@ -116,6 +116,7 @@ public class AuthActivity extends AppCompatActivity implements
                         User activeUser = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
                         if (activeUser == null) activeUser = UserPreferences.generateUserProfile();
                         DatabaseService.startActionUpdateUser(AuthActivity.this, activeUser);
+                        UserPreferences.updateFirebaseUser(activeUser);
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
                     }
