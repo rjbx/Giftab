@@ -150,7 +150,7 @@ public class AuthActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(int id, Cursor cursor) {
         mUsers = new ArrayList<>();
-        DatabaseAccessor.cursorToEntries(cursor, mUsers);
+        DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
         if (!mPendingResult) handleAction();
     }

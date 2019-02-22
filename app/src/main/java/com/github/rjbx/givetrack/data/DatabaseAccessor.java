@@ -16,6 +16,7 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 // TODO: For each getter and setter method, add remote persistence logic
@@ -28,7 +29,7 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Search> entries = new ArrayList<>();
-        cursorToEntries(cursor, entries);
+        getEntryListFromCursor(cursor, Search.class);
         cursor.close();
         return entries;
     }
@@ -52,7 +53,7 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Giving> entries = new ArrayList<>();
-        cursorToEntries(cursor, entries);
+        getEntryListFromCursor(cursor, Giving.class);
         cursor.close();
         return entries;
     }
@@ -76,7 +77,7 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Record> entries = new ArrayList<>();
-        cursorToEntries(cursor, entries);
+        getEntryListFromCursor(cursor, Record.class);
         cursor.close();
         return entries;
     }
@@ -99,8 +100,7 @@ public final class DatabaseAccessor {
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
-        List<User> entries = new ArrayList<>();
-        cursorToEntries(cursor, entries);
+        List<User> entries = getEntryListFromCursor(cursor, User.class);
         cursor.close();
         return entries;
     }
@@ -123,13 +123,15 @@ public final class DatabaseAccessor {
         entry.fromContentValues(values);
     }
 
-    public static <T extends Entry> void cursorToEntries(Cursor cursor, List<T> entries) {
-        if (cursor == null || !cursor.moveToFirst()) return;
+    public static <T extends Entry> List<T> getEntryListFromCursor(@NonNull Cursor cursor, Class<T> type) {
+        if (!cursor.moveToFirst()) throw new IllegalArgumentException("Cursor must be prior initialized");
+        List<T> entries = new ArrayList<>();
         entries.clear();
         int i = 0;
         do {
-            entries.add(T.getInstance());
+            entries.add(T.getInstance(type));
             cursorRowToEntry(cursor, entries.get(i++));
         } while (cursor.moveToNext());
+        return entries;
     }
 }
