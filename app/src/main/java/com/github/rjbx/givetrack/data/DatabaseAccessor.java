@@ -2,12 +2,15 @@ package com.github.rjbx.givetrack.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Entry;
@@ -15,6 +18,9 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -107,6 +113,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
+        updateFirebaseUser(entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -132,5 +139,26 @@ public final class DatabaseAccessor {
             cursorRowToEntry(cursor, entries.get(i++));
         } while (cursor.moveToNext());
         return entries;
+    }
+
+    /**
+     * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
+     */
+    public static void updateFirebaseUser(User... users) {
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+
+        if (users.length == 1) {
+            User user = users[0];
+            user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
+            user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+            firebaseDatabase.getReference("users").child(user.getUid())
+                    .updateChildren(user.toParameterMap());
+        } else {
+            Map<String, Object> userMap = new HashMap<>();
+            for (User user: users) userMap.put(user.getUid(), user);
+            firebaseDatabase.getReference("users").updateChildren(userMap);
+        }
     }
 }

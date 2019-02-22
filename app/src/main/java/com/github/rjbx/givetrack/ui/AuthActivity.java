@@ -114,10 +114,9 @@ public class AuthActivity extends AppCompatActivity implements
                         if (activeUser == null) activeUser = UserPreferences.generateUserProfile();
                         for (int i = 0; i < mUsers.size(); i++)
                             mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-                        DatabaseService.startActionUpdateUser(AuthActivity.this, activeUser);
-
-                        // TODO: Migrate persistence logic to accessor methods
-                        UserPreferences.updateFirebaseUser(activeUser);
+                        User[] userArray = mUsers.toArray(new User[mUsers.size()]);
+                        DatabaseService.startActionUpdateUser(AuthActivity.this, userArray);
+                        DatabaseAccessor.updateFirebaseUser(userArray);
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
                     }
