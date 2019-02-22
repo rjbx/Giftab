@@ -124,7 +124,7 @@ public final class DatabaseAccessor {
     }
 
     public static <T extends Entry> List<T> getEntryListFromCursor(@NonNull Cursor cursor, Class<T> type) {
-        if (!cursor.moveToFirst()) throw new IllegalArgumentException("Cursor must be prior initialized");
+        if (!cursor.moveToFirst()) throw new IllegalArgumentException("Cursor must not be empty");
         List<T> entries = new ArrayList<>();
         entries.clear();
         int i = 0;
