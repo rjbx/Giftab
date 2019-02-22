@@ -18,6 +18,7 @@ import com.github.rjbx.givetrack.data.entry.User;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 // TODO: For each getter and setter method, add remote persistence logic
 public final class DatabaseAccessor {
@@ -129,7 +130,8 @@ public final class DatabaseAccessor {
         entries.clear();
         int i = 0;
         do {
-            entries.add(T.getInstance(type));
+            try { entries.add(type.newInstance());
+            } catch (InstantiationException|IllegalAccessException e) { Timber.e(e); }
             cursorRowToEntry(cursor, entries.get(i++));
         } while (cursor.moveToNext());
         return entries;
