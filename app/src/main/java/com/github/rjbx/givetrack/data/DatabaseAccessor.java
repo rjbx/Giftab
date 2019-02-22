@@ -29,8 +29,7 @@ public final class DatabaseAccessor {
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
-        List<Search> entries = new ArrayList<>();
-        getEntryListFromCursor(cursor, Search.class);
+        List<Search> entries = getEntryListFromCursor(cursor, Search.class);
         cursor.close();
         return entries;
     }
@@ -53,8 +52,7 @@ public final class DatabaseAccessor {
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
-        List<Giving> entries = new ArrayList<>();
-        getEntryListFromCursor(cursor, Giving.class);
+        List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
         cursor.close();
         return entries;
     }
@@ -77,8 +75,7 @@ public final class DatabaseAccessor {
         Cursor cursor = context.getContentResolver().query(
                 contentUri, null, null, null, null
         );
-        List<Record> entries = new ArrayList<>();
-        getEntryListFromCursor(cursor, Record.class);
+        List<Record> entries = getEntryListFromCursor(cursor, Record.class);
         cursor.close();
         return entries;
     }
