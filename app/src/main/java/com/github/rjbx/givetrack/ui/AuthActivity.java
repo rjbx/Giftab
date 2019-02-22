@@ -112,6 +112,7 @@ public class AuthActivity extends AppCompatActivity implements
                         Timber.v(firebaseUser.getUid());
                         User activeUser = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
                         if (activeUser == null) activeUser = UserPreferences.generateUserProfile();
+                        if (!mUsers.contains(activeUser)) mUsers.add(activeUser);
                         for (int i = 0; i < mUsers.size(); i++)
                             mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                         User[] userArray = mUsers.toArray(new User[mUsers.size()]);
