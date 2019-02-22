@@ -47,8 +47,7 @@ import java.util.List;
  * Provides a login screen.
  */
 public class AuthActivity extends AppCompatActivity implements
-        DatabaseController,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        DatabaseController {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -84,7 +83,6 @@ public class AuthActivity extends AppCompatActivity implements
      */
     @Override protected void onResume() {
         super.onResume();
-        PreferenceManager.getDefaultSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -94,7 +92,6 @@ public class AuthActivity extends AppCompatActivity implements
      */
     @Override protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
-        PreferenceManager.getDefaultSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
         super.onStop();
     }
 
@@ -134,17 +131,6 @@ public class AuthActivity extends AppCompatActivity implements
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    /**
-     * Launches {@link MainActivity} when all {@link SharedPreferences} have been replaced
-     * {@link #onActivityResult(int, int, Intent)} during sign-in sequence
-     */
-    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-//        if (!key.equals(UserPreferences.LAST_PREFERENCE)) return;
-//        Toast.makeText(AuthActivity.this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, MainActivity.class).setAction(ACTION_SIGN_IN));
-        finish();
     }
 
     @Override
