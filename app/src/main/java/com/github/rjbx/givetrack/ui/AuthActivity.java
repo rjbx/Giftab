@@ -107,12 +107,13 @@ public class AuthActivity extends AppCompatActivity implements
                 mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        // TODO: Determine active user and set others as inactive
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
                         User activeUser = dataSnapshot.child(firebaseUser.getUid()).getValue(User.class);
                         if (activeUser == null) activeUser = UserPreferences.generateUserProfile();
+                        for (int i = 0; i < mUsers.size(); i++)
+                            mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                         DatabaseService.startActionUpdateUser(AuthActivity.this, activeUser);
 
                         // TODO: Migrate persistence logic to accessor methods
