@@ -26,9 +26,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-// TODO: For each getter and setter method, add remote persistence logic
+
+// TODO: A. For each getter and setter method, add remote persistence logic
+// TODO: 1. Migrate Auth remote persistence logic to helper methods
+// TODO: Add fetch methods for each User type
 public final class DatabaseAccessor {
 
+    //TODO: Fetch logic should check local, if empty, fetch from remote, add to local and provide data from local
     static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
@@ -113,6 +117,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
+        // TODO: Persist remotely with updateFirebaseUser
         updateFirebaseUser(entries);
     }
 
@@ -141,6 +146,8 @@ public final class DatabaseAccessor {
         return entries;
     }
 
+    // TODO: Genericize for use with all entry types
+    // TODO: Add callback interface to implement from AuthActivity and method parameter for defining OnCompleteListener
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */

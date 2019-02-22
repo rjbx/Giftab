@@ -42,6 +42,7 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
+// TODO: Add fetch methods for each User type
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */

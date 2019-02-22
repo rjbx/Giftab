@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Disable remote persistence for guests
+// TODO: Replace remote database interactions with DatabaseService calls
 /**
  * Provides a login screen.
  */
@@ -104,6 +105,7 @@ public class AuthActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGN_IN) {
             if (resultCode == RESULT_OK) {
+                //TODO: Migrate to DatabaseAccessors as part of User fetch logic
                 mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
