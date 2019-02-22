@@ -28,13 +28,8 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Search> entries = new ArrayList<>();
-        if (cursor != null) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                entries.add(new Search());
-            }
-            cursorToEntries(cursor, entries);
-            cursor.close();
-        }
+        cursorToEntries(cursor, entries);
+        cursor.close();
         return entries;
     }
 
@@ -57,13 +52,8 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Giving> entries = new ArrayList<>();
-        if (cursor != null) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                entries.add(new Giving());
-            }
-            cursorToEntries(cursor, entries);
-            cursor.close();
-        }
+        cursorToEntries(cursor, entries);
+        cursor.close();
         return entries;
     }
 
@@ -86,13 +76,8 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Record> entries = new ArrayList<>();
-        if (cursor != null) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                entries.add(new Record());
-            }
-            cursorToEntries(cursor, entries);
-            cursor.close();
-        }
+        cursorToEntries(cursor, entries);
+        cursor.close();
         return entries;
     }
 
@@ -115,13 +100,8 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<User> entries = new ArrayList<>();
-        if (cursor != null) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                entries.add(new User());
-            }
-            cursorToEntries(cursor, entries);
-            cursor.close();
-        }
+        cursorToEntries(cursor, entries);
+        cursor.close();
         return entries;
     }
 
@@ -144,10 +124,12 @@ public final class DatabaseAccessor {
     }
 
     public static <T extends Entry> void cursorToEntries(Cursor cursor, List<T> entries) {
-        // TODO: Initialize ArrayList elements
         if (cursor == null || !cursor.moveToFirst()) return;
+        entries.clear();
         int i = 0;
-        do cursorRowToEntry(cursor, entries.get(i++));
-        while (cursor.moveToNext());
+        do {
+            entries.add(T.getInstance());
+            cursorRowToEntry(cursor, entries.get(i++));
+        } while (cursor.moveToNext());
     }
 }

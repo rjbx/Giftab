@@ -18,33 +18,34 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  */
 @IgnoreExtraProperties public class User implements Entry, Parcelable, Cloneable {
 
-    private String uid;
-    private boolean active;
-    private String email;
-    private String birthdate;
-    private String gender;
-    private int theme;
-    private String donation;
-    private String magnitude;
-    private String term;
-    private String city;
-    private String state;
-    private String zip;
-    private String minrating;
-    private boolean filter;
-    private String searchSort;
-    private String searchOrder;
-    private String recordSort;
-    private String recordOrder;
-    private String pages;
-    private String rows;
-    private boolean focus;
-    private String company;
-    private boolean viewtrack;
-    private boolean searchguide;
-    private boolean historical;
-    private long anchor;
-    private long timetrack;
+    User user = new User();
+    private boolean active = false;
+    private long anchor = 0;
+    private String birthdate = "0/0/2000";
+    private String city = "";
+    private String company = "";
+    private String donation = "";
+    private String email = "";
+    private boolean filter = true;
+    private boolean focus = false;
+    private String gender = "";
+    private boolean historical = false;
+    private String magnitude = "";
+    private String minrating = "";
+    private String pages = "";
+    private String recordOrder = "";
+    private String recordSort = "";
+    private String rows = "";
+    private String searchOrder = "";
+    private String searchSort = "";
+    private boolean searchguide = false;
+    private String state = "";
+    private String term = "";
+    private int theme = 0;
+    private long timetrack = 0;
+    private String uid = "";
+    private boolean viewtrack = false;
+    private String zip = "";
 
     @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
