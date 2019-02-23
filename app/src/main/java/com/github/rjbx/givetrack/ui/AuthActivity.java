@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,6 +28,8 @@ import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,7 +45,7 @@ import java.util.List;
  * Provides a login screen.
  */
 public class AuthActivity extends AppCompatActivity implements
-        DatabaseController {
+        DatabaseController, OnCompleteListener {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -104,7 +107,7 @@ public class AuthActivity extends AppCompatActivity implements
                 // FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of whether user existed in FirebaseDatabase prior)
                 //TODO: FirebaseDatabase get Users; if FirebaseUser is not present in FirebaseDatabase, addFirebaseUserToRealtimeDatabase after convertFirebaseToEntryUser; then set active status for all FirebaseDatabase Users
                 User user = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
-                DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user);
+                DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user).addOnCompleteListener(this);
 
                 //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
 
@@ -124,8 +127,7 @@ public class AuthActivity extends AppCompatActivity implements
 ////                        DatabaseService.startActionUpdateUser(AuthActivity.this, userArray);
 //                        DatabaseAccessor.updateFirebaseUser(userArray);
 ////                        mFirebaseUpdated = true;
-////                        startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
-////                        finish();
+
 ////                    }
 //                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { Timber.e(databaseError.getMessage()); }
 //                });
@@ -141,13 +143,9 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void onComplete(@NonNull Task task) {
+        startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
+        finish();
     }
 
     @Override
