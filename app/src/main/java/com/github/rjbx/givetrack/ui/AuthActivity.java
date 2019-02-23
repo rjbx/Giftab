@@ -109,7 +109,7 @@ public class AuthActivity extends AppCompatActivity implements
                 //TODO: Migrate to DatabaseAccessors as part of User fetch logic
                 mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
                     @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (!mFirebaseUpdated) return;
+                        if (mFirebaseUpdated) return;
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
