@@ -57,6 +57,7 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
     private boolean mPendingResult;
+    private boolean mFirebaseUpdated;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -107,8 +108,8 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 //TODO: Migrate to DatabaseAccessors as part of User fetch logic
                 mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!mFirebaseUpdated) return;
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null) return;
                         Timber.v(firebaseUser.getUid());
@@ -120,6 +121,7 @@ public class AuthActivity extends AppCompatActivity implements
                         User[] userArray = mUsers.toArray(new User[mUsers.size()]);
                         DatabaseService.startActionUpdateUser(AuthActivity.this, userArray);
                         DatabaseAccessor.updateFirebaseUser(userArray);
+                        mFirebaseUpdated = true;
                         startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
                     }
