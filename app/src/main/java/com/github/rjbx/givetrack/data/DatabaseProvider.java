@@ -89,7 +89,7 @@ public class DatabaseProvider extends ContentProvider {
         db.beginTransaction();
         try {
             for (ContentValues value : values) {
-                long _id = db.insert(tableName, null, value);
+                long _id = db.insertWithOnConflict(tableName, null, value, SQLiteDatabase.CONFLICT_REPLACE);
                 if (_id != -1) rowsInserted++;
             }
             db.setTransactionSuccessful();
@@ -121,7 +121,7 @@ public class DatabaseProvider extends ContentProvider {
         int rowsInserted = 0;
         db.beginTransaction();
         try {
-            long _id = db.insert(tableName, null, values);
+            long _id = db.insertWithOnConflict(tableName, null, values, SQLiteDatabase.CONFLICT_REPLACE);
             if (_id != -1) rowsInserted++;
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
