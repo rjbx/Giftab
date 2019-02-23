@@ -21,7 +21,11 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -164,9 +168,16 @@ public final class DatabaseAccessor {
         Task<Void> task;
         if (users.length == 1) {
             User user = users[0];
-            user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
-            user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
-            return firebaseDatabase.getReference("users").child(user.getUid()).updateChildren(user.toParameterMap());
+            DatabaseReference reference = firebaseDatabase.getReference("users");
+            reference.addValueEventListener(new ValueEventListener() {
+                @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
+            });
+
+            return reference.child(user.getUid()).updateChildren(user.toParameterMap());
         } else {
             Map<String, Object> userMap = new HashMap<>();
             for (User user: users) userMap.put(user.getUid(), user);
@@ -182,6 +193,7 @@ public final class DatabaseAccessor {
         User user = User.getDefault();
         user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
         user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+        user.setActive(true);
         return user;
     }
 }

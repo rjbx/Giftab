@@ -33,7 +33,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,8 @@ import java.util.List;
 // TODO: Disable remote persistence for guests
 // TODO: Replace remote database interactions with DatabaseService calls
 // TODO: Authentication logic to be migrated to DatabaseAccessor fetch method  accessed from DatabaseService from UI thread
+
+// TODO: OR Because Authentication logic is not database logic, persist FirebaseUser to local from DatabaseService > DatabaseAccessor where persisted to remote
 /**
  * Provides a login screen.
  */
@@ -102,11 +106,12 @@ public class AuthActivity extends AppCompatActivity implements
     @Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGN_IN) {
+            // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
 
-                // FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of whether user existed in FirebaseDatabase prior)
-                //TODO: FirebaseDatabase get Users; if FirebaseUser is not present in FirebaseDatabase, addFirebaseUserToRealtimeDatabase after convertFirebaseToEntryUser; then set active status for all FirebaseDatabase Users
                 User user = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
+
+                // TODO Set active status for all FirebaseDatabase Users
                 DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user).addOnCompleteListener(this);
 
                 //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
@@ -127,10 +132,10 @@ public class AuthActivity extends AppCompatActivity implements
 ////                        DatabaseService.startActionUpdateUser(AuthActivity.this, userArray);
 //                        DatabaseAccessor.updateFirebaseUser(userArray);
 ////                        mFirebaseUpdated = true;
-
-////                    }
+//
+//////                    }
 //                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { Timber.e(databaseError.getMessage()); }
-//                });
+////                });
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
