@@ -137,10 +137,21 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     public void onLoadFinished(int id, Cursor cursor) {
+        if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
-        if (!mPendingResult) handleAction();
+        handleAction();
     }
 
     @Override
