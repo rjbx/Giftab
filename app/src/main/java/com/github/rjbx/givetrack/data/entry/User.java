@@ -180,12 +180,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.timetrack = timetrack;
     }
 
-    @Exclude public String getUid() {
-        return uid;
-    }
-    @Exclude public void setUid(String uid) {
-        this.uid = uid;
-    }
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
     public boolean getActive() { return active; }
     public void setActive(boolean active) { this.active = active; }
     public String getEmail() {
