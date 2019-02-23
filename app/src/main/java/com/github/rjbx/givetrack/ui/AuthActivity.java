@@ -20,6 +20,7 @@ import com.firebase.ui.auth.IdpResponse;
 
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseController;
@@ -100,10 +101,13 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             if (resultCode == RESULT_OK) {
 
-                //TODO: FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of whether user existed in FirebaseDatabase prior)
+                // FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of whether user existed in FirebaseDatabase prior)
                 //TODO: FirebaseDatabase get Users; if FirebaseUser is not present in FirebaseDatabase, addFirebaseUserToRealtimeDatabase after convertFirebaseToEntryUser; then set active status for all FirebaseDatabase Users
+                User user = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
+                DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user);
+
                 //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
-//                mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
+// mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
 //                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                        if (mFirebaseUpdated) return;
 //                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();

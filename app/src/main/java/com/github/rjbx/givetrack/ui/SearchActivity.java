@@ -131,7 +131,6 @@ public class SearchActivity extends AppCompatActivity implements
         return true;
     }
 
-    // TODO: Bundle active User to ConfigActivty launching Intent
     /**
      * Defines behavior onClick of each MenuItem.
      */

@@ -62,7 +62,7 @@ import java.util.Date;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
-//TODO: Implement toggle for type attribute and launcher for
+//TODO: Implement toggle for type attribute and launcher for memo
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
@@ -134,7 +134,6 @@ public class RecordActivity extends AppCompatActivity implements
         return true;
     }
 
-    // TODO: Bundle active User to ConfigActivty launching Intent
     /**
      * Defines behavior onClick of each MenuItem.
      */
