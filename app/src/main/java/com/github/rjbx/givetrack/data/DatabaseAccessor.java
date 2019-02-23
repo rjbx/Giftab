@@ -18,6 +18,7 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -155,21 +156,21 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static void addFirebaseUserToRealtimeDatabase(User... users) {
+    public static Task<Void> addFirebaseUserToRealtimeDatabase(User... users) {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
 
+        Task<Void> task;
         if (users.length == 1) {
             User user = users[0];
             user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
             user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
-            firebaseDatabase.getReference("users").child(user.getUid())
-                    .updateChildren(user.toParameterMap());
+            return firebaseDatabase.getReference("users").child(user.getUid()).updateChildren(user.toParameterMap());
         } else {
             Map<String, Object> userMap = new HashMap<>();
             for (User user: users) userMap.put(user.getUid(), user);
-            firebaseDatabase.getReference("users").updateChildren(userMap);
+            return firebaseDatabase.getReference("users").updateChildren(userMap);
         }
     }
 

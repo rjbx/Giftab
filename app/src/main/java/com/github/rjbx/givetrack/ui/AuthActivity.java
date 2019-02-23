@@ -107,6 +107,8 @@ public class AuthActivity extends AppCompatActivity implements
                 DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user);
 
                 //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
+
+
 // mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
 //                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                        if (mFirebaseUpdated) return;
