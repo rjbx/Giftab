@@ -153,6 +153,10 @@ public class AuthActivity extends AppCompatActivity implements
         if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
+        if (mUsers.isEmpty()) {
+            // TODO DatabaseAccessor.fetchUser()
+            return;
+        }
         handleAction();
     }
 

@@ -102,6 +102,10 @@ public final class DatabaseAccessor {
         context.getContentResolver().delete(contentUri, null, null);
     }
 
+    static void fetchUser(Context context) {
+        // TODO if (entries.isEmpty()) User user = convertFirebaseUser(); addUser(context, user.getUid());
+    }
+
     static List<User> getUser(Context context, @Nullable String id) {
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
