@@ -121,8 +121,8 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        // TODO: Persist remotely with updateFirebaseUser
-        updateFirebaseUser(entries);
+        // TODO: Persist remotely with addFirebaseUserToRealtimeDatabase
+        addFirebaseUserToRealtimeDatabase(entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -155,7 +155,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static void updateFirebaseUser(User... users) {
+    public static void addFirebaseUserToRealtimeDatabase(User... users) {
 
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -171,5 +171,16 @@ public final class DatabaseAccessor {
             for (User user: users) userMap.put(user.getUid(), user);
             firebaseDatabase.getReference("users").updateChildren(userMap);
         }
+    }
+
+    /**
+     * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
+     */
+    public static User convertFirebaseToEntryUser(FirebaseUser firebaseUser) {
+
+        User user = User.getDefault();
+        user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
+        user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+        return user;
     }
 }
