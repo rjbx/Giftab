@@ -158,9 +158,7 @@ public final class DatabaseAccessor {
     public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        String path = "users";
-        if (entryType.isInstance(Company.class))
-            path = String.format("users/%s/%s", entries[0].getUid(), entryType.getSimpleName().toLowerCase());
+        String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference reference = firebaseDatabase.getReference(path);
 
         if (entries.length == 1) {

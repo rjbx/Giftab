@@ -36,8 +36,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private boolean filter;
     private String searchSort;
     private String searchOrder;
-    private List<Giving> giving;
-    private List<Record> record;
     private String recordSort;
     private String recordOrder;
     private String pages;
@@ -72,8 +70,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          filter = source.readInt() == 1;
          searchSort = source.readString();
          searchOrder = source.readString();
-         source.readTypedList(giving, Giving.CREATOR);
-         source.readTypedList(record, Record.CREATOR);
          recordSort = source.readString();
          recordOrder = source.readString();
          pages = source.readString();
@@ -104,8 +100,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          dest.writeInt(filter ? 1 : 0);
          dest.writeString(searchSort);
          dest.writeString(searchOrder);
-         dest.writeTypedList(giving);
-         dest.writeTypedList(record);
          dest.writeString(recordSort);
          dest.writeString(recordOrder);
          dest.writeString(pages);
@@ -177,8 +171,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.filter = filter;
         this.searchSort = searchSort;
         this.searchOrder = searchOrder;
-        this.giving = giving;
-        this.record = record;
         this.recordSort = recordSort;
         this.recordOrder = recordOrder;
         this.pages = pages;
@@ -270,10 +262,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setSearchOrder(String searchOrder) {
         this.searchOrder = searchOrder;
     }
-    public List<Giving> getGiving() { return giving; }
-    public void setGiving(List<Giving> giving) { this.giving = giving; }
-    public List<Record> getRecord() { return record; }
-    public void setRecord(List<Record> record) { this.record = record; }
     public String getRecordSort() {
         return recordSort;
     }
@@ -353,8 +341,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         map.put("filter", filter);
         map.put("searchSort", searchSort);
         map.put("searchOrder", searchOrder);
-        map.put("giving", giving);
-        map.put("record", record);
         map.put("recordSort", recordSort);
         map.put("recordOrder", recordOrder);
         map.put("pages", pages);
@@ -386,8 +372,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         filter = (boolean) map.get("filter");
         searchSort = (String) map.get("searchSort");
         searchOrder = (String) map.get("searchOrder");
-        giving = (List<Giving>) map.get("giving");
-        record = (List<Record>) map.get("record");
         recordSort = (String) map.get("recordSort");
         recordOrder = (String) map.get("recordOrder");
         pages = (String) map.get("pages");
@@ -488,8 +472,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.filter = user.filter;
         this.searchSort = user.searchSort;
         this.searchOrder = user.searchOrder;
-        this.giving = user.giving;
-        this.record = user.record;
         this.recordSort = user.recordSort;
         this.recordOrder = user.recordOrder;
         this.pages = user.pages;
@@ -516,12 +498,10 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.filter = true;
         user.focus = false;
         user.gender = "";
-        user.giving = new ArrayList<>();
         user.historical = false;
         user.magnitude = "";
         user.minrating = "";
         user.pages = "";
-        user.record = new ArrayList<>();
         user.recordOrder = "";
         user.recordSort = "";
         user.rows = "";
