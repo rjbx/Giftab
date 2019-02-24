@@ -405,15 +405,13 @@ public class DatabaseService extends IntentService {
 
         URL url = getUrl(builder.build());
         NETWORK_IO.execute(() -> {
+            String uid = "";
+            for (User user : DatabaseAccessor.getUser(this, null)) if (user.getActive()) uid = user.getUid();
+
             // Retrieve data
             String response = requestResponseFromUrl(url);
             if (response == null) return;
-            Search[] parsedResponse = parseSearches(response, single);
-
-
-            String uid = "";
-            for (User user : DatabaseAccessor.getUser(this, null)) if (user.getActive()) uid = user.getUid();
-            for (int i = 0; i < parsedResponse.length; i++) parsedResponse[i].setUid(uid);
+            Search[] parsedResponse = parseSearches(response, uid, single);
 
             // Store data
             DatabaseAccessor.removeSearch(this, null);
@@ -943,7 +941,7 @@ public class DatabaseService extends IntentService {
      * This method parses JSON String of data API response and returns array of {@link Search}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search[] parseSearches(@NonNull String jsonResponse, boolean single) {
+    private static Search[] parseSearches(@NonNull String jsonResponse, String uid, boolean single) {
 
         Search[] searches = null;
         try {
@@ -972,7 +970,7 @@ public class DatabaseService extends IntentService {
      * This method parses JSONObject of JSONArray and returns {@link Search}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search parseSearch(JSONObject charityObject) throws JSONException {
+    private static Search parseSearch(JSONObject charityObject, String uid) throws JSONException {
 
         JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
         String ein = charityObject.getString(FetchContract.KEY_EIN);
@@ -985,7 +983,7 @@ public class DatabaseService extends IntentService {
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Search(ein, "", name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+        return new Search(ein, uid, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
     }
 
     /**
