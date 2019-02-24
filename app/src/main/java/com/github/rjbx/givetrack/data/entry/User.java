@@ -104,11 +104,11 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          dest.writeString(recordOrder);
          dest.writeString(pages);
          dest.writeString(rows);
-         dest.writeInt(focus ? 0 : 1);
+         dest.writeInt(focus ? 1 : 0);
          dest.writeString(company);
-         dest.writeInt(viewtrack ? 0 : 1);
-         dest.writeInt(searchguide ? 0 : 1);
-         dest.writeInt(historical ? 0 : 1);
+         dest.writeInt(viewtrack ? 1 : 0);
+         dest.writeInt(searchguide ? 1 : 0);
+         dest.writeInt(historical ? 1 : 0);
          dest.writeLong(anchor);
          dest.writeLong(timetrack);
     }
@@ -142,8 +142,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             boolean filter,
             String searchSort,
             String searchOrder,
-            List<Giving> giving,
-            List<Record> record,
             String recordSort,
             String recordOrder,
             String pages,
