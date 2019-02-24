@@ -36,6 +36,7 @@ public final class DatabaseContract {
                 BASE_URI.buildUpon().appendPath(PATH_RECORD_TABLE).build();
 
         public static final String COLUMN_EIN = "ein";
+        public static final String COLUMN_UID = "user";
         public static final String COLUMN_CHARITY_NAME = "charityName";
         public static final String COLUMN_LOCATION_STREET = "locationStreet";
         public static final String COLUMN_LOCATION_DETAIL = "locationDetail";
@@ -54,22 +55,23 @@ public final class DatabaseContract {
         public static final String COLUMN_DONATION_TIME = "donationTime";
 
         public static final int INDEX_EIN = 0;
-        public static final int INDEX_CHARITY_NAME = 1;
-        public static final int INDEX_LOCATION_STREET = 2;
-        public static final int INDEX_LOCATION_DETAIL = 3;
-        public static final int INDEX_LOCATION_CITY = 4;
-        public static final int INDEX_LOCATION_STATE = 5;
-        public static final int INDEX_LOCATION_ZIP = 6;
-        public static final int INDEX_HOMEPAGE_URL = 7;
-        public static final int INDEX_NAVIGATOR_URL = 8;
-        public static final int INDEX_PHONE_NUMBER = 9;
-        public static final int INDEX_EMAIL_ADDRESS = 10;
-        public static final int INDEX_DONATION_IMPACT = 11;
-        public static final int INDEX_DONATION_TYPE = 12;
-        public static final int INDEX_DONATION_PERCENTAGE = 13;
-        public static final int INDEX_DONATION_NOTES = 13;
-        public static final int INDEX_DONATION_FREQUENCY = 14;
-        public static final int INDEX_DONATION_TIME = 15;
+        public static final int INDEX_USER = 1;
+        public static final int INDEX_CHARITY_NAME = 2;
+        public static final int INDEX_LOCATION_STREET = 3;
+        public static final int INDEX_LOCATION_DETAIL = 4;
+        public static final int INDEX_LOCATION_CITY = 5;
+        public static final int INDEX_LOCATION_STATE = 6;
+        public static final int INDEX_LOCATION_ZIP = 7;
+        public static final int INDEX_HOMEPAGE_URL = 8;
+        public static final int INDEX_NAVIGATOR_URL = 9;
+        public static final int INDEX_PHONE_NUMBER = 10;
+        public static final int INDEX_EMAIL_ADDRESS = 11;
+        public static final int INDEX_DONATION_IMPACT = 12;
+        public static final int INDEX_DONATION_TYPE = 13;
+        public static final int INDEX_DONATION_PERCENTAGE = 14;
+        public static final int INDEX_DONATION_NOTES = 14;
+        public static final int INDEX_DONATION_FREQUENCY = 15;
+        public static final int INDEX_DONATION_TIME = 16;
     }
 
     public static final class UserEntry implements BaseColumns {

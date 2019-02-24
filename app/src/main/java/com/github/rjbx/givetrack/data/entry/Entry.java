@@ -9,4 +9,5 @@ public interface Entry {
     ContentValues toContentValues();
     void fromContentValues(ContentValues values);
     Map<String, Object> toParameterMap();
+    String getUid();
 }

@@ -122,7 +122,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        addEntryToRealtimeDatabase(User.class, entries[0].getUid(), entries);
+        addEntryToRealtimeDatabase(User.class, entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -155,7 +155,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, String uid, T... entries) {
+    public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference reference;
@@ -165,10 +165,10 @@ public final class DatabaseAccessor {
 
         if (entries.length == 1) {
             T entry = entries[0];
-            return reference.child(uid).updateChildren(entry.toParameterMap());
+            return reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
             Map<String, Object> userMap = new HashMap<>();
-            for (T entry: entries) userMap.put(uid, entry);
+            for (T entry: entries) userMap.put(entry.getUid(), entry);
             return reference.updateChildren(userMap);
         }
     }

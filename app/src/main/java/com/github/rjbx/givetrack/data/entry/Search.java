@@ -15,6 +15,7 @@ import java.util.Map;
 public class Search implements Company, Parcelable, Cloneable {
 
     private String ein;
+    private String uid;
     private String name;
     private String locationStreet;
     private String locationDetail;
@@ -39,6 +40,7 @@ public class Search implements Company, Parcelable, Cloneable {
 
     Search(Parcel source) {
         ein = source.readString();
+        uid = source.readString();
         name = source.readString();
         locationStreet = source.readString();
         locationDetail = source.readString();
@@ -55,6 +57,7 @@ public class Search implements Company, Parcelable, Cloneable {
 
     @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(ein);
+        dest.writeString(uid);
         dest.writeString(name);
         dest.writeString(locationStreet);
         dest.writeString(locationDetail);
@@ -81,6 +84,7 @@ public class Search implements Company, Parcelable, Cloneable {
     public Search(Search search) {
         this.ein = search.ein;
         this.name = search.name;
+        this.uid = search.uid;
         this.locationStreet = search.locationStreet;
         this.locationDetail = search.locationDetail;
         this.locationCity = search.locationCity;
@@ -99,6 +103,7 @@ public class Search implements Company, Parcelable, Cloneable {
      */
     public Search(
             String ein,
+            String uid,
             String name,
             String locationStreet,
             String locationDetail,
@@ -112,6 +117,7 @@ public class Search implements Company, Parcelable, Cloneable {
             String impact,
             int type) {
         this.ein = ein;
+        this.uid = uid;
         this.name = name;
         this.locationStreet = locationStreet;
         this.locationDetail = locationDetail;
@@ -132,6 +138,8 @@ public class Search implements Company, Parcelable, Cloneable {
     public void setEin(String ein) {
         this.ein = ein;
     }
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
     public String getName() {
         return name;
     }
@@ -208,6 +216,7 @@ public class Search implements Company, Parcelable, Cloneable {
     public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("ein", ein);
+        map.put("uid", uid);
         map.put("name", name );
         map.put("locationStreet", locationStreet);
         map.put("locationDetail", locationDetail);
@@ -227,6 +236,7 @@ public class Search implements Company, Parcelable, Cloneable {
     public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
         values.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
@@ -245,6 +255,7 @@ public class Search implements Company, Parcelable, Cloneable {
     @Exclude
     public void fromContentValues(ContentValues values) {
         this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
+        this.uid = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_UID);
         this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
         this.locationStreet = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
         this.locationDetail = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
