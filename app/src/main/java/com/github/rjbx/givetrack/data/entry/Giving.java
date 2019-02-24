@@ -59,6 +59,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
      */
     public Giving(
             String ein,
+            String uid,
             String name,
             String locationStreet,
             String locationDetail,
@@ -75,6 +76,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
             String percent) {
         super(
                 ein,
+                uid,
                 name,
                 locationStreet,
                 locationDetail,

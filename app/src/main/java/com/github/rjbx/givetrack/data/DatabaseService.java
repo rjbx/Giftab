@@ -410,6 +410,11 @@ public class DatabaseService extends IntentService {
             if (response == null) return;
             Search[] parsedResponse = parseSearches(response, single);
 
+
+            String uid = "";
+            for (User user : DatabaseAccessor.getUser(this, null)) if (user.getActive()) uid = user.getUid();
+            for (int i = 0; i < parsedResponse.length; i++) parsedResponse[i].setUid(uid);
+
             // Store data
             DatabaseAccessor.removeSearch(this, null);
             DatabaseAccessor.addSearch(this, parsedResponse);
@@ -980,7 +985,7 @@ public class DatabaseService extends IntentService {
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Search(ein, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+        return new Search(ein, "", name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
     }
 
     /**

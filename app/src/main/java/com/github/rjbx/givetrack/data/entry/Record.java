@@ -57,6 +57,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
      */
     public Record(
              String ein,
+             String uid,
              String name,
              String locationStreet,
              String locationDetail,
@@ -73,6 +74,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              long time) {
         super(
                 ein,
+                uid,
                 name,
                 locationStreet,
                 locationDetail,
