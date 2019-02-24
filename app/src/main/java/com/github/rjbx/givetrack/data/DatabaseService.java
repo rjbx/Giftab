@@ -54,16 +54,21 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_FETCH_SEARCH = "com.github.rjbx.givetrack.data.action.FETCH_SEARCH";
     private static final String ACTION_FETCH_GIVING = "com.github.rjbx.givetrack.data.action.FETCH_GIVING";
     private static final String ACTION_FETCH_RECORD = "com.github.rjbx.givetrack.data.action.FETCH_RECORD";
+    private static final String ACTION_FETCH_USER = "com.github.rjbx.givetrack.data.action.FETCH_USER";
     private static final String ACTION_REMOVE_SEARCH = "com.github.rjbx.givetrack.data.action.REMOVE_SEARCH";
     private static final String ACTION_REMOVE_GIVING = "com.github.rjbx.givetrack.data.action.REMOVE_GIVING";
     private static final String ACTION_REMOVE_RECORD = "com.github.rjbx.givetrack.data.action.REMOVE_RECORD";
+    private static final String ACTION_REMOVE_USER = "com.github.rjbx.givetrack.data.action.REMOVE_USER";     
     private static final String ACTION_RESET_SEARCH = "com.github.rjbx.givetrack.data.action.RESET_SEARCH";
     private static final String ACTION_RESET_GIVING = "com.github.rjbx.givetrack.data.action.RESET_GIVING";
     private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
+    private static final String ACTION_RESET_USER = "com.github.rjbx.givetrack.data.action.RESET_USER";
     private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
     private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
+    private static final String ACTION_RECORD_GIVE = "com.github.rjbx.givetrack.data.action.RECORD_GIVE";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_GIVING";
+    private static final String ACTION_UPDATE_RECORD = "com.github.rjbx.givetrack.data.action.UPDATE_RECORD";
     private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
     private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
     private static final String ACTION_UPDATE_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
@@ -120,7 +125,17 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
-    // TODO: Add FetchUser
+    /**
+     * Starts this service to perform action FetchUser with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchUser(Context context) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_FETCH_USER);
+        context.startService(intent);
+    }
 
     /**
      * Starts this service to perform action GiveSearch with the given parameters.
@@ -136,7 +151,7 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action GiveSearch with the given parameters.
+     * Starts this service to perform action GiveRecord with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
@@ -148,7 +163,18 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
-    // TODO: Add RecordGive
+    /**
+     * Starts this service to perform action RecordGive with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRecordGive(Context context, Giving giving) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_RECORD_GIVE);
+        intent.putExtra(EXTRA_ITEM_VALUES, giving);
+        context.startService(intent);
+    }
 
     /**
      * Starts this service to perform action RemoveSearch with the given parameters.
@@ -189,7 +215,18 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
-    // TODO: Add RemoveUser
+    /**
+     * Starts this service to perform action RemoveUser with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRemoveUser(Context context, String uid) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_REMOVE_USER);
+        intent.putExtra(EXTRA_ITEM_ID, uid);
+        context.startService(intent);
+    }
 
     /**
      * Starts this service to perform action ResetSearch with the given parameters.
@@ -227,11 +264,20 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
-
-
-    // TODO: Add ResetUser and UpdateRecord
     /**
-     * Starts this service to perform action UpdateFrequency with the given parameters.
+     * Starts this service to perform action ResetUser with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionResetUser(Context context) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_RESET_USER);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UpdateGiving with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
@@ -247,7 +293,23 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdateFrequency with the given parameters.
+     * Starts this service to perform action UpdateRecord with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUpdateRecord(Context context, Record... record) {
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UPDATE_RECORD);
+        intent.putExtra(EXTRA_ITEM_VALUES, record);
+        if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
+        else intent.putExtra(EXTRA_ITEM_VALUES, record[0]);
+
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UpdateUser with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
