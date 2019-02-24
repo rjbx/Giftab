@@ -487,7 +487,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     @Exclude public static User getDefault() {
         User user = new User();
         user.active = false;
-        user.anchor = System.currentTimeMillis();
+        user.anchor = 0;
         user.birthdate = "0/0/2000";
         user.city = "";
         user.company = "";
@@ -509,7 +509,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.state = "";
         user.term = "";
         user.theme = 0;
-        user.timetrack = System.currentTimeMillis();
+        user.timetrack = 0;
         user.uid = "";
         user.viewtrack = false;
         user.zip = "";
