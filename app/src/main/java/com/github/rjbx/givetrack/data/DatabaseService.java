@@ -401,6 +401,12 @@ public class DatabaseService extends IntentService {
             case ACTION_GIVE_SEARCH:
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
+            case ACTION_GIVE_RECORD:
+                handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
+            case ACTION_RECORD_GIVE:
+                handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
             case ACTION_REMOVE_SEARCH:
                 final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
                 handleActionRemoveSearch(removeSearchString);
@@ -413,6 +419,9 @@ public class DatabaseService extends IntentService {
                 final long removeRecordLong = intent.getLongExtra(EXTRA_ITEM_ID, -1);
                 handleActionRemoveRecord(removeRecordLong);
                 break;
+            case ACTION_REMOVE_USER:
+                final String uid = intent.getStringExtra(EXTRA_ITEM_ID);
+                handleActionRemoveUser(uid);
             case ACTION_RESET_SEARCH:
                 handleActionResetSearch();
                 break;
@@ -422,15 +431,20 @@ public class DatabaseService extends IntentService {
             case ACTION_RESET_RECORD:
                 handleActionResetRecord();
                 break;
+            case ACTION_RESET_USER:
+                handleActionResetUser();
+                break;
             case ACTION_UPDATE_CONTACT:
                 break;
-
-            // TODO: Add update record
-
             case ACTION_UPDATE_GIVING:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
                 else handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
+            case ACTION_UPDATE_RECORD:
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionUpdateRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
+                else handleActionUpdateRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_UPDATE_USER:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -602,6 +616,8 @@ public class DatabaseService extends IntentService {
 //        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    private void handleActionFetchUser() {}
+
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
      */
@@ -638,6 +654,10 @@ public class DatabaseService extends IntentService {
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
+
+    private void handleActionGiveRecord(Record record) {}
+
+    private void handleActionRecordGive(Giving giving) {}
 
     /**
      * Handles action RemoveSearch in the provided background thread with the provided parameters.
@@ -692,6 +712,8 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    private void handleActionRemoveUser(String uid) {}
+
     /**
      * Handles action ResetSearch in the provided background thread with the provided parameters.
      */
@@ -735,6 +757,8 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
+    private void handleActionResetUser() {}
+
     /**
      * Handles action UpdatePercentages in the provided background thread with the provided parameters.
      */
@@ -751,6 +775,8 @@ public class DatabaseService extends IntentService {
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
+
+    private void handleActionUpdateRecord(Record... records) {}
 
     private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
