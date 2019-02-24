@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -526,7 +525,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                 mLastPosition = position;
                 Bundle arguments = new Bundle();
-                arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSearch());
+                arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSuper());
                 if (sDualPane) showDualPane(arguments);
                 else showSinglePane();
             }

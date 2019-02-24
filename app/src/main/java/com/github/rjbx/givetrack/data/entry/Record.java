@@ -36,7 +36,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     }
 
     Record(Record record) {
-        super(record.getSearch());
+        super(record.getSuper());
         this.memo = record.memo;
         this.time = record.time;
     }
@@ -117,7 +117,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
     }
 
-    @Exclude public Search getSearch() {
+    @Exclude public Search getSuper() {
         return super.clone();
     }
 

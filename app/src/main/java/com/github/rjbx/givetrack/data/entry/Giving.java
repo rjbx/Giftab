@@ -44,7 +44,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     }
 
     private Giving(Giving giving) {
-        super(giving.getSearch());
+        super(giving.getSuper());
         this.frequency = giving.frequency;
         this.percent = giving.percent;
     }
@@ -120,13 +120,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);
     }
 
-    @Exclude public Search getSuper() {
-        return super.clone();
-    }
-
-    @Exclude public Search getSearch() {
-        return super.clone();
-    }
+    @Exclude public Search getSuper() { return super.clone(); }
 
     @Exclude @Override public Giving clone() {
         super.clone();
