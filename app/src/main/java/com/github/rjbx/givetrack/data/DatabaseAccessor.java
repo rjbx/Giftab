@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -158,10 +159,10 @@ public final class DatabaseAccessor {
     public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference reference;
-//        if (entryType.isInstance(Giving.class)) {
-            reference = firebaseDatabase.getReference("users");
-//        }
+        String path = "users";
+        if (entryType.isInstance(Company.class))
+            path = String.format("users/%s/%s", entries[0].getUid(), entryType.getSimpleName().toLowerCase());
+        DatabaseReference reference = firebaseDatabase.getReference(path);
 
         if (entries.length == 1) {
             T entry = entries[0];
