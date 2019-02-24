@@ -39,7 +39,7 @@
       "uid": ""
     }
   },
-  "users" : {
+  "user" : {
     "uid" : {
       "active" : true,
       "anchor" : 0,
