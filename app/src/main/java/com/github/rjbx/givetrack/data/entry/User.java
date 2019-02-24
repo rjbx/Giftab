@@ -87,32 +87,32 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
     private User (Parcel source) {
         uid = source.readString();
-        active = source.readInt() == 1;
         email = source.readString();
+        active = source.readInt() == 1;
         birthdate = source.readString();
         gender = source.readString();
-        theme = source.readInt();
         donation = source.readString();
         magnitude = source.readString();
+        anchor = source.readLong();
+        historical = source.readInt() == 1;
+        timetrack = source.readLong();
+        viewtrack = source.readInt() == 1;
+        theme = source.readInt();
+        searchguide = source.readInt() == 1;
+        focus = source.readInt() == 1;
+        filter = source.readInt() == 1;
+        company = source.readString();
         term = source.readString();
         city = source.readString();
         state = source.readString();
         zip = source.readString();
         minrating = source.readString();
-        filter = source.readInt() == 1;
+        pages = source.readString();
+        rows = source.readString();
         searchSort = source.readString();
         searchOrder = source.readString();
         recordSort = source.readString();
         recordOrder = source.readString();
-        pages = source.readString();
-        rows = source.readString();
-        focus = source.readInt() == 1;
-        company = source.readString();
-        viewtrack = source.readInt() == 1;
-        searchguide = source.readInt() == 1;
-        historical = source.readInt() == 1;
-        anchor = source.readLong();
-        timetrack = source.readLong();
     }
     
     private User(User user) {
@@ -159,13 +159,13 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             boolean active,
             String birthdate,
             String gender,
-            int theme,
             long anchor,
             boolean historical,
             long timetrack,
             boolean viewtrack,
             String donation,
             String magnitude,
+            int theme,
             boolean searchguide,
             boolean focus,
             boolean filter,
