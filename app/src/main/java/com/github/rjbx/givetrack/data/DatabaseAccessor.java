@@ -29,12 +29,9 @@ import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 
-// TODO: A. For each getter and setter method, add remote persistence logic
-// TODO: 1. Migrate Auth remote persistence logic to helper methods
-// TODO: Add fetch methods for each User type
+// TODO: Remotely persist removals
 public final class DatabaseAccessor {
 
-    //TODO: Fetch logic should check local, if empty, fetch from remote, add to local and provide data from local
     static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
@@ -73,6 +70,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
+        addEntryToRealtimeDatabase(Giving.class, entries);
     }
 
     static void removeGiving(Context context, @Nullable String id) {
@@ -96,6 +94,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
+        addEntryToRealtimeDatabase(Record.class, entries);
     }
 
     static void removeRecord(Context context, @Nullable String id) {
