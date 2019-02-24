@@ -52,6 +52,8 @@ public class UserPreferences {
     public static final String LAST_PREFERENCE = KEY_TIMETRACK;
 
     // TODO: Replace by comparing last update time and either pushing to or pulling from remote based on more recently updated database
+    // If last sync to database failed when other succeeded, timestamp for one will be behind that of the other
+    // Compare before updating timestamp and syncing to consider necessary changes
     public static List<String> getCharities(Context context) {
         Set<String> defaultValue = new LinkedHashSet<>();
         defaultValue.add("");

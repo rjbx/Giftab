@@ -112,12 +112,9 @@ public final class DatabaseContract {
         public static final String COLUMN_SEARCHORDER = "orderSearch";
         public static final String COLUMN_RECORDSORT = "sortRecord";
         public static final String COLUMN_RECORDORDER = "orderRecord";
-        public static final String COLUMN_LOCALGIVING = "localGiving";
-        public static final String COLUMN_LOCALRECORD = "localRecord";
-        public static final String COLUMN_LOCALUSER = "localUser";
-        public static final String COLUMN_REMOTEGIVING = "givingRemote";
-        public static final String COLUMN_REMOTERECORD = "remoteRecord";
-        public static final String COLUMN_REMOTEUSER = "remoteUser";
+        public static final String COLUMN_TIMEGIVING = "timeGiving";
+        public static final String COLUMN_TIMERECORD = "timeRecord";
+        public static final String COLUMN_TIMEUSER = "timeUser";
     }
 
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {

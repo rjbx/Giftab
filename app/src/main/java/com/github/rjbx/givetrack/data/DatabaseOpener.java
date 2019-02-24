@@ -134,12 +134,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_SEARCHSORT                 + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_SEARCHORDER                + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_RECORDSORT                 + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_LOCALGIVING                + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_LOCALRECORD                + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_LOCALUSER                  + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_REMOTEGIVING               + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_REMOTERECORD               + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_REMOTEUSER                 + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_TIMEGIVING                 + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_TIMERECORD                 + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_TIMEUSER                   + " INTEGER NOT NULL, "             +
 
                         "UNIQUE (" + UserEntry.COLUMN_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";
