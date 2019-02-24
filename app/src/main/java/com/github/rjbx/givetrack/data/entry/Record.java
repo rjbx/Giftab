@@ -16,7 +16,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     private String memo;
     private long time;
 
-    public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
+    @Exclude  public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
         @Override public Record createFromParcel(Parcel source) {
             return new Record(source);
         }
@@ -25,32 +25,32 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         }
     };
 
-    Record(Parcel source) {
-        super(source);
-        memo = source.readString();
-        time = source.readLong();
-    }
-
-    @Override public void writeToParcel(Parcel dest, int flags) {
+    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(memo);
         dest.writeLong(time);
     }
 
-    @Override public int describeContents() {
+    @Exclude @Override public int describeContents() {
         return 0;
+    }
+
+    Record(Record record) {
+        super(record.getSearch());
+        this.memo = record.memo;
+        this.time = record.time;
+    }
+    
+    Record(Parcel source) {
+        super(source);
+        memo = source.readString();
+        time = source.readLong();
     }
     
     /**
      * Provides default constructor required for object relational mapping.
      */
     public Record() {}
-
-    public Record(Search search, String memo, long time) {
-        super(search);
-        this.memo = memo;
-        this.time = time;
-    }
 
     /**
      * Provides POJO constructor required for object relational mapping.
@@ -92,16 +92,11 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         this.time = time;
     }
 
-    public String getMemo() {
-        return memo;
-    }
+    public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
-    public long getTime() {
-        return time;
-    }
-    public void setTime(long time) {
-        this.time = time;
-    }
+    public long getTime() { return time; }
+    public void setTime(long time) { this.time = time; }
+    
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
@@ -126,8 +121,29 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         return super.clone();
     }
 
-    @Override public Record clone() {
+    @Exclude @Override public Record clone() {
         super.clone();
-        return new Record(this, this.memo, this.time);
+        return new Record(this);
+    }
+    
+    @Exclude public static Record getDefault() {
+        Record record = new Record();
+        record.setEin("");
+        record.setUid("");
+        record.setName("");
+        record.setLocationStreet("");
+        record.setLocationDetail("");
+        record.setLocationCity("");
+        record.setLocationState("");
+        record.setLocationZip("");
+        record.setHomepageUrl("");
+        record.setNavigatorUrl("");
+        record.setPhone("");
+        record.setEmail("");
+        record.setImpact("");
+        record.setType(0);
+        record.memo = "";
+        record.time = 0;
+        return record;
     }
 }

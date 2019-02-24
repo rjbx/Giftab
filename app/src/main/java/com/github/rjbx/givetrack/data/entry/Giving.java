@@ -18,7 +18,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     private String percent;
 
 
-    public static final Parcelable.Creator<Giving> CREATOR = new Parcelable.Creator<Giving>() {
+    @Exclude public static final Parcelable.Creator<Giving> CREATOR = new Parcelable.Creator<Giving>() {
         @Override public Giving createFromParcel(Parcel source) {
             return new Giving(source);
         }
@@ -27,32 +27,32 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         }
     };
 
+    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(frequency);
+        dest.writeString(percent);
+    }
+
+    @Exclude @Override public int describeContents() {
+        return 0;
+    }
+
     Giving(Parcel source) {
         super(source);
         frequency = source.readInt();
         percent = source.readString();
     }
 
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(frequency);
-        dest.writeString(percent);
-    }
-
-    @Override public int describeContents() {
-        return 0;
+    private Giving(Giving giving) {
+        super(giving.getSearch());
+        this.frequency = giving.frequency;
+        this.percent = giving.percent;
     }
 
     /**
      * Provides default constructor required for object relational mapping.
      */
     public Giving() {}
-
-    public Giving(Search search, int frequency, String percent) {
-        super(search);
-        this.frequency = frequency;
-        this.percent = percent;
-    }
 
     /**
      * Provides POJO constructor required for object relational mapping.
@@ -94,20 +94,13 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         this.percent = percent;
     }
 
-    public int getFrequency() {
-        return frequency;
-    }
-    public void setFrequency(int frequency) {
-        this.frequency = frequency;
-    }
+    public int getFrequency() { return frequency; }
+    public void setFrequency(int frequency) { this.frequency = frequency; }
     @Override public double getPercent() { return Double.parseDouble(percent); }
-    @Override public void setPercent(double percent) {
-        this.percent = String.valueOf(percent);
-    }
+    @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
     @Override public Giving getObject() { return this; }
 
-    @Exclude
-    public Map<String, Object> toParameterMap() {
+    @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("frequency", frequency);
         map.put("percent", percent);
@@ -131,8 +124,33 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         return super.clone();
     }
 
-    @Override public Giving clone() {
+    @Exclude public Search getSearch() {
+        return super.clone();
+    }
+
+    @Exclude @Override public Giving clone() {
         super.clone();
-        return new Giving(this, this.frequency, this.percent);
+        return new Giving(this);
+    }
+
+    @Exclude public static Giving getDefault() {
+        Giving giving = new Giving();
+        giving.setEin("");
+        giving.setUid("");
+        giving.setName("");
+        giving.setLocationStreet("");
+        giving.setLocationDetail("");
+        giving.setLocationCity("");
+        giving.setLocationState("");
+        giving.setLocationZip("");
+        giving.setHomepageUrl("");
+        giving.setNavigatorUrl("");
+        giving.setPhone("");
+        giving.setEmail("");
+        giving.setImpact("");
+        giving.setType(0);
+        giving.setFrequency(0);
+        giving.setPercent(0d);
+        return giving;
     }
 }

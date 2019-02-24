@@ -29,7 +29,7 @@ public class Search implements Company, Parcelable, Cloneable {
     private String impact;
     private int type;
 
-    public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
+    @Exclude public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
         @Override public Search createFromParcel(Parcel source) {
             return new Search(source);
         }
@@ -37,6 +37,23 @@ public class Search implements Company, Parcelable, Cloneable {
             return new Search[size];
         }
     };
+
+    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(ein);
+        dest.writeString(uid);
+        dest.writeString(name);
+        dest.writeString(locationStreet);
+        dest.writeString(locationDetail);
+        dest.writeString(locationCity);
+        dest.writeString(locationState);
+        dest.writeString(locationZip);
+        dest.writeString(homepageUrl);
+        dest.writeString(navigatorUrl);
+        dest.writeString(phone);
+        dest.writeString(email);
+        dest.writeString(impact);
+        dest.writeInt(type);
+    }
 
     Search(Parcel source) {
         ein = source.readString();
@@ -54,37 +71,11 @@ public class Search implements Company, Parcelable, Cloneable {
         impact = source.readString();
         type = source.readInt();
     }
-
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(ein);
-        dest.writeString(uid);
-        dest.writeString(name);
-        dest.writeString(locationStreet);
-        dest.writeString(locationDetail);
-        dest.writeString(locationCity);
-        dest.writeString(locationState);
-        dest.writeString(locationZip);
-        dest.writeString(homepageUrl);
-        dest.writeString(navigatorUrl);
-        dest.writeString(phone);
-        dest.writeString(email);
-        dest.writeString(impact);
-        dest.writeInt(type);
-    }
-
-    @Override public int describeContents() {
-        return 0;
-    }
-
-    /**
-     * Provides default constructor required for object relational mapping.
-     */
-    public Search() {}
-
-    public Search(Search search) {
+    
+    Search(Search search) {
         this.ein = search.ein;
-        this.name = search.name;
         this.uid = search.uid;
+        this.name = search.name;
         this.locationStreet = search.locationStreet;
         this.locationDetail = search.locationDetail;
         this.locationCity = search.locationCity;
@@ -97,6 +88,15 @@ public class Search implements Company, Parcelable, Cloneable {
         this.impact = search.impact;
         this.type = search.type;
     }
+
+    @Exclude @Override public int describeContents() {
+        return 0;
+    }
+
+    /**
+     * Provides default constructor required for object relational mapping.
+     */
+    public Search() {}
 
     /**
      * Provides POJO constructor required for object relational mapping.
@@ -131,7 +131,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.impact = impact;
         this.type = type;
     }
-    
+
     public String getEin() {
         return ein;
     }
@@ -212,8 +212,8 @@ public class Search implements Company, Parcelable, Cloneable {
     public void setType(int type) {
         this.type = type;
     }
-    @Exclude
-    public Map<String, Object> toParameterMap() {
+    
+    @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("ein", ein);
         map.put("uid", uid);
@@ -232,8 +232,7 @@ public class Search implements Company, Parcelable, Cloneable {
         return map;
     }
 
-    @Exclude
-    public ContentValues toContentValues() {
+    @Exclude public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
         values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
@@ -252,8 +251,7 @@ public class Search implements Company, Parcelable, Cloneable {
         return values;
     }
 
-    @Exclude
-    public void fromContentValues(ContentValues values) {
+    @Exclude public void fromContentValues(ContentValues values) {
         this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
         this.uid = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_UID);
         this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
@@ -270,11 +268,30 @@ public class Search implements Company, Parcelable, Cloneable {
         this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
     }
 
-    @Override public Search clone() {
+    @Exclude @Override public Search clone() {
         Search clone  = new Search(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
+    }
+
+    @Exclude public static Search getDefault() {
+        Search search = new Search();
+        search.ein = "";
+        search.name = "";
+        search.uid = "";
+        search.locationStreet = "";
+        search.locationDetail = "";
+        search.locationCity = "";
+        search.locationState = "";
+        search.locationZip = "";
+        search.homepageUrl = "";
+        search.navigatorUrl = "";
+        search.phone = "";
+        search.email = "";
+        search.impact = "";
+        search.type = 0;
+        return search;
     }
 }

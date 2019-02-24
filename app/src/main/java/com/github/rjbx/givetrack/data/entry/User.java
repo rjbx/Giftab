@@ -7,9 +7,7 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
@@ -53,36 +51,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         @Override public User[] newArray(int size) { return new User[size]; }
     };
 
-    private User (Parcel source) {
-         uid = source.readString();
-         active = source.readInt() == 1;
-         email = source.readString();
-         birthdate = source.readString();
-         gender = source.readString();
-         theme = source.readInt();
-         donation = source.readString();
-         magnitude = source.readString();
-         term = source.readString();
-         city = source.readString();
-         state = source.readString();
-         zip = source.readString();
-         minrating = source.readString();
-         filter = source.readInt() == 1;
-         searchSort = source.readString();
-         searchOrder = source.readString();
-         recordSort = source.readString();
-         recordOrder = source.readString();
-         pages = source.readString();
-         rows = source.readString();
-         focus = source.readInt() == 1;
-         company = source.readString();
-         viewtrack = source.readInt() == 1;
-         searchguide = source.readInt() == 1;
-         historical = source.readInt() == 1;
-         anchor = source.readLong();
-         timetrack = source.readLong();
-    }
-
     @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
          dest.writeString(uid);
          dest.writeInt(active ? 1 : 0);
@@ -115,6 +83,66 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
     @Exclude @Override public int describeContents() {
         return 0;
+    }
+
+    private User (Parcel source) {
+        uid = source.readString();
+        active = source.readInt() == 1;
+        email = source.readString();
+        birthdate = source.readString();
+        gender = source.readString();
+        theme = source.readInt();
+        donation = source.readString();
+        magnitude = source.readString();
+        term = source.readString();
+        city = source.readString();
+        state = source.readString();
+        zip = source.readString();
+        minrating = source.readString();
+        filter = source.readInt() == 1;
+        searchSort = source.readString();
+        searchOrder = source.readString();
+        recordSort = source.readString();
+        recordOrder = source.readString();
+        pages = source.readString();
+        rows = source.readString();
+        focus = source.readInt() == 1;
+        company = source.readString();
+        viewtrack = source.readInt() == 1;
+        searchguide = source.readInt() == 1;
+        historical = source.readInt() == 1;
+        anchor = source.readLong();
+        timetrack = source.readLong();
+    }
+    
+    private User(User user) {
+        this.uid = user.uid;
+        this.active = user.active;
+        this.email = user.email;
+        this.birthdate = user.birthdate;
+        this.gender = user.gender;
+        this.theme = user.theme;
+        this.donation = user.donation;
+        this.magnitude = user.magnitude;
+        this.term = user.term;
+        this.city = user.city;
+        this.state = user.state;
+        this.zip = user.zip;
+        this.minrating = user.minrating;
+        this.filter = user.filter;
+        this.searchSort = user.searchSort;
+        this.searchOrder = user.searchOrder;
+        this.recordSort = user.recordSort;
+        this.recordOrder = user.recordOrder;
+        this.pages = user.pages;
+        this.rows = user.rows;
+        this.focus = user.focus;
+        this.company = user.company;
+        this.viewtrack = user.viewtrack;
+        this.searchguide = user.searchguide;
+        this.historical = user.historical;
+        this.anchor = user.anchor;
+        this.timetrack = user.timetrack;
     }
 
     /**
@@ -446,42 +474,11 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     }
 
     @Exclude @Override public User clone() {
-        User clone  = fromUser(this);
+        User clone  = new User(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
-    }
-
-    @Exclude public User fromUser(User user) {
-        this.uid = user.uid;
-        this.active = user.active;
-        this.email = user.email;
-        this.birthdate = user.birthdate;
-        this.gender = user.gender;
-        this.theme = user.theme;
-        this.magnitude = user.magnitude;
-        this.donation = user.donation;
-        this.term = user.term;
-        this.city = user.city;
-        this.state = user.state;
-        this.zip = user.zip;
-        this.minrating = user.minrating;
-        this.filter = user.filter;
-        this.searchSort = user.searchSort;
-        this.searchOrder = user.searchOrder;
-        this.recordSort = user.recordSort;
-        this.recordOrder = user.recordOrder;
-        this.pages = user.pages;
-        this.rows = user.rows;
-        this.focus = user.focus;
-        this.company = user.company;
-        this.viewtrack = user.viewtrack;
-        this.searchguide = user.searchguide;
-        this.historical = user.historical;
-        this.anchor = user.anchor;
-        this.timetrack = user.timetrack;
-        return this;
     }
     
     @Exclude public static User getDefault() {
