@@ -100,7 +100,6 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
 
                 User activeUser = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
-                // TODO Set active status for all FirebaseDatabase Users
                 for (int i = 0; i < mUsers.size(); i++)
                     mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                 mUsers.add(activeUser);
@@ -136,7 +135,7 @@ public class AuthActivity extends AppCompatActivity implements
 
         String launchingAction = getIntent().getAction();
 
-        // TODO: Enable user selection and persist preference to active attribute across users
+        // TODO: Enable user selection
         User user = null;
         for (User u : mUsers) if (u.getActive()) user = u;
 
@@ -174,7 +173,6 @@ public class AuthActivity extends AppCompatActivity implements
                                     })
                             );
                     break;
-                // TODO: Ensure new users are properly logged in
                 case Intent.ACTION_MAIN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
 

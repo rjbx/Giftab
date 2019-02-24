@@ -42,8 +42,7 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
-// TODO: Add fetch methods for each User type
-// TODO: Extrapolate datasource executors from service thread if possible or consolidate logic into the former or the latter
+// TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
@@ -121,6 +120,8 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
+    // TODO: Add FetchUser
+
     /**
      * Starts this service to perform action GiveSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -146,6 +147,8 @@ public class DatabaseService extends IntentService {
         intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
     }
+
+    // TODO: Add RecordGive
 
     /**
      * Starts this service to perform action RemoveSearch with the given parameters.
@@ -186,6 +189,8 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
+    // TODO: Add RemoveUser
+
     /**
      * Starts this service to perform action ResetSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -222,6 +227,9 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
+
+
+    // TODO: Add ResetUser and UpdateRecord
     /**
      * Starts this service to perform action UpdateFrequency with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -253,6 +261,8 @@ public class DatabaseService extends IntentService {
 
         context.startService(intent);
     }
+
+    //TODO: Factor out remaining
 
     /**
      * Starts this service to perform action UpdateFrequency with the given parameters.
@@ -429,6 +439,8 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchGiving() {
 
+        // TODO: Implement
+
 //        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
 //        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
 //        Uri template = templateBuilder.build();
@@ -479,6 +491,8 @@ public class DatabaseService extends IntentService {
      * Handles action FetchRecord in the provided background thread.
      */
     private void handleActionFetchRecord() {
+
+        // TODO: Implement
 
 //        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
 //        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
@@ -532,20 +546,6 @@ public class DatabaseService extends IntentService {
     private void handleActionGiveSearch(Search search) {
 
         NETWORK_IO.execute(() -> {
-//
-//            List<String> charities = UserPreferences.getCharities(this);
-//
-//            String ein = search.getCompany();
-//            float impact = 0;
-//            int frequency = 0;
-//
-//            for (String record : UserPreferences.getRecords(this)) {
-//                String[] recordFields = record.split(":");
-//                if (recordFields[3].equals(ein)) {
-//                    impact += Float.parseFloat(recordFields[1]);
-//                    frequency++;
-//                }
-//            }
 
             float impact = 0f;
             int frequency = 0;
@@ -568,13 +568,7 @@ public class DatabaseService extends IntentService {
 
             String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
             giving.setEmail(emailAddress);
-//
-//            if (charities.isEmpty() || charities.get(0).isEmpty()) charities = new ArrayList<>();
-//
-//            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
-//
-//            UserPreferences.setCharities(this, charities);
-//            UserPreferences.addEntryToRealtimeDatabase(this);
+
             DatabaseAccessor.addGiving(this, giving);
         });
 
@@ -601,24 +595,6 @@ public class DatabaseService extends IntentService {
     private void handleActionRemoveGiving(String charityId) {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, charityId));
-
-//        Cursor cursor = getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
-//                null, null, null, null);
-//        if (cursor == null) return;
-//
-//        List<String> charities = UserPreferences.getCharities(this);
-//        int removeIndex = 0;
-//        boolean notFound = true;
-//        for (int i = 0; i < charities.size(); i++) {
-//            if (charities.get(i).split(":")[0].contains(charityId)) {
-//                removeIndex = i;
-//                notFound = false;
-//                break;
-//            }
-//        } if (notFound) return;
-//        charities.remove(charities.get(removeIndex));
-//        UserPreferences.setCharities(this, charities);
-//        UserPreferences.addEntryToRealtimeDatabase(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -647,24 +623,6 @@ public class DatabaseService extends IntentService {
                     break;
                 }
             }
-
-//            List<String> records = UserPreferences.getRecords(this);
-//            if (records.isEmpty() || records.get(0).isEmpty()) records = new ArrayList<>();
-//            int removeIndex = 0;
-//            boolean found = false;
-//            for (int i = 0; i < records.size(); i++) {
-//                if (Float.parseFloat(records.get(i).split(":")[0]) == time) {
-//                    removeIndex = i;
-//                    found = true;
-//                    break;
-//                }
-//            }
-//            if (found) {
-//                records.remove(records.get(removeIndex));
-//                UserPreferences.setRecords(this, records);
-//            }
-//
-//            UserPreferences.addEntryToRealtimeDatabase(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -691,8 +649,6 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, null));
 
-//        UserPreferences.setCharities(this, new ArrayList<>());
-//        UserPreferences.addEntryToRealtimeDatabase(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -712,9 +668,6 @@ public class DatabaseService extends IntentService {
             } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
 
-//        UserPreferences.setRecords(this, new ArrayList<>());
-//
-//        UserPreferences.addEntryToRealtimeDatabase(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -726,27 +679,11 @@ public class DatabaseService extends IntentService {
     private void handleActionUpdateGiving(Giving... givings) {
 
         boolean recalibrate = givings[0].getPercent() == -1d;
+        // TODO: Dereference array element to update
         if (recalibrate) for (Giving giving : givings) giving.setPercent(1d / givings.length);
 
-        DISK_IO.execute(() -> {
+        DISK_IO.execute(() -> DatabaseAccessor.addGiving(this, givings));
 
-//            List<String> charities = new ArrayList<>();
-//
-//            for (int i = 0; i < givings.length; i++) {
-//                Giving giving = givings[i];
-//                String ein = giving.getCompany();
-//                String phone = giving.getPhone();
-//                String email = giving.getEmail();
-//                double percentage = giving.getPercent();
-//                String impact = giving.getImpact();
-//                int frequency = giving.getFrequency();
-//
-//                charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%f:%f:%d", ein, phone, email, percentage, Float.parseFloat(impact), frequency));
-//            }
-            DatabaseAccessor.addGiving(this, givings);
-//            UserPreferences.setCharities(this, charities);
-//            UserPreferences.addEntryToRealtimeDatabase(this);
-        });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -775,19 +712,7 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
             DatabaseAccessor.addRecord(this, record);
 
-//            List<String> records = UserPreferences.getRecords(this);
-//            for (String r : records) {
-//                String[] recordFields = r.split(":");
-//                if (recordFields[0].equals(formattedTime)) {
-//                    String newRecord = r.replaceFirst(formattedTime, String.valueOf(newTime));
-//                    int index = records.indexOf(r);
-//                    records.set(index, newRecord);
-//                }
-//            }
-//            UserPreferences.setRecords(this, records);
-//
             updateTimePreferences(UserPreferences.getAnchor(this));
-//            UserPreferences.addEntryToRealtimeDatabase(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -801,8 +726,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetData() {
 
-//        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-        DISK_IO.execute(() -> {
+       DISK_IO.execute(() -> {
             DatabaseAccessor.removeSearch(this, null);
             DatabaseAccessor.removeGiving(this, null);
             DatabaseAccessor.removeRecord(this, null);
@@ -816,8 +740,6 @@ public class DatabaseService extends IntentService {
 
         if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
         else UserPreferences.setAnchor(this, anchorTime);
-
-//        UserPreferences.addEntryToRealtimeDatabase(this);
     }
 
     private String urlToEmailAddress(String url) {
