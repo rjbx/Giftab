@@ -109,10 +109,12 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
 
-                User user = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
-
+                User activeUser = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
                 // TODO Set active status for all FirebaseDatabase Users
-                DatabaseAccessor.addFirebaseUserToRealtimeDatabase(user).addOnCompleteListener(this);
+                for (int i = 0; i < mUsers.size(); i++)
+                    mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                mUsers.add(activeUser);
+                DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
 
                 //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
 
@@ -156,12 +158,12 @@ public class AuthActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(int id, Cursor cursor) {
         if (mPendingResult) return;
-/*        mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
+        mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
-        if (mUsers.isEmpty()) {
-            // TODO DatabaseAccessor.fetchUser()
-//            return;
-        }*/
+//        if (mUsers.isEmpty()) {
+//            // TODO DatabaseAccessor.fetchUser()
+////            return;
+//        }
         handleAction();
     }
 
@@ -176,7 +178,7 @@ public class AuthActivity extends AppCompatActivity implements
 
         // TODO: Enable user selection and persist preference to active attribute across users
         User user = null;
-//        for (User u : mUsers) if (u.getActive()) user = u;
+        for (User u : mUsers) if (u.getActive()) user = u;
 
         if (launchingAction != null) {
             switch (launchingAction) {

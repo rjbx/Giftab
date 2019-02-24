@@ -126,7 +126,6 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        // TODO: Persist remotely with addFirebaseUserToRealtimeDatabase
         addFirebaseUserToRealtimeDatabase(entries);
     }
 
@@ -169,14 +168,6 @@ public final class DatabaseAccessor {
         if (users.length == 1) {
             User user = users[0];
             DatabaseReference reference = firebaseDatabase.getReference("users");
-            reference.addValueEventListener(new ValueEventListener() {
-                @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
-            });
-
             return reference.child(user.getUid()).updateChildren(user.toParameterMap());
         } else {
             Map<String, Object> userMap = new HashMap<>();
