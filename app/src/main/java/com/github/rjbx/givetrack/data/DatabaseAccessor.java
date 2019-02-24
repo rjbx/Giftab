@@ -150,12 +150,11 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    // TODO: Genericize for use with all entry types
-    // TODO: Add callback interface to implement from AuthActivity and method parameter for defining OnCompleteListener
+    // TODO: Handle multiple entries with single update
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
+    public static <T extends Entry> /*Task<Void>*/void addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         String path = entryType.getSimpleName().toLowerCase();
@@ -163,11 +162,14 @@ public final class DatabaseAccessor {
 
         if (entries.length == 1) {
             T entry = entries[0];
-            return reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+            reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
-            Map<String, Object> userMap = new HashMap<>();
-            for (T entry: entries) userMap.put(entry.getUid(), entry);
-            return reference.updateChildren(userMap);
+            Map<String, Object> entryMap = new HashMap<>();
+            for (T entry: entries) {
+//                userMap.put(entry.getUid(), entry);
+                reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+            }
+//            reference.updateChildren(entryMap);
         }
     }
 
