@@ -65,22 +65,7 @@ public final class DatabaseAccessor {
     static void fetchGiving(Context context) {
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         context.getContentResolver().delete(contentUri, null, null);
-        // TODO: Convert to helper method
-        FirebaseDatabase
-                .getInstance()
-                .getReference("giving")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                        while (iterator.hasNext()) {
-                            Giving giving = iterator.next().getValue(Giving.class);
-                            context.getContentResolver().insert(contentUri, giving.toContentValues());
-                        }
-                    }
-
-                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
-
+        pullRemoteToLocalEntries(context.getContentResolver(), Giving.class);
     }
 
     static List<Giving> getGiving(Context context, @Nullable String id) {
@@ -107,7 +92,11 @@ public final class DatabaseAccessor {
         context.getContentResolver().delete(contentUri, null, null);
     }
 
-    static void fetchRecord(Context context) {}
+    static void fetchRecord(Context context) {
+        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
+        context.getContentResolver().delete(contentUri, null, null);
+        pullRemoteToLocalEntries(context.getContentResolver(), Record.class);
+    }
 
     static List<Record> getRecord(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
@@ -134,7 +123,9 @@ public final class DatabaseAccessor {
     }
 
     static void fetchUser(Context context) {
-        // TODO if (entries.isEmpty()) User user = convertFirebaseUser(); addUser(context, user.getUid());
+        Uri contentUri = UserEntry.CONTENT_URI_USER;
+        context.getContentResolver().delete(contentUri, null, null);
+        pullRemoteToLocalEntries(context.getContentResolver(), User.class);
     }
 
     static List<User> getUser(Context context, @Nullable String id) {
