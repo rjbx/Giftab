@@ -83,7 +83,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
     @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
          dest.writeString(uid);
-         dest.writeInt(active ? 0 : 1);
+         dest.writeInt(active ? 1 : 0);
          dest.writeString(email);
          dest.writeString(birthdate);
          dest.writeString(gender);
