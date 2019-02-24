@@ -43,10 +43,10 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         percent = source.readString();
     }
 
-    private Giving(Giving giving) {
-        super(giving.getSuper());
-        this.frequency = giving.frequency;
-        this.percent = giving.percent;
+    private Giving(Search search, int frequency, String percent) {
+        super(search);
+        this.frequency = frequency;
+        this.percent = percent;
     }
 
     /**
@@ -122,9 +122,13 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Exclude public Search getSuper() { return super.clone(); }
 
+    @Exclude public static Giving fromSearch(Search search, int frequency, double percent) {
+        return new Giving(search, frequency, String.valueOf(percent));
+    }
+
     @Exclude @Override public Giving clone() {
         super.clone();
-        return new Giving(this);
+        return new Giving(getSuper(), this.frequency, this.percent);
     }
 
     @Exclude public static Giving getDefault() {

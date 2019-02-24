@@ -35,18 +35,18 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         return 0;
     }
 
-    Record(Record record) {
-        super(record.getSuper());
-        this.memo = record.memo;
-        this.time = record.time;
-    }
-    
     Record(Parcel source) {
         super(source);
         memo = source.readString();
         time = source.readLong();
     }
-    
+
+    private Record(Search search, String memo, long time) {
+        super(search);
+        this.memo = memo;
+        this.time = time;
+    }
+
     /**
      * Provides default constructor required for object relational mapping.
      */
@@ -121,9 +121,13 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         return super.clone();
     }
 
+    @Exclude public static Record fromSearch(Search search, String memo, long time) {
+        return new Record(search, memo, time);
+    }
+
     @Exclude @Override public Record clone() {
         super.clone();
-        return new Record(this);
+        return new Record(getSuper(), this.memo, this.time);
     }
     
     @Exclude public static Record getDefault() {

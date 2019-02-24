@@ -560,7 +560,7 @@ public class DatabaseService extends IntentService {
 
             List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             int size = givings.size();
-            Giving giving = new Giving(search, frequency, size == 0 ? "1" :"0");
+            Giving giving = Giving.fromSearch(search, frequency, size);
             giving.setImpact(String.format("%.2f", impact));
 
             String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
