@@ -9,20 +9,22 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
-import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,6 +33,10 @@ import timber.log.Timber;
 
 // TODO: Remotely persist removals
 public final class DatabaseAccessor {
+
+    static void fetchSearch(Context context, Map<String, Object> request) {
+
+    }
 
     static List<Search> getSearch(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
@@ -53,6 +59,27 @@ public final class DatabaseAccessor {
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
+    }
+
+    static void fetchGiving(Context context) {
+        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+        context.getContentResolver().delete(contentUri, null, null);
+        // TODO: Convert to helper method
+        FirebaseDatabase
+                .getInstance()
+                .getReference("giving")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                        while (iterator.hasNext()) {
+                            Giving giving = iterator.next().getValue(Giving.class);
+                            context.getContentResolver().insert(contentUri, giving.toContentValues());
+                        }
+                    }
+
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
     }
 
     static List<Giving> getGiving(Context context, @Nullable String id) {
@@ -78,6 +105,8 @@ public final class DatabaseAccessor {
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
     }
+
+    static void fetchRecord(Context context) {}
 
     static List<Record> getRecord(Context context, @Nullable String id) {
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
