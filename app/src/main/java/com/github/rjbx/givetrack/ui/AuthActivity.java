@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -99,7 +98,7 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
 
-                User activeUser = DatabaseAccessor.convertFirebaseToEntryUser(mFirebaseAuth.getCurrentUser());
+                User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 for (int i = 0; i < mUsers.size(); i++)
                     mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                 mUsers.add(activeUser);

@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.data;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -97,7 +98,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
-        addEntryToRealtimeDatabase(Giving.class, entries);
+        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), Giving.class, entries);
     }
 
     static void removeGiving(Context context, @Nullable String id) {
@@ -123,7 +124,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
-        addEntryToRealtimeDatabase(Record.class, entries);
+        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), Record.class, entries);
     }
 
     static void removeRecord(Context context, @Nullable String id) {
@@ -151,7 +152,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        addEntryToRealtimeDatabase(User.class, entries);
+        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), User.class, entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -183,29 +184,47 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> /*Task<Void>*/void addEntryToRealtimeDatabase(Class<T> entryType, T... entries) {
+    public static <T extends Entry> /*Task<Void>*/void addLocalToRemoteEntries(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         String path = entryType.getSimpleName().toLowerCase();
-        DatabaseReference reference = firebaseDatabase.getReference(path);
+        DatabaseReference pathReference = remote.getReference(path);
 
         if (entries.length == 1) {
             T entry = entries[0];
-            reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+            pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
             Map<String, Object> entryMap = new HashMap<>();
             for (T entry: entries) {
 //                userMap.put(entry.getUid(), entry);
-                reference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+                pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
             }
 //            reference.updateChildren(entryMap);
         }
     }
 
+    public static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
+
+        Uri uri = DatabaseContract.getContentUri(entryType);
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+        String path = entryType.getSimpleName().toLowerCase();
+        DatabaseReference pathReference = remote.getReference(path);
+
+        pathReference.addValueEventListener(new ValueEventListener() {
+                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                        while (iterator.hasNext()) {
+                            Giving giving = iterator.next().getValue(Giving.class);
+                            local.insert(uri, giving.toContentValues());
+                        }
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
+                });
+    }
+
     /**
      * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
      */
-    public static User convertFirebaseToEntryUser(FirebaseUser firebaseUser) {
+    public static User convertRemoteToLocalUser(FirebaseUser firebaseUser) {
 
         User user = User.getDefault();
         user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());

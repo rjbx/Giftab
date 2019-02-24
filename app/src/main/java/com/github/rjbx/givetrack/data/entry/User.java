@@ -1,9 +1,11 @@
 package com.github.rjbx.givetrack.data.entry;
 
 import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 

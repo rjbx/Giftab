@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity implements
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                     } else mUser.setHistorical(true);/* UserPreferences.setHistorical(this, true);*/
-//                    UserPreferences.addEntryToRealtimeDatabase(this);
+//                    UserPreferences.addLocalToRemoteEntries(this);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
@@ -304,13 +304,13 @@ public class MainActivity extends AppCompatActivity implements
                     mUser.setHistorical(true);
                     DatabaseService.startActionUpdateUser(this, mUser);
 //                    UserPreferences.setHistorical(this, true);
-//                    UserPreferences.addEntryToRealtimeDatabase(this);
+//                    UserPreferences.addLocalToRemoteEntries(this);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setHistorical(false);
                     DatabaseService.startActionUpdateUser(this, mUser);
 //                    UserPreferences.setHistorical(this, false);
-//                    UserPreferences.addEntryToRealtimeDatabase(this);
+//                    UserPreferences.addLocalToRemoteEntries(this);
                     break;
                 default:
             }

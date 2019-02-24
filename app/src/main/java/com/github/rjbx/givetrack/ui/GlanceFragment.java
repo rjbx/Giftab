@@ -232,7 +232,7 @@ public class GlanceFragment extends Fragment implements
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
         UserPreferences.setTheme(getContext(), sThemeIndex);
-//        UserPreferences.addEntryToRealtimeDatabase(getContext());
+//        UserPreferences.addLocalToRemoteEntries(getContext());
     }
 
     /**
@@ -242,7 +242,7 @@ public class GlanceFragment extends Fragment implements
     void toggleTracked(TextView amountLabel) {
         mViewTracked = !mViewTracked;
         UserPreferences.setViewtrack(mParentActivity, mViewTracked);
-//        UserPreferences.addEntryToRealtimeDatabase(mParentActivity);
+//        UserPreferences.addLocalToRemoteEntries(mParentActivity);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 

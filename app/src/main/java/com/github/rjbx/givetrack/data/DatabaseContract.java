@@ -3,6 +3,10 @@ package com.github.rjbx.givetrack.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.github.rjbx.givetrack.data.entry.Company;
+import com.github.rjbx.givetrack.data.entry.Entry;
+import com.github.rjbx.givetrack.data.entry.User;
+
 /**
  * Defines attributes for tables and entries of database initialized in {@link DatabaseOpener}.
  */
@@ -108,5 +112,16 @@ public final class DatabaseContract {
         public static final String COLUMN_SEARCHORDER = "orderSearch";
         public static final String COLUMN_RECORDSORT = "sortRecord";
         public static final String COLUMN_RECORDORDER = "orderRecord";
+    }
+
+    public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
+        String name = entryType.getSimpleName().toLowerCase();
+        switch (name) {
+            case CompanyEntry.TABLE_NAME_GIVING: return CompanyEntry.CONTENT_URI_GIVING;
+            case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
+            case CompanyEntry.TABLE_NAME_SEARCH: return CompanyEntry.CONTENT_URI_SEARCH;
+            case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
     }
 }
