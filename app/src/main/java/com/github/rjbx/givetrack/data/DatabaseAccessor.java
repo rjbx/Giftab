@@ -19,13 +19,9 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -126,7 +122,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        addFirebaseUserToRealtimeDatabase(entries);
+        addFirebaseEntryToRealtimeDatabase(entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -159,20 +155,21 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static Task<Void> addFirebaseUserToRealtimeDatabase(User... users) {
+    public static <T extends Entry> Task<Void> addEntryToRealtimeDatabase(Class<T> entryType, String uid, T... entries,) {
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference reference;
+//        if (entryType.isInstance(Giving.class)) {
+            reference = firebaseDatabase.getReference("users");
+//        }
 
-        Task<Void> task;
-        if (users.length == 1) {
-            User user = users[0];
-            DatabaseReference reference = firebaseDatabase.getReference("users");
-            return reference.child(user.getUid()).updateChildren(user.toParameterMap());
-        } else {
+//        if (entries.length == 1) {
+//            T entry = entries[0];
+//            return reference.child(uid).updateChildren(entry.toParameterMap());
+//        } else {
             Map<String, Object> userMap = new HashMap<>();
-            for (User user: users) userMap.put(user.getUid(), user);
-            return firebaseDatabase.getReference("users").updateChildren(userMap);
+            for (T entry: entries) userMap.put(uid, entry);
+            return reference.updateChildren(userMap);
         }
     }
 

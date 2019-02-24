@@ -286,7 +286,7 @@ public class GivingFragment extends Fragment implements
                         return false;
                     }
                     UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//                    UserPreferences.addFirebaseUserToRealtimeDatabase(getContext());
+//                    UserPreferences.addEntryToRealtimeDatabase(getContext());
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -309,7 +309,7 @@ public class GivingFragment extends Fragment implements
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(getContext());
+//            UserPreferences.addEntryToRealtimeDatabase(getContext());
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -323,7 +323,7 @@ public class GivingFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(getContext());
+//        UserPreferences.addEntryToRealtimeDatabase(getContext());
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
@@ -366,7 +366,7 @@ public class GivingFragment extends Fragment implements
         Giving values = new Giving();
         values.setFrequency(1);
         DatabaseService.startActionUpdateFrequency(getContext());
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(mParentActivity);
+//        UserPreferences.addEntryToRealtimeDatabase(mParentActivity);
     }
 
     /**

@@ -148,7 +148,7 @@ public class ConfigActivity extends PreferenceActivity {
             } else changedPreference.setSummary(stringValue);
         }
 
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(changedPreference.getContext());
+//        UserPreferences.addEntryToRealtimeDatabase(changedPreference.getContext());
     }
 
     /**
@@ -217,7 +217,7 @@ public class ConfigActivity extends PreferenceActivity {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
             mUser.setBirthdate(birthdate);
             DatabaseService.startActionUpdateUser(getContext(), mUser);
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(getActivity());
+//            UserPreferences.addEntryToRealtimeDatabase(getActivity());
         }
         /**
          * Invokes helper method for setting preference summary to new preference value.
@@ -470,7 +470,7 @@ public class ConfigActivity extends PreferenceActivity {
                     case AlertDialog.BUTTON_POSITIVE:
                         mUser.setMagnitude(percentIntToDecimalString(mSeekProgress));
                         DatabaseService.startActionUpdateUser(getContext(), mUser);
-//                        UserPreferences.addFirebaseUserToRealtimeDatabase(getActivity());
+//                        UserPreferences.addEntryToRealtimeDatabase(getActivity());
                         Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
                         magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                         break;

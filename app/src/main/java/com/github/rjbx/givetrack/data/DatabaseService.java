@@ -570,7 +570,7 @@ public class DatabaseService extends IntentService {
 //            charities.add(String.format(Locale.getDefault(),"%s:%s:%s:%s:%f:%d", ein, phoneNumber, emailAddress, percentage, 0f, 0));
 //
 //            UserPreferences.setCharities(this, charities);
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//            UserPreferences.addEntryToRealtimeDatabase(this);
             DatabaseAccessor.addGiving(this, giving);
         });
 
@@ -614,7 +614,7 @@ public class DatabaseService extends IntentService {
 //        } if (notFound) return;
 //        charities.remove(charities.get(removeIndex));
 //        UserPreferences.setCharities(this, charities);
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//        UserPreferences.addEntryToRealtimeDatabase(this);
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
@@ -660,7 +660,7 @@ public class DatabaseService extends IntentService {
 //                UserPreferences.setRecords(this, records);
 //            }
 //
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//            UserPreferences.addEntryToRealtimeDatabase(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -688,7 +688,7 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, null));
 
 //        UserPreferences.setCharities(this, new ArrayList<>());
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//        UserPreferences.addEntryToRealtimeDatabase(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -710,7 +710,7 @@ public class DatabaseService extends IntentService {
 
 //        UserPreferences.setRecords(this, new ArrayList<>());
 //
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//        UserPreferences.addEntryToRealtimeDatabase(this);
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
         int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
@@ -741,7 +741,7 @@ public class DatabaseService extends IntentService {
 //            }
             DatabaseAccessor.addGiving(this, givings);
 //            UserPreferences.setCharities(this, charities);
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//            UserPreferences.addEntryToRealtimeDatabase(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -783,7 +783,7 @@ public class DatabaseService extends IntentService {
 //            UserPreferences.setRecords(this, records);
 //
             updateTimePreferences(UserPreferences.getAnchor(this));
-//            UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//            UserPreferences.addEntryToRealtimeDatabase(this);
         });
 
         AppWidgetManager awm = AppWidgetManager.getInstance(this);
@@ -813,7 +813,7 @@ public class DatabaseService extends IntentService {
         if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
         else UserPreferences.setAnchor(this, anchorTime);
 
-//        UserPreferences.addFirebaseUserToRealtimeDatabase(this);
+//        UserPreferences.addEntryToRealtimeDatabase(this);
     }
 
     private String urlToEmailAddress(String url) {
