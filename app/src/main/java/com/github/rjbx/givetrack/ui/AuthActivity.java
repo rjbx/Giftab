@@ -28,28 +28,18 @@ import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO: Disable remote persistence for guests
-// TODO: Replace remote database interactions with DatabaseService calls
-// TODO: Authentication logic to be migrated to DatabaseAccessor fetch method  accessed from DatabaseService from UI thread
 
-// TODO: OR Because Authentication logic is not database logic, persist FirebaseUser to local from DatabaseService > DatabaseAccessor where persisted to remote
-/**
- * Provides a login screen.
- */
 public class AuthActivity extends AppCompatActivity implements
-        DatabaseController, OnCompleteListener {
+        DatabaseController {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -116,28 +106,8 @@ public class AuthActivity extends AppCompatActivity implements
                 mUsers.add(activeUser);
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
 
-                //TODO: Listen for completion of changes to FirebaseDatabase and define callback with start activity
-
-
-// mFirebaseDatabase.getReference("users").addValueEventListener(new ValueEventListener() {
-//                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        if (mFirebaseUpdated) return;
-//                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-//                        if (firebaseUser == null) return;
-//                        Timber.v(firebaseUser.getUid());
-//                        UserProfile activeUser = dataSnapshot.child(firebaseUser.getUid()).getValue(UserProfile.class);
-////                        if (activeUser == null) activeUser = UserPreferences.convertFirebaseToEntryUser();
-////                        if (!mUsers.contains(activeUser)) mUsers.add(activeUser);
-////                        for (int i = 0; i < mUsers.size(); i++)
-////                            mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-////                        User[] userArray = mUsers.toArray(new User[mUsers.size()]);
-////                        DatabaseService.startActionUpdateUser(AuthActivity.this, userArray);
-//                        DatabaseAccessor.updateFirebaseUser(userArray);
-////                        mFirebaseUpdated = true;
-//
-//////                    }
-//                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { Timber.e(databaseError.getMessage()); }
-////                });
+                startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
+                finish();
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
@@ -150,20 +120,10 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onComplete(@NonNull Task task) {
-        startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
-        finish();
-    }
-
-    @Override
     public void onLoadFinished(int id, Cursor cursor) {
         if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
-//        if (mUsers.isEmpty()) {
-//            // TODO DatabaseAccessor.fetchUser()
-////            return;
-//        }
         handleAction();
     }
 
