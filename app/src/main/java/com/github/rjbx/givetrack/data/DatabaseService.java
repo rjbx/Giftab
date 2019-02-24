@@ -947,14 +947,14 @@ public class DatabaseService extends IntentService {
         try {
             if (single) {
                 searches = new Search[1];
-                searches[0] = parseSearch(new JSONObject(jsonResponse));
+                searches[0] = parseSearch(new JSONObject(jsonResponse),uid);
                 Timber.v("Parsed Response: %s", searches[0].toString());
             } else {
                 JSONArray charityArray = new JSONArray(jsonResponse);
                 searches = new Search[charityArray.length()];
                 for (int i = 0; i < charityArray.length(); i++) {
                     JSONObject charityObject = charityArray.getJSONObject(i);
-                    Search search = parseSearch(charityObject);
+                    Search search = parseSearch(charityObject, uid);
                     searches[i] = search;
                     Timber.v("Parsed Response: %s", search.toString());
                 }
