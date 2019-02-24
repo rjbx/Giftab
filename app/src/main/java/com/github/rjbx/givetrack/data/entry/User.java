@@ -95,7 +95,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
          dest.writeString(state);
          dest.writeString(zip);
          dest.writeString(minrating);
-         dest.writeInt(filter ? 0 : 1);
+         dest.writeInt(filter ? 1 : 0);
          dest.writeString(searchSort);
          dest.writeString(searchOrder);
          dest.writeString(recordSort);
