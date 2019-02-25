@@ -219,11 +219,31 @@ public final class DatabaseAccessor {
     }
 
     // TODO: Implement to preceed existing logic within each entry-specific method
-    static <T extends Entry> void validateEntries(Class<T> entryType) {
-        // Get reference to local User list with getUsers
-        // Get reference to active local User
-        // Get reference to remote User list with datasnapshot
-        // Get reference to active local User
+    static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
+
+        DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
+
+        long localUpdateTime = 0;
+        long remoteUpdateTime = 0;
+
+        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+
+        for (User user : localUsers) if (user.getActive()) localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while (iterator.hasNext()) {
+                    User user = iterator.next().getValue(User.class);
+                    if (user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
+
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
         // Compare timestamps of active User from local and remote
         // If local more recent, pass local User list to addEntriesToRemote
         // If remote more recent, pass remote User list to addEntriesToLocal
