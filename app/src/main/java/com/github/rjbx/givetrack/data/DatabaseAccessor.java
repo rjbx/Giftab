@@ -222,31 +222,31 @@ public final class DatabaseAccessor {
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
-
-        long localUpdateTime = 0;
-        long remoteUpdateTime = 0;
-
-        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-        List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-
-        for (User user : localUsers) if (user.getActive()) localUpdateTime = DatabaseContract.getTableTime(entryType, user);
-
         reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                long localUpdateTime = 0;
+                long remoteUpdateTime = 0;
+
+                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+                List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+
+                for (User user : localUsers) if (user.getActive()) localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
                     User user = iterator.next().getValue(User.class);
                     if (user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
-
+                    if (localUpdateTime < remoteUpdateTime) {
+                        pullRemoteToLocalEntries(local, entryType);
+                    } else if (localUpdateTime > remoteUpdateTime) {
+                        remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
+                        addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, localUsers.toArray(new T[localUsers.size()]));
+                    } else return;
                 }
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
-        // Compare timestamps of active User from local and remote
-        // If local more recent, pass local User list to addEntriesToRemote
-        // If remote more recent, pass remote User list to addEntriesToLocal
     }
 
     /**
