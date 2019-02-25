@@ -231,24 +231,30 @@ public final class DatabaseAccessor {
                 long remoteUpdateTime = 0;
 
                 Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-                List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-                cursor.close();
-
-                for (User user : localUsers) if (user.getActive()) localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+                if (cursor != null) {
+                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+                    cursor.close();
+                    for (User user : localUsers)
+                        if (user.getActive())
+                            localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+                }
 
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
                     User user = iterator.next().getValue(User.class);
-                    if (user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
+                    if (user != null && user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
                     if (localUpdateTime < remoteUpdateTime) {
                         pullRemoteToLocalEntries(local, entryType);
                     } else if (localUpdateTime > remoteUpdateTime) {
                         remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
                         cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
-                        List<T> entryList = getEntryListFromCursor(cursor, entryType);
-                        T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
-                        for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
-                        addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
+                        if (cursor != null) {
+                            List<T> entryList = getEntryListFromCursor(cursor, entryType);
+                            cursor.close();
+                            T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
+                            for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
+                            addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
+                        } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
                     } else return;
                 }
             }
