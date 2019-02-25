@@ -21,39 +21,15 @@ import java.util.Set;
  */
 public class UserPreferences {
 
-    public static final String KEY_ACTIVE = "active";
-    public static final String KEY_BIRTHDATE = "birthdate";
-    public static final String KEY_GENDER = "gender";
     public static final String KEY_THEME = "theme";
     public static final String KEY_MAGNITUDE = "magnitude";
     public static final String KEY_DONATION = "donation";
     public static final String KEY_CHARITIES = "charities";
-    public static final String KEY_TERM = "term";
-    public static final String KEY_CITY = "city";
-    public static final String KEY_STATE = "state";
-    public static final String KEY_ZIP = "zip";
-    public static final String KEY_MINRATING = "minrating";
-    public static final String KEY_FILTER = "filter";
-    public static final String KEY_RECORDSORT = "sortRecord";
-    public static final String KEY_SEARCHSORT = "sortSearch";
-    public static final String KEY_RECORDORDER = "orderRecord";
-    public static final String KEY_SEARCHORDER = "orderSearch";
-    public static final String KEY_PAGES = "pages";
-    public static final String KEY_ROWS = "rows";
-    public static final String KEY_FOCUS = "focus";
-    public static final String KEY_COMPANY = "company";
     public static final String KEY_VIEWTRACK = "viewtrack";
-    public static final String KEY_RECORDS = "records";
-    public static final String KEY_SEARCHGUIDE = "searchguide";
     public static final String KEY_HISTORICAL = "historical";
     public static final String KEY_ANCHOR = "anchor";
     public static final String KEY_TIMETRACK = "timetrack";
 
-    public static final String LAST_PREFERENCE = KEY_TIMETRACK;
-
-    // TODO: Replace by comparing last update time and either pushing to or pulling from remote based on more recently updated database
-    // If last sync to database failed when other succeeded, timestamp for one will be behind that of the other
-    // Compare before updating timestamp and syncing to consider necessary changes
     public static List<String> getCharities(Context context) {
         Set<String> defaultValue = new LinkedHashSet<>();
         defaultValue.add("");

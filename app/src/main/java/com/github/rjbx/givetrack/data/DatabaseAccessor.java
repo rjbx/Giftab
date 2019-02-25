@@ -83,7 +83,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
-        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), Giving.class, entries);
+        addEntriesToRemote(FirebaseDatabase.getInstance(), Giving.class, entries);
     }
 
     static void removeGiving(Context context, @Nullable String id) {
@@ -113,7 +113,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
-        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), Record.class, entries);
+        addEntriesToRemote(FirebaseDatabase.getInstance(), Record.class, entries);
     }
 
     static void removeRecord(Context context, @Nullable String id) {
@@ -143,7 +143,7 @@ public final class DatabaseAccessor {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
         context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        addLocalToRemoteEntries(FirebaseDatabase.getInstance(), User.class, entries);
+        addEntriesToRemote(FirebaseDatabase.getInstance(), User.class, entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
@@ -171,11 +171,12 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    // TODO: Handle multiple entries with single update
+
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> /*Task<Void>*/void addLocalToRemoteEntries(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+        // TODO: Handle multiple entries with single update
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
@@ -191,6 +192,11 @@ public final class DatabaseAccessor {
             }
 //            reference.updateChildren(entryMap);
         }
+    }
+
+    // TODO: Implement to replace boilerplate within each entry-specific method
+    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
+
     }
 
     public static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
@@ -210,6 +216,17 @@ public final class DatabaseAccessor {
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
+    }
+
+    // TODO: Implement to preceed existing logic within each entry-specific method
+    static <T extends Entry> void validateEntries(Class<T> entryType) {
+        // Get reference to local User list with getUsers
+        // Get reference to active local User
+        // Get reference to remote User list with datasnapshot
+        // Get reference to active local User
+        // Compare timestamps of active User from local and remote
+        // If local more recent, pass local User list to addEntriesToRemote
+        // If remote more recent, pass remote User list to addEntriesToLocal
     }
 
     /**
