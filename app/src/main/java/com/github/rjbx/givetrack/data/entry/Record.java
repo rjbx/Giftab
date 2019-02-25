@@ -10,11 +10,13 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+
 @IgnoreExtraProperties
 public class Record extends Search implements Company, Parcelable, Cloneable {
 
     private String memo;
     private long time;
+    private int rid;
 
     @Exclude  public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
         @Override public Record createFromParcel(Parcel source) {
@@ -29,6 +31,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.writeToParcel(dest, flags);
         dest.writeString(memo);
         dest.writeLong(time);
+        dest.writeLong(rid);
     }
 
     @Exclude @Override public int describeContents() {
@@ -39,12 +42,14 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super(source);
         memo = source.readString();
         time = source.readLong();
+        rid = source.readInt();
     }
 
-    private Record(Search search, String memo, long time) {
+    private Record(Search search, String memo, long time, int rid) {
         super(search);
         this.memo = memo;
         this.time = time;
+        this.rid = rid;
     }
 
     /**
@@ -71,7 +76,8 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              String impact,
              int type,
              String memo,
-             long time) {
+             long time,
+             int rid) {
         super(
                 ein,
                 uid,
@@ -90,24 +96,31 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         );
         this.memo = memo;
         this.time = time;
+        this.rid = rid;
     }
 
     public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
-    
+    public int getRid() { return rid; }
+    public void setRid(int rid) { this.rid = rid; }
+
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
         map.put("time", time);
+        map.put("rid", rid);
         return map;
     }
 
+
+    // TODO: If operation is addition, RID value should be null; if update,
     @Exclude public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_RID, rid == -1 ? null : rid );
         return values;
     }
 
@@ -115,19 +128,14 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
+        this.rid = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_RID);
     }
 
-    @Exclude public Search getSuper() {
-        return super.clone();
-    }
-
-    @Exclude public static Record fromSearch(Search search, String memo, long time) {
-        return new Record(search, memo, time);
-    }
+    @Exclude public Search getSuper() { return super.clone(); }
 
     @Exclude @Override public Record clone() {
         super.clone();
-        return new Record(getSuper(), this.memo, this.time);
+        return new Record(getSuper(), this.memo, this.time, this.rid);
     }
     
     @Exclude public static Record getDefault() {
@@ -148,6 +156,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         record.setType(0);
         record.memo = "";
         record.time = 0;
+        record.rid = -1;
         return record;
     }
 }

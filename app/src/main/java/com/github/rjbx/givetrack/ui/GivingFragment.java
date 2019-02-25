@@ -63,7 +63,6 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
-
 /**
  * Provides the logic and views for a donation management screen.
  * Presents a list of collected items, which when touched, arrange the list of items and

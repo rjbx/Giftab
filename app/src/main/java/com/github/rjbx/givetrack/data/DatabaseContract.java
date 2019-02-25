@@ -57,6 +57,7 @@ public final class DatabaseContract {
         public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
         public static final String COLUMN_DONATION_MEMO = "donationNotes";
         public static final String COLUMN_DONATION_TIME = "donationTime";
+        public static final String COLUMN_RID = _ID;
 
         public static final int INDEX_EIN = 0;
         public static final int INDEX_USER = 1;
@@ -76,6 +77,7 @@ public final class DatabaseContract {
         public static final int INDEX_DONATION_NOTES = 14;
         public static final int INDEX_DONATION_FREQUENCY = 15;
         public static final int INDEX_DONATION_TIME = 16;
+        public static final int INDEX_RID = 17;
     }
 
     public static final class UserEntry implements BaseColumns {

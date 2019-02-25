@@ -98,7 +98,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
                         CompanyEntry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_TIME          + " INTEGER PRIMARY KEY NOT NULL,"  +
+                        CompanyEntry.COLUMN_RID                    + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_DONATION_TIME +
                         ") ON CONFLICT REPLACE" + ");";

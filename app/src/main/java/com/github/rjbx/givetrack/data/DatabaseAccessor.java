@@ -255,7 +255,7 @@ public final class DatabaseAccessor {
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
     }
-
+    
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
