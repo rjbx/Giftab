@@ -657,7 +657,20 @@ public class DatabaseService extends IntentService {
 
     private void handleActionGiveRecord(Record record) {}
 
-    private void handleActionRecordGive(Giving giving) {}
+    private void handleActionRecordGive(Giving giving) {
+        // TODO: Consider abstracting more logic away from UI thread
+        // Update to frequency now requires:
+        // giving.setFrequency
+        // updateGiving
+        // recordGive
+        // Alternative 1:
+        // updateFrequency()
+        // Downside is accessing entry lists by accessor getters
+        // Alternative 2
+        // updateFrequency(Giving)
+        // setFrequency and instantiate Record inside method
+        // Downside is justifies addition of more specific actions which have single use cases
+    }
 
     /**
      * Handles action RemoveSearch in the provided background thread with the provided parameters.

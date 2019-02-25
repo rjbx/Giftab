@@ -36,9 +36,6 @@ import timber.log.Timber;
 
 // TODO: Remotely persist removals
 // TODO: Persist record with valid ID
-// If autoincremented:
-//      a. remote insert get[Entry] after local.bulkInsert?
-//      b. remote insert after individual local.insert and update of each element ID from return value?
 // If not autoincremented:
 //      a. populate unique ID field from timestamp (which is distinct from time field and does not get updated)
 public final class DatabaseAccessor {
