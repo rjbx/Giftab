@@ -42,9 +42,12 @@ public final class DatabaseAccessor {
     }
 
     static List<Search> getSearch(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
+        
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
         List<Search> entries = getEntryListFromCursor(cursor, Search.class);
@@ -53,12 +56,18 @@ public final class DatabaseAccessor {
     }
 
     static void addSearch(Context context, Search... entries) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
+        
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_SEARCH, values);
+        local.bulkInsert(CompanyEntry.CONTENT_URI_SEARCH, values);
     }
 
     static void removeSearch(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
+        
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         context.getContentResolver().delete(contentUri, null, null);
@@ -71,9 +80,12 @@ public final class DatabaseAccessor {
     }
 
     static List<Giving> getGiving(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
+        
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
         List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
@@ -82,16 +94,22 @@ public final class DatabaseAccessor {
     }
 
     static void addGiving(Context context, Giving... entries) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+        validateEntries(local, remote, Giving.class);
+        
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
-        addEntriesToRemote(FirebaseDatabase.getInstance(), Giving.class, entries);
+        local.bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
+        addEntriesToRemote(remote, Giving.class, entries);
     }
 
     static void removeGiving(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        context.getContentResolver().delete(contentUri, null, null);
+        local.delete(contentUri, null, null);
     }
 
     static void fetchRecord(Context context) {
@@ -101,9 +119,12 @@ public final class DatabaseAccessor {
     }
 
     static List<Record> getRecord(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
+
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
@@ -112,16 +133,22 @@ public final class DatabaseAccessor {
     }
 
     static void addRecord(Context context, Record... entries) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+        validateEntries(local, remote, Record.class);
+
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
-        addEntriesToRemote(FirebaseDatabase.getInstance(), Record.class, entries);
+        local.bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
+        addEntriesToRemote(remote, Record.class, entries);
     }
 
     static void removeRecord(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        context.getContentResolver().delete(contentUri, null, null);
+        local.delete(contentUri, null, null);
     }
 
     static void fetchUser(Context context) {
@@ -131,9 +158,12 @@ public final class DatabaseAccessor {
     }
 
     static List<User> getUser(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
+
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        Cursor cursor = context.getContentResolver().query(
+        Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
         List<User> entries = getEntryListFromCursor(cursor, User.class);
@@ -142,16 +172,22 @@ public final class DatabaseAccessor {
     }
 
     static void addUser(Context context, User... entries) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+        validateEntries(local, remote, User.class);
+
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        context.getContentResolver().bulkInsert(UserEntry.CONTENT_URI_USER, values);
-        addEntriesToRemote(FirebaseDatabase.getInstance(), User.class, entries);
+        local.bulkInsert(UserEntry.CONTENT_URI_USER, values);
+        addEntriesToRemote(remote, User.class, entries);
     }
 
     static void removeUser(Context context, @Nullable String id) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        context.getContentResolver().delete(contentUri, null, null);
+        local.delete(contentUri, null, null);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
@@ -220,7 +256,6 @@ public final class DatabaseAccessor {
                 });
     }
 
-    // TODO: Implement to preceed existing logic within each entry-specific method
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
