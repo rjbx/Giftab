@@ -8,7 +8,9 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -230,6 +232,7 @@ public final class DatabaseAccessor {
 
                 Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
                 List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+                cursor.close();
 
                 for (User user : localUsers) if (user.getActive()) localUpdateTime = DatabaseContract.getTableTime(entryType, user);
 
@@ -241,7 +244,11 @@ public final class DatabaseAccessor {
                         pullRemoteToLocalEntries(local, entryType);
                     } else if (localUpdateTime > remoteUpdateTime) {
                         remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-                        addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, localUsers.toArray(new T[localUsers.size()]));
+                        cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
+                        List<T> entryList = getEntryListFromCursor(cursor, entryType);
+                        T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
+                        for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
+                        addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
                     } else return;
                 }
             }
