@@ -35,6 +35,12 @@ import timber.log.Timber;
 
 
 // TODO: Remotely persist removals
+// TODO: Persist record with valid ID
+// If autoincremented:
+//      a. remote insert get[Entry] after local.bulkInsert?
+//      b. remote insert after individual local.insert and update of each element ID from return value?
+// If not autoincremented:
+//      a. populate unique ID field from timestamp (which is distinct from time field and does not get updated)
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context, Map<String, Object> request) {
@@ -255,7 +261,7 @@ public final class DatabaseAccessor {
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
                 });
     }
-    
+
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
