@@ -959,7 +959,7 @@ public class DatabaseService extends IntentService {
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Search(ein, uid, name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+        return new Search(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
     }
 
     /**
