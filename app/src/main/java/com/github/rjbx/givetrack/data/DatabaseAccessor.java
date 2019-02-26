@@ -62,9 +62,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
         
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        local.bulkInsert(CompanyEntry.CONTENT_URI_SEARCH, values);
+        addEntriesToLocal(local, Search.class, entries);
     }
 
     static void removeSearch(Context context, @Nullable String id) {
@@ -101,9 +99,7 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, Giving.class);
         
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        local.bulkInsert(CompanyEntry.CONTENT_URI_GIVING, values);
+        addEntriesToLocal(local, Giving.class, entries);
         addEntriesToRemote(remote, Giving.class, entries);
     }
 
@@ -140,9 +136,7 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, Record.class);
 
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        local.bulkInsert(CompanyEntry.CONTENT_URI_RECORD, values);
+        addEntriesToLocal(local, Record.class, entries);
         addEntriesToRemote(remote, Record.class, entries);
     }
 
@@ -179,9 +173,7 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, User.class);
 
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < entries.length; i++) values[i] = entries[i].toContentValues();
-        local.bulkInsert(UserEntry.CONTENT_URI_USER, values);
+        addEntriesToLocal(local, User.class, entries);
         addEntriesToRemote(remote, User.class, entries);
     }
 
