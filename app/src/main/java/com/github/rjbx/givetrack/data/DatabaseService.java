@@ -320,8 +320,6 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
-    //TODO: Factor out remaining
-
     /**
      * Starts this service to perform action UpdateFrequency with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -733,7 +731,6 @@ public class DatabaseService extends IntentService {
     }
 
 
-    // TODO: Replace record primary key of time with autoincremented ID
     /**
      * Handles action UpdateTime in the provided background thread with the provided parameters.
      */

@@ -36,8 +36,6 @@ import timber.log.Timber;
 
 
 // TODO: Remotely persist removals
-// TODO: Persist record with valid ID from timestamp (which is distinct from time field and does not get updated)
-// TODO: Update user timestamps on each addition to table because verifying with most recent table element timestamp fields would not consider removals timing
 
 public final class DatabaseAccessor {
 

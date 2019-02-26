@@ -105,8 +105,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
         final String SQL_CREATE_USER_TABLE =
 
-                // TODO: Add timestamp column? Alternative: Limit addition to RID field that inherits from hashCode
-                "CREATE TABLE IF NOT EXISTS " +
+               "CREATE TABLE IF NOT EXISTS " +
                         UserEntry.TABLE_NAME_USER                   + " ("                              +
 
                         UserEntry.COLUMN_UID                        + " TEXT PRIMARY KEY NOT NULL, "    +

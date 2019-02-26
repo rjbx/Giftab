@@ -139,6 +139,7 @@ public class AuthActivity extends AppCompatActivity implements
         for (User u : mUsers) if (u.getActive()) user = u;
 
         if (launchingAction != null) {
+        // TODO: Decouple remote authentication from database logic and access latter from service methods
             switch (launchingAction) {
                 case ACTION_SIGN_OUT:
                     mFirebaseDatabase.getReference("users").child(user.getUid())
@@ -151,7 +152,6 @@ public class AuthActivity extends AppCompatActivity implements
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
                                             }));
                     break;
-                // TODO: Ensure all data is properly removed
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
