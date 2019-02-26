@@ -10,7 +10,6 @@ import android.net.Uri;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -104,9 +103,11 @@ public final class DatabaseAccessor {
 
     static void removeGiving(Context context, Giving... giving) {
         ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
 
         removeEntriesFromLocal(local, Giving.class, giving);
+        removeEntriesFromRemote(remote, Giving.class, giving);
     }
 
     static void fetchRecord(Context context) {
@@ -140,9 +141,11 @@ public final class DatabaseAccessor {
 
     static void removeRecord(Context context, @Nullable Record... record) {
         ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
         removeEntriesFromLocal(local, Record.class, record);
+        removeEntriesFromRemote(remote, Record.class, record);
     }
 
     static void fetchUser(Context context) {
@@ -176,9 +179,11 @@ public final class DatabaseAccessor {
 
     static void removeUser(Context context, @Nullable User... user) {
         ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
         removeEntriesFromLocal(local, User.class, user);
+        removeEntriesFromRemote(remote, User.class, user);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
@@ -253,9 +258,7 @@ public final class DatabaseAccessor {
             reference.removeValue();
             return;
         }
-        for (T entry : entries) {
-            reference.child(entry.getUid()).child(entry.getId()).removeValue();
-        }
+        for (T entry : entries) reference.child(entry.getUid()).child(entry.getId()).removeValue();
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
