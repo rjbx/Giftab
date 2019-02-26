@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -211,19 +212,19 @@ public final class DatabaseAccessor {
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
         // TODO: Handle multiple entries with single update
 
-        String path = entryType.getSimpleName().toLowerCase();
-        DatabaseReference pathReference = remote.getReference(path);
+        StringBuilder path = new StringBuilder(entryType.getSimpleName().toLowerCase());
 
         if (entries.length == 1) {
             T entry = entries[0];
-            // TODO: Decide if company entries should add path layer for entry id below uid
+            if (entry instanceof Company) path.append(((Company) entry).getStamp());
+            DatabaseReference pathReference = remote.getReference(path.toString());
             pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
-            Map<String, Object> entryMap = new HashMap<>();
-            for (T entry: entries) {
+//            Map<String, Object> entryMap = new HashMap<>();
+//            for (T entry: entries) {
 //                userMap.put(entry.getUid(), entry);
-                pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
-            }
+//                pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+//            }
 //            reference.updateChildren(entryMap);
         }
     }

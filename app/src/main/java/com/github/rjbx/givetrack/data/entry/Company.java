@@ -5,8 +5,12 @@ import java.util.Map;
 
 public interface Company extends Entry {
 
+    String getUid();
+    void setUid(String uid);
     String getEin();
     void setEin(String ein);
+    long getStamp();
+    void setStamp(long stamp);
     String getName();
     void setName(String name);
     String getLocationStreet();
