@@ -600,8 +600,11 @@ public class DatabaseService extends IntentService {
 
             List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             int size = givings.size();
-            Giving giving = Giving.fromSearch(search, frequency, size);
-            giving.setImpact(String.format("%.2f", impact));
+            double percent = size == 1 ? size : 0d;
+            Giving giving = Giving.fromSuper(search);
+            giving.setFrequency(frequency);
+            giving.setPercent(percent);
+            giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
             String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
             giving.setPhone(phoneNumber);
