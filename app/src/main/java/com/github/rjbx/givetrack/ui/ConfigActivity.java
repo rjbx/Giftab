@@ -483,9 +483,10 @@ public class ConfigActivity extends PreferenceActivity {
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
+                        // TODO: Bind giving list reference to launching intent and bind to dialog views or relocate option
                         Giving values = new Giving();
                         values.setPercent(-1);
-                        DatabaseService.startActionUpdatePercentages(getActivity(), values);
+//                        DatabaseService.startActionUpdatePercentages(getActivity(), values);
                         break;
                     default:
                 }
