@@ -77,7 +77,11 @@ public class DatabaseService extends IntentService {
     // TODO: Determine whether catch-all or single use-case methods are more favorable
     // How much business logic is migrated to service for single-use case?
     // Example: adjustImpact(unadjusted Recprd, impact) or adjustImpact(adjustedRecord)
+    // adjustEntryAttribute(adjustedEntry) in any of the above cases is updateEntry with a different name for each
     // Handle some business logic in startAction before binding entry to intent?
+    // Current architecture is MVC; abstracting business logic away from Activity/Fragment entails adding corresponding Presenters or ViewModels for each
+    // Which setter invocations from Controller should be abstracted away? Why some and not all?
+    // Decision: retain business logic from Controller and implement catch all
 
     private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
