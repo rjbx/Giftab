@@ -120,7 +120,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_RID, rid == -1 ? null : rid );
+        values.put(DatabaseContract.CompanyEntry.COLUMN_TIMESTAMP, rid == -1 ? null : rid );
         return values;
     }
 
@@ -128,7 +128,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
-        this.rid = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_RID);
+        this.rid = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIMESTAMP);
     }
 
     @Exclude public Search getSuper() { return super.clone(); }

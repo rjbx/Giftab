@@ -132,10 +132,11 @@ public class Search implements Company, Parcelable, Cloneable {
         this.type = type;
     }
 
-    public String getEin() { return ein; }
-    public void setEin(String ein) { this.ein = ein; }
     @Exclude public String getUid() { return uid; }
     @Exclude public void setUid(String uid) { this.uid = uid; }
+    public String getEin() { return ein; }
+    public void setEin(String ein) { this.ein = ein; }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getLocationStreet() { return locationStreet; }

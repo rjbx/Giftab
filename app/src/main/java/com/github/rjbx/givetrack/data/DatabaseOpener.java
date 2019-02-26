@@ -79,7 +79,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_RECORD_TABLE =
-// TODO: Add autoincremented Entry._ID column
+
                 "CREATE TABLE IF NOT EXISTS " +
                         CompanyEntry.TABLE_NAME_RECORD             + " ("                              +
 
@@ -98,13 +98,14 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
                         CompanyEntry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_RID                    + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        CompanyEntry.COLUMN_TIMESTAMP + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_DONATION_TIME +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_USER_TABLE =
 
+                // TODO: Add timestamp column? Alternative: Limit addition to RID field that inherits from hashCode
                 "CREATE TABLE IF NOT EXISTS " +
                         UserEntry.TABLE_NAME_USER                   + " ("                              +
 
