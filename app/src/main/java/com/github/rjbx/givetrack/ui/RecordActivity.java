@@ -417,6 +417,7 @@ public class RecordActivity extends AppCompatActivity implements
                             calendar.get(Calendar.YEAR),
                             calendar.get(Calendar.MONTH),
                             calendar.get(Calendar.DAY_OF_MONTH));
+                    datePicker.getDatePicker().setTag(v.getTag());
                     datePicker.show();
                 }
             }
@@ -491,6 +492,7 @@ public class RecordActivity extends AppCompatActivity implements
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
+                int position = (int) view.getTag();
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(year, month, dayOfMonth);
                 mTime = calendar.getTimeInMillis();
@@ -502,19 +504,21 @@ public class RecordActivity extends AppCompatActivity implements
                 mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
                 mDateDialog.show();
                 mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+                Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setTextColor(getResources().getColor(R.color.colorConversionDark));
+                button.setTag(position);
             }
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: Obtain position for dereferencing Record index
                 if (dialog == mDateDialog) {
                     switch (which) {
                         case AlertDialog.BUTTON_NEUTRAL:
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_POSITIVE:
-                            DatabaseService.startActionUpdateTime(RecordActivity.this, mOldTime, mTime);
+                            int position = (int) mDateDialog.getButton(DialogInterface.BUTTON_POSITIVE).getTag();
+                            DatabaseService.startActionUpdateRecord(RecordActivity.this, mValuesArray[position]);
                         default:
                     }
                 }
