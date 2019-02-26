@@ -123,6 +123,11 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Exclude public Search getSuper() { return super.clone(); }
 
+    @Exclude public static Record fromSuper(Search search) {
+        Record record = new Record(search, "", 0);
+        return record;
+    }
+
     @Exclude @Override public Record clone() {
         super.clone();
         return new Record(getSuper(), this.memo, this.time);
