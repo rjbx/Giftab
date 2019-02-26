@@ -234,7 +234,8 @@ public class RecordActivity extends AppCompatActivity implements
                     mAdapter.notifyDataSetChanged();
                     break;
                 case AlertDialog.BUTTON_NEGATIVE:
-                    DatabaseService.startActionRemoveRecord(getBaseContext(), mDeletedTime);
+                    Record record = (Record) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
+                    DatabaseService.startActionRemoveRecord(getBaseContext(), record);
                     break;
                 default:
             }
@@ -264,7 +265,9 @@ public class RecordActivity extends AppCompatActivity implements
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), RecordActivity.this);
                         mRemoveDialog.show();
                         mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        Button button = mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
+                        button.setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        button.setTag(values);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getNavigatorUrl();
