@@ -100,7 +100,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     public void setFrequency(int frequency) { this.frequency = frequency; }
     @Override public double getPercent() { return Double.parseDouble(percent); }
     @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
-    @Exclude @Override public Object getId() { return super.getEin(); }
+    @Exclude @Override public String getId() { return super.getEin(); }
     @Exclude @Override public Giving getObject() { return this; }
 
     @Exclude public Map<String, Object> toParameterMap() {

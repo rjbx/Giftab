@@ -10,5 +10,5 @@ public interface Entry {
     void fromContentValues(ContentValues values);
     Map<String, Object> toParameterMap();
     String getUid();
-    Object getId();
+    String getId();
 }

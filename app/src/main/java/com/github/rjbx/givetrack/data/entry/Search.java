@@ -168,7 +168,7 @@ public class Search implements Company, Parcelable, Cloneable {
     public void setImpact(String impact) { this.impact = impact; }
     public int getType() { return type; }
     public void setType(int type) { this.type = type; }
-    @Exclude @Override public Object getId() { return ein; }
+    @Exclude @Override public String getId() { return ein; }
     @Exclude public Search getObject() { return this; }
     
     @Exclude public Map<String, Object> toParameterMap() {

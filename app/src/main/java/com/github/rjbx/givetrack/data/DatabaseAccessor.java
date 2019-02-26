@@ -68,7 +68,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
 
-        removeEntriesFromLocal(local, Search.class, id);
+//        removeEntriesFromLocal(local, Search.class, id);
      }
 
     static void fetchGiving(Context context) {
@@ -104,7 +104,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
 
-        removeEntriesFromLocal(local, Giving.class, id);
+//        removeEntriesFromLocal(local, Giving.class, id);
     }
 
     static void fetchRecord(Context context) {
@@ -140,7 +140,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
-        removeEntriesFromLocal(local, Record.class, id);
+//        removeEntriesFromLocal(local, Record.class, id);
     }
 
     static void fetchUser(Context context) {
@@ -176,7 +176,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
-        removeEntriesFromLocal(local, User.class, id);
+//        removeEntriesFromLocal(local, User.class, id);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
@@ -215,26 +215,36 @@ public final class DatabaseAccessor {
         if (entries.length == 1) {
             T entry = entries[0];
             pathReference = pathReference.child(entry.getUid());
-            if (entry instanceof Company) pathReference = pathReference.child((entry.getId().toString()));
+            if (entry instanceof Company) pathReference = pathReference.child((entry.getId()));
             pathReference.updateChildren(entry.toParameterMap());
         } else {
             // TODO: Handle multiple entries with single update
             Map<String, Object> entryMap = new HashMap<>();
             for (T entry: entries) {
                 pathReference = pathReference.child(entry.getUid());
-                if (entry instanceof Company) pathReference = pathReference.child(entry.getId().toString());
-                entryMap.put(entry.getId().toString(), entry);
+                if (entry instanceof Company) pathReference = pathReference.child(entry.getId());
+                entryMap.put(entry.getId(), entry);
                 pathReference.updateChildren(entry.toParameterMap());
             }
 //            pathReference.updateChildren(entryMap);
         }
     }
 
-    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable String id) {
+    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        local.delete(contentUri, null, null);
+        if (entries == null) {
+            local.delete(contentUri, null, null);
+            return;
+        }
+        for (Entry entry : entries) {
+            contentUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+            local.delete(contentUri, null, null);
+        }
+    }
+
+    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
+
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
