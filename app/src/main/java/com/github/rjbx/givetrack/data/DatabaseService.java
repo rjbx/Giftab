@@ -66,13 +66,20 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
     private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_RECORD_GIVE = "com.github.rjbx.givetrack.data.action.RECORD_GIVE";
-    private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_GIVING";
+    // -> private static final String ACTION_ADJUST_PERCENT = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENT";
+    // -> private static final String ACTION_ADD_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_IMPACT";
+    private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_RECORD = "com.github.rjbx.givetrack.data.action.UPDATE_RECORD";
+    // -> private static final String ACTION_ADJUST_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
+    // -> private static final String ACTION_ADD_MEMO
+    // -> private static final String ACTION_ADJUST_IMPACT
+    // TODO: Determine whether catch-all or single use-case methods are more favorable
+    // How much business logic is migrated to service for single-use case?
+    // Example: adjustImpact(unadjusted Recprd, impact) or adjustImpact(adjustedRecord)
+    // Handle some business logic in startAction before binding entry to intent?
+
     private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
-    private static final String ACTION_UPDATE_PERCENTAGES = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENTAGES";
-    private static final String ACTION_UPDATE_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
-    private static final String ACTION_UPDATE_AMOUNT = "com.github.rjbx.givetrack.data.action.UPDATE_AMOUNT";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
 
     private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.data.extra.API_REQUEST";
@@ -339,14 +346,14 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdatePercentages with the given parameters.
+     * Starts this service to perform action UpdatePercent with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionUpdatePercentages(Context context, Giving... charityValues) {
+    public static void startActionUpdatePercent(Context context, Giving... charityValues) {
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_PERCENTAGES);
+        intent.setAction(ACTION_UPDATE_PERCENT);
         if (charityValues.length > 1) intent.putExtra(EXTRA_LIST_VALUES, charityValues);
         else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
         context.startService(intent);
@@ -451,7 +458,7 @@ public class DatabaseService extends IntentService {
                     handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
                 else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_UPDATE_PERCENTAGES:
+            case ACTION_UPDATE_PERCENT:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
                 else handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
@@ -773,7 +780,7 @@ public class DatabaseService extends IntentService {
     private void handleActionResetUser() {}
 
     /**
-     * Handles action UpdatePercentages in the provided background thread with the provided parameters.
+     * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateGiving(Giving... givings) {
 
