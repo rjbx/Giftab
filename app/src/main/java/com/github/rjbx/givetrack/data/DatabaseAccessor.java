@@ -67,11 +67,9 @@ public final class DatabaseAccessor {
     static void removeSearch(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
-        
-        Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        context.getContentResolver().delete(contentUri, null, null);
-    }
+
+        removeEntriesFromLocal(local, Search.class, id);
+     }
 
     static void fetchGiving(Context context) {
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
@@ -105,9 +103,8 @@ public final class DatabaseAccessor {
     static void removeGiving(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
-        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        local.delete(contentUri, null, null);
+
+        removeEntriesFromLocal(local, Giving.class, id);
     }
 
     static void fetchRecord(Context context) {
@@ -142,9 +139,8 @@ public final class DatabaseAccessor {
     static void removeRecord(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
-        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        local.delete(contentUri, null, null);
+
+        removeEntriesFromLocal(local, Record.class, id);
     }
 
     static void fetchUser(Context context) {
@@ -179,9 +175,8 @@ public final class DatabaseAccessor {
     static void removeUser(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
-        Uri contentUri = UserEntry.CONTENT_URI_USER;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
-        local.delete(contentUri, null, null);
+
+        removeEntriesFromLocal(local, User.class, id);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
@@ -238,7 +233,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable String id) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-        if (id != null) contentUri.buildUpon().appendPath(id);
+        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         local.delete(contentUri, null, null);
     }
 
