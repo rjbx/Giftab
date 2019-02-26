@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.User;
 
@@ -58,7 +57,7 @@ public final class DatabaseContract {
         public static final String COLUMN_DONATION_MEMO = "donationNotes";
         public static final String COLUMN_DONATION_TIME = "donationTime";
         public static final String COLUMN_RID = _ID;
-
+        // TODO: Decide if timestamp column is applicable to all companies/entries and adjust implementation
         public static final int INDEX_EIN = 0;
         public static final int INDEX_USER = 1;
         public static final int INDEX_CHARITY_NAME = 2;
