@@ -73,8 +73,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              String impact,
              int type,
              String memo,
-             long time,
-             long rid) {
+             long time) {
         super(
                 uid,
                 ein,
@@ -108,8 +107,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         map.put("time", time);
         return map;
     }
-    
-    // TODO: If operation is addition, RID value should be null; if update,
+
     @Exclude public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
