@@ -203,11 +203,16 @@ public final class DatabaseAccessor {
         return entries;
     }
 
+    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
+        local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
+    }
 
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
         String rootPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(rootPath);
@@ -230,13 +235,14 @@ public final class DatabaseAccessor {
         }
     }
 
-    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
-        local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
+    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable String id) {
+
+        Uri contentUri = DatabaseContract.getContentUri(entryType);
+        if (id != null) contentUri.buildUpon().appendPath(id);
+        local.delete(contentUri, null, null);
     }
 
-    public static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
+    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
 
         Uri uri = DatabaseContract.getContentUri(entryType);
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
