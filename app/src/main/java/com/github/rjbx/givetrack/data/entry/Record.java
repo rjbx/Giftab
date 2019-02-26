@@ -16,7 +16,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     private String memo;
     private long time;
-    private int rid;
+    private long rid;
 
     @Exclude  public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
         @Override public Record createFromParcel(Parcel source) {
@@ -42,10 +42,10 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super(source);
         memo = source.readString();
         time = source.readLong();
-        rid = source.readInt();
+        rid = source.readLong();
     }
 
-    private Record(Search search, String memo, long time, int rid) {
+    private Record(Search search, String memo, long time, long rid) {
         super(search);
         this.memo = memo;
         this.time = time;
@@ -77,7 +77,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              int type,
              String memo,
              long time,
-             int rid) {
+             long rid) {
         super(
                 ein,
                 uid,
@@ -103,8 +103,8 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     public void setMemo(String memo) { this.memo = memo; }
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
-    public int getRid() { return rid; }
-    public void setRid(int rid) { this.rid = rid; }
+    public long getRid() { return rid; }
+    public void setRid(long rid) { this.rid = rid; }
 
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
@@ -128,7 +128,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
-        this.rid = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_RID);
+        this.rid = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_RID);
     }
 
     @Exclude public Search getSuper() { return super.clone(); }

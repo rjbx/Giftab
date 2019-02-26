@@ -67,25 +67,10 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_RECORD_GIVE = "com.github.rjbx.givetrack.data.action.RECORD_GIVE";
     private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_GIVING";
-    // -> private static final String ACTION_ADJUST_PERCENT = "com.github.rjbx.givetrack.data.action.UPDATE_PERCENT";
-    // -> private static final String ACTION_ADD_FREQUENCY = "com.github.rjbx.givetrack.data.action.UPDATE_IMPACT";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_RECORD = "com.github.rjbx.givetrack.data.action.UPDATE_RECORD";
-    // -> private static final String ACTION_ADJUST_TIME = "com.github.rjbx.givetrack.data.action.UPDATE_TIME";
-    // -> private static final String ACTION_ADD_MEMO
-    // -> private static final String ACTION_ADJUST_IMPACT
-    // TODO: Determine whether catch-all or single use-case methods are more favorable
-    // How much business logic is migrated to service for single-use case?
-    // Example: adjustImpact(unadjusted Recprd, impact) or adjustImpact(adjustedRecord)
-    // adjustEntryAttribute(adjustedEntry) in any of the above cases is updateEntry with a different name for each
-    // Handle some business logic in startAction before binding entry to intent?
-    // Current architecture is MVC; abstracting business logic away from Activity/Fragment entails adding corresponding Presenters or ViewModels for each
-    // Which setter invocations from Controller should be abstracted away? Why some and not all?
-    // Decision: retain business logic from Controller and implement catch all
-
     private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
     private static final String ACTION_RESET_DATA = "com.github.rjbx.givetrack.data.action.RESET_DATA";
-
     private static final String EXTRA_API_REQUEST = "com.github.rjbx.givetrack.data.extra.API_REQUEST";
     private static final String EXTRA_ITEM_VALUES = "com.github.rjbx.givetrack.data.extra.ITEM_VALUES";
     private static final String EXTRA_LIST_VALUES = "com.github.rjbx.givetrack.data.extra.LIST_VALUES";
@@ -350,36 +335,6 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdatePercent with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionUpdatePercent(Context context, Giving... charityValues) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_PERCENT);
-        if (charityValues.length > 1) intent.putExtra(EXTRA_LIST_VALUES, charityValues);
-        else intent.putExtra(EXTRA_ITEM_VALUES, charityValues[0]);
-        context.startService(intent);
-    }
-
-    public static void startActionUpdateTime(Context context, long oldTime, long newTime) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_TIME);
-        intent.putExtra(EXTRA_ITEM_ID, oldTime);
-        intent.putExtra(EXTRA_ITEM_VALUES, newTime);
-        context.startService(intent);
-    }
-
-    public static void startActionUpdateAmount(Context context, long id, float amount) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_AMOUNT);
-        intent.putExtra(EXTRA_ITEM_ID, id);
-        intent.putExtra(EXTRA_ITEM_VALUES, amount);
-        context.startService(intent);
-    }
-
-    /**
      * Starts this service to perform action ResetData with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -461,16 +416,6 @@ public class DatabaseService extends IntentService {
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
                 else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_UPDATE_PERCENT:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionUpdateGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
-                else handleActionUpdateGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_UPDATE_TIME:
-                long timeId = intent.getLongExtra(EXTRA_ITEM_ID, 0);
-                long newTime = intent.getLongExtra(EXTRA_ITEM_VALUES, 0);
-                handleActionUpdateTime(timeId, newTime);
                 break;
             case ACTION_RESET_DATA: handleActionResetData();
         }
@@ -669,18 +614,9 @@ public class DatabaseService extends IntentService {
     private void handleActionGiveRecord(Record record) {}
 
     private void handleActionRecordGive(Giving giving) {
-        // TODO: Consider abstracting more logic away from UI thread
-        // Update to frequency now requires:
-        // giving.setFrequency
-        // updateGiving
-        // recordGive
-        // Alternative 1:
-        // updateFrequency()
-        // Downside is accessing entry lists by accessor getters
-        // Alternative 2
-        // updateFrequency(Giving)
-        // setFrequency and instantiate Record inside method
-        // Downside is justifies addition of more specific actions which have single use cases
+
+        long time = System.currentTimeMillis();
+        // TODO: Provide excluded static helper to replace Record record = new Record(giving.getSuper(), "", time, time);
     }
 
     /**
