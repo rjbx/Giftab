@@ -461,9 +461,7 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.addSearch(this, parsedResponse);
         });
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     /**
@@ -606,9 +604,7 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.addGiving(this, giving);
         });
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     private void handleActionGiveRecord(Record record) {
@@ -631,9 +627,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, charityId));
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     /**
@@ -643,9 +637,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, charityId));
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     /**
@@ -672,9 +664,7 @@ public class DatabaseService extends IntentService {
             }
         });
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     private void handleActionRemoveUser(String uid) {}
@@ -686,9 +676,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, null));
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     /**
@@ -698,9 +686,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, null));
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     /**
@@ -717,9 +703,7 @@ public class DatabaseService extends IntentService {
             } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     private void handleActionResetUser() {}
@@ -736,9 +720,7 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> DatabaseAccessor.addGiving(this, givings));
 
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     private void handleActionUpdateRecord(Record... records) {}
@@ -746,9 +728,7 @@ public class DatabaseService extends IntentService {
     private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
 
@@ -768,9 +748,7 @@ public class DatabaseService extends IntentService {
             updateTimePreferences(UserPreferences.getAnchor(this));
         });
 
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
 
@@ -784,9 +762,7 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.removeGiving(this, null);
             DatabaseAccessor.removeRecord(this, null);
         });
-        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        AppWidget.refresh(this);
     }
 
     private void updateTimePreferences(long anchorTime) {
