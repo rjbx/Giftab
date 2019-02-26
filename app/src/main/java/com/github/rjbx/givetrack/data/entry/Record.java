@@ -99,6 +99,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     public void setMemo(String memo) { this.memo = memo; }
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
+    @Exclude @Override public Object getId() { return super.getStamp(); }
     @Exclude public Record getObject() { return this; }
 
     @Exclude public Map<String, Object> toParameterMap() {

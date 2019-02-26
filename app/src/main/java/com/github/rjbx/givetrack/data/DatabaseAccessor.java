@@ -210,7 +210,6 @@ public final class DatabaseAccessor {
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
-        // TODO: Handle multiple entries with single update
 
         StringBuilder path = new StringBuilder(entryType.getSimpleName().toLowerCase());
 
@@ -220,12 +219,16 @@ public final class DatabaseAccessor {
             DatabaseReference pathReference = remote.getReference(path.toString());
             pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
-//            Map<String, Object> entryMap = new HashMap<>();
-//            for (T entry: entries) {
-//                userMap.put(entry.getUid(), entry);
-//                pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
-//            }
-//            reference.updateChildren(entryMap);
+            // TODO: Handle multiple entries with single update
+            Map<String, Object> entryMap = new HashMap<>();
+            DatabaseReference pathReference = remote.getReference(path.toString());
+            for (T entry: entries) {
+                StringBuilder elementPath = new StringBuilder(path.toString());
+                if (entry instanceof Company) elementPath.append(((Company) entry).getStamp());
+                entryMap.put(entry.getId().toString(), entry);
+                pathReference.child(path.toString()).updateChildren(entry.toParameterMap());
+            }
+//            pathReference.updateChildren(entryMap);
         }
     }
 

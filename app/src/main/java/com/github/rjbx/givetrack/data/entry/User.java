@@ -11,6 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
@@ -289,6 +290,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setTimeRecord(long timeRecord) { this.timeRecord = timeRecord; }
     public long getTimeUser() { return timeUser; }
     public void setTimeUser(long timeUser) { this.timeUser = timeUser; }
+    @Exclude @Override public Object getId() { return uid; }
     @Exclude public User getObject() { return this; }
 
     @Exclude public Map<String, Object> toParameterMap() {
