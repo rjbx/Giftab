@@ -617,8 +617,11 @@ public class DatabaseService extends IntentService {
 
     private void handleActionRecordGive(Giving giving) {
 
-        long time = System.currentTimeMillis();
-        // TODO: Provide excluded static helper to replace Record record = new Record(giving.getSuper(), "", time, time);
+         long time = System.currentTimeMillis();
+         Record record = Record.fromSuper(giving.getSuper());
+         record.setStamp(time);
+         record.setTime(time);
+         DatabaseAccessor.addRecord(this, record);
     }
 
     /**
