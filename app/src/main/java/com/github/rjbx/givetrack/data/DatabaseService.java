@@ -419,6 +419,7 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_RESET_DATA: handleActionResetData();
         }
+        // TODO: Decide whether AppWidget refresh should occur here, inside accessor local update helpers or ContentProvider notify helper
     }
 
     /**
