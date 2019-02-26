@@ -465,7 +465,7 @@ public class DatabaseService extends IntentService {
             Search[] parsedResponse = parseSearches(response, uid, single);
 
             // Store data
-            DatabaseAccessor.removeSearch(this, null);
+            DatabaseAccessor.removeSearch(this, (Search) null);
             DatabaseAccessor.addSearch(this, parsedResponse);
         });
 
@@ -682,7 +682,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetSearch() {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, (Search) null));
 
         AppWidget.refresh(this);
     }
@@ -692,7 +692,7 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetGiving() {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, (Giving) null));
 
         AppWidget.refresh(this);
     }
@@ -703,7 +703,7 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
 
         DISK_IO.execute(() -> {
-            DatabaseAccessor.removeRecord(this, null);
+            DatabaseAccessor.removeRecord(this, (Record) null);
             List<Giving> givings = DatabaseAccessor.getGiving(this, null);
             for (Giving giving : givings) {
                 giving.setImpact("0");
@@ -765,9 +765,9 @@ public class DatabaseService extends IntentService {
     private void handleActionResetData() {
 
        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSearch(this, null);
-            DatabaseAccessor.removeGiving(this, null);
-            DatabaseAccessor.removeRecord(this, null);
+            DatabaseAccessor.removeSearch(this, (Search) null);
+            DatabaseAccessor.removeGiving(this, (Giving) null);
+            DatabaseAccessor.removeRecord(this, (Record) null);
         });
         AppWidget.refresh(this);
     }

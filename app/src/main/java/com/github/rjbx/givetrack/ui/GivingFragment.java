@@ -621,9 +621,11 @@ public class GivingFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
+                            Giving giving = (Giving) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
+                            // TODO:
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveGiving(getContext(), mEin);
+                            DatabaseService.startActionRemoveGiving(getContext(), giving);
                             break;
                         default:
                     }
@@ -645,7 +647,9 @@ public class GivingFragment extends Fragment implements
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mRemoveDialog.show();
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                Button button = mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                button.setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                button.setTag(values);
             }
 
             /**

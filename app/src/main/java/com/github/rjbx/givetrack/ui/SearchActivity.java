@@ -290,7 +290,7 @@ public class SearchActivity extends AppCompatActivity implements
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
                         final Search values =  bundle.getParcelable(DetailFragment.ARG_ITEM_COMPANY);
-                        DatabaseService.startActionRemoveSearch(getBaseContext(), values.getEin());
+                        DatabaseService.startActionRemoveSearch(getBaseContext(), values);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
