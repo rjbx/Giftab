@@ -237,7 +237,9 @@ public final class DatabaseAccessor {
 
     // TODO: Implement to replace boilerplate within each entry-specific method
     public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
-
+        ContentValues[] values = new ContentValues[entries.length];
+        for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
+        local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
     }
 
     public static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
