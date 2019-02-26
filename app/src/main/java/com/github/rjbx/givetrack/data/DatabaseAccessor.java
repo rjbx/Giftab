@@ -217,7 +217,7 @@ public final class DatabaseAccessor {
         if (entries.length == 1) {
             T entry = entries[0];
             pathReference = pathReference.child(entry.getUid());
-            if (entry instanceof Company) pathReference = pathReference.child((entry.getId().toString());
+            if (entry instanceof Company) pathReference = pathReference.child((entry.getId().toString()));
             pathReference.updateChildren(entry.toParameterMap());
         } else {
             // TODO: Handle multiple entries with single update
