@@ -216,6 +216,7 @@ public final class DatabaseAccessor {
 
         if (entries.length == 1) {
             T entry = entries[0];
+            // TODO: Decide if company entries should add path layer for entry id below uid
             pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
         } else {
             Map<String, Object> entryMap = new HashMap<>();
@@ -227,7 +228,6 @@ public final class DatabaseAccessor {
         }
     }
 
-    // TODO: Implement to replace boilerplate within each entry-specific method
     public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
