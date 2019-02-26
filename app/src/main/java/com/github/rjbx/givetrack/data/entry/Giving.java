@@ -124,6 +124,11 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Exclude public Search getSuper() { return super.clone(); }
 
+    @Exclude public static Giving fromSuper(Search search) {
+        Giving giving = new Giving(search, 0, "0");
+        return giving;
+    }
+
     @Exclude public static Giving fromSearch(Search search, int frequency, double percent) {
         return new Giving(search, frequency, String.valueOf(percent));
     }
