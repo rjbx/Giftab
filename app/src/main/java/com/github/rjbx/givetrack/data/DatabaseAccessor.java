@@ -247,6 +247,15 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
 
+        DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
+
+        if (entries == null) {
+            reference.removeValue();
+            return;
+        }
+        for (T entry : entries) {
+            reference.child(entry.getUid()).child(entry.getId()).removeValue();
+        }
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
