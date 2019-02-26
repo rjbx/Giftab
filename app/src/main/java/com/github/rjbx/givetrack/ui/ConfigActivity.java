@@ -30,6 +30,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 
 import java.util.Calendar;
 import java.util.List;

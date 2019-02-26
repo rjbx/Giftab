@@ -460,7 +460,8 @@ public class RecordActivity extends AppCompatActivity implements
              * Listens for and persists changes to text editor value.
              */
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                long time = mValuesArray[(int) v.getTag()].getTime();
+                Record record = mValuesArray[(int) v.getTag()];
+                long time = record.getTime();
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;
@@ -472,7 +473,8 @@ public class RecordActivity extends AppCompatActivity implements
                             Timber.e(e);
                             return false;
                         }
-                        DatabaseService.startActionUpdateAmount(RecordActivity.this, time, amountTotal);
+                        record.setImpact(String.valueOf(amountTotal));
+                        DatabaseService.startActionUpdateRecord(RecordActivity.this, record);
                         String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
                         mAmountView.setText(formattedAmount);
                         mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
@@ -505,6 +507,7 @@ public class RecordActivity extends AppCompatActivity implements
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // TODO: Obtain position for dereferencing Record index
                 if (dialog == mDateDialog) {
                     switch (which) {
                         case AlertDialog.BUTTON_NEUTRAL:
