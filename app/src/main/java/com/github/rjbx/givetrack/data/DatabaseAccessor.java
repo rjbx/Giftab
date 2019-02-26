@@ -211,22 +211,22 @@ public final class DatabaseAccessor {
      */
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        StringBuilder path = new StringBuilder(entryType.getSimpleName().toLowerCase());
+        String rootPath = entryType.getSimpleName().toLowerCase();
+        DatabaseReference pathReference = remote.getReference(rootPath);
 
         if (entries.length == 1) {
             T entry = entries[0];
-            if (entry instanceof Company) path.append(((Company) entry).getStamp());
-            DatabaseReference pathReference = remote.getReference(path.toString());
-            pathReference.child(entry.getUid()).updateChildren(entry.toParameterMap());
+            pathReference = pathReference.child(entry.getUid());
+            if (entry instanceof Company) pathReference = pathReference.child((entry.getId().toString());
+            pathReference.updateChildren(entry.toParameterMap());
         } else {
             // TODO: Handle multiple entries with single update
             Map<String, Object> entryMap = new HashMap<>();
-            DatabaseReference pathReference = remote.getReference(path.toString());
             for (T entry: entries) {
-                StringBuilder elementPath = new StringBuilder(path.toString());
-                if (entry instanceof Company) elementPath.append(((Company) entry).getStamp());
+                pathReference = pathReference.child(entry.getUid());
+                if (entry instanceof Company) pathReference = pathReference.child(entry.getId().toString());
                 entryMap.put(entry.getId().toString(), entry);
-                pathReference.child(path.toString()).updateChildren(entry.toParameterMap());
+                pathReference.updateChildren(entry.toParameterMap());
             }
 //            pathReference.updateChildren(entryMap);
         }
