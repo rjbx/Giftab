@@ -14,8 +14,9 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class Search implements Company, Parcelable, Cloneable {
 
-    private String ein;
     private String uid;
+    private String ein;
+    private long stamp;
     private String name;
     private String locationStreet;
     private String locationDetail;
@@ -39,8 +40,9 @@ public class Search implements Company, Parcelable, Cloneable {
     };
 
     @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(ein);
         dest.writeString(uid);
+        dest.writeString(ein);
+        dest.writeLong(stamp);
         dest.writeString(name);
         dest.writeString(locationStreet);
         dest.writeString(locationDetail);
@@ -56,8 +58,9 @@ public class Search implements Company, Parcelable, Cloneable {
     }
 
     Search(Parcel source) {
-        ein = source.readString();
         uid = source.readString();
+        ein = source.readString();
+        stamp = source.readLong();
         name = source.readString();
         locationStreet = source.readString();
         locationDetail = source.readString();
@@ -73,8 +76,9 @@ public class Search implements Company, Parcelable, Cloneable {
     }
     
     Search(Search search) {
-        this.ein = search.ein;
         this.uid = search.uid;
+        this.ein = search.ein;
+        this.stamp = search.stamp;
         this.name = search.name;
         this.locationStreet = search.locationStreet;
         this.locationDetail = search.locationDetail;
@@ -102,8 +106,9 @@ public class Search implements Company, Parcelable, Cloneable {
      * Provides POJO constructor required for object relational mapping.
      */
     public Search(
-            String ein,
             String uid,
+            String ein,
+            long stamp,
             String name,
             String locationStreet,
             String locationDetail,
@@ -116,8 +121,9 @@ public class Search implements Company, Parcelable, Cloneable {
             String email,
             String impact,
             int type) {
-        this.ein = ein;
         this.uid = uid;
+        this.ein = ein;
+        this.stamp = stamp;
         this.name = name;
         this.locationStreet = locationStreet;
         this.locationDetail = locationDetail;
@@ -136,7 +142,8 @@ public class Search implements Company, Parcelable, Cloneable {
     @Exclude public void setUid(String uid) { this.uid = uid; }
     public String getEin() { return ein; }
     public void setEin(String ein) { this.ein = ein; }
-
+    public long getStamp() { return stamp; }
+    public void setStamp(long stamp) { this.stamp = stamp; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getLocationStreet() { return locationStreet; }
@@ -161,11 +168,13 @@ public class Search implements Company, Parcelable, Cloneable {
     public void setImpact(String impact) { this.impact = impact; }
     public int getType() { return type; }
     public void setType(int type) { this.type = type; }
+    @Exclude public Search getObject() { return this; }
     
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("ein", ein);
         map.put("uid", uid);
+        map.put("ein", ein);
+        map.put("stamp", stamp);
         map.put("name", name );
         map.put("locationStreet", locationStreet);
         map.put("locationDetail", locationDetail);
@@ -183,8 +192,9 @@ public class Search implements Company, Parcelable, Cloneable {
 
     @Exclude public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
         values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_STAMP, stamp);
         values.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
@@ -201,8 +211,9 @@ public class Search implements Company, Parcelable, Cloneable {
     }
 
     @Exclude public void fromContentValues(ContentValues values) {
-        this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
         this.uid = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_UID);
+        this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
+        this.stamp = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_STAMP);
         this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
         this.locationStreet = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
         this.locationDetail = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
@@ -227,9 +238,10 @@ public class Search implements Company, Parcelable, Cloneable {
 
     @Exclude public static Search getDefault() {
         Search search = new Search();
-        search.ein = "";
-        search.name = "";
         search.uid = "";
+        search.ein = "";
+        search.stamp = 0;
+        search.name = "";
         search.locationStreet = "";
         search.locationDetail = "";
         search.locationCity = "";

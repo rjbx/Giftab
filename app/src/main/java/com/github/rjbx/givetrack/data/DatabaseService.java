@@ -611,7 +611,9 @@ public class DatabaseService extends IntentService {
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
     }
 
-    private void handleActionGiveRecord(Record record) {}
+    private void handleActionGiveRecord(Record record) {
+        int code = record.hashCode();
+    }
 
     private void handleActionRecordGive(Giving giving) {
 

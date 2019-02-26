@@ -40,7 +40,7 @@ public final class DatabaseContract {
 
         public static final String COLUMN_UID = "uid";
         public static final String COLUMN_EIN = "ein";
-        public static final String COLUMN_TIMESTAMP = "timestamp";
+        public static final String COLUMN_STAMP = "stamp";
         public static final String COLUMN_CHARITY_NAME = "charityName";
         public static final String COLUMN_LOCATION_STREET = "locationStreet";
         public static final String COLUMN_LOCATION_DETAIL = "locationDetail";

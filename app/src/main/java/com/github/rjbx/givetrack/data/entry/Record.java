@@ -16,7 +16,6 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     private String memo;
     private long time;
-    private long rid;
 
     @Exclude  public static final Parcelable.Creator<Record> CREATOR = new Parcelable.Creator<Record>() {
         @Override public Record createFromParcel(Parcel source) {
@@ -31,7 +30,6 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.writeToParcel(dest, flags);
         dest.writeString(memo);
         dest.writeLong(time);
-        dest.writeLong(rid);
     }
 
     @Exclude @Override public int describeContents() {
@@ -42,14 +40,12 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super(source);
         memo = source.readString();
         time = source.readLong();
-        rid = source.readLong();
     }
 
-    private Record(Search search, String memo, long time, long rid) {
+    private Record(Search search, String memo, long time) {
         super(search);
         this.memo = memo;
         this.time = time;
-        this.rid = rid;
     }
 
     /**
@@ -61,8 +57,9 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
      * Provides POJO constructor required for object relational mapping.
      */
     public Record(
-             String ein,
-             String uid,
+            String uid,
+            String ein,
+             long stamp,
              String name,
              String locationStreet,
              String locationDetail,
@@ -79,8 +76,9 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              long time,
              long rid) {
         super(
-                ein,
                 uid,
+                ein,
+                stamp,
                 name,
                 locationStreet,
                 locationDetail,
@@ -96,31 +94,26 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         );
         this.memo = memo;
         this.time = time;
-        this.rid = rid;
     }
 
     public String getMemo() { return memo; }
     public void setMemo(String memo) { this.memo = memo; }
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
-    public long getRid() { return rid; }
-    public void setRid(long rid) { this.rid = rid; }
+    @Exclude public Record getObject() { return this; }
 
     @Exclude public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
         map.put("time", time);
-        map.put("rid", rid);
         return map;
     }
-
-
+    
     // TODO: If operation is addition, RID value should be null; if update,
     @Exclude public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_TIMESTAMP, rid == -1 ? null : rid );
         return values;
     }
 
@@ -128,20 +121,20 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
-        this.rid = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIMESTAMP);
-    }
+     }
 
     @Exclude public Search getSuper() { return super.clone(); }
 
     @Exclude @Override public Record clone() {
         super.clone();
-        return new Record(getSuper(), this.memo, this.time, this.rid);
+        return new Record(getSuper(), this.memo, this.time);
     }
     
     @Exclude public static Record getDefault() {
         Record record = new Record();
-        record.setEin("");
         record.setUid("");
+        record.setEin("");
+        record.setStamp(0);
         record.setName("");
         record.setLocationStreet("");
         record.setLocationDetail("");
@@ -156,7 +149,6 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         record.setType(0);
         record.memo = "";
         record.time = 0;
-        record.rid = -1;
         return record;
     }
 }

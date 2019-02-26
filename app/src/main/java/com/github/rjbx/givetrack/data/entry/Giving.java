@@ -58,8 +58,9 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
      * Provides POJO constructor required for object relational mapping.
      */
     public Giving(
-            String ein,
             String uid,
+            String ein,
+            long stamp,
             String name,
             String locationStreet,
             String locationDetail,
@@ -75,8 +76,9 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
             int frequency,
             String percent) {
         super(
-                ein,
                 uid,
+                ein,
+                stamp,
                 name,
                 locationStreet,
                 locationDetail,
@@ -133,8 +135,9 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Exclude public static Giving getDefault() {
         Giving giving = new Giving();
-        giving.setEin("");
         giving.setUid("");
+        giving.setEin("");
+        giving.setStamp(0);
         giving.setName("");
         giving.setLocationStreet("");
         giving.setLocationDetail("");
