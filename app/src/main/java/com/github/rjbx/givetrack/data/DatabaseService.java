@@ -178,10 +178,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveSearch(Context context, String charityId) {
+    public static void startActionRemoveSearch(Context context, Search... search) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_SEARCH);
-        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        if (search.length > 1) intent.putExtra(EXTRA_LIST_VALUES, search);
+        else intent.putExtra(EXTRA_ITEM_VALUES, search[0]);
         context.startService(intent);
     }
 
@@ -191,10 +192,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveGiving(Context context, String charityId) {
+    public static void startActionRemoveGiving(Context context, Giving... giving) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_GIVING);
-        intent.putExtra(EXTRA_ITEM_ID, charityId);
+        if (giving.length > 1) intent.putExtra(EXTRA_LIST_VALUES, giving);
+        else intent.putExtra(EXTRA_ITEM_VALUES, giving[0]);
         context.startService(intent);
     }
 
@@ -204,10 +206,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveRecord(Context context, long recordTime) {
+    public static void startActionRemoveRecord(Context context, Record... record) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_RECORD);
-        intent.putExtra(EXTRA_ITEM_ID, recordTime);
+        if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
+        else intent.putExtra(EXTRA_ITEM_VALUES, record[0]);
         context.startService(intent);
     }
 
@@ -217,10 +220,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveUser(Context context, String uid) {
+    public static void startActionRemoveUser(Context context, User... user) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_USER);
-        intent.putExtra(EXTRA_ITEM_ID, uid);
+        if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
+        else intent.putExtra(EXTRA_ITEM_VALUES, user[0]);
         context.startService(intent);
     }
 
@@ -372,20 +376,25 @@ public class DatabaseService extends IntentService {
                 handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_SEARCH:
-                final String removeSearchString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveSearch(removeSearchString);
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionRemoveSearch(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Search.class));
+                else handleActionRemoveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_GIVING:
-                final String removeGivingString = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveGiving(removeGivingString);
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionRemoveGiving(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                else handleActionRemoveGiving(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_RECORD:
-                final long removeRecordLong = intent.getLongExtra(EXTRA_ITEM_ID, -1);
-                handleActionRemoveRecord(removeRecordLong);
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionRemoveRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
+                else handleActionRemoveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_USER:
-                final String uid = intent.getStringExtra(EXTRA_ITEM_ID);
-                handleActionRemoveUser(uid);
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionRemoveUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
+                else handleActionRemoveUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
             case ACTION_RESET_SEARCH:
                 handleActionResetSearch();
                 break;
@@ -622,9 +631,9 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action RemoveSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveSearch(String charityId) {
+    private void handleActionRemoveSearch(Search... searches) {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, charityId));
+        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, searches));
 
         AppWidget.refresh(this);
     }
@@ -632,9 +641,9 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action RemoveGiving in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveGiving(String charityId) {
+    private void handleActionRemoveGiving(Giving... givings) {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, charityId));
+        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, givings));
 
         AppWidget.refresh(this);
     }
@@ -642,31 +651,31 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action RemoveRecord in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveRecord(long time) {
+    private void handleActionRemoveRecord(Record... records) {
 
         DISK_IO.execute(() -> {
-            String formattedTime = String.valueOf(time);
-            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-            String ein = record.getEin();
-            float rI = Float.parseFloat(record.getImpact());
-            DatabaseAccessor.removeRecord(this, formattedTime);
-
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-            for (Giving giving : givings) {
-                if (giving.getEin().equals(ein)) {
-                    giving.setFrequency(giving.getFrequency() - 1);
-                    float impact = Float.parseFloat(giving.getImpact()) - rI;
-                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                    DatabaseAccessor.addGiving(this, giving);
-                    break;
-                }
-            }
+//            String formattedTime = String.valueOf(time);
+//            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
+//            String ein = record.getEin();
+//            float rI = Float.parseFloat(record.getImpact());
+//            DatabaseAccessor.removeRecord(this, formattedTime);
+//
+//            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+//            for (Giving giving : givings) {
+//                if (giving.getEin().equals(ein)) {
+//                    giving.setFrequency(giving.getFrequency() - 1);
+//                    float impact = Float.parseFloat(giving.getImpact()) - rI;
+//                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+//                    DatabaseAccessor.addGiving(this, giving);
+//                    break;
+//                }
+//            }
         });
 
         AppWidget.refresh(this);
     }
 
-    private void handleActionRemoveUser(String uid) {}
+    private void handleActionRemoveUser(User... user) {}
 
     /**
      * Handles action ResetSearch in the provided background thread with the provided parameters.
@@ -736,15 +745,15 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionUpdateTime(long oldTime, long newTime) {
 
-        DISK_IO.execute(() -> {
-            String formattedTime = String.valueOf(oldTime);
-            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-            record.setTime(newTime);
-            DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
-            DatabaseAccessor.addRecord(this, record);
-
-            updateTimePreferences(UserPreferences.getAnchor(this));
-        });
+//        DISK_IO.execute(() -> {
+//            String formattedTime = String.valueOf(oldTime);
+//            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
+//            record.setTime(newTime);
+//            DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
+//            DatabaseAccessor.addRecord(this, record);
+//
+//            updateTimePreferences(UserPreferences.getAnchor(this));
+//        });
 
         AppWidget.refresh(this);
     }

@@ -43,6 +43,8 @@ public final class DatabaseAccessor {
 
     }
 
+    // TODO: For getters, replace ID parameter with entries or replace usage by passing loader callback data to service
+
     static List<Search> getSearch(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
@@ -64,11 +66,11 @@ public final class DatabaseAccessor {
         addEntriesToLocal(local, Search.class, entries);
     }
 
-    static void removeSearch(Context context, @Nullable String id) {
+    static void removeSearch(Context context, @Nullable Search... search) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
 
-//        removeEntriesFromLocal(local, Search.class, id);
+        removeEntriesFromLocal(local, Search.class, search);
      }
 
     static void fetchGiving(Context context) {
@@ -100,11 +102,11 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Giving.class, entries);
     }
 
-    static void removeGiving(Context context, @Nullable String id) {
+    static void removeGiving(Context context, Giving... giving) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
 
-//        removeEntriesFromLocal(local, Giving.class, id);
+        removeEntriesFromLocal(local, Giving.class, giving);
     }
 
     static void fetchRecord(Context context) {
@@ -136,11 +138,11 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Record.class, entries);
     }
 
-    static void removeRecord(Context context, @Nullable String id) {
+    static void removeRecord(Context context, @Nullable Record... record) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
-//        removeEntriesFromLocal(local, Record.class, id);
+        removeEntriesFromLocal(local, Record.class, record);
     }
 
     static void fetchUser(Context context) {
@@ -172,11 +174,11 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, User.class, entries);
     }
 
-    static void removeUser(Context context, @Nullable String id) {
+    static void removeUser(Context context, @Nullable User... user) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
-//        removeEntriesFromLocal(local, User.class, id);
+        removeEntriesFromLocal(local, User.class, user);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
