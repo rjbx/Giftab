@@ -91,12 +91,11 @@ public final class DatabaseAccessor {
 
     // TODO: For getters, replace ID parameter with entries or replace usage by passing loader callback data to service
 
-    static List<Search> getSearch(Context context, @Nullable String id) {
+    static List<Search> getSearch(Context context) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
         
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
@@ -125,12 +124,11 @@ public final class DatabaseAccessor {
         pullRemoteToLocalEntries(context.getContentResolver(), Giving.class);
     }
 
-    static List<Giving> getGiving(Context context, @Nullable String id) {
+    static List<Giving> getGiving(Context context) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
         
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
@@ -163,12 +161,11 @@ public final class DatabaseAccessor {
         pullRemoteToLocalEntries(context.getContentResolver(), Record.class);
     }
 
-    static List<Record> getRecord(Context context, @Nullable String id) {
+    static List<Record> getRecord(Context context) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
@@ -206,7 +203,6 @@ public final class DatabaseAccessor {
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
         Uri contentUri = UserEntry.CONTENT_URI_USER;
-        if (id != null) contentUri = contentUri.buildUpon().appendPath(id).build();
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );

@@ -435,7 +435,7 @@ public class DatabaseService extends IntentService {
             float impact = 0f;
             int frequency = 0;
 
-            List<Record> records = DatabaseAccessor.getRecord(this, null);
+            List<Record> records = DatabaseAccessor.getRecord(this);
             for (Record record : records) {
                 if (record.getEin().equals(search.getEin())) {
                     impact += Float.parseFloat(record.getImpact());
@@ -443,7 +443,7 @@ public class DatabaseService extends IntentService {
                 }
             }
 
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this);
             int size = givings.size();
             double percent = size == 1 ? size : 0d;
             Giving giving = Giving.fromSuper(search);
@@ -492,7 +492,7 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> {
             DatabaseAccessor.removeRecord(this, records);
 
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this);
             for (Giving giving : givings) {
                 for (Record record : records) {
                     if (record.getEin().equals(giving.getEin())) {
@@ -511,9 +511,9 @@ public class DatabaseService extends IntentService {
         
         DISK_IO.execute(() -> {
                
-            List<Search> searches = DatabaseAccessor.getSearch(this, null);
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-            List<Record> records = DatabaseAccessor.getRecord(this, null);
+            List<Search> searches = DatabaseAccessor.getSearch(this);
+            List<Giving> givings = DatabaseAccessor.getGiving(this);
+            List<Record> records = DatabaseAccessor.getRecord(this);
             
             for (User user : users) {
                 for (Search search : searches) if (!search.getUid().equals(user.getUid())) DatabaseAccessor.removeSearch(this, search);
@@ -544,7 +544,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
             DatabaseAccessor.removeRecord(this, (Record) null);
-            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this);
             for (Giving giving : givings) {
                 giving.setImpact("0");
                 giving.setFrequency(0);
