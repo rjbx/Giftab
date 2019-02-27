@@ -676,7 +676,22 @@ public class DatabaseService extends IntentService {
         AppWidget.refresh(this);
     }
 
-    private void handleActionRemoveUser(User... user) {}
+    private void handleActionRemoveUser(User... users) {
+        
+        DISK_IO.execute(() -> {
+               
+            List<Search> searches = DatabaseAccessor.getSearch(this, null);
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+            List<Record> records = DatabaseAccessor.getRecord(this, null);
+            
+            for (User user : users) {
+                for (Search search : searches) if (!search.getUid().equals(user.getUid())) DatabaseAccessor.removeSearch(this, search);
+                for (Giving giving : givings) if (!giving.getUid().equals(user.getUid())) DatabaseAccessor.removeGiving(this, giving);
+                for (Record record : records) if (!record.getUid().equals(user.getUid())) DatabaseAccessor.removeRecord(this, record);
+            } DatabaseAccessor.removeUser(this, users);
+        });
+        
+    }
 
     /**
      * Handles action ResetSearch in the provided background thread with the provided parameters.
