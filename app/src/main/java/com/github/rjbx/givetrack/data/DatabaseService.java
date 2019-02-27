@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -730,7 +731,14 @@ public class DatabaseService extends IntentService {
         AppWidget.refresh(this);
     }
 
-    private void handleActionResetUser() {}
+    private void handleActionResetUser() {
+        DISK_IO.execute(() -> {
+            DatabaseAccessor.removeSearch(this, (Search) null);
+            DatabaseAccessor.removeGiving(this, (Giving) null);
+            DatabaseAccessor.removeRecord(this, (Record) null);
+            DatabaseAccessor.removeUser(this, (User) null);
+        });
+    }
 
     /**
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
@@ -784,7 +792,9 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.removeSearch(this, (Search) null);
             DatabaseAccessor.removeGiving(this, (Giving) null);
             DatabaseAccessor.removeRecord(this, (Record) null);
+            DatabaseAccessor.removeUser(this, (User) null);
         });
+        PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         AppWidget.refresh(this);
     }
 
