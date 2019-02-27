@@ -447,19 +447,19 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchGiving() {
 
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
     }
 
     /**
      * Handles action FetchRecord in the provided background thread.
      */
     private void handleActionFetchRecord() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
         
     }
 
     private void handleActionFetchUser() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
     }
 
     /**
