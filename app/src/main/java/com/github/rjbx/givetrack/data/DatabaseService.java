@@ -1,46 +1,31 @@
 package com.github.rjbx.givetrack.data;
 
 import android.app.IntentService;
-import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.Context;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
-import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
@@ -67,7 +52,6 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
     private static final String ACTION_RESET_USER = "com.github.rjbx.givetrack.data.action.RESET_USER";
     private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
-    private static final String ACTION_GIVE_RECORD = "com.github.rjbx.givetrack.data.action.GIVE_RECORD";
     private static final String ACTION_RECORD_GIVE = "com.github.rjbx.givetrack.data.action.RECORD_GIVE";
     private static final String ACTION_UPDATE_GIVING = "com.github.rjbx.givetrack.data.action.UPDATE_GIVING";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
@@ -145,19 +129,6 @@ public class DatabaseService extends IntentService {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_VALUES, search);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action GiveRecord with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionGiveRecord(Context context, Record record) {
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_GIVE_RECORD);
-        intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
     }
 
@@ -371,9 +342,6 @@ public class DatabaseService extends IntentService {
             case ACTION_GIVE_SEARCH:
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_GIVE_RECORD:
-                handleActionGiveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
             case ACTION_RECORD_GIVE:
                 handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
@@ -436,17 +404,13 @@ public class DatabaseService extends IntentService {
      * Handles action FetchSearch in the provided background thread with the provided parameters.
      */
     private void handleActionFetchSearch(HashMap apiRequest) {
-
         NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this, apiRequest));
-
-        
     }
 
     /**
      * Handles action FetchGiving in the provided background thread.
      */
     private void handleActionFetchGiving() {
-
         NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
     }
 
@@ -455,7 +419,6 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchRecord() {
         NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
-        
     }
 
     private void handleActionFetchUser() {
@@ -498,10 +461,6 @@ public class DatabaseService extends IntentService {
         });
     }
 
-    private void handleActionGiveRecord(Record record) {
-        int code = record.hashCode();
-    }
-
     private void handleActionRecordGive(Giving giving) {
 
          long time = System.currentTimeMillis();
@@ -515,20 +474,14 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveSearch in the provided background thread with the provided parameters.
      */
     private void handleActionRemoveSearch(Search... searches) {
-
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, searches));
-
-        
     }
 
     /**
      * Handles action RemoveGiving in the provided background thread with the provided parameters.
      */
     private void handleActionRemoveGiving(Giving... givings) {
-
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, givings));
-
-        
     }
 
     /**
@@ -552,8 +505,6 @@ public class DatabaseService extends IntentService {
                 }
             }
         });
-
-        
     }
 
     private void handleActionRemoveUser(User... users) {
@@ -570,27 +521,20 @@ public class DatabaseService extends IntentService {
                 for (Record record : records) if (!record.getUid().equals(user.getUid())) DatabaseAccessor.removeRecord(this, record);
             } DatabaseAccessor.removeUser(this, users);
         });
-        
     }
 
     /**
      * Handles action ResetSearch in the provided background thread with the provided parameters.
      */
     private void handleActionResetSearch() {
-
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, (Search) null));
-
-        
     }
 
     /**
      * Handles action ResetGiving in the provided background thread with the provided parameters.
      */
     private void handleActionResetGiving() {
-
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, (Giving) null));
-
-        
     }
 
     /**
@@ -606,8 +550,6 @@ public class DatabaseService extends IntentService {
                 giving.setFrequency(0);
             } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
-
-        
     }
 
     private void handleActionResetUser() {
@@ -629,17 +571,12 @@ public class DatabaseService extends IntentService {
         if (recalibrate) for (Giving giving : givings) giving.setPercent(1d / givings.length);
 
         DISK_IO.execute(() -> DatabaseAccessor.addGiving(this, givings));
-
-
-        
     }
 
     private void handleActionUpdateRecord(Record... records) {}
 
     private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
-
-        
     }
 
 
