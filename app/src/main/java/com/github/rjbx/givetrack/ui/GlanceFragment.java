@@ -45,8 +45,9 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.UserPreferences;
+import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +82,7 @@ public class GlanceFragment extends Fragment implements
             R.color.colorNeutral
     };
     private static Record[] sValuesArray;
+    private static User sUser;
     private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
@@ -135,12 +137,12 @@ public class GlanceFragment extends Fragment implements
         Bundle args = getArguments();
         if (args != null)
             sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
-
-        Date date = new Date(UserPreferences.getTimetrack(getContext()));
+            sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
+        Date date = new Date(sUser.getTimetrack());
         DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
         String formattedDate = DATE_FORMATTER.format(date);
         mTimeTracked = String.format("since %s", formattedDate);
-        mViewTracked = UserPreferences.getViewtrack(getContext());
+        mViewTracked = sUser.getViewtrack();
         mTotalTime = "all-time";
 
         return rootView;
@@ -186,7 +188,8 @@ public class GlanceFragment extends Fragment implements
                     mTimeDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    UserPreferences.setTimetrack(getContext(), System.currentTimeMillis());
+                    sUser.setTimetrack(System.currentTimeMillis());
+                    DatabaseService.startActionUpdateUser(getContext(), sUser);
                     mAmountView.setText("0");
                     break;
                 default:
@@ -231,8 +234,8 @@ public class GlanceFragment extends Fragment implements
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
-        UserPreferences.setTheme(getContext(), sThemeIndex);
-//        UserPreferences.addEntriesToRemote(getContext());
+        sUser.setTheme(sThemeIndex);
+        DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
 
     /**
@@ -241,8 +244,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_amount_label)
     void toggleTracked(TextView amountLabel) {
         mViewTracked = !mViewTracked;
-        UserPreferences.setViewtrack(mParentActivity, mViewTracked);
-//        UserPreferences.addEntriesToRemote(mParentActivity);
+        sUser.setViewtrack(mViewTracked);
+        DatabaseService.startActionUpdateUser(getContext(), sUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 
@@ -344,7 +347,7 @@ public class GlanceFragment extends Fragment implements
         int highDifference = 0;
 
         float tracked = 0f;
-        long tracktime = UserPreferences.getTimetrack(mParentActivity);
+        long tracktime = sUser.getTimetrack();
 
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;

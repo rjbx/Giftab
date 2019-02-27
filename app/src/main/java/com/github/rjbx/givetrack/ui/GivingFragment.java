@@ -134,6 +134,7 @@ public class GivingFragment extends Fragment implements
         if (args != null) {
             Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVING_ATTRIBUTES);
             if (parcelableArray != null) {
+                // TODO: Factor out with accessor validation
                 Giving[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Giving.class);
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
@@ -275,6 +276,7 @@ public class GivingFragment extends Fragment implements
                         return false;
                     }
                     sUser.setDonation(String.valueOf(mAmountTotal));
+                    DatabaseService.startActionUpdateUser(getContext(), sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -297,6 +299,7 @@ public class GivingFragment extends Fragment implements
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             sUser.setDonation(String.valueOf(mAmountTotal));
+            DatabaseService.startActionUpdateUser(getContext(), sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -310,6 +313,7 @@ public class GivingFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         sUser.setDonation(String.valueOf(mAmountTotal));
+        DatabaseService.startActionUpdateUser(getContext(), sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
