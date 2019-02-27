@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +20,7 @@ import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
@@ -50,6 +50,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.ParseException;
@@ -70,13 +71,13 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
  */
 public class GivingFragment extends Fragment implements
         DetailFragment.MasterDetailFlow,
-        SharedPreferences.OnSharedPreferenceChangeListener,
         TextView.OnEditorActionListener {
 
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
     private static Giving[] sValuesArray;
+    private static User sUser;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private static double[] sPercentages;
@@ -125,8 +126,8 @@ public class GivingFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
-        mAmountTotal = Float.parseFloat(UserPreferences.getDonation(getContext()));
-        mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
+        mAmountTotal = Float.parseFloat(sUser.getDonation());
+        mMagnitude = Float.parseFloat(sUser.getMagnitude());
         sPercentagesAdjusted = false;
 
         Bundle args = getArguments();
@@ -139,6 +140,7 @@ public class GivingFragment extends Fragment implements
                 }
                 sValuesArray = valuesArray;
             }
+            sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
         }
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
@@ -199,7 +201,6 @@ public class GivingFragment extends Fragment implements
             mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
         if (mListAdapter != null) mListAdapter.swapValues();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -209,7 +210,6 @@ public class GivingFragment extends Fragment implements
     @Override public void onPause() {
         super.onPause();
         if (sPercentagesAdjusted) syncPercentages();
-        PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -228,16 +228,6 @@ public class GivingFragment extends Fragment implements
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putBoolean(STATE_ADJUST, sPercentagesAdjusted);
         outState.putInt(STATE_POSITION, mPanePosition);
-    }
-
-    /**
-     * Applies magnitude preference changes generated from selecting related
-     * {@link #mParentActivity} options {@link android.view.MenuItem}.
-     */
-    @Override public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(UserPreferences.KEY_MAGNITUDE)) {
-            mMagnitude = Float.parseFloat(UserPreferences.getMagnitude(getContext()));
-        }
     }
 
     /**
@@ -284,8 +274,7 @@ public class GivingFragment extends Fragment implements
                         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                         return false;
                     }
-                    UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//                    UserPreferences.addEntriesToRemote(getContext());
+                    sUser.setDonation(String.valueOf(mAmountTotal));
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -307,8 +296,7 @@ public class GivingFragment extends Fragment implements
     @OnClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
-            UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//            UserPreferences.addEntriesToRemote(getContext());
+            sUser.setDonation(String.valueOf(mAmountTotal));
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -321,8 +309,7 @@ public class GivingFragment extends Fragment implements
      */
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
-        UserPreferences.setDonation(getContext(), String.valueOf(mAmountTotal));
-//        UserPreferences.addEntriesToRemote(getContext());
+        sUser.setDonation(String.valueOf(mAmountTotal));
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
