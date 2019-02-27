@@ -46,7 +46,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  */
 public class ConfigActivity extends PreferenceActivity {
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
-
+    public static final String ARG_ARRAY_COMPANY = "com.github.rjbx.givetrack.ui.arg.LIST_COMPANY";
     private static User mUser;
 
     /**

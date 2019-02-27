@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.ui.ConfigActivity;
 
@@ -27,11 +28,12 @@ public class AppUtilities {
     /**
      * Defines and launches Intent for displaying a {@link android.preference.PreferenceFragment}.
      */
-    public static void launchPreferenceFragment(Context context, User user, String action) {
+    public static void launchPreferenceFragment(Context context, String action, User user, Company[] companies) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, ConfigActivity.RecordPreferenceFragment.class.getName());
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
         filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, user);
+        if (companies != null) filterIntent.putExtra(ConfigActivity.ARG_ARRAY_COMPANY, companies);
         filterIntent.setAction(action);
         context.startActivity(filterIntent);
     }
