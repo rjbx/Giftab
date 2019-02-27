@@ -279,7 +279,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setPages(String pages) { this.pages = pages; }
     public String getRows() { return rows; }
     public void setRows(String rows){ this.rows = rows; }
-    public boolean isRecalibrate() { return recalibrate; }
+    public boolean getRecalibrate() { return recalibrate; }
     public void setRecalibrate(boolean recalibrate) { this.recalibrate = recalibrate; }
     public String getSearchSort() { return searchSort; }
     public void setSearchSort(String searchSort) { this.searchSort = searchSort; }
