@@ -46,6 +46,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+// TODO: Prevent database operation on fetch where entry lists are equivalent
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context, Map<String, Object> request) {

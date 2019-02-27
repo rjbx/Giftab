@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.DatePickerDialog;
 import android.net.Uri;
@@ -24,7 +23,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
 
-import android.preference.PreferenceActivity;
 import android.widget.DatePicker;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,15 +45,11 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.UserPreferences;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
@@ -74,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements
 
     public static final String ARGS_GIVING_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVING_ATTRIBUTES";
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
+    public static final String ARGS_USER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.USER_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
@@ -153,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(UserPreferences.getAnchor(this));
+                calendar.setTimeInMillis(mUser.getAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
@@ -190,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
                         mGivingArray[i++] = giving;
                     } while (cursor.moveToNext());
                 }
-                new StatusAsyncTask(this).execute(mGivingArray);
+                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new Record[cursor.getCount()];
@@ -388,6 +383,8 @@ public class MainActivity extends AppCompatActivity implements
                 Bundle argsRecord = new Bundle();
                 argsGiving.putParcelableArray(ARGS_GIVING_ATTRIBUTES, mGivingArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
+                argsGiving.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+                argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
                 switch (position) {
                     case 0: return GivingFragment.newInstance(argsGiving);
                     case 1: return GlanceFragment.newInstance(argsRecord);
@@ -420,48 +417,48 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     // TODO: Handled by accessor validation; factor out
-    /**
-     * Confirms whether item exists in collection table and updates status accordingly.
-     */
-    private static class StatusAsyncTask extends AsyncTask<Giving[], Void, Boolean> {
-
-        private WeakReference<MainActivity> mActivity;
-
-        /**
-         * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order
-         * to prevent memory leak.
-         */
-        StatusAsyncTask(MainActivity mainActivity) {
-            mActivity = new WeakReference<>(mainActivity);
-        }
-
-        /**
-         * Retrieves the item collection status.
-         */
-        @Override protected Boolean doInBackground(Giving[]... givingArray) {
-
-            Context context = mActivity.get().getBaseContext();
-            List<String> charities = UserPreferences.getCharities(context);
-            List<String> eins = new ArrayList<>();
-            for (String charity : charities) eins.add(charity.split(":")[0]);
-            if (context == null) return false;
-            Giving[] valuesArray = givingArray[0];
-            if (valuesArray == null || valuesArray.length == 0) return false;
-            Boolean isCurrent = true;
-            for (Giving giving: valuesArray) {
-               isCurrent = eins.contains(giving.getEin());
-            }
-            if (!isCurrent) DatabaseService.startActionFetchGiving(mActivity.get());
-            return isCurrent;
-        }
-
-        /**
-         * Updates the Fragment field corresponding to the item collection status.
-         */
-        @Override protected void onPostExecute(Boolean isCurrent) {
-            if (!isCurrent) {
-                mActivity.get().mPagerAdapter.notifyDataSetChanged();
-            }
-        }
-    }
+//    /**
+//     * Confirms whether item exists in collection table and updates status accordingly.
+//     */
+//    private static class StatusAsyncTask extends AsyncTask<Giving[], Void, Boolean> {
+//
+//        private WeakReference<MainActivity> mActivity;
+//
+//        /**
+//         * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order
+//         * to prevent memory leak.
+//         */
+//        StatusAsyncTask(MainActivity mainActivity) {
+//            mActivity = new WeakReference<>(mainActivity);
+//        }
+//
+//        /**
+//         * Retrieves the item collection status.
+//         */
+//        @Override protected Boolean doInBackground(Giving[]... givingArray) {
+//
+//            Context context = mActivity.get().getBaseContext();
+//            List<String> charities = UserPreferences.getCharities(context);
+//            List<String> eins = new ArrayList<>();
+//            for (String charity : charities) eins.add(charity.split(":")[0]);
+//            if (context == null) return false;
+//            Giving[] valuesArray = givingArray[0];
+//            if (valuesArray == null || valuesArray.length == 0) return false;
+//            Boolean isCurrent = true;
+//            for (Giving giving: valuesArray) {
+//               isCurrent = eins.contains(giving.getEin());
+//            }
+//            if (!isCurrent) DatabaseService.startActionFetchGiving(mActivity.get());
+//            return isCurrent;
+//        }
+//
+//        /**
+//         * Updates the Fragment field corresponding to the item collection status.
+//         */
+//        @Override protected void onPostExecute(Boolean isCurrent) {
+//            if (!isCurrent) {
+//                mActivity.get().mPagerAdapter.notifyDataSetChanged();
+//            }
+//        }
+//    }
 }
