@@ -1,17 +1,14 @@
 package com.github.rjbx.givetrack.data.entry;
 
 import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
@@ -43,6 +40,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private String minrating;
     private String pages;
     private String rows;
+    private boolean recalibrate;
     private String searchSort;
     private String searchOrder;
     private String recordSort;
@@ -80,6 +78,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         dest.writeString(minrating);
         dest.writeString(pages);
         dest.writeString(rows);
+        dest.writeInt(recalibrate ? 1 : 0);
         dest.writeString(searchSort);
         dest.writeString(searchOrder);
         dest.writeString(recordSort);
@@ -117,6 +116,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         minrating = source.readString();
         pages = source.readString();
         rows = source.readString();
+        recalibrate = source.readInt() == 1;
         searchSort = source.readString();
         searchOrder = source.readString();
         recordSort = source.readString();
@@ -150,6 +150,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.minrating = user.minrating;
         this.pages = user.pages;
         this.rows = user.rows;
+        this.recalibrate = user.recalibrate;
         this.searchSort = user.searchSort;
         this.searchOrder = user.searchOrder;
         this.recordSort = user.recordSort;
@@ -189,12 +190,13 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             String state,
             String zip,
             String minrating,
+            String pages,
+            String rows,
+            boolean recalibrate,
             String searchSort,
             String searchOrder,
             String recordSort,
             String recordOrder,
-            String pages,
-            String rows,
             long timeGiving,
             long timeRecord,
             long timeUser) {
@@ -221,6 +223,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.minrating = minrating;
         this.pages = pages;
         this.rows = rows;
+        this.recalibrate = recalibrate;
         this.searchSort = searchSort;
         this.searchOrder = searchOrder;
         this.recordSort = recordSort;
@@ -276,6 +279,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setPages(String pages) { this.pages = pages; }
     public String getRows() { return rows; }
     public void setRows(String rows){ this.rows = rows; }
+    public boolean isRecalibrate() { return recalibrate; }
+    public void setRecalibrate(boolean recalibrate) { this.recalibrate = recalibrate; }
     public String getSearchSort() { return searchSort; }
     public void setSearchSort(String searchSort) { this.searchSort = searchSort; }
     public String getSearchOrder() { return searchOrder; }
@@ -318,6 +323,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         map.put("minrating", minrating);
         map.put("pages", pages);
         map.put("rows", rows);
+        map.put("recalibrate", recalibrate);
         map.put("searchSort", searchSort);
         map.put("searchOrder", searchOrder);
         map.put("recordSort", recordSort);
@@ -349,9 +355,10 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         city = (String) map.get("city");
         state = (String) map.get("state");
         zip = (String) map.get("zip");
+        minrating = (String) map.get("minrating");
         pages = (String) map.get("pages");
         rows = (String) map.get("rows");
-        minrating = (String) map.get("minrating");
+        recalibrate = (boolean) map.get("recalibrate");
         searchSort = (String) map.get("searchSort");
         searchOrder = (String) map.get("searchOrder");
         recordSort = (String) map.get("recordSort");
@@ -383,9 +390,10 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         values.put(COLUMN_CITY, city);
         values.put(COLUMN_STATE,state);
         values.put(COLUMN_ZIP, zip);
+        values.put(COLUMN_MINRATING, minrating);
         values.put(COLUMN_PAGES, pages);
         values.put(COLUMN_ROWS, rows);
-        values.put(COLUMN_MINRATING, minrating);
+        values.put(COLUMN_RECALIBRATE, recalibrate);
         values.put(COLUMN_SEARCHSORT, searchSort);
         values.put(COLUMN_SEARCHORDER, searchOrder);
         values.put(COLUMN_RECORDSORT, recordSort);
@@ -420,6 +428,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.minrating = values.getAsString(COLUMN_MINRATING);
         this.pages = values.getAsString(COLUMN_PAGES);
         this.rows = values.getAsString(COLUMN_ROWS);
+        this.recalibrate = values.getAsBoolean(COLUMN_RECALIBRATE);
         this.searchSort = values.getAsString(COLUMN_SEARCHSORT);
         this.searchOrder = values.getAsString(COLUMN_SEARCHORDER);
         this.recordSort = values.getAsString(COLUMN_RECORDSORT);
@@ -462,6 +471,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.minrating = "";
         user.pages = "";
         user.rows = "";
+        user.recalibrate = false;
         user.searchSort = "";
         user.searchOrder = "";
         user.recordSort = "";

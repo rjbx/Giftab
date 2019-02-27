@@ -131,6 +131,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_MINRATING                  + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_PAGES                      + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_ROWS                       + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_RECALIBRATE                + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_SEARCHSORT                 + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_SEARCHORDER                + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_RECORDSORT                 + " TEXT NOT NULL, "                +

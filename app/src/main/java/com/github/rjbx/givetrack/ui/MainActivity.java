@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                AppUtilities.launchPreferenceFragment(this, ACTION_MAIN_INTENT, mUser, null);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_MAIN_INTENT);
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();

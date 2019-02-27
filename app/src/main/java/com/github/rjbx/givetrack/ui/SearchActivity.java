@@ -66,7 +66,6 @@ public class SearchActivity extends AppCompatActivity implements
     private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
-    private Search[] sValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mSearchDialog;
     private String mSnackbar;
@@ -141,7 +140,7 @@ public class SearchActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_filter):
-                AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT, mUser, sValuesArray);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -154,14 +153,14 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
-                sValuesArray = new Search[cursor.getCount()];
+                Search[] searches = new Search[cursor.getCount()];
                 int i = 0;
                 do {
                     Search search = new Search();
                     DatabaseAccessor.cursorRowToEntry(cursor, search);
-                    sValuesArray[i++] = search;
+                    searches[i++] = search;
                 } while (cursor.moveToNext());
-                mAdapter.swapValues(sValuesArray);
+                mAdapter.swapValues(searches);
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
@@ -233,7 +232,7 @@ public class SearchActivity extends AppCompatActivity implements
                     sDialogShown = true;
                     mUser.setSearchguide(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
-                    AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT, mUser, sValuesArray);
+                    AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
                     break;
                 default:
             }

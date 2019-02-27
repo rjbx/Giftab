@@ -75,7 +75,6 @@ public class RecordActivity extends AppCompatActivity implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private long mDeletedTime;
     private static boolean sDualPane;
-    private static Record[] sValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mRemoveDialog;
     private String mSnackbar;
@@ -144,7 +143,7 @@ public class RecordActivity extends AppCompatActivity implements
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_record):
-                AppUtilities.launchPreferenceFragment(this, ACTION_RECORD_INTENT, mUser, sValuesArray);
+                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_RECORD_INTENT);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -157,14 +156,14 @@ public class RecordActivity extends AppCompatActivity implements
         if (cursor == null || (!cursor.moveToFirst())) return;
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                sValuesArray = new Record[cursor.getCount()];
+                Record[] records = new Record[cursor.getCount()];
                 int i = 0;
                 do {
                     Record record = new Record();
                     DatabaseAccessor.cursorRowToEntry(cursor, record);
-                    sValuesArray[i++] = record;
+                    records[i++] = record;
                 } while (cursor.moveToNext());
-                mAdapter.swapValues(sValuesArray);
+                mAdapter.swapValues(records);
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
