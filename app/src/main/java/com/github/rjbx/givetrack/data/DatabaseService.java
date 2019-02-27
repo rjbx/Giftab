@@ -565,20 +565,16 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateGiving(Giving... givings) {
-
-        boolean recalibrate = givings[0].getPercent() == -1d;
-        // TODO: Dereference array element to update
-        if (recalibrate) for (Giving giving : givings) giving.setPercent(1d / givings.length);
-
         DISK_IO.execute(() -> DatabaseAccessor.addGiving(this, givings));
     }
 
-    private void handleActionUpdateRecord(Record... records) {}
+    private void handleActionUpdateRecord(Record... records) {
+        DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records));
+    }
 
     private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
     }
-
 
     /**
      * Handles action ResetData in the provided background thread.
