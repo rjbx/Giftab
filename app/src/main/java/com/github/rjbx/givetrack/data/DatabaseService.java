@@ -43,6 +43,8 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
+import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
+
 // TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
@@ -77,8 +79,7 @@ public class DatabaseService extends IntentService {
     private static final String EXTRA_LIST_VALUES = "com.github.rjbx.givetrack.data.extra.LIST_VALUES";
     private static final String EXTRA_ITEM_ID = "com.github.rjbx.givetrack.data.extra.ITEM_ID";
 
-    public static final String DEFAULT_VALUE_STR = "";
-    public static final int DEFAULT_VALUE_INT = -1;
+
 
     /**
      * Creates an {@link IntentService} instance.
@@ -428,6 +429,7 @@ public class DatabaseService extends IntentService {
             case ACTION_RESET_DATA: handleActionResetData();
         }
         // TODO: Decide whether AppWidget refresh should occur here, inside accessor local update helpers or ContentProvider notify helper
+        AppWidget.refresh(this);
     }
 
     /**
@@ -435,42 +437,9 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchSearch(HashMap apiRequest) {
 
-        Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
-        builder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this, apiRequest));
 
-        // Append required parameters
-        builder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-        builder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
-
-        boolean single = apiRequest.containsKey(FetchContract.PARAM_EIN);
-        if (single) builder.appendPath((String) apiRequest.get(FetchContract.PARAM_EIN));
-        else {
-            // Append optional parameters
-            for (String param : FetchContract.OPTIONAL_PARAMS) {
-                if (apiRequest.containsKey(param)) {
-                    String value = (String) apiRequest.get(param);
-                    if (value != null && !value.equals(""))
-                        builder.appendQueryParameter(param, value);
-                }
-            }
-        }
-
-        URL url = getUrl(builder.build());
-        NETWORK_IO.execute(() -> {
-            String uid = "";
-            for (User user : DatabaseAccessor.getUser(this, null)) if (user.getActive()) uid = user.getUid();
-
-            // Retrieve data
-            String response = requestResponseFromUrl(url);
-            if (response == null) return;
-            Search[] parsedResponse = parseSearches(response, uid, single);
-
-            // Store data
-            DatabaseAccessor.removeSearch(this, (Search) null);
-            DatabaseAccessor.addSearch(this, parsedResponse);
-        });
-
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -478,108 +447,20 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionFetchGiving() {
 
-        // TODO: Implement
-
-//        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
-//        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
-//        Uri template = templateBuilder.build();
-//
-//        List<String> charities = UserPreferences.getCharities(this);
-//        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
-//
-//        int charityCount = charities.size();
-//        Giving[] givings = new Giving[charityCount];
-//
-//        NETWORK_IO.execute(() -> {
-//
-//            for (int i = 0; i < charityCount; i++) {
-//
-//                String[] charityData = charities.get(i).split(":");
-//                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
-//
-//                charityBuilder.appendPath(charityData[0]);
-//
-//                // Append required parameters
-//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
-//
-//                Uri charityUri = charityBuilder.build();
-//
-//                URL url = getUrl(charityUri);
-//                Timber.e("Giving Fetched URL: %s", url);
-//                String response = requestResponseFromUrl(url);
-//                Timber.e("Giving Fetched Response: %s", response);
-//                Search search = parseSearches(response, true)[0];
-//                search.setPhone(charityData[1]);
-//                search.setEmail(charityData[2]);
-//                search.setImpact(charityData[4]);
-//                Giving giving = new Giving(search, Integer.parseInt(charityData[5]), charityData[3]);
-//                givings[i] = giving;
-//            }
-//
-//            DatabaseAccessor.removeGiving(this, null);
-//            DatabaseAccessor.addGiving(this, givings);
-//        });
-//
-//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this);
     }
 
     /**
      * Handles action FetchRecord in the provided background thread.
      */
     private void handleActionFetchRecord() {
-
-        // TODO: Implement
-
-//        Uri.Builder templateBuilder = Uri.parse(FetchContract.BASE_URL).buildUpon();
-//        templateBuilder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
-//        Uri template = templateBuilder.build();
-//
-//        List<String> charities = UserPreferences.getCharities(this);
-//        if (charities.isEmpty() || charities.get(0).isEmpty()) return;
-//
-//        int charityCount = charities.size();
-//        Record[] records = new Record[charityCount];
-//
-//        NETWORK_IO.execute(() -> {
-//
-//            for (int i = 0; i < charityCount; i++) {
-//
-//                String[] charityData = charities.get(i).split(":");
-//                Uri.Builder charityBuilder = Uri.parse(template.toString()).buildUpon();
-//
-//                charityBuilder.appendPath(charityData[0]);
-//
-//                // Append required parameters
-//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_ID, getString(R.string.cn_app_id));
-//                charityBuilder.appendQueryParameter(FetchContract.PARAM_APP_KEY, getString(R.string.cn_app_key));
-//
-//                Uri charityUri = charityBuilder.build();
-//
-//                URL url = getUrl(charityUri);
-//                Timber.e("Record Fetched URL: %s", url);
-//                String response = requestResponseFromUrl(url);
-//                Timber.e("Record Fetched Response: %s", response);
-//                Search search = parseSearches(response, true)[0];
-//                search.setPhone(charityData[1]);
-//                search.setEmail(charityData[2]);
-//                search.setImpact(charityData[4]);
-//                Record record = new Record(search, "", 0);
-//                records[i] = record;
-//            }
-//
-//            DatabaseAccessor.removeRecord(this, null);
-//            DatabaseAccessor.addRecord(this, records);
-//        });
-//
-//        AppWidgetManager awm = AppWidgetManager.getInstance(this);
-//        int[] ids = awm.getAppWidgetIds(new ComponentName(this, AppWidget.class));
-//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this);
+        
     }
 
-    private void handleActionFetchUser() {}
+    private void handleActionFetchUser() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this);
+    }
 
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
@@ -765,25 +646,6 @@ public class DatabaseService extends IntentService {
 
 
     /**
-     * Handles action UpdateTime in the provided background thread with the provided parameters.
-     */
-    private void handleActionUpdateTime(long oldTime, long newTime) {
-
-//        DISK_IO.execute(() -> {
-//            String formattedTime = String.valueOf(oldTime);
-//            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-//            record.setTime(newTime);
-//            DatabaseAccessor.removeRecord(this, String.valueOf(oldTime));
-//            DatabaseAccessor.addRecord(this, record);
-//
-//            updateTimePreferences(UserPreferences.getAnchor(this));
-//        });
-
-        AppWidget.refresh(this);
-    }
-
-
-    /**
      * Handles action ResetData in the provided background thread.
      */
     private void handleActionResetData() {
@@ -796,12 +658,6 @@ public class DatabaseService extends IntentService {
         });
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         AppWidget.refresh(this);
-    }
-
-    private void updateTimePreferences(long anchorTime) {
-
-        if (!UserPreferences.getHistorical(this)) UserPreferences.setAnchor(this, System.currentTimeMillis());
-        else UserPreferences.setAnchor(this, anchorTime);
     }
 
     private String urlToEmailAddress(String url) {
@@ -875,180 +731,5 @@ public class DatabaseService extends IntentService {
             }
         }
         return values;
-    }
-
-    /**
-     * Builds the proper {@link Uri} for requesting movie data.
-     * Users must register and reference a unique API key.
-     * API keys are available at http://api.charitynavigator.org/
-     * @return {@link Uri} for requesting data from the API service.
-     */
-    private static URL getUrl(Uri uri) {
-        URL url = null;
-        try {
-            String urlStr = URLDecoder.decode(uri.toString(), "UTF-8");
-            url = new URL(urlStr);
-            Timber.v("Fetch URL: %s", url.toString());
-        } catch (MalformedURLException|UnsupportedEncodingException e) {
-            Timber.e("Unable to convert Uri of %s to URL:", e.getMessage());
-        }
-        return url;
-    }
-
-    /**
-     * Returns the result of the HTTP request.
-     * @param url address from which to fetch the HTTP response.
-     * @return the result of the HTTP request; null if none received.
-     * @throws IOException caused by network and stream reading.
-     */
-    private static String requestResponseFromUrl(URL url) {
-
-        HttpURLConnection urlConnection = null;
-        String response = null;
-        try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = urlConnection.getInputStream();
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) response = scanner.next();
-            scanner.close();
-            Timber.v("Fetched Response: %s", response);
-        } catch (IOException e) {
-            Timber.e(e);
-        } finally {
-            if (urlConnection != null) urlConnection.disconnect();
-        }
-        return response;
-    }
-
-    /**
-     * This method parses JSON String of data API response and returns array of {@link Search}.
-     * @throws JSONException if JSON data cannot be properly parsed.
-     */
-    private static Search[] parseSearches(@NonNull String jsonResponse, String uid, boolean single) {
-
-        Search[] searches = null;
-        try {
-            if (single) {
-                searches = new Search[1];
-                searches[0] = parseSearch(new JSONObject(jsonResponse),uid);
-                Timber.v("Parsed Response: %s", searches[0].toString());
-            } else {
-                JSONArray charityArray = new JSONArray(jsonResponse);
-                searches = new Search[charityArray.length()];
-                for (int i = 0; i < charityArray.length(); i++) {
-                    JSONObject charityObject = charityArray.getJSONObject(i);
-                    Search search = parseSearch(charityObject, uid);
-                    searches[i] = search;
-                    Timber.v("Parsed Response: %s", search.toString());
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Timber.e(e);
-        }
-        return searches;
-    }
-
-    /**
-     * This method parses JSONObject of JSONArray and returns {@link Search}.
-     * @throws JSONException if JSON data cannot be properly parsed.
-     */
-    private static Search parseSearch(JSONObject charityObject, String uid) throws JSONException {
-
-        JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
-        String ein = charityObject.getString(FetchContract.KEY_EIN);
-        String name = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
-        String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
-        String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
-        String city = locationObject.getString(FetchContract.KEY_CITY);
-        String state = locationObject.getString(FetchContract.KEY_STATE);
-        String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
-        String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
-        String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
-
-        return new Search(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
-    }
-
-    /**
-     * Converts a null value returned from API response to default value.
-     */
-    private static String nullToDefaultStr(String str) {
-        return (str.equals("null")) ? DEFAULT_VALUE_STR : str;
-    }
-
-    /**
-     * Defines the request and response path and parameters for the data API service.
-     */
-    public static final class FetchContract {
-
-        private static final String BASE_URL = "https://api.data.charitynavigator.org/v2";
-        static final String API_PATH_ORGANIZATIONS = "Organizations";
-
-        // Query parameters
-        public static final String PARAM_APP_ID = "app_id";
-        public static final String PARAM_APP_KEY = "app_key";
-        public static final String PARAM_EIN = "ein";
-        public static final String PARAM_PAGE_NUM = "pageNum";
-        public static final String PARAM_PAGE_SIZE = "pageSize";
-        public static final String PARAM_SEARCH = "search";
-        public static final String PARAM_SEARCH_TYPE ="searchType";
-        public static final String PARAM_RATED = "rated";
-        public static final String PARAM_CATEGORY_ID = "categoryID";
-        public static final String PARAM_CAUSE_ID = "causeID";
-        public static final String PARAM_FILTER = "fundraisingOrgs";
-        public static final String PARAM_STATE = "state";
-        public static final String PARAM_CITY = "city";
-        public static final String PARAM_ZIP = "zip";
-        public static final String PARAM_MIN_RATING = "minRating";
-        public static final String PARAM_MAX_RATING = "maxRating";
-        public static final String PARAM_SIZE_RANGE = "sizeRange";
-        public static final String PARAM_DONOR_PRIVACY = "donorPrivacy";
-        public static final String PARAM_SCOPE_OF_WORK = "scopeOfWork";
-        public static final String PARAM_CFC_CHARITIES = "cfcCharities";
-        public static final String PARAM_NO_GOV_SUPPORT = "noGovSupport";
-        public static final String PARAM_SORT = "sort";
-
-        // Response keys
-        private static final String KEY_EIN = "ein";
-        private static final String KEY_CHARITY_NAME = "charityName";
-        private static final String KEY_LOCATION = "mailingAddress";
-        private static final String KEY_STREET_ADDRESS = "streetAddress1";
-        private static final String KEY_ADDRESS_DETAIL = "streetAddress2";
-        private static final String KEY_CITY = "city";
-        private static final String KEY_STATE = "stateOrProvince";
-        private static final String KEY_POSTAL_CODE = "postalCode";
-        private static final String KEY_WEBSITE_URL = "websiteURL";
-        private static final String KEY_PHONE_NUMBER = "phoneNumber";
-        private static final String KEY_EMAIL_ADDRESS = "generalEmail";
-        private static final String KEY_CURRENT_RATING = "currentRating";
-        private static final String KEY_RATING = "rating";
-        private static final String KEY_ADVISORIES = "advisories";
-        private static final String KEY_SEVERITY = "severity";
-        private static final String KEY_CHARITY_NAVIGATOR_URL = "charityNavigatorURL";
-        private static final String KEY_ERROR_MESSAGE = "errorMessage";
-
-        private static final String[] OPTIONAL_PARAMS = {
-                PARAM_PAGE_NUM,
-                PARAM_PAGE_SIZE,
-                PARAM_SEARCH,
-                PARAM_SEARCH_TYPE,
-                PARAM_RATED,
-                PARAM_CATEGORY_ID,
-                PARAM_CAUSE_ID,
-                PARAM_FILTER,
-                PARAM_STATE,
-                PARAM_CITY,
-                PARAM_ZIP,
-                PARAM_MIN_RATING,
-                PARAM_MAX_RATING,
-                PARAM_SIZE_RANGE,
-                PARAM_DONOR_PRIVACY,
-                PARAM_SCOPE_OF_WORK,
-                PARAM_CFC_CHARITIES,
-                PARAM_NO_GOV_SUPPORT,
-                PARAM_SORT
-        };
     }
 }

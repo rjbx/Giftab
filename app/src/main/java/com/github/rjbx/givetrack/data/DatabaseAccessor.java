@@ -8,13 +8,22 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
+import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
@@ -29,6 +38,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
@@ -39,6 +52,40 @@ import timber.log.Timber;
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context, Map<String, Object> request) {
+
+        Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
+        builder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
+
+        // Append required parameters
+        builder.appendQueryParameter(FetchContract.PARAM_APP_ID, context.getString(R.string.cn_app_id));
+        builder.appendQueryParameter(FetchContract.PARAM_APP_KEY, context.getString(R.string.cn_app_key));
+
+        boolean single = request.containsKey(FetchContract.PARAM_EIN);
+        if (single) builder.appendPath((String) request.get(FetchContract.PARAM_EIN));
+        else {
+            // Append optional parameters
+            for (String param : FetchContract.OPTIONAL_PARAMS) {
+                if (request.containsKey(param)) {
+                    String value = (String) request.get(param);
+                    if (value != null && !value.equals(""))
+                        builder.appendQueryParameter(param, value);
+                }
+            }
+        }
+        URL url = getUrl(builder.build());
+        String uid = "";
+        for (User user : getUser(context, null)) if (user.getActive()) uid = user.getUid();
+
+        // Retrieve data
+        String response = requestResponseFromUrl(url);
+        if (response == null) return;
+        Search[] parsedResponse = parseSearches(response, uid, single);
+
+        ContentResolver resolver = context.getContentResolver();
+
+        // Store data
+        removeEntriesFromLocal(resolver, Search.class, null);
+        addEntriesToLocal(resolver, Search.class, parsedResponse);
 
     }
 
@@ -331,5 +378,184 @@ public final class DatabaseAccessor {
         user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
         user.setActive(true);
         return user;
+    }
+
+
+    /**
+     * Builds the proper {@link Uri} for requesting movie data.
+     * Users must register and reference a unique API key.
+     * API keys are available at http://api.charitynavigator.org/
+     * @return {@link Uri} for requesting data from the API service.
+     */
+    private static URL getUrl(Uri uri) {
+        URL url = null;
+        try {
+            String urlStr = URLDecoder.decode(uri.toString(), "UTF-8");
+            url = new URL(urlStr);
+            Timber.v("Fetch URL: %s", url.toString());
+        } catch (MalformedURLException | UnsupportedEncodingException e) {
+            Timber.e("Unable to convert Uri of %s to URL:", e.getMessage());
+        }
+        return url;
+    }
+
+    /**
+     * Returns the result of the HTTP request.
+     * @param url address from which to fetch the HTTP response.
+     * @return the result of the HTTP request; null if none received.
+     * @throws IOException caused by network and stream reading.
+     */
+    private static String requestResponseFromUrl(URL url) {
+
+        HttpURLConnection urlConnection = null;
+        String response = null;
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = urlConnection.getInputStream();
+            Scanner scanner = new Scanner(in);
+            scanner.useDelimiter("\\A");
+            boolean hasInput = scanner.hasNext();
+            if (hasInput) response = scanner.next();
+            scanner.close();
+            Timber.v("Fetched Response: %s", response);
+        } catch (IOException e) {
+            Timber.e(e);
+        } finally {
+            if (urlConnection != null) urlConnection.disconnect();
+        }
+        return response;
+    }
+
+    /**
+     * This method parses JSON String of data API response and returns array of {@link Search}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static Search[] parseSearches(@NonNull String jsonResponse, String uid, boolean single) {
+
+        Search[] searches = null;
+        try {
+            if (single) {
+                searches = new Search[1];
+                searches[0] = parseSearch(new JSONObject(jsonResponse),uid);
+                Timber.v("Parsed Response: %s", searches[0].toString());
+            } else {
+                JSONArray charityArray = new JSONArray(jsonResponse);
+                searches = new Search[charityArray.length()];
+                for (int i = 0; i < charityArray.length(); i++) {
+                    JSONObject charityObject = charityArray.getJSONObject(i);
+                    Search search = parseSearch(charityObject, uid);
+                    searches[i] = search;
+                    Timber.v("Parsed Response: %s", search.toString());
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Timber.e(e);
+        }
+        return searches;
+    }
+
+    /**
+     * This method parses JSONObject of JSONArray and returns {@link Search}.
+     * @throws JSONException if JSON data cannot be properly parsed.
+     */
+    private static Search parseSearch(JSONObject charityObject, String uid) throws JSONException {
+
+        JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
+        String ein = charityObject.getString(FetchContract.KEY_EIN);
+        String name = charityObject.getString(FetchContract.KEY_CHARITY_NAME);
+        String street = locationObject.getString(FetchContract.KEY_STREET_ADDRESS);
+        String detail = locationObject.getString(FetchContract.KEY_ADDRESS_DETAIL);
+        String city = locationObject.getString(FetchContract.KEY_CITY);
+        String state = locationObject.getString(FetchContract.KEY_STATE);
+        String zip = locationObject.getString(FetchContract.KEY_POSTAL_CODE);
+        String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
+        String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
+
+        return new Search(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "0", 0);
+    }
+
+    /**
+     * Converts a null value returned from API response to default value.
+     */
+    private static String nullToDefaultStr(String str) {
+        return (str.equals("null")) ? DEFAULT_VALUE_STR : str;
+    }
+
+    public static final String DEFAULT_VALUE_STR = "";
+    public static final int DEFAULT_VALUE_INT = -1;
+
+    /**
+     * Defines the request and response path and parameters for the data API service.
+     */
+    public static final class FetchContract {
+
+        private static final String BASE_URL = "https://api.data.charitynavigator.org/v2";
+        static final String API_PATH_ORGANIZATIONS = "Organizations";
+
+        // Query parameters
+        public static final String PARAM_APP_ID = "app_id";
+        public static final String PARAM_APP_KEY = "app_key";
+        public static final String PARAM_EIN = "ein";
+        public static final String PARAM_PAGE_NUM = "pageNum";
+        public static final String PARAM_PAGE_SIZE = "pageSize";
+        public static final String PARAM_SEARCH = "search";
+        public static final String PARAM_SEARCH_TYPE ="searchType";
+        public static final String PARAM_RATED = "rated";
+        public static final String PARAM_CATEGORY_ID = "categoryID";
+        public static final String PARAM_CAUSE_ID = "causeID";
+        public static final String PARAM_FILTER = "fundraisingOrgs";
+        public static final String PARAM_STATE = "state";
+        public static final String PARAM_CITY = "city";
+        public static final String PARAM_ZIP = "zip";
+        public static final String PARAM_MIN_RATING = "minRating";
+        public static final String PARAM_MAX_RATING = "maxRating";
+        public static final String PARAM_SIZE_RANGE = "sizeRange";
+        public static final String PARAM_DONOR_PRIVACY = "donorPrivacy";
+        public static final String PARAM_SCOPE_OF_WORK = "scopeOfWork";
+        public static final String PARAM_CFC_CHARITIES = "cfcCharities";
+        public static final String PARAM_NO_GOV_SUPPORT = "noGovSupport";
+        public static final String PARAM_SORT = "sort";
+
+        // Response keys
+        private static final String KEY_EIN = "ein";
+        private static final String KEY_CHARITY_NAME = "charityName";
+        private static final String KEY_LOCATION = "mailingAddress";
+        private static final String KEY_STREET_ADDRESS = "streetAddress1";
+        private static final String KEY_ADDRESS_DETAIL = "streetAddress2";
+        private static final String KEY_CITY = "city";
+        private static final String KEY_STATE = "stateOrProvince";
+        private static final String KEY_POSTAL_CODE = "postalCode";
+        private static final String KEY_WEBSITE_URL = "websiteURL";
+        private static final String KEY_PHONE_NUMBER = "phoneNumber";
+        private static final String KEY_EMAIL_ADDRESS = "generalEmail";
+        private static final String KEY_CURRENT_RATING = "currentRating";
+        private static final String KEY_RATING = "rating";
+        private static final String KEY_ADVISORIES = "advisories";
+        private static final String KEY_SEVERITY = "severity";
+        private static final String KEY_CHARITY_NAVIGATOR_URL = "charityNavigatorURL";
+        private static final String KEY_ERROR_MESSAGE = "errorMessage";
+
+        private static final String[] OPTIONAL_PARAMS = {
+                PARAM_PAGE_NUM,
+                PARAM_PAGE_SIZE,
+                PARAM_SEARCH,
+                PARAM_SEARCH_TYPE,
+                PARAM_RATED,
+                PARAM_CATEGORY_ID,
+                PARAM_CAUSE_ID,
+                PARAM_FILTER,
+                PARAM_STATE,
+                PARAM_CITY,
+                PARAM_ZIP,
+                PARAM_MIN_RATING,
+                PARAM_MAX_RATING,
+                PARAM_SIZE_RANGE,
+                PARAM_DONOR_PRIVACY,
+                PARAM_SCOPE_OF_WORK,
+                PARAM_CFC_CHARITIES,
+                PARAM_NO_GOV_SUPPORT,
+                PARAM_SORT
+        };
     }
 }
