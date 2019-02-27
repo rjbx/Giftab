@@ -657,22 +657,20 @@ public class DatabaseService extends IntentService {
     private void handleActionRemoveRecord(Record... records) {
 
         DISK_IO.execute(() -> {
-//            String formattedTime = String.valueOf(time);
-//            Record record = DatabaseAccessor.getRecord(this, formattedTime).get(0);
-//            String ein = record.getEin();
-//            float rI = Float.parseFloat(record.getImpact());
-//            DatabaseAccessor.removeRecord(this, formattedTime);
-//
-//            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
-//            for (Giving giving : givings) {
-//                if (giving.getEin().equals(ein)) {
-//                    giving.setFrequency(giving.getFrequency() - 1);
-//                    float impact = Float.parseFloat(giving.getImpact()) - rI;
-//                    giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-//                    DatabaseAccessor.addGiving(this, giving);
-//                    break;
-//                }
-//            }
+            DatabaseAccessor.removeRecord(this, records);
+
+            List<Giving> givings = DatabaseAccessor.getGiving(this, null);
+            for (Giving giving : givings) {
+                for (Record record : records) {
+                    if (record.getEin().equals(giving.getEin())) {
+                        giving.setFrequency(giving.getFrequency() - 1);
+                        float impact = Float.parseFloat(giving.getImpact()) - Float.parseFloat(record.getImpact());
+                        giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+                        DatabaseAccessor.addGiving(this, giving);
+                        break;
+                    }
+                }
+            }
         });
 
         AppWidget.refresh(this);
