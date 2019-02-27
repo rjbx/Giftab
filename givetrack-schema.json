@@ -57,6 +57,7 @@
       "magnitude" : "0.1",
       "minrating" : "0",
       "pages" : "1",
+      "recalibrate" : false,
       "recordOrder" : "",
       "recordSort" : "",
       "rows" : "20",

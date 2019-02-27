@@ -31,8 +31,6 @@ import java.util.concurrent.Executor;
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
 
 // TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
-// TODO: Where uses of service methods with attribute parameters were replaced by those with entry parameters, ensure attributes propagate entries before passing to method
-
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */

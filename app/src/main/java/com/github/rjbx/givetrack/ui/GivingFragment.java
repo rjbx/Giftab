@@ -565,6 +565,7 @@ public class GivingFragment extends Fragment implements
             for (int i = 0; i < sPercentages.length; i++) {
                 sPercentages[i] = sValuesArray[i].getPercent();
             }
+            // TODO: Add helper to handle force reset as well as recalibration
             boolean adjusted = Calibrater.recalibrateRatings(sPercentages, sUser.getRecalibrate(), Calibrater.STANDARD_PRECISION);
             if (adjusted) {
                 syncPercentages();
