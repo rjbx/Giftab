@@ -429,7 +429,7 @@ public class DatabaseService extends IntentService {
             case ACTION_RESET_DATA: handleActionResetData();
         }
         // TODO: Decide whether AppWidget refresh should occur here, inside accessor local update helpers or ContentProvider notify helper
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -496,8 +496,6 @@ public class DatabaseService extends IntentService {
 
             DatabaseAccessor.addGiving(this, giving);
         });
-
-        AppWidget.refresh(this);
     }
 
     private void handleActionGiveRecord(Record record) {
@@ -520,7 +518,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, searches));
 
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -530,7 +528,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, givings));
 
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -555,7 +553,7 @@ public class DatabaseService extends IntentService {
             }
         });
 
-        AppWidget.refresh(this);
+        
     }
 
     private void handleActionRemoveUser(User... users) {
@@ -582,7 +580,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, (Search) null));
 
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -592,7 +590,7 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, (Giving) null));
 
-        AppWidget.refresh(this);
+        
     }
 
     /**
@@ -609,7 +607,7 @@ public class DatabaseService extends IntentService {
             } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
 
-        AppWidget.refresh(this);
+        
     }
 
     private void handleActionResetUser() {
@@ -633,7 +631,7 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> DatabaseAccessor.addGiving(this, givings));
 
 
-        AppWidget.refresh(this);
+        
     }
 
     private void handleActionUpdateRecord(Record... records) {}
@@ -641,7 +639,7 @@ public class DatabaseService extends IntentService {
     private void handleActionUpdateUser(User... user) {
         DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
 
-        AppWidget.refresh(this);
+        
     }
 
 
@@ -657,7 +655,7 @@ public class DatabaseService extends IntentService {
             DatabaseAccessor.removeUser(this, (User) null);
         });
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-        AppWidget.refresh(this);
+        
     }
 
     private String urlToEmailAddress(String url) {
