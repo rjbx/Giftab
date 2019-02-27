@@ -354,7 +354,7 @@ public class GivingFragment extends Fragment implements
             sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        // TODO: Replace with updateGiving: DatabaseService.startActionUpdatePercentages(getContext(), sValuesArray);
+        DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -365,7 +365,6 @@ public class GivingFragment extends Fragment implements
         Giving values = new Giving();
         values.setFrequency(1);
         DatabaseService.startActionUpdateFrequency(getContext());
-//        UserPreferences.addEntriesToRemote(mParentActivity);
     }
 
     /**

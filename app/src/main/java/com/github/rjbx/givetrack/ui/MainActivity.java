@@ -283,7 +283,6 @@ public class MainActivity extends AppCompatActivity implements
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-//                    UserPreferences.setAnchor(this, mAnchorTime);
                     mUser.setAnchor(mAnchorTime);
                     if (mDateDifference < 2) {
                         currentDialog.setMessage(getString(R.string.historical_dialog_message));
@@ -292,8 +291,7 @@ public class MainActivity extends AppCompatActivity implements
                         currentDialog.show();
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                    } else mUser.setHistorical(true);/* UserPreferences.setHistorical(this, true);*/
-//                    UserPreferences.addEntriesToRemote(this);
+                    } else mUser.setHistorical(true);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
@@ -303,14 +301,10 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_NEUTRAL:
                     mUser.setHistorical(true);
                     DatabaseService.startActionUpdateUser(this, mUser);
-//                    UserPreferences.setHistorical(this, true);
-//                    UserPreferences.addEntriesToRemote(this);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setHistorical(false);
                     DatabaseService.startActionUpdateUser(this, mUser);
-//                    UserPreferences.setHistorical(this, false);
-//                    UserPreferences.addEntriesToRemote(this);
                     break;
                 default:
             }
@@ -425,6 +419,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    // TODO: Handled by accessor validation; factor out
     /**
      * Confirms whether item exists in collection table and updates status accordingly.
      */

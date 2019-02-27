@@ -521,7 +521,9 @@ public class RecordActivity extends AppCompatActivity implements
                             break;
                         case AlertDialog.BUTTON_POSITIVE:
                             int position = (int) mDateDialog.getButton(DialogInterface.BUTTON_POSITIVE).getTag();
-                            DatabaseService.startActionUpdateRecord(RecordActivity.this, mValuesArray[position]);
+                            Record record = mValuesArray[position];
+                            record.setTime(mTime);
+                            DatabaseService.startActionUpdateRecord(RecordActivity.this, record);
                         default:
                     }
                 }
