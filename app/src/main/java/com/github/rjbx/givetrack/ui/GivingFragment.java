@@ -623,7 +623,6 @@ public class GivingFragment extends Fragment implements
                         case AlertDialog.BUTTON_NEGATIVE:
                             Giving giving = (Giving) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
-                            // TODO:
 //                                if (sValuesArray.length == 1) onDestroy();
                             DatabaseService.startActionRemoveGiving(getContext(), giving);
                             break;

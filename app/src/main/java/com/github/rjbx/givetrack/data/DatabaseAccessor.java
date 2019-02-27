@@ -46,9 +46,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-
-// TODO: Remotely persist removals
-
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context, Map<String, Object> request) {
@@ -88,8 +85,6 @@ public final class DatabaseAccessor {
         addEntriesToLocal(resolver, Search.class, parsedResponse);
 
     }
-
-    // TODO: For getters, replace ID parameter with entries or replace usage by passing loader callback data to service
 
     static List<Search> getSearch(Context context) {
         ContentResolver local = context.getContentResolver();
