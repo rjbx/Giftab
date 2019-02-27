@@ -85,7 +85,6 @@ public class SearchActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-//        sDialogShown = UserPreferences.getSearchguide(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, new DatabaseCallbacks(this));
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
         if (savedInstanceState != null) {
@@ -231,7 +230,6 @@ public class SearchActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
-//                    UserPreferences.setSearchguide(this, sDialogShown);
                     mUser.setSearchguide(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);

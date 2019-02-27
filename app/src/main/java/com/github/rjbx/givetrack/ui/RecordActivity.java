@@ -413,7 +413,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(mUser.getAnchor()/*UserPreferences.getAnchor(context)*/);
+                    calendar.setTimeInMillis(mUser.getAnchor());
                     DatePickerDialog datePicker = new DatePickerDialog(
                             context,
                             this,

@@ -47,7 +47,6 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
     private boolean mPendingResult;
-    private boolean mFirebaseUpdated;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseDatabase mFirebaseDatabase;
@@ -67,14 +66,6 @@ public class AuthActivity extends AppCompatActivity implements
         mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
-    }
-
-    /**
-     * Registers the Activity to listen for changes to the last Preference in UserPreferences
-     * in order to launch MainActivity.
-     */
-    @Override protected void onResume() {
-        super.onResume();
     }
 
     /**
