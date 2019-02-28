@@ -133,15 +133,14 @@ public class AuthActivity extends AppCompatActivity implements
         // TODO: Decouple remote authentication from database logic and access latter from service methods
             switch (launchingAction) {
                 case ACTION_SIGN_OUT:
-                    mFirebaseDatabase.getReference("users").child(user.getUid())
-                            .updateChildren(user.toParameterMap())
-                            .addOnCompleteListener(updatedChildrenTask ->
-                                    AuthUI.getInstance().signOut(AuthActivity.this)
-                                            .addOnCompleteListener(signedOutTask -> {
-                                                finish();
-                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                                Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
-                                            }));
+                    user.setActive(false);
+                    DatabaseService.startActionUpdateUser(this, user);
+                    AuthUI.getInstance().signOut(AuthActivity.this)
+                                .addOnCompleteListener(signedOutTask -> {
+                                    finish();
+                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                    Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
+                                });
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
