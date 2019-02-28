@@ -144,18 +144,14 @@ public class AuthActivity extends AppCompatActivity implements
                     DatabaseService.startActionResetData(AuthActivity.this);
                     FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                     if (firebaseUser == null || firebaseUser.getEmail() == null) return;
-                    String userId = firebaseUser.getUid();
                     firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
                             .addOnCompleteListener(signedOutTask ->
                                     firebaseUser.delete().addOnCompleteListener(completedTask -> {
                                         if (completedTask.isSuccessful()) {
-                                            mFirebaseDatabase.getReference("users").child(userId).removeValue()
-                                                    .addOnCompleteListener(removedValueTask -> {
                                                         AuthUI.getInstance().signOut(this);
                                                         finish();
                                                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
                                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                                    });
                                         }
                                     })
                             );
