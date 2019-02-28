@@ -434,7 +434,7 @@ public class GivingFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-        private Rateraid.Arrays mRateraidArrays;
+        private Rateraid.Arrays mRateraidArrays; // TODO: Replace with Rateraid.Object
 
         /**
          * Initializes percentage array and percentage button click handler and view updater.

@@ -128,7 +128,6 @@ public class AuthActivity extends AppCompatActivity implements
         for (User u : mUsers) if (u.getActive()) user = u;
 
         if (action != null) {
-        // TODO: Decouple remote authentication from database logic and access latter from service methods
             switch (action) {
                 case ACTION_SIGN_OUT:
                     user.setActive(false);
