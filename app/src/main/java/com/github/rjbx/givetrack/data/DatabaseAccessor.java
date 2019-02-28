@@ -46,7 +46,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-// TODO: Prevent database operation on fetch where entry lists are equivalent
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
@@ -344,6 +343,7 @@ public final class DatabaseAccessor {
                 });
     }
 
+// TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
