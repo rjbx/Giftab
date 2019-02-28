@@ -113,7 +113,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
         cursor.close();
-        handleAction();
+        handleAction(getIntent().getAction());
     }
 
     @Override
@@ -121,17 +121,15 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = null;
     }
 
-    private void handleAction() {
-
-        String launchingAction = getIntent().getAction();
+    private void handleAction(String action) {
 
         // TODO: Enable user selection
         User user = null;
         for (User u : mUsers) if (u.getActive()) user = u;
 
-        if (launchingAction != null) {
+        if (action != null) {
         // TODO: Decouple remote authentication from database logic and access latter from service methods
-            switch (launchingAction) {
+            switch (action) {
                 case ACTION_SIGN_OUT:
                     user.setActive(false);
                     DatabaseService.startActionUpdateUser(this, user);
