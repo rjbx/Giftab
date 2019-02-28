@@ -37,6 +37,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
                         CompanyEntry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER NOT NULL,"                      +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
@@ -60,6 +61,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
                         CompanyEntry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER NOT NULL," +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
@@ -85,7 +87,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
                         CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL," +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
