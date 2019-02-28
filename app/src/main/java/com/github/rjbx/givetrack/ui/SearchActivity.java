@@ -259,20 +259,19 @@ public class SearchActivity extends AppCompatActivity implements
     // TODO: Handled by accessor fetch; factor out
     private void fetchResults() {
         mSearchProgress.setVisibility(View.VISIBLE);
-        Context context = SearchActivity.this;
         HashMap<String, String> hashMap = new HashMap<>();
-//        if (mUser.getFocus()/*UserPreferences.getFocus(context)*/) hashMap.put(DatabaseService.FetchContract.PARAM_EIN, mUser.getCompany()/*UserPreferences.getEin(context)*/);
-//        else {
-//            hashMap.put(DatabaseService.FetchContract.PARAM_SEARCH, mUser.getTerm()/* UserPreferences.getTerm(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_CITY, mUser.getCity() /* UserPreferences.getCity(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_STATE, mUser.getState() /* UserPreferences.getState(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_ZIP, mUser.getZip() /* UserPreferences.getZip(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_MIN_RATING, mUser.getMinrating() /* UserPreferences.getMinrating(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_FILTER, mUser.getFilter() /* UserPreferences.getFilter(context) */ ? "1" : "0");
-//            hashMap.put(DatabaseService.FetchContract.PARAM_SORT, mUser.getSearchSort() /* UserPreferences.getSearchSort(context) */ + ":" + mUser.getSearchOrder() /* UserPreferences.getSearchOrder(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_NUM, mUser.getPages() /* UserPreferences.getPages(context) */);
-//            hashMap.put(DatabaseService.FetchContract.PARAM_PAGE_SIZE, mUser.getRows() /* UserPreferences.getRows(context) */);
-//        }
+        if (mUser.getFocus()) hashMap.put(DatabaseAccessor.FetchContract.PARAM_EIN, mUser.getCompany());
+        else {
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, mUser.getTerm());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_CITY, mUser.getCity());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_STATE, mUser.getState());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_ZIP, mUser.getZip());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, mUser.getMinrating());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_FILTER, mUser.getFilter() ? "1" : "0");
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_SORT, mUser.getSearchSort() + ":" + mUser.getSearchOrder());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, mUser.getPages());
+            hashMap.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, mUser.getRows());
+        }
         DatabaseService.startActionFetchSearch(getBaseContext(), hashMap);
         mSnackbar = getString(R.string.message_search_refresh);
     }
