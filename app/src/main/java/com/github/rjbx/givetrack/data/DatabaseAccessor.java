@@ -49,7 +49,32 @@ import timber.log.Timber;
 // TODO: Prevent database operation on fetch where entry lists are equivalent
 public final class DatabaseAccessor {
 
-    static void fetchSearch(Context context, Map<String, Object> request) {
+    static void fetchSearch(Context context) {
+        ContentResolver local = context.getContentResolver();
+        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
+
+        Uri contentUri = UserEntry.CONTENT_URI_USER;
+        Cursor cursor = local.query(
+                contentUri, null, null, null, null
+        );
+        List<User> entries = getEntryListFromCursor(cursor, User.class);
+        
+        User user = null;
+        for (User u : entries) if (u.getActive()) user = u;
+        
+        Map<String, String> request = new HashMap<>();
+        if (user.getFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getCompany());
+        else {
+            request.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, user.getTerm());
+            request.put(DatabaseAccessor.FetchContract.PARAM_CITY, user.getCity());
+            request.put(DatabaseAccessor.FetchContract.PARAM_STATE, user.getState());
+            request.put(DatabaseAccessor.FetchContract.PARAM_ZIP, user.getZip());
+            request.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, user.getMinrating());
+            request.put(DatabaseAccessor.FetchContract.PARAM_FILTER, user.getFilter() ? "1" : "0");
+            request.put(DatabaseAccessor.FetchContract.PARAM_SORT, user.getSearchSort() + ":" + user.getSearchOrder());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, user.getPages());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, user.getRows());
+        }
 
         Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
         builder.appendPath(FetchContract.API_PATH_ORGANIZATIONS);
@@ -72,7 +97,7 @@ public final class DatabaseAccessor {
         }
         URL url = getUrl(builder.build());
         String uid = "";
-        for (User user : getUser(context, null)) if (user.getActive()) uid = user.getUid();
+        for (User u : getUser(context, null)) if (user.getActive()) uid = u.getUid();
 
         // Retrieve data
         String response = requestResponseFromUrl(url);

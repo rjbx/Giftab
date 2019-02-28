@@ -76,10 +76,10 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionFetchSearch(Context context, HashMap<String, String> apiRequest) {
+    public static void startActionFetchSearch(Context context) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_SEARCH);
-        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
+//        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
 
@@ -330,8 +330,8 @@ public class DatabaseService extends IntentService {
         final String action = intent.getAction();
         switch (action) {
             case ACTION_FETCH_SEARCH:
-                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
-                handleActionFetchSearch(fetchSearchMap);
+//                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
+                handleActionFetchSearch();
                 break;
             case ACTION_FETCH_GIVING:
                 handleActionFetchGiving();
@@ -403,8 +403,8 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action FetchSearch in the provided background thread with the provided parameters.
      */
-    private void handleActionFetchSearch(HashMap apiRequest) {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this, apiRequest));
+    private void handleActionFetchSearch() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this));
     }
 
     /**

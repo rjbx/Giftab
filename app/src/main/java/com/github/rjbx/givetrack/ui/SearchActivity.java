@@ -259,20 +259,8 @@ public class SearchActivity extends AppCompatActivity implements
     // TODO: Handled by accessor fetch; factor out
     private void fetchResults() {
         mSearchProgress.setVisibility(View.VISIBLE);
-        HashMap<String, String> hashMap = new HashMap<>();
-        if (mUser.getFocus()) hashMap.put(DatabaseAccessor.FetchContract.PARAM_EIN, mUser.getCompany());
-        else {
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, mUser.getTerm());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_CITY, mUser.getCity());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_STATE, mUser.getState());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_ZIP, mUser.getZip());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, mUser.getMinrating());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_FILTER, mUser.getFilter() ? "1" : "0");
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_SORT, mUser.getSearchSort() + ":" + mUser.getSearchOrder());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, mUser.getPages());
-            hashMap.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, mUser.getRows());
-        }
-        DatabaseService.startActionFetchSearch(getBaseContext(), hashMap);
+
+        DatabaseService.startActionFetchSearch(getBaseContext());
         mSnackbar = getString(R.string.message_search_refresh);
     }
 
