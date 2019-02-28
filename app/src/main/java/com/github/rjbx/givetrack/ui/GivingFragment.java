@@ -571,8 +571,10 @@ public class GivingFragment extends Fragment implements
             else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) {
                 syncPercentages();
-                sUser.setRecalibrate(false);
-                DatabaseService.startActionUpdateUser(getContext(), sUser);
+                if (recalibrate) {
+                    sUser.setRecalibrate(false);
+                    DatabaseService.startActionUpdateUser(getContext(), sUser);
+                }
             }
             notifyDataSetChanged();
         }
