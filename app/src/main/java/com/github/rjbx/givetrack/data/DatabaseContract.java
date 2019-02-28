@@ -109,7 +109,7 @@ public final class DatabaseContract {
         public static final String COLUMN_FUNDRAISING = "fundraising";
         public static final String COLUMN_PAGES = "pages";
         public static final String COLUMN_ROWS = "rows";
-        public static final String COLUMN_RECALIBRATE = "recalibrate";
+        public static final String COLUMN_RATINGRESET = "ratingReset";
         public static final String COLUMN_SEARCHSORT = "sortSearch";
         public static final String COLUMN_SEARCHORDER = "orderSearch";
         public static final String COLUMN_RECORDSORT = "sortRecord";

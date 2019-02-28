@@ -566,13 +566,13 @@ public class GivingFragment extends Fragment implements
                 sPercentages[i] = sValuesArray[i].getPercent();
             }
             boolean adjusted;
-            boolean recalibrate = sUser.getRecalibrate();
+            boolean recalibrate = sUser.getRatingReset();
             if (recalibrate) adjusted = Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
             else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) {
                 syncPercentages();
                 if (recalibrate) {
-                    sUser.setRecalibrate(false);
+                    sUser.setRatingReset(false);
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
                 }
             }

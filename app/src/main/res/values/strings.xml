@@ -151,7 +151,7 @@
     <string name="pref_gender_key" translatable="false">gender</string>
     <string name="pref_birthdate_key" translatable="false">birthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
-    <string name="pref_recalibrate_key" translatable="false">recalibrate</string>
+    <string name="pref_recalibrate_key" translatable="false">ratingReset</string>
     <string name="pref_magnitude_key" translatable="false">magnitude</string>
     <string name="pref_company_key" translatable="false">company</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
