@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
     private long mAnchorTime;
     private int mDateDifference;
     private AlertDialog mAnchorDialog;
+    private AlertDialog mCurrentDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
@@ -269,10 +270,20 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
+     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
+     */
+    private void launchCustomTabs(String url) {
+        new CustomTabsIntent.Builder()
+                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                .build()
+                .launchUrl(this, Uri.parse(url));
+        getIntent().setAction(ACTION_CUSTOM_TABS);
+    }
+
+    /**
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
-        AlertDialog currentDialog = new AlertDialog.Builder(this).create();
         if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -281,18 +292,19 @@ public class MainActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setAnchor(mAnchorTime);
                     if (mDateDifference < 2) {
-                        currentDialog.setMessage(getString(R.string.historical_dialog_message));
-                        currentDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                        currentDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                        currentDialog.show();
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                        currentDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                    } else mUser.setHistorical(true);
+                        mCurrentDialog = new AlertDialog.Builder(this).create();
+                        mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
+                        mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                        mCurrentDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+                        mCurrentDialog.show();
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+                    }
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
             }
-        } else if (dialog == currentDialog) {
+        } else if (dialog == mCurrentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     mUser.setHistorical(true);
@@ -305,17 +317,6 @@ public class MainActivity extends AppCompatActivity implements
                 default:
             }
         }
-    }
-
-    /**
-     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
-     */
-    private void launchCustomTabs(String url) {
-        new CustomTabsIntent.Builder()
-                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
-                .build()
-                .launchUrl(this, Uri.parse(url));
-        getIntent().setAction(ACTION_CUSTOM_TABS);
     }
 
     /**
