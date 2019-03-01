@@ -103,6 +103,7 @@ public class ConfigActivity extends PreferenceActivity {
      */
     private static void changeUser(Preference changedPreference, Object newValue) {
 
+        if (newValue == null) return;
         String preferenceKey = changedPreference.getKey();
         Map<String, Object> map = mUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
@@ -212,9 +213,9 @@ public class ConfigActivity extends PreferenceActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
-            mUser.setBirthdate(birthdate);
-            DatabaseService.startActionUpdateUser(getContext(), mUser);
+//            mUser.setBirthdate(birthdate);
         }
+
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
