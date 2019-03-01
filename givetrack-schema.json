@@ -61,13 +61,16 @@
       "recordOrder" : "",
       "recordSort" : "",
       "rows" : "20",
-      "searchOrder" : "",
-      "searchSort" : "",
+      "searchOrder" : "RATING",
+      "searchSort" : "DESC",
       "searchguide" : false,
       "state" : "",
       "term" : "",
       "theme" : 0,
+      "timegiving" : 0,
+      "timerecord" : 0,
       "timetrack" : 0,
+      "timeuser" : 0,
       "viewtrack" : false,
       "zip" : ""
     }
