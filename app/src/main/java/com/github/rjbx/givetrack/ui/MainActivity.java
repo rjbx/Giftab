@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseAccessor.cursorRowToEntry(cursor, user);
                         if (user.getActive())
                             mUser = user;
+                            if (!mUser.getHistorical()) mUser.setAnchor(System.currentTimeMillis());
                     } while (cursor.moveToNext());
                 }
                 break;
@@ -258,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
         String formattedDate = DATE_FORMATTER.format(mAnchorTime);
         
         mDateDifference = calendar.compareTo(Calendar.getInstance());
-        String qualifier = mDateDifference < 2 ? "" : "past ";
+        String qualifier = mDateDifference < 0 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
         mAnchorDialog.setMessage(getString(R.string.anchor_dialog_message, formattedDate, qualifier));
