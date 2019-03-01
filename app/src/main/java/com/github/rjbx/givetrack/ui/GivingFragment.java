@@ -52,7 +52,9 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -362,18 +364,17 @@ public class GivingFragment extends Fragment implements
         }
         DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
 
-        Record[] record = new Record[sValuesArray.length];
+        List<Record> record = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
-            record[i] = Record.fromSuper(sValuesArray[i].getSuper());
-            if (sValuesArray[i].getPercent() == 0d) {
-                double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-                long time = System.currentTimeMillis();
-                record[i].setStamp(time);
-                record[i].setTime(time);
-                record[i].setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
-            }
+            if (sValuesArray[i].getPercent() == 0d) continue;
+            double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
+            long time = System.currentTimeMillis();
+            record.add(Record.fromSuper(sValuesArray[i].getSuper()));
+            record.get(record.size() - 1).setStamp(time);
+            record.get(record.size() - 1).setTime(time);
+            record.get(record.size() - 1).setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
         }
-        DatabaseService.startActionUpdateRecord(getContext(), record);
+        DatabaseService.startActionUpdateRecord(getContext(), record.toArray(new Record[record.size()]));
     }
 
     /**
