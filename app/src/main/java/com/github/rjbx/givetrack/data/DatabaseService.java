@@ -466,13 +466,14 @@ public class DatabaseService extends IntentService {
 
     private void handleActionRecordGive(Giving... giving) {
 
+        Record[] record = new Record[giving.length];
         for (int i = 0; i < giving.length; i++) {
             long time = System.currentTimeMillis();
-            Record record = Record.fromSuper(giving[i].getSuper());
-            record.setStamp(time);
-            record.setTime(time);
-            DatabaseAccessor.addRecord(this, record);
+            record[i] = Record.fromSuper(giving[i].getSuper());
+            record[i].setStamp(time);
+            record[i].setTime(time);
         }
+        DatabaseAccessor.addRecord(this, record);
     }
 
     /**
