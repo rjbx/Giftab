@@ -354,7 +354,7 @@ public class GivingFragment extends Fragment implements
         for (int i = 0; i < sValuesArray.length; i++) {
             sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
             double impact = Float.parseFloat(sValuesArray[i].getImpact()) + (sPercentages[i] * mAmountTotal);
-            sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2d", impact));
+            sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", impact));
         }
         DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
         DatabaseService.startActionRecordGive(getContext(), sValuesArray);
