@@ -354,8 +354,9 @@ public class GivingFragment extends Fragment implements
     private void syncDonations() {
 
         for (int i = 0; i < sValuesArray.length; i++) {
+            if (sValuesArray[i].getPercent() == 0d) continue;
             sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
-            double transactionImpact = sPercentages[i] * mAmountTotal;
+            double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
             double totalImpact = Float.parseFloat(sValuesArray[i].getImpact()) + transactionImpact;
             sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
@@ -363,11 +364,12 @@ public class GivingFragment extends Fragment implements
 
         Record[] record = new Record[sValuesArray.length];
         for (int i = 0; i < sValuesArray.length; i++) {
+            if (sValuesArray[i].getPercent() == 0d) continue;
+            double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
             long time = System.currentTimeMillis();
             record[i] = Record.fromSuper(sValuesArray[i].getSuper());
             record[i].setStamp(time);
             record[i].setTime(time);
-            double transactionImpact = sPercentages[i] * mAmountTotal;
             record[i].setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
 
         }
