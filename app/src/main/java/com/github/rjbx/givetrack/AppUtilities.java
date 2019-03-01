@@ -48,7 +48,7 @@ public class AppUtilities {
                 return ConfigActivity.SearchPreferenceFragment.class.getName();
             case MainActivity.ACTION_MAIN_INTENT:
                 return ConfigActivity.GivingPreferenceFragment.class.getName();
-            return null;
+            default: return null;
         }
     }
 }
