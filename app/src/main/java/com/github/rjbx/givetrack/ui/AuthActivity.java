@@ -92,6 +92,7 @@ public class AuthActivity extends AppCompatActivity implements
                 User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 for (int i = 0; i < mUsers.size(); i++)
                     mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                if (mUsers.size() == 1 && mUsers.get(0).getBirthdate() == null) mUsers.remove(0);
                 mUsers.add(activeUser);
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
 
