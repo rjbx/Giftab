@@ -203,7 +203,8 @@ public class MainActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(cursor, user);
-                        if (user.getActive()) mUser = user;
+                        if (user.getActive())
+                            mUser = user;
                     } while (cursor.moveToNext());
                 }
                 break;

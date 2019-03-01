@@ -351,9 +351,9 @@ public class GivingFragment extends Fragment implements
      * Syncs donations to database.
      */
     private void syncDonations() {
-        Giving values = new Giving();
-        values.setFrequency(1);
-        DatabaseService.startActionUpdateFrequency(getContext());
+        for (int i = 0; i < sValuesArray.length; i++)
+            sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
+        DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
     }
 
     /**
