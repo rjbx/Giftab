@@ -42,13 +42,18 @@ public class AppUtilities {
 
     public static String getPreferenceFragmentName(String action) {
         switch (action) {
-            case RecordActivity.ACTION_RECORD_INTENT:
-                return ConfigActivity.RecordPreferenceFragment.class.getName();
-            case SearchActivity.ACTION_SEARCH_INTENT:
-                return ConfigActivity.SearchPreferenceFragment.class.getName();
             case MainActivity.ACTION_MAIN_INTENT:
                 return ConfigActivity.GivingPreferenceFragment.class.getName();
-            default: return null;
+            case SearchActivity.ACTION_SEARCH_INTENT:
+                return ConfigActivity.SearchPreferenceFragment.class.getName();
+            case RecordActivity.ACTION_RECORD_INTENT:
+                return ConfigActivity.RecordPreferenceFragment.class.getName();
+            default: throw new IllegalArgumentException(
+                    String.format("Action must derive from %s, %s or %s",
+                            MainActivity.ACTION_MAIN_INTENT,
+                            SearchActivity.ACTION_SEARCH_INTENT,
+                            RecordActivity.ACTION_RECORD_INTENT
+                    ));
         }
     }
 }
