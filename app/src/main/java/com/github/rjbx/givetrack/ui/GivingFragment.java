@@ -123,8 +123,6 @@ public class GivingFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
-        mAmountTotal = Float.parseFloat(sUser.getDonation());
-        mMagnitude = Float.parseFloat(sUser.getMagnitude());
         sPercentagesAdjusted = false;
 
         Bundle args = getArguments();
@@ -140,6 +138,9 @@ public class GivingFragment extends Fragment implements
             }
             sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
         }
+
+        mAmountTotal = Float.parseFloat(sUser.getDonation());
+        mMagnitude = Float.parseFloat(sUser.getMagnitude());
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
