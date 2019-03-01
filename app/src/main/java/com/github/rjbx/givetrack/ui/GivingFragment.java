@@ -368,14 +368,16 @@ public class GivingFragment extends Fragment implements
         for (int i = 0; i < sValuesArray.length; i++) {
             if (sValuesArray[i].getPercent() == 0d) continue;
             double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-            long time = System.currentTimeMillis() + i;
+            long time = sUser.getAnchor() + i;
             record.add(Record.fromSuper(sValuesArray[i].getSuper()));
             record.get(record.size() - 1).setStamp(time);
-            if (sUser.getHistorical()) time = sUser.getAnchor() + i;
             record.get(record.size() - 1).setTime(time);
             record.get(record.size() - 1).setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
         }
         DatabaseService.startActionUpdateRecord(getContext(), record.toArray(new Record[record.size()]));
+        if (sUser.getHistorical()) return;
+        sUser.setAnchor(System.currentTimeMillis());
+        DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
 
     /**
