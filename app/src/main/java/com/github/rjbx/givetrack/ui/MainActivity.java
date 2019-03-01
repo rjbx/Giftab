@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(mUser.getAnchor());
+                if (mUser.getHistorical()) calendar.setTimeInMillis(mUser.getAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
