@@ -138,10 +138,11 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRecordGive(Context context, Giving giving) {
+    public static void startActionRecordGive(Context context, Giving... giving) {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RECORD_GIVE);
-        intent.putExtra(EXTRA_ITEM_VALUES, giving);
+        if (giving.length > 1) intent.putExtra(EXTRA_LIST_VALUES, giving);
+        intent.putExtra(EXTRA_ITEM_VALUES, giving[0]);
         context.startService(intent);
     }
 
@@ -343,7 +344,9 @@ public class DatabaseService extends IntentService {
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_RECORD_GIVE:
-                handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                if (intent.hasExtra(EXTRA_LIST_VALUES))
+                    handleActionRecordGive(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Giving.class));
+                else handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_SEARCH:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -461,13 +464,15 @@ public class DatabaseService extends IntentService {
         });
     }
 
-    private void handleActionRecordGive(Giving giving) {
+    private void handleActionRecordGive(Giving... giving) {
 
-         long time = System.currentTimeMillis();
-         Record record = Record.fromSuper(giving.getSuper());
-         record.setStamp(time);
-         record.setTime(time);
-         DatabaseAccessor.addRecord(this, record);
+        for (int i = 0; i < giving.length; i++) {
+            long time = System.currentTimeMillis();
+            Record record = Record.fromSuper(giving[i].getSuper());
+            record.setStamp(time);
+            record.setTime(time);
+            DatabaseAccessor.addRecord(this, record);
+        }
     }
 
     /**
