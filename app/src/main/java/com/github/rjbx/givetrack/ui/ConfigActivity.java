@@ -221,22 +221,23 @@ public class ConfigActivity extends PreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-            if (getString(R.string.pref_birthdate_key).equals(preference.getKey()));
-            Calendar calendar = Calendar.getInstance();
-            String birthdate = mUser.getBirthdate();
-            String[] birthdateParams = birthdate.split("/");
-            calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-            preference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
-            preference.setOnPreferenceClickListener(clickedPreference -> {
-                DatePickerDialog datePicker = new DatePickerDialog(
-                        getActivity(),
-                        UserPreferenceFragment.this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH));
-                datePicker.show();
-                return false;
-            });
+            if (getString(R.string.pref_birthdate_key).equals(preference.getKey())) {
+                Calendar calendar = Calendar.getInstance();
+                String birthdate = mUser.getBirthdate();
+                String[] birthdateParams = birthdate.split("/");
+                calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
+                preference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
+                preference.setOnPreferenceClickListener(clickedPreference -> {
+                    DatePickerDialog datePicker = new DatePickerDialog(
+                            getActivity(),
+                            UserPreferenceFragment.this,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH));
+                    datePicker.show();
+                    return false;
+                });
+            }
 
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
