@@ -47,6 +47,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -206,7 +207,12 @@ public class MainActivity extends AppCompatActivity implements
                         DatabaseAccessor.cursorRowToEntry(cursor, user);
                         if (user.getActive())
                             mUser = user;
-                            if (!mUser.getHistorical()) mUser.setAnchor(System.currentTimeMillis());
+                            long difference = System.currentTimeMillis() - mUser.getAnchor();
+                            int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.DAYS);
+                            if (!mUser.getHistorical() && days > 0) {
+                                mUser.setAnchor(System.currentTimeMillis());
+                                DatabaseService.startActionUpdateUser(this, mUser);
+                            }
                     } while (cursor.moveToNext());
                 }
                 break;
