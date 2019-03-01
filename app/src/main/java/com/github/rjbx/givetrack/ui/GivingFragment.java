@@ -353,9 +353,10 @@ public class GivingFragment extends Fragment implements
     private void syncDonations() {
         for (int i = 0; i < sValuesArray.length; i++) {
             sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
-            DatabaseService.startActionRecordGive(getContext(), sValuesArray[i]);
+            sValuesArray[i].setImpact(String.format("%.2s", Float.parseFloat(sValuesArray[i].getImpact()) + mAmountTotal));
         }
         DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
+        DatabaseService.startActionRecordGive(getContext(), sValuesArray);
     }
 
     /**
