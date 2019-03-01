@@ -100,11 +100,9 @@ public final class DatabaseAccessor {
         if (response == null) return;
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
-        ContentResolver resolver = context.getContentResolver();
-
         // Store data
-        removeEntriesFromLocal(resolver, Search.class, null);
-        addEntriesToLocal(resolver, Search.class, parsedResponse);
+        removeEntriesFromLocal(local, Search.class, null);
+        addEntriesToLocal(local, Search.class, parsedResponse);
 
     }
 
