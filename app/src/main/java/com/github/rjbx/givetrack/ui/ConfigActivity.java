@@ -39,6 +39,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
+// TODO: Correct PreferenceChangeListener definitions to prevent crash
 /**
  * Presents a set of application settings.
  */
@@ -78,14 +79,13 @@ public class ConfigActivity extends PreferenceActivity {
      */
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        boolean isValid = PreferenceFragment.class.getName().equals(fragmentName)
+        return PreferenceFragment.class.getName().equals(fragmentName)
                 || UserPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
                 || GivingPreferenceFragment.class.getName().equals(fragmentName)
                 || RecordPreferenceFragment.class.getName().equals(fragmentName)
                 || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
-        return isValid;
     }
 
     /**
