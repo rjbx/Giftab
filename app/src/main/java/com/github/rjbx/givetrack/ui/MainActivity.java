@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements
                         mGivingArray[i++] = giving;
                     } while (cursor.moveToNext());
                 }
-                DatabaseService.startActionFetchGiving(this);
+//                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new Record[cursor.getCount()];
