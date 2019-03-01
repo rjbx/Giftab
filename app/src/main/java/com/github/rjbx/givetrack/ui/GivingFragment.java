@@ -47,6 +47,7 @@ import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
 
@@ -351,13 +352,26 @@ public class GivingFragment extends Fragment implements
      * Syncs donations to database.
      */
     private void syncDonations() {
+
         for (int i = 0; i < sValuesArray.length; i++) {
             sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
-            double impact = Float.parseFloat(sValuesArray[i].getImpact()) + (sPercentages[i] * mAmountTotal);
-            sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+            double transactionImpact = sPercentages[i] * mAmountTotal;
+            double totalImpact = Float.parseFloat(sValuesArray[i].getImpact()) + transactionImpact;
+            sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
         DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
-        DatabaseService.startActionRecordGive(getContext(), sValuesArray);
+
+        Record[] record = new Record[sValuesArray.length];
+        for (int i = 0; i < sValuesArray.length; i++) {
+            long time = System.currentTimeMillis();
+            record[i] = Record.fromSuper(sValuesArray[i].getSuper());
+            record[i].setStamp(time);
+            record[i].setTime(time);
+            double transactionImpact = sPercentages[i] * mAmountTotal;
+            record[i].setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+
+        }
+        DatabaseService.startActionUpdateRecord(getContext(), record);
     }
 
     /**
