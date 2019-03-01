@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
         }
-        if (mGivingArray != null && mRecordArray != null) {
+        if (mGivingArray != null && mRecordArray != null && mUser != null) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
