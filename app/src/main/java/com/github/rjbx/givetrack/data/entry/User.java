@@ -451,7 +451,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.uid = "";
         user.email = "";
         user.active = true;
-        user.birthdate = "";
+        user.birthdate = "0/0/2000";
         user.gender = "";
         user.donation = "0";
         user.magnitude = "0.01";
