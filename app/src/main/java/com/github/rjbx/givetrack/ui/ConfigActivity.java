@@ -78,13 +78,14 @@ public class ConfigActivity extends PreferenceActivity {
      */
     @Override
     protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName)
+        boolean isValid = PreferenceFragment.class.getName().equals(fragmentName)
                 || UserPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
                 || GivingPreferenceFragment.class.getName().equals(fragmentName)
                 || RecordPreferenceFragment.class.getName().equals(fragmentName)
                 || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+        return isValid;
     }
 
     /**
