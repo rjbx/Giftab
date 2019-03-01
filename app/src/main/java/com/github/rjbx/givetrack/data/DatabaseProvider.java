@@ -165,7 +165,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_STAMP+ " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_RECORD;
                 break;
@@ -226,7 +226,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_STAMP+ " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_RECORD;
                 break;
@@ -282,7 +282,7 @@ public class DatabaseProvider extends ContentProvider {
                 tableName = TABLE_NAME_SEARCH; break;
 
             case CODE_RECORD_WITH_ID:
-                selection = COLUMN_DONATION_TIME+ " = ? ";
+                selection = COLUMN_STAMP+ " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_RECORD; break;
 
