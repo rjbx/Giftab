@@ -50,7 +50,6 @@ public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
@@ -95,13 +94,11 @@ public final class DatabaseAccessor {
             }
         }
         URL url = getUrl(builder.build());
-        String uid = "";
-        for (User u : getUser(context, null)) if (user.getActive()) uid = u.getUid();
 
         // Retrieve data
         String response = requestResponseFromUrl(url);
         if (response == null) return;
-        Search[] parsedResponse = parseSearches(response, uid, single);
+        Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
         ContentResolver resolver = context.getContentResolver();
 
