@@ -15,6 +15,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -72,24 +73,11 @@ public class ConfigActivity
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
                 if (user.getActive()) mUser = user;
-                switchToHeader(getIntent().getStringExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT), null);
-            } while (data.moveToNext());
+           } while (data.moveToNext());
         }
     }
 
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
-
-    @Override
-    public void switchToHeader(Header header) {
-        if (mUser == null) return;
-        super.switchToHeader(header);
-    }
-
-    @Override
-    public void switchToHeader(String fragmentName, Bundle args) {
-        if (mUser == null) return;
-        super.switchToHeader(fragmentName, args);
-    }
 
     /**
      * Constructs the Settings UI.
@@ -146,8 +134,7 @@ public class ConfigActivity
      * Fragment bound to preference header for updating advanced settings.
      */
     private static void changeUser(Preference changedPreference, Object newValue) {
-
-        if (newValue == null) return;
+        if (mUser == null || newValue == null) return;
         String preferenceKey = changedPreference.getKey();
         Map<String, Object> map = mUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
