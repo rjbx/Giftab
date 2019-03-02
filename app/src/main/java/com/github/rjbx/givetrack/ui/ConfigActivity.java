@@ -203,6 +203,10 @@ public class ConfigActivity
                         .getAll().get(preference.getKey()));
     }
 
+    private static void handleActionClick(Preference preference, Preference.OnPreferenceClickListener listener) {
+        preference.setOnPreferenceClickListener(listener);
+    }
+
     /**
      * Defines behavior onClick of each MenuItem.
      */
@@ -578,8 +582,8 @@ public class ConfigActivity
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            findPreference(getString(R.string.pref_recordSort_key)).setOnPreferenceClickListener(this);
-            findPreference(getString(R.string.pref_recordOrder_key)).setOnPreferenceClickListener(this);
+            handleActionClick(findPreference(getString(R.string.pref_recordSort_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_recordOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
         }
