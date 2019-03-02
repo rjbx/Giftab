@@ -65,9 +65,6 @@ public class ConfigActivity
     @Override
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
-            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
-            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -94,7 +91,7 @@ public class ConfigActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
-        mUser = getIntent().getParcelableExtra(ARG_ITEM_USER);
+        getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
     /**
