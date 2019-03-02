@@ -3,8 +3,11 @@ package com.github.rjbx.givetrack.ui;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -40,14 +43,8 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 
@@ -61,17 +58,15 @@ public class ConfigActivity
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static User mUser;
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
+            // TODO: Decide whether to recalibrate Giving from callback data
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data.moveToFirst()) {
             do {
                 User user = User.getDefault();
@@ -81,14 +76,12 @@ public class ConfigActivity
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
 
     /**
      * Constructs the Settings UI.
      */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
