@@ -26,21 +26,16 @@ import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Disable remote persistence for guests

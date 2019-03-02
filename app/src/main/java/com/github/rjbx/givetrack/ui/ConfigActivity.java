@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -27,6 +28,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.User;
 
@@ -35,16 +38,54 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
 /**
  * Presents a set of application settings.
  */
-public class ConfigActivity extends PreferenceActivity {
+public class ConfigActivity
+        extends PreferenceActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static User mUser;
+
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
+            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
+            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            do {
+                User user = User.getDefault();
+                DatabaseAccessor.cursorRowToEntry(data, user);
+                if (user.getActive()) mUser = user;
+            } while (data.moveToNext());
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
 
     /**
      * Constructs the Settings UI.

@@ -53,7 +53,7 @@
       "filter" : true,
       "focus" : false,
       "gender" : "0",
-      "historical" : false,
+      "historical" : 0,
       "magnitude" : "0.1",
       "minrating" : "0",
       "pages" : "1",
