@@ -517,7 +517,7 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         mUser.setMagnitude(percentIntToDecimalString(mSeekProgress));
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), magnitudeStr).apply();
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), mUser.getMagnitude()).apply();
                         Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
                         handlePreferenceChange(magnitudePreference, this);
                         break;
