@@ -553,6 +553,7 @@ public class ConfigActivity
      */
     public static class RecordPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
+            Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener {
 
 
@@ -577,8 +578,8 @@ public class ConfigActivity
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            handlePreferenceChange(findPreference(getString(R.string.pref_recordSort_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            findPreference(getString(R.string.pref_recordSort_key)).setOnPreferenceClickListener(this);
+            findPreference(getString(R.string.pref_recordOrder_key)).setOnPreferenceClickListener(this);
             handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -589,6 +590,13 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
@@ -598,17 +606,16 @@ public class ConfigActivity
                 mClearDialog.show();
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                return false;
+                return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
-                return false;
+                return true;
             }
-            ConfigActivity.changeSummary(preference, newValue);
-            ConfigActivity.changeUser(preference, newValue);
-            return true;
+            return false;
         }
+
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
