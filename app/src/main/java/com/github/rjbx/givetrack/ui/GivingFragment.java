@@ -377,7 +377,10 @@ public class GivingFragment extends Fragment implements
             record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
             records.add(record);
         }
-        if (!sUser.getHistorical()) sUser.setAnchor(System.currentTimeMillis() + 1);
+        if (sUser.getHistorical() == 1) {
+            sUser.setAnchor(System.currentTimeMillis() + 1);
+            sUser.setHistorical(0);
+        }
         DatabaseService.startActionUpdateUser(getContext(), sUser);
         DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
     }

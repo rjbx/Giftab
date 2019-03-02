@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
-                if (mUser.getHistorical()) calendar.setTimeInMillis(mUser.getAnchor());
+                if (mUser.getHistorical() != 0) calendar.setTimeInMillis(mUser.getAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getActive()) mUser = user;
-                        if (!mUser.getHistorical() && mUser.getTimeRecord() > mUser.getTimeUser()) {
+                        if (mUser.getHistorical() == 0) {
                             long difference = System.currentTimeMillis() - mUser.getAnchor();
                             int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
                             if (days != 0) {
@@ -330,11 +330,11 @@ public class MainActivity extends AppCompatActivity implements
         } else if (dialog == mCurrentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    mUser.setHistorical(true);
+                    mUser.setHistorical(2);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    mUser.setHistorical(false);
+                    mUser.setHistorical(1);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:

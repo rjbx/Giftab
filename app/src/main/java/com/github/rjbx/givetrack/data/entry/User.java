@@ -25,7 +25,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private String donation;
     private String magnitude;
     private long anchor;
-    private boolean historical;
+    private int historical;
     private long timetrack;
     private boolean viewtrack;
     private int theme;
@@ -63,7 +63,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         dest.writeString(donation);
         dest.writeString(magnitude);
         dest.writeLong(anchor);
-        dest.writeInt(historical ? 1 : 0);
+        dest.writeInt(historical);
         dest.writeLong(timetrack);
         dest.writeInt(viewtrack ? 1 : 0);
         dest.writeInt(theme);
@@ -101,7 +101,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         donation = source.readString();
         magnitude = source.readString();
         anchor = source.readLong();
-        historical = source.readInt() == 1;
+        historical = source.readInt();
         timetrack = source.readLong();
         viewtrack = source.readInt() == 1;
         theme = source.readInt();
@@ -175,7 +175,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             String birthdate,
             String gender,
             long anchor,
-            boolean historical,
+            int historical,
             long timetrack,
             boolean viewtrack,
             String donation,
@@ -249,8 +249,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
     public long getAnchor() { return anchor; }
     public void setAnchor(long anchor) { this.anchor = anchor; }
-    public boolean getHistorical() { return historical; }
-    public void setHistorical(boolean historical) { this.historical = historical; }
+    public int getHistorical() { return historical; }
+    public void setHistorical(int historical) { this.historical = historical; }
     public long getTimetrack() { return timetrack; }
     public void setTimetrack(long timetrack) { this.timetrack = timetrack; }
     public boolean getViewtrack() { return viewtrack; }
@@ -341,7 +341,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         birthdate = (String) map.get("birthdate");
         gender = (String) map.get("gender");
         anchor = (long) map.get("anchor");
-        historical = (boolean) map.get("historical");
+        historical = (int) map.get("historical");
         timetrack = (long) map.get("timetrack");
         viewtrack = (boolean) map.get("viewtrack");
         theme = (int) map.get("theme");
@@ -413,7 +413,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.donation = values.getAsString(COLUMN_DONATION);
         this.magnitude = values.getAsString(COLUMN_MAGNITUDE);
         this.anchor = values.getAsLong(COLUMN_ANCHOR);
-        this.historical = values.getAsInteger(COLUMN_HISTORICAL) == 1;
+        this.historical = values.getAsInteger(COLUMN_HISTORICAL);
         this.timetrack = values.getAsLong(COLUMN_TIMETRACK);
         this.viewtrack = values.getAsInteger(COLUMN_VIEWTRACK) == 1;
         this.theme = values.getAsInteger(COLUMN_THEME);
@@ -456,7 +456,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.donation = "0";
         user.magnitude = "0.01";
         user.anchor = 0;
-        user.historical = false;
+        user.historical = 0;
         user.timetrack = 0;
         user.viewtrack = false;
         user.theme = 0;
