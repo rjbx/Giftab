@@ -176,9 +176,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
             case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
@@ -188,8 +186,10 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
@@ -241,21 +241,13 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mGivingArray = null;
-        mRecordArray = null;
-    }
-
-    /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
-     */
-
-
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mGivingArray = null;
+        mRecordArray = null;
+    }
 
     /**
      * Defines behavior onClick of each Navigation MenuItem.

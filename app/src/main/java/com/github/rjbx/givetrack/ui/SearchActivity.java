@@ -144,9 +144,10 @@ public class SearchActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    @NonNull
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
             case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
@@ -156,8 +157,7 @@ public class SearchActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null || !data.moveToFirst()) return;
         int id = loader.getId();
         switch (id) {
@@ -196,9 +196,6 @@ public class SearchActivity extends AppCompatActivity implements
         mAdapter.swapValues(null);
     }
 
-    /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
-     */
 
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
