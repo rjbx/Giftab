@@ -105,7 +105,7 @@
 
     <!-- Charity -->
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
-    <string name="dialog_description_magnitude_adjustment">Set the amount added or subtracted to a decimal number when clicking the related increment or decrement buttons</string>
+    <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
     <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_charity">Remove %s from your collection?</string>
     <string name="dialog_removal_record">Remove %s from your records?</string>
