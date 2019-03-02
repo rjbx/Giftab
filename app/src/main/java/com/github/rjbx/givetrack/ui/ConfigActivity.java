@@ -359,12 +359,12 @@ public class ConfigActivity
                 mClearDialog.show();
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                return false;
+                return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
-                return false;
+                return true;
             }
             return false;
         }
@@ -394,6 +394,7 @@ public class ConfigActivity
      */
     public static class GivingPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
+            Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener,
             SeekBar.OnSeekBarChangeListener {
 
@@ -425,8 +426,8 @@ public class ConfigActivity
 
             handlePreferenceChange(findPreference(getString(R.string.pref_recalibrate_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -435,6 +436,13 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
                 mSeekProgress = Math.round(Float.parseFloat(mUser.getMagnitude()) * 1000f);
@@ -453,8 +461,8 @@ public class ConfigActivity
                 mMagnitudeDialog.show();
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                return false;
-            } else if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
+                return true;
+            } else if (getString(R.string.pref_recalibrate_key).equals(preferenceKey)) {
                 mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
                 mRecalibrateDialog.setMessage(getActivity().getString(R.string.dialog_message_recalibrate));
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -462,7 +470,7 @@ public class ConfigActivity
                 mRecalibrateDialog.show();
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                return false;
+                return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
@@ -471,16 +479,14 @@ public class ConfigActivity
                 mClearDialog.show();
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                return false;
+                return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
-                return false;
+                return true;
             }
-            ConfigActivity.changeSummary(preference, newValue);
-            ConfigActivity.changeUser(preference, newValue);
-            return true;
+            return false;
         }
 
         /**
