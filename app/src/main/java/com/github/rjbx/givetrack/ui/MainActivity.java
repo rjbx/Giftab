@@ -15,6 +15,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
@@ -37,8 +39,6 @@ import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
-import com.github.rjbx.givetrack.data.DatabaseCallbacks;
-import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -54,12 +54,16 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
  * Provides the main screen for this application.
  */
 public class MainActivity extends AppCompatActivity implements
-        DatabaseController,
+        LoaderManager.LoaderCallbacks<Cursor>,
         NavigationView.OnNavigationItemSelectedListener,
         DialogInterface.OnClickListener,
         DatePickerDialog.OnDateSetListener {
@@ -112,9 +116,9 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, new DatabaseCallbacks(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, new DatabaseCallbacks(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
     public Context getContext() {
@@ -172,48 +176,59 @@ public class MainActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
     }
 
-    /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
-     */
-    @Override public void onLoadFinished(int id, Cursor cursor) {
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
+            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
+            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                mGivingArray = new Giving[cursor.getCount()];
-                if (cursor.moveToFirst()) {
+                mGivingArray = new Giving[data.getCount()];
+                if (data.moveToFirst()) {
                     int i = 0;
                     do {
                         Giving giving = new Giving();
-                        DatabaseAccessor.cursorRowToEntry(cursor, giving);
+                        DatabaseAccessor.cursorRowToEntry(data, giving);
                         mGivingArray[i++] = giving;
-                    } while (cursor.moveToNext());
+                    } while (data.moveToNext());
                 }
 //                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
-                mRecordArray = new Record[cursor.getCount()];
-                if (cursor.moveToFirst()) {
+                mRecordArray = new Record[data.getCount()];
+                if (data.moveToFirst()) {
                     int i = 0;
                     do {
                         Record record = new Record();
-                        DatabaseAccessor.cursorRowToEntry(cursor, record);
+                        DatabaseAccessor.cursorRowToEntry(data, record);
                         mRecordArray[i++] = record;
-                    } while (cursor.moveToNext());
+                    } while (data.moveToNext());
                 }
                 break;
             case DatabaseContract.LOADER_ID_USER:
-                if (cursor.moveToFirst()) {
+                if (data.moveToFirst()) {
                     do {
                         User user = User.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(cursor, user);
+                        DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getActive())
                             mUser = user;
-                            long difference = System.currentTimeMillis() - mUser.getAnchor();
-                            int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-                            if (!mUser.getHistorical() && days != 0) {
-                                mUser.setAnchor(System.currentTimeMillis());
-                                DatabaseService.startActionUpdateUser(this, mUser);
-                            }
-                    } while (cursor.moveToNext());
+                        long difference = System.currentTimeMillis() - mUser.getAnchor();
+                        int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+                        if (!mUser.getHistorical() && days != 0) {
+                            mUser.setAnchor(System.currentTimeMillis());
+                            DatabaseService.startActionUpdateUser(this, mUser);
+                        }
+                    } while (data.moveToNext());
                 }
                 break;
         }
@@ -226,13 +241,21 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    /**
-     * Tells the application to remove any stored references to the {@link Loader} data.
-     */
-    @Override public void onLoaderReset() {
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mGivingArray = null;
         mRecordArray = null;
     }
+
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
+
+
+    /**
+     * Tells the application to remove any stored references to the {@link Loader} data.
+     */
+
 
     /**
      * Defines behavior onClick of each Navigation MenuItem.

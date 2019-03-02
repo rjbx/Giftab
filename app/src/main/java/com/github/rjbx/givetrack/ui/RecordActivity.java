@@ -15,6 +15,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.app.ShareCompat;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,10 +47,8 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 
-import com.github.rjbx.givetrack.data.DatabaseCallbacks;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
-import com.github.rjbx.givetrack.data.DatabaseController;
 import com.github.rjbx.givetrack.data.DatabaseService;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -60,6 +60,10 @@ import java.util.Date;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 //TODO: Implement toggle for type attribute and launcher for memo
 /**
@@ -67,7 +71,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  * item details side-by-side using two vertical panes.
  */
 public class RecordActivity extends AppCompatActivity implements
-        DatabaseController,
+        LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
@@ -92,8 +96,7 @@ public class RecordActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_record);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, new DatabaseCallbacks(this));
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, new DatabaseCallbacks(this));
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
@@ -149,20 +152,30 @@ public class RecordActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
-     */
-    @Override public void onLoadFinished(int id, Cursor cursor) {
-        if (cursor == null || (!cursor.moveToFirst())) return;
+    @NonNull @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
+            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, mUser.getRecordSort() + mUser.getRecordOrder());
+            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+        }
+    }
+
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data == null || (!data.moveToFirst())) return;
+        int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                Record[] records = new Record[cursor.getCount()];
+                Record[] records = new Record[data.getCount()];
                 int i = 0;
                 do {
                     Record record = new Record();
-                    DatabaseAccessor.cursorRowToEntry(cursor, record);
+                    DatabaseAccessor.cursorRowToEntry(data, record);
                     records[i++] = record;
-                } while (cursor.moveToNext());
+                } while (data.moveToNext());
                 mAdapter.swapValues(records);
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
@@ -170,12 +183,16 @@ public class RecordActivity extends AppCompatActivity implements
                 sb.show();
                 break;
             case DatabaseContract.LOADER_ID_USER:
-                if (cursor.moveToFirst()) {
+                if (data.moveToFirst()) {
                     do {
                         User user = User.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(cursor, user);
-                        if (user.getActive()) mUser = user;
-                    } while (cursor.moveToNext());
+                        DatabaseAccessor.cursorRowToEntry(data, user);
+                        if (user.getActive()) {
+                            mUser = user;
+                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            break;
+                        }
+                    } while (data.moveToNext());
                 }
                 break;
             default:
@@ -183,12 +200,20 @@ public class RecordActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        mAdapter.swapValues(null);
+    }
+
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
+
+
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset() {
-        mAdapter.swapValues(null);
-    }
+
 
     /**
      * Indicates whether the MasterDetailFlow is in dual pane mode.
