@@ -423,18 +423,8 @@ public class ConfigActivity
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSort_key));
-            if (sortPref.getValue() == null) {
-                sortPref.setValueIndex(sortPref.getEntries().length - 1);
-            }
-
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_searchOrder_key));
-            if (orderPref.getValue() == null) {
-                orderPref.setValueIndex(orderPref.getEntries().length - 1);
-            }
-
-            handlePreferenceChange(findPreference(getString(R.string.pref_recalibrate_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_magnitude_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_recalibrate_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
