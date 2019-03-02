@@ -72,11 +72,24 @@ public class ConfigActivity
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
                 if (user.getActive()) mUser = user;
+                switchToHeader(getIntent().getStringExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT), null);
             } while (data.moveToNext());
         }
     }
 
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
+
+    @Override
+    public void switchToHeader(Header header) {
+        if (mUser == null) return;
+        super.switchToHeader(header);
+    }
+
+    @Override
+    public void switchToHeader(String fragmentName, Bundle args) {
+        if (mUser == null) return;
+        super.switchToHeader(fragmentName, args);
+    }
 
     /**
      * Constructs the Settings UI.
