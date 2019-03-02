@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
@@ -369,16 +370,16 @@ public class GivingFragment extends Fragment implements
             if (sValuesArray[i].getPercent() == 0d) continue;
             double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
             sUser.setAnchor(sUser.getAnchor() + 1);
-            long time = sUser.getAnchor()
+            long time = sUser.getAnchor();
             Record record = Record.fromSuper(sValuesArray[i].getSuper());
             record.setStamp(time);
             record.setTime(time);
             record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
             records.add(record);
         }
-        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
         if (!sUser.getHistorical()) sUser.setAnchor(System.currentTimeMillis() + 1);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
+        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
     }
 
     /**
