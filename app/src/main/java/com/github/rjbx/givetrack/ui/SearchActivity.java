@@ -84,7 +84,6 @@ public class SearchActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
@@ -144,19 +143,17 @@ public class SearchActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
-     */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, null);
-            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
-            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
+            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, null, null, mUser.getSearchSort() + " " + mUser.getSearchOrder());
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
 
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null || !data.moveToFirst()) return;
         int id = loader.getId();
@@ -181,7 +178,11 @@ public class SearchActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (user.getActive()) mUser = user;
+                        if (user.getActive()) {
+                            mUser = user;
+                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
+                            break;
+                        }
                     } while (data.moveToNext());
                 }
                 sDialogShown = mUser.getSearchguide();
@@ -191,15 +192,14 @@ public class SearchActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    /**
+     * Tells the application to remove any stored references to the {@link Loader} data.
+     */
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mAdapter.swapValues(null);
     }
 
 
-    /**
-     * Tells the application to remove any stored references to the {@link Loader} data.
-     */
 
 
     /**
