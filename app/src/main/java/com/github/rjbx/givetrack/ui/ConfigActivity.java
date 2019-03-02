@@ -227,6 +227,7 @@ public class ConfigActivity
             Preference.OnPreferenceClickListener,
             DatePickerDialog.OnDateSetListener {
 
+        private Calendar mCalendar;
 
         /**
          * Inflates and provides logic for updating values of preference.
@@ -237,20 +238,28 @@ public class ConfigActivity
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
 
+            mCalendar = Calendar.getInstance();
+            String birthdate = mUser.getBirthdate();
+            String[] birthdateParams = birthdate.split("/");
+            mCalendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_birthdate_key), birthdate).apply();
+
             handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_gender_key)), this);
             handlePreferenceChange(findPreference("example_list"), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_birthdate_key)), this);
-        }
+       }
 
         /**
          * Updates the DatePicker with the date selected from the Dialog.
          */
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            mCalendar.set(year, month, dayOfMonth);
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_birthdate_key), birthdate).apply();
-            handleActionClick(findPreference(getString(R.string.pref_birthdate_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
         }
 
         /**
@@ -267,21 +276,14 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (getString(R.string.pref_birthdate_key).equals(preference.getKey())) {
-                Calendar calendar = Calendar.getInstance();
-                String birthdate = mUser.getBirthdate();
-                String[] birthdateParams = birthdate.split("/");
-                calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-                preference.setSummary(DATE_FORMATTER.format(calendar.getTime()));
-                preference.setOnPreferenceClickListener(clickedPreference -> {
-                    DatePickerDialog datePicker = new DatePickerDialog(
-                            getActivity(),
-                            UserPreferenceFragment.this,
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH));
-                    datePicker.show();
-                    return true;
-                });
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        getActivity(),
+                        UserPreferenceFragment.this,
+                        mCalendar.get(Calendar.YEAR),
+                        mCalendar.get(Calendar.MONTH),
+                        mCalendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.show();
+                return true;
             }
             return false;
         }
