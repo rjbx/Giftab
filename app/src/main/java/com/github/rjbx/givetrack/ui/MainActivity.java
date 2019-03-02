@@ -208,8 +208,8 @@ public class MainActivity extends AppCompatActivity implements
                         if (user.getActive())
                             mUser = user;
                             long difference = System.currentTimeMillis() - mUser.getAnchor();
-                            int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.DAYS);
-                            if (!mUser.getHistorical() && days > 0) {
+                            int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+                            if (!mUser.getHistorical() && days != 0) {
                                 mUser.setAnchor(System.currentTimeMillis());
                                 DatabaseService.startActionUpdateUser(this, mUser);
                             }
