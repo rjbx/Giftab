@@ -423,6 +423,10 @@ public class ConfigActivity
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
 
+            String magnitudeStr = mUser.getMagnitude();
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), magnitudeStr).apply();
+            mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
+
             handleActionClick(findPreference(getString(R.string.pref_magnitude_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_recalibrate_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
@@ -444,8 +448,6 @@ public class ConfigActivity
         public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
-                mSeekProgress = Math.round(Float.parseFloat(mUser.getMagnitude()) * 1000f);
-                preference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
@@ -454,7 +456,7 @@ public class ConfigActivity
                 seekbar.setOnSeekBarChangeListener(this);
                 seekbar.setProgress(mSeekProgress);
                 mMagnitudeDialog.setView(view);
-                mMagnitudeDialog.setMessage(this.getString(R.string.dialog_description_magnitude_adjustment));
+                mMagnitudeDialog.setMessage(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
                 mMagnitudeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mMagnitudeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mMagnitudeDialog.show();
@@ -515,9 +517,9 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         mUser.setMagnitude(percentIntToDecimalString(mSeekProgress));
-                        DatabaseService.startActionUpdateUser(getContext(), mUser);
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), magnitudeStr).apply();
                         Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
-                        magnitudePreference.setSummary(String.format("Change the magnitude of increments and decrements.\nThe current magnitude is %s", percentIntToDecimalString(mSeekProgress)));
+                        handlePreferenceChange(magnitudePreference, this);
                         break;
                     default:
                 }
