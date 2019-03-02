@@ -582,10 +582,10 @@ public class ConfigActivity
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            handleActionClick(findPreference(getString(R.string.pref_recordSort_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_recordOrder_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_clear_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_recordSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -615,7 +615,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
-                return true;
+                return false;
             }
             return false;
         }
