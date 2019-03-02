@@ -146,7 +146,7 @@ public class RecordActivity extends AppCompatActivity implements
                 navigateUpTo(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_record):
-                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_RECORD_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_RECORD_INTENT);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -31,11 +31,10 @@ public class AppUtilities {
     /**
      * Defines and launches Intent for displaying a {@link android.preference.PreferenceFragment}.
      */
-    public static void launchPreferenceFragment(Context context, User user, String action) {
+    public static void launchPreferenceFragment(Context context, String action) {
         Intent filterIntent = new Intent(context, ConfigActivity.class);
         filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, getPreferenceFragmentName(action));
         filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        filterIntent.putExtra(ConfigActivity.ARG_ITEM_USER, user);
         filterIntent.setAction(action);
         context.startActivity(filterIntent);
     }

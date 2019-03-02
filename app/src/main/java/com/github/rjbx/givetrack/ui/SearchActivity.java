@@ -139,7 +139,7 @@ public class SearchActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, MainActivity.class));
                 return true;
             case (R.id.action_filter):
-                AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -246,7 +246,7 @@ public class SearchActivity extends AppCompatActivity implements
                     sDialogShown = true;
                     mUser.setSearchguide(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
-                    AppUtilities.launchPreferenceFragment(this, mUser, ACTION_SEARCH_INTENT);
+                    AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT);
                     break;
                 default:
             }
