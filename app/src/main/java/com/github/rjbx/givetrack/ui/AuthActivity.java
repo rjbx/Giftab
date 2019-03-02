@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,9 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
@@ -34,10 +38,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
+
 // TODO: Disable remote persistence for guests
 
 public class AuthActivity extends AppCompatActivity implements
-        DatabaseController {
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -48,7 +57,6 @@ public class AuthActivity extends AppCompatActivity implements
     private boolean mPendingResult;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
-    private FirebaseDatabase mFirebaseDatabase;
     @BindView(R.id.auth_progress) ProgressBar mProgressbar;
 
     /**
@@ -62,7 +70,6 @@ public class AuthActivity extends AppCompatActivity implements
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
@@ -107,18 +114,24 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public void onLoadFinished(int id, Cursor cursor) {
+    @NonNull @Override public Loader onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+        }
+    }
+
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (mPendingResult) return;
-        mUsers = DatabaseAccessor.getEntryListFromCursor(cursor, User.class);
-        cursor.close();
+        mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
+        data.close();
         handleAction(getIntent().getAction());
     }
 
-    @Override
-    public void onLoaderReset() {
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mUsers = null;
     }
+
 
     private void handleAction(String action) {
 
