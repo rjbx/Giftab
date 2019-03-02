@@ -285,6 +285,7 @@ public class ConfigActivity
      */
     public static class SearchPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
+            Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
 
 
@@ -326,8 +327,8 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_searchSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_searchOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_company_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_focus_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_show_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_focus_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -335,14 +336,22 @@ public class ConfigActivity
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_focus_key).equals(preferenceKey)) {
                 if ((boolean) newValue) {
                     preference.setEnabled(true);
                 } else preference.setEnabled(false);
                 return true;
-            } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+            }
+            ConfigActivity.changeSummary(preference, newValue);
+            ConfigActivity.changeUser(preference, newValue);
+            return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -357,10 +366,9 @@ public class ConfigActivity
                 startActivity(intent);
                 return false;
             }
-            ConfigActivity.changeSummary(preference, newValue);
-            ConfigActivity.changeUser(preference, newValue);
-            return true;
+            return false;
         }
+
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
