@@ -368,7 +368,8 @@ public class GivingFragment extends Fragment implements
         for (int i = 0; i < sValuesArray.length; i++) {
             if (sValuesArray[i].getPercent() == 0d) continue;
             double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-            long time = sUser.getAnchor() + i;
+            sUser.setAnchor(sUser.getAnchor() + 1);
+            long time = sUser.getAnchor()
             Record record = Record.fromSuper(sValuesArray[i].getSuper());
             record.setStamp(time);
             record.setTime(time);
@@ -376,7 +377,7 @@ public class GivingFragment extends Fragment implements
             records.add(record);
         }
         DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
-        if (!sUser.getHistorical()) sUser.setAnchor(System.currentTimeMillis() + records.size() + 1);
+        if (!sUser.getHistorical()) sUser.setAnchor(System.currentTimeMillis() + 1);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
 
