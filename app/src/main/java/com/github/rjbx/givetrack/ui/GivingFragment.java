@@ -364,19 +364,19 @@ public class GivingFragment extends Fragment implements
         }
         DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
 
-        List<Record> record = new ArrayList<>();
+        List<Record> records = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
             if (sValuesArray[i].getPercent() == 0d) continue;
             double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
             long time = sUser.getAnchor() + 1;
-            record.add(Record.fromSuper(sValuesArray[i].getSuper()));
-            record.get(record.size() - 1).setStamp(time);
-            record.get(record.size() - 1).setTime(time);
-            record.get(record.size() - 1).setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+            Record record = Record.fromSuper(sValuesArray[i].getSuper()));
+            record.setStamp(time);
+            record.setTime(time);
+            record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+            records.add(record);
         }
-        DatabaseService.startActionUpdateRecord(getContext(), record.toArray(new Record[record.size()]));
-        if (sUser.getHistorical()) return;
-        sUser.setAnchor(System.currentTimeMillis() + 1);
+        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
+        if (!sUser.getHistorical()) sUser.setAnchor(System.currentTimeMillis() + 1);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
 
