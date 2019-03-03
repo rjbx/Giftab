@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -43,6 +44,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 public class AuthActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -141,30 +144,31 @@ public class AuthActivity extends AppCompatActivity implements
 //             TODO: Delay signout until active user is set as false
                     user.setActive(false);
                     DatabaseService.startActionUpdateUser(this, user);
-                    AppExecutors.getInstance().getDiskIO().execute(() -> {
-                        AuthUI.getInstance().signOut(AuthActivity.this)
-                                .addOnCompleteListener(signedOutTask -> {
-                                    finish();
-                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                    Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
-                                });
-                    });
+                    DISK_IO.execute(() ->
+                            AuthUI.getInstance().signOut(AuthActivity.this)
+                                    .addOnCompleteListener(signedOutTask -> {
+                                        finish();
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                        Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
+                                    }));
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
-                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    if (firebaseUser == null || firebaseUser.getEmail() == null) return;
-                    firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
-                            .addOnCompleteListener(signedOutTask ->
-                                    firebaseUser.delete().addOnCompleteListener(completedTask -> {
-                                        if (completedTask.isSuccessful()) {
-                                                        AuthUI.getInstance().signOut(this);
-                                                        finish();
-                                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                        }
-                                    })
-                            );
+                    DISK_IO.execute(() -> {
+                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                if (firebaseUser == null || firebaseUser.getEmail() == null) return;
+                firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
+                        .addOnCompleteListener(signedOutTask ->
+                                firebaseUser.delete().addOnCompleteListener(completedTask -> {
+                                    if (completedTask.isSuccessful()) {
+                                        AuthUI.getInstance().signOut(this);
+                                        finish();
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                        );
+                    });
                     break;
                 case Intent.ACTION_MAIN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
