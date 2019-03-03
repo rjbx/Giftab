@@ -49,8 +49,10 @@ import androidx.annotation.Nullable;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Add change email option to UserPreferenceFragment
+// TODO: Add anchor reset option for GivingPreferenceFragment
 // TODO: Add show all option for all PreferenceFragments
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
+// TODO: Remove unused options
 /**
  * Presents a set of application settings.
  */
@@ -62,7 +64,7 @@ public class ConfigActivity
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            // TODO: Decide whether to recalibrate Giving from callback data
+            // TODO: Decide whether to recalibrate Giving from callback data of Loader initialized from GivingPreferneceFragment.onCreate
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
