@@ -56,7 +56,6 @@ import com.github.rjbx.givetrack.data.DatabaseService;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
@@ -82,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements
     private Record[] mRecordArray;
     private User mUser;
     private long mAnchorTime;
-    private int mDateDifference;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
@@ -278,12 +276,9 @@ public class MainActivity extends AppCompatActivity implements
         mAnchorTime = calendar.getTimeInMillis();
         DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
         String formattedDate = DATE_FORMATTER.format(mAnchorTime);
-        
-        mDateDifference = calendar.compareTo(Calendar.getInstance());
-        String qualifier = mDateDifference < 0 ? "" : "past ";
 
         mAnchorDialog = new AlertDialog.Builder(this).create();
-        mAnchorDialog.setMessage(getString(R.string.anchor_dialog_message, formattedDate, qualifier));
+        mAnchorDialog.setMessage(getString(R.string.anchor_dialog_message, formattedDate));
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
@@ -302,7 +297,9 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setAnchor(mAnchorTime);
-                    if (mDateDifference < 0) {
+                    long difference = System.currentTimeMillis() - mUser.getAnchor();
+                    int daysDifference = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+                    if (daysDifference != 0) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);

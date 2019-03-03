@@ -80,7 +80,7 @@
     <string name="tab_text_1">Give</string>
     <string name="tab_text_2">Track</string>
     <string name="historical_dialog_message">Do you want to change back to the current date after recording the next donation?</string>
-    <string name="anchor_dialog_message">Do you want to change the date to %s for recording %sdonations?</string>
+    <string name="anchor_dialog_message">Do you want to change the date to %s for recording donations?</string>
 
     <!-- Auth -->
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s. Charity data and logos powered by Charity Navigator and Clearbit API.</string>
