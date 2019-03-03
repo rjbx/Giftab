@@ -307,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements
                         mCurrentDialog.show();
                         mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                    }
+                    } else mUser.setHistorical(0);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
