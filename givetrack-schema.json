@@ -1,4 +1,23 @@
 {
+  "record" : {
+    "uid": {
+      "ein": "",
+      "email": "",
+      "homepageUrl": "",
+      "impact": "",
+      "locationCity": "",
+      "locationDetail": "",
+      "locationState": "",
+      "locationStreet": "",
+      "locationZip": "",
+      "memo": "",
+      "name": "",
+      "navigatorUrl": "",
+      "phone": "",
+      "stamp": 0,
+      "time": 0
+    }
+  }
   "giving" : {
     "uid" : {
       "ein" : "",
@@ -39,25 +58,6 @@
       "time" : 0,
       "type" : 0,
       "uid" : ""
-    }
-  },
-  "search" : {
-    "uid": {
-      "ein": "",
-      "email": "",
-      "homepageUrl": "",
-      "impact": "",
-      "locationCity": "",
-      "locationDetail": "",
-      "locationState": "",
-      "locationStreet": "",
-      "locationZip": "",
-      "memo": "",
-      "name": "",
-      "navigatorUrl": "",
-      "phone": "",
-      "stamp": 0,
-      "time": 0
     }
   },
   "user" : {

@@ -50,7 +50,7 @@ public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
         ContentResolver local = context.getContentResolver();
-//        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
@@ -104,7 +104,7 @@ public final class DatabaseAccessor {
         // Store data
         removeEntriesFromLocal(local, Search.class, null);
         addEntriesToLocal(local, Search.class, parsedResponse);
-//        addEntriesToRemote(remote, Search.class, parsedResponse);
+        addEntriesToRemote(remote, Search.class, parsedResponse);
     }
 
     static List<Search> getSearch(Context context) {
@@ -286,9 +286,9 @@ public final class DatabaseAccessor {
 //        } else {
 //             TODO: Handle multiple entries with single update
             for (T entry: entries) {
-                pathReference = pathReference.child(entry.getUid());
-                if (entry instanceof Company) pathReference = pathReference.child(entry.getId());
-                pathReference.updateChildren(entry.toParameterMap());
+                DatabaseReference childReference = pathReference.child(entry.getUid());
+                if (entry instanceof Company) childReference = pathReference.child(entry.getId());
+                childReference.updateChildren(entry.toParameterMap());
             }
 //            Map<String, Object> entryMap = new HashMap<>();
 //            entryMap.put(entry.getId(), entry);
