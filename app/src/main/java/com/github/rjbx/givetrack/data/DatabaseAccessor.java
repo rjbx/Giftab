@@ -285,6 +285,7 @@ public final class DatabaseAccessor {
 //            pathReference.updateChildren(entry.toParameterMap());
 //        } else {
 //             TODO: Handle multiple entries with single update
+//             TODO: Delay signout until active user is set as false
             for (T entry: entries) {
                 DatabaseReference childReference = pathReference.child(entry.getUid());
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
@@ -341,7 +342,7 @@ public final class DatabaseAccessor {
 
 // TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
-
+        if (local != null) return;
         DatabaseReference reference = remote.getReference(User.class.getSimpleName().toLowerCase());
         reference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -137,6 +137,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (action != null) {
             switch (action) {
                 case ACTION_SIGN_OUT:
+//             TODO: Delay signout until active user is set as false
                     user.setActive(false);
                     DatabaseService.startActionUpdateUser(this, user);
                     AuthUI.getInstance().signOut(AuthActivity.this)
