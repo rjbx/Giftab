@@ -235,13 +235,17 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
+       }
 
+        @Override
+        public void onResume() {
+            super.onResume();
             handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_gender_key)), this);
             handlePreferenceChange(findPreference("example_list"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_birthdate_key)), this);
-       }
+        }
 
         /**
          * Updates the DatePicker with the date selected from the Dialog.
@@ -302,7 +306,11 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_search);
             setHasOptionsMenu(true);
+        }
 
+        @Override
+        public void onResume() {
+            super.onResume();
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_state_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
@@ -414,7 +422,11 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
+        }
 
+        @Override
+        public void onResume() {
+            super.onResume();
             handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_magnitude_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_recalibrate_key)), this);
@@ -561,7 +573,11 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_record);
             setHasOptionsMenu(true);
+        }
 
+        @Override
+        public void onResume() {
+            super.onResume();
             ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_recordSort_key));
             if (sortPref.getValue() == null) {
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
@@ -641,6 +657,11 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
             handlePreferenceChange(findPreference("notifications_new_message_ringtone"), this);
         }
 
