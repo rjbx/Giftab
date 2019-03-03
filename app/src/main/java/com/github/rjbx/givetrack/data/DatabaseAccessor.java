@@ -298,7 +298,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-        if (entries == null) {
+        if (entries == null || entries.length == 0) {
             local.delete(contentUri, null, null);
             return;
         }
@@ -312,7 +312,7 @@ public final class DatabaseAccessor {
 
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
 
-        if (entries == null) {
+        if (entries == null || entries.length == 0) {
             reference.removeValue();
             return;
         }
