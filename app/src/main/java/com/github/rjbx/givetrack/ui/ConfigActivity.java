@@ -15,7 +15,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -45,7 +44,6 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 
@@ -238,12 +236,6 @@ public class ConfigActivity
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
 
-            mCalendar = Calendar.getInstance();
-            String birthdate = mUser.getBirthdate();
-            String[] birthdateParams = birthdate.split("/");
-            mCalendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_birthdate_key), birthdate).apply();
-
             handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_gender_key)), this);
             handlePreferenceChange(findPreference("example_list"), this);
@@ -276,6 +268,10 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (getString(R.string.pref_birthdate_key).equals(preference.getKey())) {
+                mCalendar = Calendar.getInstance();
+                String birthdate = mUser.getBirthdate();
+                String[] birthdateParams = birthdate.split("/");
+                mCalendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
                 DatePickerDialog datePicker = new DatePickerDialog(
                         getActivity(),
                         UserPreferenceFragment.this,
@@ -284,8 +280,7 @@ public class ConfigActivity
                         mCalendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
                 return true;
-            }
-            return false;
+            } return false;
         }
     }
 
@@ -296,7 +291,6 @@ public class ConfigActivity
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
-
 
         AlertDialog mClearDialog;
 
@@ -374,8 +368,7 @@ public class ConfigActivity
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
                 return true;
-            }
-            return false;
+            } return false;
         }
 
         /**
@@ -396,8 +389,8 @@ public class ConfigActivity
                 }
             }
         }
-
     }
+
     /**
      * Fragment bound to preference header for updating giving settings.
      */
@@ -411,7 +404,6 @@ public class ConfigActivity
         AlertDialog mRecalibrateDialog;
         AlertDialog mClearDialog;
         TextView mSeekReadout;
-
         int mSeekProgress;
 
         /**
@@ -422,10 +414,6 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_giving);
             setHasOptionsMenu(true);
-
-            String magnitudeStr = mUser.getMagnitude();
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), magnitudeStr).apply();
-            mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
 
             handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_magnitude_key)), this);
@@ -439,7 +427,6 @@ public class ConfigActivity
          */
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
@@ -449,6 +436,8 @@ public class ConfigActivity
         public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
+                String magnitudeStr = mUser.getMagnitude();
+                mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
@@ -499,12 +488,8 @@ public class ConfigActivity
             mSeekProgress = progress;
             mSeekReadout.setText(percentIntToDecimalString(progress));
         }
-
-        @Override
-        public void onStartTrackingTouch(SeekBar seekBar) {}
-
-        @Override
-        public void onStopTrackingTouch(SeekBar seekBar) {}
+        @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+        @Override public void onStopTrackingTouch(SeekBar seekBar) {}
 
         /**
          * Defines behavior onClick of each DialogInterface option.
@@ -548,6 +533,7 @@ public class ConfigActivity
                 }
             }
         }
+
         /**
          * Converts whole number percentage to its decimal equivalent,
          * formatted as a String to preserve its precision.
@@ -555,7 +541,6 @@ public class ConfigActivity
         private static String percentIntToDecimalString(int percentInt) {
             return String.format(Locale.getDefault(), "%.2f", percentInt / 1000f);
         }
-
     }
 
     /**
@@ -565,7 +550,6 @@ public class ConfigActivity
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener {
-
 
         AlertDialog mClearDialog;
 
@@ -644,8 +628,8 @@ public class ConfigActivity
                 }
             }
         }
-
     }
+
     /**
      * Fragment bound to preference header for updating notification settings.
      */
@@ -659,6 +643,7 @@ public class ConfigActivity
             setHasOptionsMenu(true);
             handlePreferenceChange(findPreference("notifications_new_message_ringtone"), this);
         }
+
         /**
          * Invokes helper method for setting preference summary to new preference value.
          */
@@ -668,12 +653,11 @@ public class ConfigActivity
             ConfigActivity.changeUser(preference, newValue);
             return true;
         }
-
     }
+
     public static class AdvancedPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             DialogInterface.OnClickListener {
-
 
         AlertDialog mDeleteDialog;
 
@@ -709,6 +693,7 @@ public class ConfigActivity
             ConfigActivity.changeUser(preference, newValue);
             return true;
         }
+
         /**
          * Defines behavior onClick of each DialogInterface option.
          */
@@ -726,6 +711,5 @@ public class ConfigActivity
                 }
             }
         }
-
     }
 }
