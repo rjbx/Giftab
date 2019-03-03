@@ -55,7 +55,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         @Override public User[] newArray(int size) { return new User[size]; }
     };
 
-    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
         dest.writeString(email);
         dest.writeInt(active ? 1 : 0);
@@ -89,9 +89,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         dest.writeLong(timeUser);
     }
 
-    @Exclude @Override public int describeContents() { return 0; }
+    @Override public int describeContents() { return 0; }
 
-    private User (Parcel source) {
+    public User (Parcel source) {
         uid = source.readString();
         email = source.readString();
         active = source.readInt() == 1;
@@ -125,7 +125,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         timeUser = source.readLong();
     }
     
-    private User(User user) {
+    public User(User user) {
         this.uid = user.uid;
         this.email = user.email;
         this.active = user.active;
@@ -232,8 +232,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.timeUser = timeUser;
     }
 
-    @Exclude public String getUid() { return uid; }
-    @Exclude public void setUid(String uid) { this.uid = uid; }
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public boolean getActive() { return active; }
@@ -294,10 +294,10 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setTimeRecord(long timeRecord) { this.timeRecord = timeRecord; }
     public long getTimeUser() { return timeUser; }
     public void setTimeUser(long timeUser) { this.timeUser = timeUser; }
-    @Exclude @Override public String getId() { return uid; }
-    @Exclude public User getObject() { return this; }
+    @Override public String getId() { return uid; }
+    public User getObject() { return this; }
 
-    @Exclude public Map<String, Object> toParameterMap() {
+    public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
         map.put("active", active);
@@ -333,7 +333,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         return map;
     }
 
-    @Exclude public void fromParameterMap(Map<String, Object> map) {
+    public void fromParameterMap(Map<String, Object> map) {
         uid = (String) map.get("uid");
         email = (String) map.get("email");
         active = (boolean) map.get("active");
@@ -367,7 +367,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         timeUser = (long) map.get("timeUser");
     }
 
-    @Exclude @Override public ContentValues toContentValues() {
+    @Override public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
         values.put(COLUMN_EMAIL, email);
@@ -403,7 +403,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         return values;
     }
 
-    @Exclude @Override public void fromContentValues(ContentValues values) {
+    @Override public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(COLUMN_UID);
         this.email = values.getAsString(COLUMN_EMAIL);
         this.active = values.getAsInteger(COLUMN_ACTIVE) == 1;
@@ -437,7 +437,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.timeUser = values.getAsLong(COLUMN_TIMEUSER);
     }
 
-    @Exclude @Override public User clone() {
+    @Override public User clone() {
         User clone  = new User(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
@@ -445,7 +445,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         } return clone;
     }
     
-    @Exclude public static User getDefault() {
+    public static User getDefault() {
         User user = new User();
         user.uid = "";
         user.email = "";

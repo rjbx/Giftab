@@ -55,7 +55,7 @@ public class Search implements Company, Parcelable, Cloneable {
 
     @Override public int describeContents() { return 0; }
 
-    Search(Parcel source) {
+    public Search(Parcel source) {
         uid = source.readString();
         ein = source.readString();
         stamp = source.readLong();
@@ -73,7 +73,7 @@ public class Search implements Company, Parcelable, Cloneable {
         type = source.readInt();
     }
 
-    Search(Search search) {
+    public Search(Search search) {
         this.uid = search.uid;
         this.ein = search.ein;
         this.stamp = search.stamp;

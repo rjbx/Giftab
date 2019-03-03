@@ -26,13 +26,13 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         }
     };
 
-    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(memo);
         dest.writeLong(time);
     }
 
-    @Exclude @Override public int describeContents() {
+    @Override public int describeContents() {
         return 0;
     }
 
@@ -99,42 +99,42 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     public void setMemo(String memo) { this.memo = memo; }
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
-    @Exclude @Override public String getId() { return String.valueOf(super.getStamp()); }
-    @Exclude public Record getObject() { return this; }
+    @Override public String getId() { return String.valueOf(super.getStamp()); }
+    public Record getObject() { return this; }
 
-    @Exclude public Map<String, Object> toParameterMap() {
+    public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
         map.put("time", time);
         return map;
     }
 
-    @Exclude public ContentValues toContentValues() {
+    public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
         return values;
     }
 
-    @Exclude public void fromContentValues(ContentValues values) {
+    public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
      }
 
-    @Exclude public Search getSuper() { return super.clone(); }
+    public Search getSuper() { return super.clone(); }
 
-    @Exclude public static Record fromSuper(Search search) {
+    public static Record fromSuper(Search search) {
         Record record = new Record(search, "", 0);
         return record;
     }
 
-    @Exclude @Override public Record clone() {
+    @Override public Record clone() {
         super.clone();
         return new Record(getSuper(), this.memo, this.time);
     }
     
-    @Exclude public static Record getDefault() {
+    public static Record getDefault() {
         Record record = new Record();
         record.setUid("");
         record.setEin("");

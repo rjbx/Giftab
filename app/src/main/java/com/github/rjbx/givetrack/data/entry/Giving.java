@@ -16,8 +16,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     private int frequency;
     private String percent;
-
-
+    
     @Exclude public static final Parcelable.Creator<Giving> CREATOR = new Parcelable.Creator<Giving>() {
         @Override public Giving createFromParcel(Parcel source) {
             return new Giving(source);
@@ -27,23 +26,23 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         }
     };
 
-    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(frequency);
         dest.writeString(percent);
     }
 
-    @Exclude @Override public int describeContents() {
+    @Override public int describeContents() {
         return 0;
     }
 
-    Giving(Parcel source) {
+    public Giving(Parcel source) {
         super(source);
         frequency = source.readInt();
         percent = source.readString();
     }
 
-    private Giving(Search search, int frequency, String percent) {
+    public Giving(Search search, int frequency, String percent) {
         super(search);
         this.frequency = frequency;
         this.percent = percent;
@@ -100,42 +99,42 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     public void setFrequency(int frequency) { this.frequency = frequency; }
     @Override public double getPercent() { return Double.parseDouble(percent); }
     @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
-    @Exclude @Override public String getId() { return super.getEin(); }
-    @Exclude @Override public Giving getObject() { return this; }
+    @Override public String getId() { return super.getEin(); }
+    @Override public Giving getObject() { return this; }
 
-    @Exclude public Map<String, Object> toParameterMap() {
+    public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("frequency", frequency);
         map.put("percent", percent);
         return map;
     }
 
-    @Exclude public ContentValues toContentValues() {
+    public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY, frequency);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE, percent);
         return values;
     }
 
-    @Exclude public void fromContentValues(ContentValues values) {
+    public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY);
         this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);
     }
 
-    @Exclude public Search getSuper() { return super.clone(); }
+    public Search getSuper() { return super.clone(); }
 
-    @Exclude public static Giving fromSuper(Search search) {
+    public static Giving fromSuper(Search search) {
         Giving giving = new Giving(search, 0, "0");
         return giving;
     }
 
-    @Exclude @Override public Giving clone() {
+    @Override public Giving clone() {
         super.clone();
         return new Giving(getSuper(), this.frequency, this.percent);
     }
 
-    @Exclude public static Giving getDefault() {
+    public static Giving getDefault() {
         Giving giving = new Giving();
         giving.setUid("");
         giving.setEin("");
