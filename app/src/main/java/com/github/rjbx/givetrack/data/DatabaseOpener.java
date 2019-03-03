@@ -103,7 +103,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TIME          + " INTEGER NOT NULL,"              +
 
-                        "UNIQUE (" + CompanyEntry.COLUMN_DONATION_TIME +
+                        "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_USER_TABLE =
