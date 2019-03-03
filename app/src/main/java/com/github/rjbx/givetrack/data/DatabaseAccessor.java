@@ -287,7 +287,7 @@ public final class DatabaseAccessor {
 //             TODO: Handle multiple entries with single update
             for (T entry: entries) {
                 DatabaseReference childReference = pathReference.child(entry.getUid());
-                if (entry instanceof Company) childReference = pathReference.child(entry.getId());
+                if (entry instanceof Company) childReference = childReference.child(entry.getId());
                 childReference.updateChildren(entry.toParameterMap());
             }
 //            Map<String, Object> entryMap = new HashMap<>();

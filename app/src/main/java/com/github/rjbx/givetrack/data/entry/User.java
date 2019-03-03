@@ -89,9 +89,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         dest.writeLong(timeUser);
     }
 
-    @Exclude @Override public int describeContents() {
-        return 0;
-    }
+    @Exclude @Override public int describeContents() { return 0; }
 
     private User (Parcel source) {
         uid = source.readString();

@@ -31,15 +31,11 @@ public class Search implements Company, Parcelable, Cloneable {
     private int type;
 
     @Exclude public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
-        @Override public Search createFromParcel(Parcel source) {
-            return new Search(source);
-        }
-        @Override public Search[] newArray(int size) {
-            return new Search[size];
-        }
+        @Override public Search createFromParcel(Parcel source) { return new Search(source); }
+        @Override public Search[] newArray(int size) { return new Search[size]; }
     };
 
-    @Exclude @Override public void writeToParcel(Parcel dest, int flags) {
+    @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
         dest.writeString(ein);
         dest.writeLong(stamp);
@@ -56,6 +52,8 @@ public class Search implements Company, Parcelable, Cloneable {
         dest.writeString(impact);
         dest.writeInt(type);
     }
+
+    @Override public int describeContents() { return 0; }
 
     Search(Parcel source) {
         uid = source.readString();
@@ -74,7 +72,7 @@ public class Search implements Company, Parcelable, Cloneable {
         impact = source.readString();
         type = source.readInt();
     }
-    
+
     Search(Search search) {
         this.uid = search.uid;
         this.ein = search.ein;
@@ -91,10 +89,6 @@ public class Search implements Company, Parcelable, Cloneable {
         this.email = search.email;
         this.impact = search.impact;
         this.type = search.type;
-    }
-
-    @Exclude @Override public int describeContents() {
-        return 0;
     }
 
     /**
@@ -138,8 +132,8 @@ public class Search implements Company, Parcelable, Cloneable {
         this.type = type;
     }
 
-    @Exclude public String getUid() { return uid; }
-    @Exclude public void setUid(String uid) { this.uid = uid; }
+    public String getUid() { return uid; }
+    public void setUid(String uid) { this.uid = uid; }
     public String getEin() { return ein; }
     public void setEin(String ein) { this.ein = ein; }
     public long getStamp() { return stamp; }
@@ -168,10 +162,10 @@ public class Search implements Company, Parcelable, Cloneable {
     public void setImpact(String impact) { this.impact = impact; }
     public int getType() { return type; }
     public void setType(int type) { this.type = type; }
-    @Exclude @Override public String getId() { return ein; }
-    @Exclude public Search getObject() { return this; }
+    @Override public String getId() { return ein; }
+    public Search getObject() { return this; }
     
-    @Exclude public Map<String, Object> toParameterMap() {
+    public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
         map.put("ein", ein);
@@ -190,8 +184,26 @@ public class Search implements Company, Parcelable, Cloneable {
         map.put("type", type);
         return map;
     }
+    
+    public void fromParameterMap(Map<String, Object> map) {
+        uid = (String) map.get("uid");
+        ein = (String) map.get("ein");
+        stamp = (long) map.get("stamp");
+        name = (String) map.get("name");
+        locationStreet = (String) map.get("locationStreet");
+        locationDetail = (String) map.get("locationDetail");
+        locationCity = (String) map.get("locationCity");
+        locationState = (String) map.get("locationState");
+        locationZip = (String) map.get("locationZip");
+        homepageUrl = (String) map.get("homepageUrl");
+        navigatorUrl = (String) map.get("navigatorUrl");
+        phone = (String) map.get("phone");
+        email = (String) map.get("email");
+        impact = (String) map.get("impact");
+        type = (int) map.get("type");
+    }
 
-    @Exclude public ContentValues toContentValues() {
+    public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
         values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
@@ -211,7 +223,7 @@ public class Search implements Company, Parcelable, Cloneable {
         return values;
     }
 
-    @Exclude public void fromContentValues(ContentValues values) {
+    @Override public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_UID);
         this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
         this.stamp = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_STAMP);
@@ -229,7 +241,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
     }
 
-    @Exclude @Override public Search clone() {
+    @Override public Search clone() {
         Search clone  = new Search(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
@@ -237,7 +249,7 @@ public class Search implements Company, Parcelable, Cloneable {
         } return clone;
     }
 
-    @Exclude public static Search getDefault() {
+    public static Search getDefault() {
         Search search = new Search();
         search.uid = "";
         search.ein = "";
