@@ -22,6 +22,7 @@ import timber.log.Timber;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
@@ -140,12 +141,14 @@ public class AuthActivity extends AppCompatActivity implements
 //             TODO: Delay signout until active user is set as false
                     user.setActive(false);
                     DatabaseService.startActionUpdateUser(this, user);
-                    AuthUI.getInstance().signOut(AuthActivity.this)
+                    AppExecutors.getInstance().getDiskIO().execute(() -> {
+                        AuthUI.getInstance().signOut(AuthActivity.this)
                                 .addOnCompleteListener(signedOutTask -> {
                                     finish();
                                     startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
                                     Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
                                 });
+                    });
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
