@@ -72,9 +72,12 @@ public class ConfigActivity
             do {
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
-                if (user.getActive()) mUser = user;
-                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+                if (user.getActive()) {
+                    mUser = user;
+                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    if (sharedPreferences.getAll().isEmpty())
+                        mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+                }
             } while (data.moveToNext());
         }
     }
@@ -739,6 +742,7 @@ public class ConfigActivity
     }
     
     private static void mapToSharedPreferences(Map<String, Object> map, SharedPreferences sp) {
+
         Set<Map.Entry<String, Object>> entrySet = map.entrySet();
         for (Map.Entry<String, Object> entry : entrySet) {
             Object value = entry.getValue();
