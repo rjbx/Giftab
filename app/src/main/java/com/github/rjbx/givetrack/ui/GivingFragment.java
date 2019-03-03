@@ -372,7 +372,7 @@ public class GivingFragment extends Fragment implements
             sUser.setAnchor(sUser.getAnchor() + 1);
             long time = sUser.getAnchor();
             Record record = Record.fromSuper(sValuesArray[i].getSuper());
-            record.setStamp(time);
+            record.setStamp(System.currentTimeMillis() + i);
             record.setTime(time);
             record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
             records.add(record);
