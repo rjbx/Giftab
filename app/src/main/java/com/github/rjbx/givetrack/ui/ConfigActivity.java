@@ -8,6 +8,7 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
@@ -183,12 +184,14 @@ public class ConfigActivity
      * @see #PreferenceActivity
      */
     private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
-        preference.setOnPreferenceChangeListener(listener);
 
-        listener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getAll().get(preference.getKey()));
+        String preferenceKey = preference.getKey();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
+
+        sharedPreferences.getAll().put(preference.getKey(), (?) mUser.toParameterMap().get(preferenceKey));
+
+        preference.setOnPreferenceChangeListener(listener);
+        listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
     }
 
     private static void handleActionClick(Preference preference, Preference.OnPreferenceClickListener listener) {
