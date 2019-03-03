@@ -273,7 +273,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
         String rootPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(rootPath);
@@ -285,7 +285,6 @@ public final class DatabaseAccessor {
 //            pathReference.updateChildren(entry.toParameterMap());
 //        } else {
 //             TODO: Handle multiple entries with single update
-//             TODO: Delay signout until active user is set as false
             for (T entry: entries) {
                 DatabaseReference childReference = pathReference.child(entry.getUid());
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());

@@ -33,6 +33,7 @@ import com.github.rjbx.givetrack.data.DatabaseService;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,29 +137,32 @@ public class AuthActivity extends AppCompatActivity implements
 
         // TODO: Enable user selection
         User user = null;
-        for (User u : mUsers) if (u.getActive()) user = u;
-
+        for (User u : mUsers) if (u.getActive()) { user = u; break; }
         if (action != null) {
             switch (action) {
                 case ACTION_SIGN_OUT:
-//             TODO: Delay signout until active user is set as false
-                    user.setActive(false);
-                    DatabaseService.startActionUpdateUser(this, user);
-                    DISK_IO.execute(() ->
-                            AuthUI.getInstance().signOut(AuthActivity.this)
-                                    .addOnCompleteListener(signedOutTask -> {
-                                        finish();
-                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                        Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_SHORT).show();
-                                    }));
+                    User deactivatedUser = user;
+                    deactivatedUser.setActive(false);
+                    DISK_IO.execute(() -> {
+                    DatabaseService.startActionUpdateUser(this, deactivatedUser);
+                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                        if (firebaseUser == null || firebaseUser.getEmail() == null) return;
+                        firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
+                                .addOnCompleteListener(signedOutTask -> {
+                                                AuthUI.getInstance().signOut(this);
+                                                finish();
+                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                        });
+                    });
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);
                     DISK_IO.execute(() -> {
-                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                if (firebaseUser == null || firebaseUser.getEmail() == null) return;
-                firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
-                        .addOnCompleteListener(signedOutTask ->
+                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                        if (firebaseUser == null || firebaseUser.getEmail() == null) return;
+                        firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
+                            .addOnCompleteListener(signedOutTask ->
                                 firebaseUser.delete().addOnCompleteListener(completedTask -> {
                                     if (completedTask.isSuccessful()) {
                                         AuthUI.getInstance().signOut(this);
@@ -167,7 +171,7 @@ public class AuthActivity extends AppCompatActivity implements
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                     }
                                 })
-                        );
+                            );
                     });
                     break;
                 case Intent.ACTION_MAIN:
