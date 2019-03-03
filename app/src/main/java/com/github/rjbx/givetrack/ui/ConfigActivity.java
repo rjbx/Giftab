@@ -41,6 +41,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,7 +73,9 @@ public class ConfigActivity
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
                 if (user.getActive()) mUser = user;
-           } while (data.moveToNext());
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+            } while (data.moveToNext());
         }
     }
 
@@ -187,8 +190,6 @@ public class ConfigActivity
 
         String preferenceKey = preference.getKey();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-
-        sharedPreferences.getAll().put(preference.getKey(), (?) mUser.toParameterMap().get(preferenceKey));
 
         preference.setOnPreferenceChangeListener(listener);
         listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
@@ -734,6 +735,18 @@ public class ConfigActivity
                     default:
                 }
             }
+        }
+    }
+    
+    private static void mapToSharedPreferences(Map<String, Object> map, SharedPreferences sp) {
+        Set<Map.Entry<String, Object>> entrySet = map.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            Object value = entry.getValue();
+            if (value instanceof String) sp.edit().putString(entry.getKey(), (String) value).apply();
+            if (value instanceof Boolean) sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
+            if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
+            if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
+            if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
         }
     }
 }
