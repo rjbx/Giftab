@@ -378,7 +378,7 @@ public class GivingFragment extends Fragment implements
             records.add(record);
         }
         if (sUser.getHistorical() == 1) {
-            sUser.setAnchor(System.currentTimeMillis() + 1);
+            sUser.setAnchor(System.currentTimeMillis());
             sUser.setHistorical(0);
         }
         DatabaseService.startActionUpdateUser(getContext(), sUser);

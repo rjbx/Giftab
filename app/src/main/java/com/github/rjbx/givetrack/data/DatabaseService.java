@@ -70,6 +70,7 @@ public class DatabaseService extends IntentService {
      */
     public DatabaseService() { super(DatabaseService.class.getSimpleName()); }
 
+    // TODO: Add boolean returns for launching error message
     /**
      * Starts this service to perform action FetchSearch with the given parameters.
      * If the service is already performing a task this action will be queued.

@@ -292,17 +292,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
-     */
-    private void launchCustomTabs(String url) {
-        new CustomTabsIntent.Builder()
-                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
-                .build()
-                .launchUrl(this, Uri.parse(url));
-        getIntent().setAction(ACTION_CUSTOM_TABS);
-    }
-
-    /**
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
@@ -313,7 +302,7 @@ public class MainActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setAnchor(mAnchorTime);
-                    if (mDateDifference < 2) {
+                    if (mDateDifference < 0) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -339,6 +328,17 @@ public class MainActivity extends AppCompatActivity implements
                 default:
             }
         }
+    }
+
+    /**
+     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
+     */
+    private void launchCustomTabs(String url) {
+        new CustomTabsIntent.Builder()
+                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                .build()
+                .launchUrl(this, Uri.parse(url));
+        getIntent().setAction(ACTION_CUSTOM_TABS);
     }
 
     /**
