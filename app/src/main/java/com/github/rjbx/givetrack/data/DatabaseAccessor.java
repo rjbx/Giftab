@@ -50,6 +50,7 @@ public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
         ContentResolver local = context.getContentResolver();
+//        FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
@@ -103,7 +104,7 @@ public final class DatabaseAccessor {
         // Store data
         removeEntriesFromLocal(local, Search.class, null);
         addEntriesToLocal(local, Search.class, parsedResponse);
-
+//        addEntriesToRemote(remote, Search.class, parsedResponse);
     }
 
     static List<Search> getSearch(Context context) {
@@ -277,22 +278,22 @@ public final class DatabaseAccessor {
         String rootPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(rootPath);
 
-        if (entries.length == 1) {
-            T entry = entries[0];
-            pathReference = pathReference.child(entry.getUid());
-            if (entry instanceof Company) pathReference = pathReference.child((entry.getId()));
-            pathReference.updateChildren(entry.toParameterMap());
-        } else {
-            // TODO: Handle multiple entries with single update
-            Map<String, Object> entryMap = new HashMap<>();
+//        if (entries.length == 1) {
+//            T entry = entries[0];
+//            pathReference = pathReference.child(entry.getUid());
+//            if (entry instanceof Company) pathReference = pathReference.child((entry.getId()));
+//            pathReference.updateChildren(entry.toParameterMap());
+//        } else {
+//             TODO: Handle multiple entries with single update
             for (T entry: entries) {
                 pathReference = pathReference.child(entry.getUid());
                 if (entry instanceof Company) pathReference = pathReference.child(entry.getId());
-                entryMap.put(entry.getId(), entry);
                 pathReference.updateChildren(entry.toParameterMap());
             }
+//            Map<String, Object> entryMap = new HashMap<>();
+//            entryMap.put(entry.getId(), entry);
 //            pathReference.updateChildren(entryMap);
-        }
+//        }
     }
 
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
@@ -327,15 +328,15 @@ public final class DatabaseAccessor {
         DatabaseReference pathReference = remote.getReference(path);
 
         pathReference.addValueEventListener(new ValueEventListener() {
-                    @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                        while (iterator.hasNext()) {
-                            Giving giving = iterator.next().getValue(Giving.class);
-                            local.insert(uri, giving.toContentValues());
-                        }
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
-                });
+            @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while (iterator.hasNext()) {
+                    Giving giving = iterator.next().getValue(Giving.class);
+                    local.insert(uri, giving.toContentValues());
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
+        });
     }
 
 // TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
