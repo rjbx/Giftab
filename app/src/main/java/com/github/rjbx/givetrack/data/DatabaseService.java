@@ -77,6 +77,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchSearch(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_SEARCH);
 //        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
@@ -90,6 +91,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchGiving(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_GIVING);
         context.startService(intent);
@@ -102,6 +104,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchRecord(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_RECORD);
         context.startService(intent);
@@ -114,6 +117,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionFetchUser(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_USER);
         context.startService(intent);
@@ -126,6 +130,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionGiveSearch(Context context, Search search) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_GIVE_SEARCH);
         intent.putExtra(EXTRA_ITEM_VALUES, search);
@@ -139,6 +144,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionRecordGive(Context context, Giving... giving) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RECORD_GIVE);
         if (giving.length > 1) intent.putExtra(EXTRA_LIST_VALUES, giving);
@@ -153,6 +159,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveSearch(Context context, Search... search) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_SEARCH);
         if (search.length > 1) intent.putExtra(EXTRA_LIST_VALUES, search);
@@ -167,6 +174,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveGiving(Context context, Giving... giving) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_GIVING);
         if (giving.length > 1) intent.putExtra(EXTRA_LIST_VALUES, giving);
@@ -181,6 +189,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveRecord(Context context, Record... record) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_RECORD);
         if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
@@ -195,6 +204,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionRemoveUser(Context context, User... user) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_USER);
         if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
@@ -209,6 +219,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetSearch(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_SEARCH);
         context.startService(intent);
@@ -221,6 +232,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetGiving(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_GIVING);
         context.startService(intent);
@@ -233,6 +245,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetRecord(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_RECORD);
         context.startService(intent);
@@ -245,6 +258,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetUser(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_USER);
         context.startService(intent);
@@ -257,6 +271,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateGiving(Context context, Giving... giving) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_GIVING);
         intent.putExtra(EXTRA_ITEM_VALUES, giving);
@@ -273,6 +288,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateRecord(Context context, Record... record) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_RECORD);
         intent.putExtra(EXTRA_ITEM_VALUES, record);
@@ -289,6 +305,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateUser(Context context, User... user) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_USER);
         intent.putExtra(EXTRA_ITEM_VALUES, user);
@@ -305,6 +322,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionUpdateFrequency(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_UPDATE_GIVING);
         context.startService(intent);
@@ -317,6 +335,7 @@ public class DatabaseService extends IntentService {
      * @see IntentService
      */
     public static void startActionResetData(Context context) {
+        if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_RESET_DATA);
         context.startService(intent);
