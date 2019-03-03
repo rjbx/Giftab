@@ -618,7 +618,7 @@ public class ConfigActivity
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.dialog_removal_record, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();

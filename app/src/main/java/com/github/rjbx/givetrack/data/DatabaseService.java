@@ -533,14 +533,14 @@ public class DatabaseService extends IntentService {
      * Handles action ResetSearch in the provided background thread with the provided parameters.
      */
     private void handleActionResetSearch() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, (Search) null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this));
     }
 
     /**
      * Handles action ResetGiving in the provided background thread with the provided parameters.
      */
     private void handleActionResetGiving() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this, (Giving) null));
+        DISK_IO.execute(() -> DatabaseAccessor.removeGiving(this));
     }
 
     /**
@@ -549,7 +549,7 @@ public class DatabaseService extends IntentService {
     private void handleActionResetRecord() {
 
         DISK_IO.execute(() -> {
-            DatabaseAccessor.removeRecord(this, (Record) null);
+            DatabaseAccessor.removeRecord(this);
             List<Giving> givings = DatabaseAccessor.getGiving(this);
             for (Giving giving : givings) {
                 giving.setImpact("0");
@@ -560,10 +560,10 @@ public class DatabaseService extends IntentService {
 
     private void handleActionResetUser() {
         DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSearch(this, (Search) null);
-            DatabaseAccessor.removeGiving(this, (Giving) null);
-            DatabaseAccessor.removeRecord(this, (Record) null);
-            DatabaseAccessor.removeUser(this, (User) null);
+            DatabaseAccessor.removeSearch(this);
+            DatabaseAccessor.removeGiving(this);
+            DatabaseAccessor.removeRecord(this);
+            DatabaseAccessor.removeUser(this);
         });
     }
 
@@ -588,10 +588,10 @@ public class DatabaseService extends IntentService {
     private void handleActionResetData() {
 
        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSearch(this, (Search) null);
-            DatabaseAccessor.removeGiving(this, (Giving) null);
-            DatabaseAccessor.removeRecord(this, (Record) null);
-            DatabaseAccessor.removeUser(this, (User) null);
+            DatabaseAccessor.removeSearch(this);
+            DatabaseAccessor.removeGiving(this);
+            DatabaseAccessor.removeRecord(this);
+            DatabaseAccessor.removeUser(this);
         });
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
         
