@@ -132,40 +132,40 @@ public class Search implements Company, Parcelable, Cloneable {
         this.type = type;
     }
 
-    public String getUid() { return uid; }
-    public void setUid(String uid) { this.uid = uid; }
-    public String getEin() { return ein; }
-    public void setEin(String ein) { this.ein = ein; }
-    public long getStamp() { return stamp; }
-    public void setStamp(long stamp) { this.stamp = stamp; }
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getLocationStreet() { return locationStreet; }
-    public void setLocationStreet(String locationStreet) { this.locationStreet = locationStreet; }
-    public String getLocationDetail() { return locationDetail; }
-    public void setLocationDetail(String locationDetail) { this.locationDetail = locationDetail; }
-    public String getLocationCity() { return locationCity; }
-    public void setLocationCity(String locationCity) { this.locationCity = locationCity; }
-    public String getLocationState() { return locationState; }
-    public void setLocationState(String locationState) { this.locationState = locationState; }
-    public String getLocationZip() { return locationZip; }
-    public void setLocationZip(String locationZip) { this.locationZip = locationZip; }
-    public String getHomepageUrl() { return homepageUrl; }
-    public void setHomepageUrl(String homepageUrl) { this.homepageUrl = homepageUrl; }
-    public String getNavigatorUrl() { return navigatorUrl; }
-    public void setNavigatorUrl(String navigatorUrl) { this.navigatorUrl = navigatorUrl; }
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public String getImpact() { return impact; }
-    public void setImpact(String impact) { this.impact = impact; }
-    public int getType() { return type; }
-    public void setType(int type) { this.type = type; }
+    @Override public String getUid() { return uid; }
+    @Override public void setUid(String uid) { this.uid = uid; }
+    @Override public String getEin() { return ein; }
+    @Override public void setEin(String ein) { this.ein = ein; }
+    @Override public long getStamp() { return stamp; }
+    @Override public void setStamp(long stamp) { this.stamp = stamp; }
+    @Override public String getName() { return name; }
+    @Override public void setName(String name) { this.name = name; }
+    @Override public String getLocationStreet() { return locationStreet; }
+    @Override public void setLocationStreet(String locationStreet) { this.locationStreet = locationStreet; }
+    @Override public String getLocationDetail() { return locationDetail; }
+    @Override public void setLocationDetail(String locationDetail) { this.locationDetail = locationDetail; }
+    @Override public String getLocationCity() { return locationCity; }
+    @Override public void setLocationCity(String locationCity) { this.locationCity = locationCity; }
+    @Override public String getLocationState() { return locationState; }
+    @Override public void setLocationState(String locationState) { this.locationState = locationState; }
+    @Override public String getLocationZip() { return locationZip; }
+    @Override public void setLocationZip(String locationZip) { this.locationZip = locationZip; }
+    @Override public String getHomepageUrl() { return homepageUrl; }
+    @Override public void setHomepageUrl(String homepageUrl) { this.homepageUrl = homepageUrl; }
+    @Override public String getNavigatorUrl() { return navigatorUrl; }
+    @Override public void setNavigatorUrl(String navigatorUrl) { this.navigatorUrl = navigatorUrl; }
+    @Override public String getPhone() { return phone; }
+    @Override public void setPhone(String phone) { this.phone = phone; }
+    @Override public String getEmail() { return email; }
+    @Override public void setEmail(String email) { this.email = email; }
+    @Override public String getImpact() { return impact; }
+    @Override public void setImpact(String impact) { this.impact = impact; }
+    @Override public int getType() { return type; }
+    @Override public void setType(int type) { this.type = type; }
     @Override public String getId() { return ein; }
-    public Search getObject() { return this; }
+    @Override public Search getObject() { return this; }
     
-    public Map<String, Object> toParameterMap() {
+    @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
         map.put("ein", ein);
@@ -185,7 +185,7 @@ public class Search implements Company, Parcelable, Cloneable {
         return map;
     }
     
-    public void fromParameterMap(Map<String, Object> map) {
+    @Override public void fromParameterMap(Map<String, Object> map) {
         uid = (String) map.get("uid");
         ein = (String) map.get("ein");
         stamp = (long) map.get("stamp");
@@ -203,7 +203,7 @@ public class Search implements Company, Parcelable, Cloneable {
         type = (int) map.get("type");
     }
 
-    public ContentValues toContentValues() {
+    @Override public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
         values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);

@@ -102,21 +102,21 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     @Override public String getId() { return super.getEin(); }
     @Override public Giving getObject() { return this; }
 
-    public Map<String, Object> toParameterMap() {
+    @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("frequency", frequency);
         map.put("percent", percent);
         return map;
     }
 
-    public ContentValues toContentValues() {
+    @Override public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY, frequency);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE, percent);
         return values;
     }
 
-    public void fromContentValues(ContentValues values) {
+    @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY);
         this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);

@@ -36,13 +36,13 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         return 0;
     }
 
-    Record(Parcel source) {
+    public Record(Parcel source) {
         super(source);
         memo = source.readString();
         time = source.readLong();
     }
 
-    private Record(Search search, String memo, long time) {
+    public Record(Search search, String memo, long time) {
         super(search);
         this.memo = memo;
         this.time = time;
@@ -100,23 +100,23 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
     @Override public String getId() { return String.valueOf(super.getStamp()); }
-    public Record getObject() { return this; }
+    @Override public Record getObject() { return this; }
 
-    public Map<String, Object> toParameterMap() {
+    @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put("memo", memo);
         map.put("time", time);
         return map;
     }
 
-    public ContentValues toContentValues() {
+    @Override public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
         return values;
     }
 
-    public void fromContentValues(ContentValues values) {
+    @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
         this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);

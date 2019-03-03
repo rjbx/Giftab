@@ -9,6 +9,8 @@ public interface Entry {
     ContentValues toContentValues();
     void fromContentValues(ContentValues values);
     Map<String, Object> toParameterMap();
+    void fromParameterMap(Map<String, Object> map);
     String getUid();
     String getId();
+    Entry getObject();
 }

@@ -35,7 +35,4 @@ public interface Company extends Entry {
     void setImpact(String impact);
     int getType();
     void setType(int type);
-    Map<String, Object> toParameterMap();
-    ContentValues toContentValues();
-    void fromContentValues(ContentValues values);
 }
