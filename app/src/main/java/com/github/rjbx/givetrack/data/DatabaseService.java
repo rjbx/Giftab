@@ -616,6 +616,8 @@ public class DatabaseService extends IntentService {
         
     }
 
+    // TODO: Add Url to social media handle for replacing company names with handles in share messages
+
     private String urlToEmailAddress(String url) {
         String emailAddress = DEFAULT_VALUE_STR;
         try {
