@@ -747,12 +747,14 @@ public class GivingFragment extends Fragment implements
         private static AlertDialog mAlertDialog;
         private static String mPhone;
         private static String mEmail;
+        private static String mSocial;
         private static String mWebsite;
         private static String mLocation;
-        @BindView(R.id.email_button) @Nullable Button mEmailButton;
         @BindView(R.id.phone_button) @Nullable Button mPhoneButton;
-        @BindView(R.id.location_button) @Nullable Button mLocationButton;
+        @BindView(R.id.email_button) @Nullable Button mEmailButton;
+        @BindView(R.id.social_button) @Nullable Button mSocialButton;
         @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
+        @BindView(R.id.location_button) @Nullable Button mLocationButton;
 
         /**
          * Defines visibility and appearance of button according to associated content value.
@@ -774,7 +776,11 @@ public class GivingFragment extends Fragment implements
             if (mWebsiteButton != null)
                 if (mWebsite.isEmpty()) mWebsiteButton.setVisibility(View.GONE);
                 else mWebsiteButton.setText(mWebsite.toLowerCase());
-
+                
+            if (mSocialButton != null)
+                if (mSocial.isEmpty()) mSocialButton.setVisibility(View.GONE);
+                else mSocialButton.setText(mSocial.toLowerCase());
+                
             if (mLocationButton != null)
                 if (mLocation.isEmpty()) mLocationButton.setVisibility(View.GONE);
                 else mLocationButton.setText(mLocation);
@@ -785,8 +791,9 @@ public class GivingFragment extends Fragment implements
          */
         public static ContactDialogLayout getInstance(AlertDialog alertDialog, Giving values) {
             mAlertDialog = alertDialog;
-            mEmail = values.getEmail();
             mPhone = values.getPhone();
+            mEmail = values.getEmail();
+            mSocial = values.getSocial();
             mWebsite = values.getHomepageUrl();
             mLocation = valuesToAddress(values);
             return new ContactDialogLayout(mAlertDialog.getContext());
@@ -825,6 +832,16 @@ public class GivingFragment extends Fragment implements
             if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
                 mContext.startActivity(phoneIntent);
             }
+        }
+
+        /**
+         * Defines behavior on click of social launch button.
+         */
+        @Optional @OnClick(R.id.social_button) void launchSocial() {
+            new CustomTabsIntent.Builder()
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .build()
+                    .launchUrl(mContext, Uri.parse(mSocial));
         }
 
         /**

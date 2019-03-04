@@ -27,6 +27,7 @@ public class Search implements Company, Parcelable, Cloneable {
     private String navigatorUrl;
     private String phone;
     private String email;
+    private String social;
     private String impact;
     private int type;
 
@@ -49,6 +50,7 @@ public class Search implements Company, Parcelable, Cloneable {
         dest.writeString(navigatorUrl);
         dest.writeString(phone);
         dest.writeString(email);
+        dest.writeString(social);
         dest.writeString(impact);
         dest.writeInt(type);
     }
@@ -69,6 +71,7 @@ public class Search implements Company, Parcelable, Cloneable {
         navigatorUrl = source.readString();
         phone = source.readString();
         email = source.readString();
+        social = source.readString();
         impact = source.readString();
         type = source.readInt();
     }
@@ -87,6 +90,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.navigatorUrl = search.navigatorUrl;
         this.phone = search.phone;
         this.email = search.email;
+        this.social = search.social;
         this.impact = search.impact;
         this.type = search.type;
     }
@@ -128,6 +132,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.navigatorUrl = navigatorUrl;
         this.phone = phone;
         this.email = email;
+        this.social = social;
         this.impact = impact;
         this.type = type;
     }
@@ -158,6 +163,8 @@ public class Search implements Company, Parcelable, Cloneable {
     @Override public void setPhone(String phone) { this.phone = phone; }
     @Override public String getEmail() { return email; }
     @Override public void setEmail(String email) { this.email = email; }
+    @Override public String getSocial() { return social; }
+    @Override public void setSocial(String social) { this.social = social; }
     @Override public String getImpact() { return impact; }
     @Override public void setImpact(String impact) { this.impact = impact; }
     @Override public int getType() { return type; }
@@ -180,6 +187,7 @@ public class Search implements Company, Parcelable, Cloneable {
         map.put("navigatorUrl", navigatorUrl);
         map.put("phone", phone);
         map.put("email", email);
+        map.put("social", social);
         map.put("impact", impact);
         map.put("type", type);
         return map;
@@ -199,6 +207,7 @@ public class Search implements Company, Parcelable, Cloneable {
         navigatorUrl = (String) map.get("navigatorUrl");
         phone = (String) map.get("phone");
         email = (String) map.get("email");
+        social = (String) map.get("social");
         impact = (String) map.get("impact");
         type = (int) map.get("type");
     }
@@ -218,6 +227,7 @@ public class Search implements Company, Parcelable, Cloneable {
         values.put(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL, navigatorUrl);
         values.put(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER, phone);
         values.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS, email);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE, social);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT, impact);
         values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE, type);
         return values;
@@ -237,6 +247,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.navigatorUrl = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL);
         this.phone = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER);
         this.email = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS);
+        this.social = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE);
         this.impact = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT);
         this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
     }
@@ -264,6 +275,7 @@ public class Search implements Company, Parcelable, Cloneable {
         search.navigatorUrl = "";
         search.phone = "";
         search.email = "";
+        search.social = "";
         search.impact = "";
         search.type = 0;
         return search;

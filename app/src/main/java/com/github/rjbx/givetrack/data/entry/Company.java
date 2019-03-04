@@ -31,6 +31,8 @@ public interface Company extends Entry {
     void setPhone(String phone);
     String getEmail();
     void setEmail(String email);
+    String getSocial();
+    void setSocial(String social);
     String getImpact();
     void setImpact(String impact);
     int getType();

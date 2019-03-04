@@ -39,6 +39,16 @@
         android:textAllCaps="false"/>
 
     <Button
+        android:id="@+id/social_button"
+        android:drawableStart="@drawable/web"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:textColor="@color/colorSlate"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:textAllCaps="false"/>
+
+    <Button
         android:id="@+id/location_button"
         android:drawableStart="@drawable/menu_place"
         android:layout_width="match_parent"
