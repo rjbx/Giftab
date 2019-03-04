@@ -70,6 +70,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
             String navigatorUrl,
             String phone,
             String email,
+            String social,
             String impact,
             int type,
             int frequency,
@@ -88,6 +89,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
                 navigatorUrl,
                 phone,
                 email,
+                social,
                 impact,
                 type
         );

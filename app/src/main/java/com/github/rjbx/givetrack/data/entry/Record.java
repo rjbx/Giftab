@@ -70,6 +70,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
              String navigatorUrl,
              String phone,
              String email,
+             String social,
              String impact,
              int type,
              String memo,
@@ -88,6 +89,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
                 navigatorUrl,
                 phone,
                 email,
+                social,
                 impact,
                 type
         );
