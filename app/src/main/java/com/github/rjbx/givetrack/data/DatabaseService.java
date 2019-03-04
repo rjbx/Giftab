@@ -479,6 +479,9 @@ public class DatabaseService extends IntentService {
             String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
             giving.setEmail(emailAddress);
 
+            String socialHandle = urlToSocialHandle(giving.getHomepageUrl());
+            giving.setSocial(socialHandle);
+
             DatabaseAccessor.addGiving(this, giving);
         });
     }
