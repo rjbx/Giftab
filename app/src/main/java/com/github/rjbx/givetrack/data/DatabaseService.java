@@ -639,13 +639,13 @@ public class DatabaseService extends IntentService {
         String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return socialHandle;
         try {
-//            List<String> socialHandles = urlToInfo(url, "a", "twitter.com/", null, null, " ");
+            List<String> socialHandles = urlToInfo(url, "a", "twitter.com/", null, null, " ");
 //            if (socialHandles.isEmpty()) {
-                String thirdPartyEngineUrl  = String.format(
-                        "https://guidestar.org/profile/%s-%s",
-                        giving.getEin().substring(0, 2),
-                        giving.getEin().substring(2));
-                List<String> socialHandles = urlToInfo(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
+//                String thirdPartyEngineUrl  = String.format(
+//                        "https://site.org/profile/%s-%s",
+//                        giving.getEin().substring(0, 2),
+//                        giving.getEin().substring(2));
+//                socialHandles = urlToInfo(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
 //            }
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (socialHandles.isEmpty())) {
