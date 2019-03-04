@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
@@ -45,7 +46,7 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_REMOVE_SEARCH = "com.github.rjbx.givetrack.data.action.REMOVE_SEARCH";
     private static final String ACTION_REMOVE_GIVING = "com.github.rjbx.givetrack.data.action.REMOVE_GIVING";
     private static final String ACTION_REMOVE_RECORD = "com.github.rjbx.givetrack.data.action.REMOVE_RECORD";
-    private static final String ACTION_REMOVE_USER = "com.github.rjbx.givetrack.data.action.REMOVE_USER";     
+    private static final String ACTION_REMOVE_USER = "com.github.rjbx.givetrack.data.action.REMOVE_USER";
     private static final String ACTION_RESET_SEARCH = "com.github.rjbx.givetrack.data.action.RESET_SEARCH";
     private static final String ACTION_RESET_GIVING = "com.github.rjbx.givetrack.data.action.RESET_GIVING";
     private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
@@ -63,13 +64,15 @@ public class DatabaseService extends IntentService {
     private static final String EXTRA_ITEM_ID = "com.github.rjbx.givetrack.data.extra.ITEM_ID";
 
 
-
     /**
      * Creates an {@link IntentService} instance.
      */
-    public DatabaseService() { super(DatabaseService.class.getSimpleName()); }
+    public DatabaseService() {
+        super(DatabaseService.class.getSimpleName());
+    }
 
     // TODO: Add boolean returns for launching error message
+
     /**
      * Starts this service to perform action FetchSearch with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -343,9 +346,11 @@ public class DatabaseService extends IntentService {
 
     /**
      * Syncs data inside a worker thread on requests to process {@link Intent}.
+     *
      * @param intent launches this {@link IntentService}.
      */
-    @Override protected void onHandleIntent(Intent intent) {
+    @Override
+    protected void onHandleIntent(Intent intent) {
         if (intent == null || intent.getAction() == null) return;
         final String action = intent.getAction();
         switch (action) {
@@ -416,7 +421,8 @@ public class DatabaseService extends IntentService {
                     handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
                 else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_RESET_DATA: handleActionResetData();
+            case ACTION_RESET_DATA:
+                handleActionResetData();
         }
         // TODO: Decide whether AppWidget refresh should occur here, inside accessor local update helpers or ContentProvider notify helper
         AppWidget.refresh(this);
@@ -536,18 +542,25 @@ public class DatabaseService extends IntentService {
     }
 
     private void handleActionRemoveUser(User... users) {
-        
+
         DISK_IO.execute(() -> {
-               
+
             List<Search> searches = DatabaseAccessor.getSearch(this);
             List<Giving> givings = DatabaseAccessor.getGiving(this);
             List<Record> records = DatabaseAccessor.getRecord(this);
-            
+
             for (User user : users) {
-                for (Search search : searches) if (!search.getUid().equals(user.getUid())) DatabaseAccessor.removeSearch(this, search);
-                for (Giving giving : givings) if (!giving.getUid().equals(user.getUid())) DatabaseAccessor.removeGiving(this, giving);
-                for (Record record : records) if (!record.getUid().equals(user.getUid())) DatabaseAccessor.removeRecord(this, record);
-            } DatabaseAccessor.removeUser(this, users);
+                for (Search search : searches)
+                    if (!search.getUid().equals(user.getUid()))
+                        DatabaseAccessor.removeSearch(this, search);
+                for (Giving giving : givings)
+                    if (!giving.getUid().equals(user.getUid()))
+                        DatabaseAccessor.removeGiving(this, giving);
+                for (Record record : records)
+                    if (!record.getUid().equals(user.getUid()))
+                        DatabaseAccessor.removeRecord(this, record);
+            }
+            DatabaseAccessor.removeUser(this, users);
         });
     }
 
@@ -576,7 +589,8 @@ public class DatabaseService extends IntentService {
             for (Giving giving : givings) {
                 giving.setImpact("0");
                 giving.setFrequency(0);
-            } DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
+            }
+            DatabaseAccessor.addGiving(this, givings.toArray(new Giving[givings.size()]));
         });
     }
 
@@ -609,67 +623,83 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetData() {
 
-       DISK_IO.execute(() -> {
+        DISK_IO.execute(() -> {
             DatabaseAccessor.removeSearch(this);
             DatabaseAccessor.removeGiving(this);
             DatabaseAccessor.removeRecord(this);
             DatabaseAccessor.removeUser(this);
         });
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-        
+
     }
 
     // TODO: Add Url to social media handle for replacing company names with handles in share messages
     private String urlToSocialHandle(String url) {
         String socialHandle = DEFAULT_VALUE_STR;
+        if (url == null || url.isEmpty()) return socialHandle;
         try {
-            if (url.isEmpty()) return socialHandle;
-            Document webpage = Jsoup.connect(url).get();
-            Elements info = webpage.select("div[class=cn-appear]");
-            List<String> socialHandles;
-            socialHandles = parseKeys(info, "twitter.com/", 15, "[^0-9]");
+            List<String> socialHandles = urlToInfo(url, "twitter.com/", null, null, null);
             if (!socialHandles.isEmpty()) {
                 for (String handle : socialHandles) Timber.v("Social: @%s", handle);
                 socialHandle = socialHandles.get(0);
             }
-        } catch (IOException e) { Timber.e(e);
-        } return socialHandle;
+        } catch (IOException e) {
+            Timber.e(e);
+        }
+        return socialHandle;
     }
 
     private String urlToEmailAddress(String url) {
         String emailAddress = DEFAULT_VALUE_STR;
+        if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
-            if (url.isEmpty()) return emailAddress;
-            Document homepage = Jsoup.connect(url).get();
-            Elements homeInfo = homepage.select("a");
-            List<String> emailAddresses;
-            List<String> visitedLinks = new ArrayList<>();
-            emailAddresses = parseKeysFromPages(url, homeInfo, "Donate", visitedLinks, "mailto:");
-            if (emailAddresses.isEmpty())
-                emailAddresses = parseKeysFromPages(url, homeInfo, "Contact", visitedLinks, "mailto:");
-            if (emailAddresses.isEmpty())
-                emailAddresses = parseKeys(homeInfo, "mailto:", null, " ");
+            List<String> emailAddresses = urlToInfo(url, "mailto:", new String[] { "Donate", "Contact" }, null, " ");
+//          TODO: Impelement retrieval from additional sources
+//            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
+//                String thirdPartyUrl = "";
+//                if (!url.equals(thirdPartyUrl)) emailAddress = urlToInfo();
+//            }
+//            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
+//                String searchEngineUrl  = "";
+//                if (!url.equals(searchEngineUrl)) emailAddress = urlToInfo();
+//            }
             if (!emailAddresses.isEmpty()) {
                 for (String address : emailAddresses) Timber.v("Email: %s", address);
                 emailAddress = emailAddresses.get(0);
             }
-        } catch (IOException e) { Timber.e(e);
-        } return emailAddress;
+        } catch (IOException e) { Timber.e(e); }
+        return emailAddress;
     }
 
     private String urlToPhoneNumber(String url) {
         String phoneNumber = DEFAULT_VALUE_STR;
+        if (url == null || url.isEmpty()) return phoneNumber;
         try {
-            Document webpage = Jsoup.connect(url).get();
-            Elements info = webpage.select("div[class=cn-appear]");
-            List<String> phoneNumbers;
-            phoneNumbers = parseKeys(info, "tel:", 15, "[^0-9]");
+            List<String> phoneNumbers = urlToInfo(url, "div[class=cn-appear]", null, 15, "[^0-9]");
             if (!phoneNumbers.isEmpty()) {
                 for (String number : phoneNumbers) Timber.v("Phone: %s", number);
                 phoneNumber = phoneNumbers.get(0);
             }
         } catch (IOException e) { Timber.e(e);
         } return phoneNumber;
+    }
+
+    private List<String> urlToInfo(@NonNull String url, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
+
+        Elements homeInfo = parseElements(url);
+        List<String> infoList = new ArrayList<>();
+        List<String> visitedLinks = new ArrayList<>();
+        if (pageNames != null) {
+            for (String pageName : pageNames) {
+                infoList.addAll(parseKeysFromPages(url, homeInfo, pageName, visitedLinks, key));
+            }
+        } infoList.addAll(parseKeys(homeInfo, key, null, " "));
+        return infoList;
+    }
+
+    private Elements parseElements(String url) throws IOException {
+        Document homepage = Jsoup.connect(url).get();
+        return homepage.select("a");
     }
 
     private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
