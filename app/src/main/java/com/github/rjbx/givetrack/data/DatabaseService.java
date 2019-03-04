@@ -479,13 +479,13 @@ public class DatabaseService extends IntentService {
             giving.setPercent(percent);
             giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
-            String phoneNumber = urlToPhoneNumber(giving.getNavigatorUrl());
+            String phoneNumber = urlToPhoneNumber(giving);
             giving.setPhone(phoneNumber);
 
-            String emailAddress = urlToEmailAddress(giving.getHomepageUrl());
+            String emailAddress = urlToEmailAddress(giving);
             giving.setEmail(emailAddress);
 
-            String socialHandle = urlToSocialHandle(giving.getHomepageUrl());
+            String socialHandle = urlToSocialHandle(giving);
             giving.setSocial(socialHandle);
 
             DatabaseAccessor.addGiving(this, giving);
@@ -633,12 +633,20 @@ public class DatabaseService extends IntentService {
 
     }
 
-    private String urlToSocialHandle(String url) {
+    private String urlToSocialHandle(Giving giving) {
         String socialHandle = DEFAULT_VALUE_STR;
+        String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return socialHandle;
         try {
             List<String> socialHandles = urlToInfo(url, "twitter.com/", null, null, null);
-//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
+            if (socialHandles.isEmpty()) {
+                String thirdPartyEngineUrl  = String.format(
+                        "https://guidestar.org/profile/%s-%s",
+                        giving.getEin().substring(0, 1),
+                        giving.getEin().substring(2));
+                socialHandles = urlToInfo(thirdPartyEngineUrl, "twitter.com/", null, null, null);
+            }
+            //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (socialHandles.isEmpty())) {
 //                String searchEngineUrl  = String.format(
 //                        "https://webcache.googleusercontent.com/search?q=cache:%s",
@@ -653,8 +661,9 @@ public class DatabaseService extends IntentService {
         return socialHandle;
     }
 
-    private String urlToEmailAddress(String url) {
+    private String urlToEmailAddress(Giving giving) {
         String emailAddress = DEFAULT_VALUE_STR;
+        String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
             List<String> emailAddresses = urlToInfo(url, "mailto:", new String[] { "Donate", "Contact" }, null, " ");
@@ -679,8 +688,9 @@ public class DatabaseService extends IntentService {
         return emailAddress;
     }
 
-    private String urlToPhoneNumber(String url) {
+    private String urlToPhoneNumber(Giving giving) {
         String phoneNumber = DEFAULT_VALUE_STR;
+        String url = giving.getNavigatorUrl();
         if (url == null || url.isEmpty()) return phoneNumber;
         try {
             List<String> phoneNumbers = urlToInfo(url, "div[class=cn-appear]", null, 15, "[^0-9]");
