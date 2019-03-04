@@ -639,20 +639,20 @@ public class DatabaseService extends IntentService {
         String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return socialHandle;
         try {
-            List<String> socialHandles = urlToInfo(url, "a", "twitter.com/", null, null, " ");
+            List<String> socialHandles = urlToElementContent(url, "a", "twitter.com/", null, null, " ");
 //            if (socialHandles.isEmpty()) {
 //                String thirdPartyEngineUrl  = String.format(
 //                        "https://site.org/profile/%s-%s",
 //                        giving.getEin().substring(0, 2),
 //                        giving.getEin().substring(2));
-//                socialHandles = urlToInfo(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
+//                socialHandles = urlToElementContent(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
 //            }
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (socialHandles.isEmpty())) {
 //                String searchEngineUrl  = String.format(
 //                        "https://webcache.googleusercontent.com/search?q=cache:%s",
 //                        url);
-//                socialHandles = urlToInfo(searchEngineUrl, "twitter.com/", null, null, null);
+//                socialHandles = urlToElementContent(searchEngineUrl, "twitter.com/", null, null, null);
 //            }
             if (!socialHandles.isEmpty()) {
                 for (String handle : socialHandles) Timber.v("Social: @%s", handle);
@@ -667,11 +667,11 @@ public class DatabaseService extends IntentService {
         String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
-            List<String> emailAddresses = urlToInfo(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
+            List<String> emailAddresses = urlToElementContent(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (emailAddresses.isEmpty()) {
 //                String thirdPartyUrl = "";
-//                if (!url.equals(thirdPartyUrl)) emailAddress = urlToInfo();
+//                if (!url.equals(thirdPartyUrl)) emailAddress = urlToElementContent();
 //            }
 //            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
 //                url.replace("http://", "").replace("https://", "").replace("www.", "");
@@ -694,7 +694,7 @@ public class DatabaseService extends IntentService {
         String url = giving.getNavigatorUrl();
         if (url == null || url.isEmpty()) return phoneNumber;
         try {
-            List<String> phoneNumbers = urlToInfo(url, "div[class=cn-appear]", "tel:", null, 15, "[^0-9]");
+            List<String> phoneNumbers = urlToElementContent(url, "div[class=cn-appear]", "tel:", null, 15, "[^0-9]");
             if (!phoneNumbers.isEmpty()) {
                 for (String number : phoneNumbers) Timber.v("Phone: %s", number);
                 phoneNumber = phoneNumbers.get(0);
@@ -703,7 +703,7 @@ public class DatabaseService extends IntentService {
         } return phoneNumber;
     }
 
-    private List<String> urlToInfo(@NonNull String url, String cssQuery, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
+    private List<String> urlToElementContent(@NonNull String url, String cssQuery, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
 
         Elements homeInfo = parseElements(url, cssQuery);
         List<String> infoList = new ArrayList<>();

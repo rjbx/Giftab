@@ -393,6 +393,12 @@ public final class DatabaseAccessor {
         return user;
     }
 
+    private String urlToCompanyData(String homepageUrlStr) {
+
+        String clearbitUrlStr = "https://combined.clearbit.com/v2/combined/find?domain=" + homepageUrlStr;
+        URL clearbitURL = getUrl(new Uri.Builder().path(clearbitUrlStr).build());
+        String jsonResponse = requestResponseFromUrl(clearbitURL);
+    }
 
     /**
      * Builds the proper {@link Uri} for requesting movie data.
