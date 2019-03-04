@@ -45,9 +45,7 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -56,7 +54,6 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.AppUtilities.getArgs;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -177,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, DatabaseContract.CompanyEntry.COLUMN_UID, getArgs(mUser.getUid()), null);
-            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID, getArgs(mUser.getUid()), null);
+            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
+            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -192,27 +189,26 @@ public class MainActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                Giving[] givings = new Giving[data.getCount()];
+                mGivingArray = new Giving[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
                         Giving giving = new Giving();
                         DatabaseAccessor.cursorRowToEntry(data, giving);
-                        givings[i] = giving;
+                        mGivingArray[i] = giving;
                     } while (data.moveToNext());
                 }
 //                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
-                List<Record> recordList = new ArrayList<>();
+                mRecordArray = new Record[data.getCount()];
                 if (data.moveToFirst()) {
+                    int i = 0;
                     do {
                         Record record = new Record();
                         DatabaseAccessor.cursorRowToEntry(data, record);
-                        if (record.getUid().equals(mUser.getUid()))
-                            recordList.add(record);
+                        mRecordArray[i] = record;
                     } while (data.moveToNext());
-                    mRecordArray = recordList.toArray(new Record[recordList.size()]);
                 }
                 break;
             case DatabaseContract.LOADER_ID_USER:
