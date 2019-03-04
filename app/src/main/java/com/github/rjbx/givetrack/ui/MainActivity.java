@@ -217,13 +217,15 @@ public class MainActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (user.getActive()) mUser = user;
-                        if (mUser.getHistorical() == 0) {
-                            long difference = System.currentTimeMillis() - mUser.getAnchor();
-                            int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-                            if (days != 0) {
-                                mUser.setAnchor(System.currentTimeMillis());
-                                DatabaseService.startActionUpdateUser(this, mUser);
+                        if (user.getActive()) {
+                            mUser = user;
+                            if (mUser.getHistorical() == 0) {
+                                long difference = System.currentTimeMillis() - mUser.getAnchor();
+                                int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+                                if (days != 0) {
+                                    mUser.setAnchor(System.currentTimeMillis());
+                                    DatabaseService.startActionUpdateUser(this, mUser);
+                                }
                             }
                         }
                     } while (data.moveToNext());
