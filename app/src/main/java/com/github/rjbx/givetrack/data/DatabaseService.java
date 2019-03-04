@@ -623,6 +623,7 @@ public class DatabaseService extends IntentService {
     private String urlToSocialHandle(String url) {
         String socialHandle = DEFAULT_VALUE_STR;
         try {
+            if (url.isEmpty()) return socialHandle;
             Document webpage = Jsoup.connect(url).get();
             Elements info = webpage.select("div[class=cn-appear]");
             List<String> socialHandles;
@@ -638,7 +639,7 @@ public class DatabaseService extends IntentService {
     private String urlToEmailAddress(String url) {
         String emailAddress = DEFAULT_VALUE_STR;
         try {
-            if (url.isEmpty()) return DEFAULT_VALUE_STR;
+            if (url.isEmpty()) return emailAddress;
             Document homepage = Jsoup.connect(url).get();
             Elements homeInfo = homepage.select("a");
             List<String> emailAddresses;
