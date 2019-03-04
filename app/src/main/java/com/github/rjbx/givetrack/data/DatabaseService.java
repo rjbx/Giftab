@@ -479,14 +479,15 @@ public class DatabaseService extends IntentService {
             giving.setPercent(percent);
             giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
-            String phoneNumber = urlToPhoneNumber(giving);
-            giving.setPhone(phoneNumber);
-
-            String emailAddress = urlToEmailAddress(giving);
-            giving.setEmail(emailAddress);
-
             String socialHandle = urlToSocialHandle(giving);
             giving.setSocial(socialHandle);
+
+//            String phoneNumber = urlToPhoneNumber(giving);
+//            giving.setPhone(phoneNumber);
+//
+//            String emailAddress = urlToEmailAddress(giving);
+//            giving.setEmail(emailAddress);
+
 
             DatabaseAccessor.addGiving(this, giving);
         });
@@ -638,15 +639,15 @@ public class DatabaseService extends IntentService {
         String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return socialHandle;
         try {
-            List<String> socialHandles = urlToInfo(url, "twitter.com/", null, null, null);
+            List<String> socialHandles = urlToInfo(url, "a", "twitter.com/", null, null, " ");
             if (socialHandles.isEmpty()) {
                 String thirdPartyEngineUrl  = String.format(
                         "https://guidestar.org/profile/%s-%s",
-                        giving.getEin().substring(0, 1),
+                        giving.getEin().substring(0, 2),
                         giving.getEin().substring(2));
-                socialHandles = urlToInfo(thirdPartyEngineUrl, "twitter.com/", null, null, null);
+                socialHandles = urlToInfo(thirdPartyEngineUrl, "a", "twitter.com/", null, null, " ");
             }
-            //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
+//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (socialHandles.isEmpty())) {
 //                String searchEngineUrl  = String.format(
 //                        "https://webcache.googleusercontent.com/search?q=cache:%s",
@@ -666,7 +667,7 @@ public class DatabaseService extends IntentService {
         String url = giving.getHomepageUrl();
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
-            List<String> emailAddresses = urlToInfo(url, "mailto:", new String[] { "Donate", "Contact" }, null, " ");
+            List<String> emailAddresses = urlToInfo(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (emailAddresses.isEmpty()) {
 //                String thirdPartyUrl = "";
@@ -693,7 +694,7 @@ public class DatabaseService extends IntentService {
         String url = giving.getNavigatorUrl();
         if (url == null || url.isEmpty()) return phoneNumber;
         try {
-            List<String> phoneNumbers = urlToInfo(url, "div[class=cn-appear]", null, 15, "[^0-9]");
+            List<String> phoneNumbers = urlToInfo(url, "div[class=cn-appear]", "tel:", null, 15, "[^0-9]");
             if (!phoneNumbers.isEmpty()) {
                 for (String number : phoneNumbers) Timber.v("Phone: %s", number);
                 phoneNumber = phoneNumbers.get(0);
@@ -702,22 +703,17 @@ public class DatabaseService extends IntentService {
         } return phoneNumber;
     }
 
-    private List<String> urlToInfo(@NonNull String url, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
+    private List<String> urlToInfo(@NonNull String url, String cssQuery, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
 
-        Elements homeInfo = parseElements(url);
+        Elements homeInfo = parseElements(url, cssQuery);
         List<String> infoList = new ArrayList<>();
         List<String> visitedLinks = new ArrayList<>();
         if (pageNames != null) {
             for (String pageName : pageNames) {
                 infoList.addAll(parseKeysFromPages(url, homeInfo, pageName, visitedLinks, key));
             }
-        } infoList.addAll(parseKeys(homeInfo, key, null, " "));
+        } infoList.addAll(parseKeys(homeInfo, key, endIndex, removeRegex));
         return infoList;
-    }
-
-    private Elements parseElements(String url) throws IOException {
-        Document homepage = Jsoup.connect(url).get();
-        return homepage.select("a");
     }
 
     private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
@@ -755,5 +751,10 @@ public class DatabaseService extends IntentService {
             }
         }
         return values;
+    }
+
+    private Elements parseElements(String url, String cssQuery) throws IOException {
+        Document homepage = Jsoup.connect(url).get();
+        return homepage.select(cssQuery);
     }
 }
