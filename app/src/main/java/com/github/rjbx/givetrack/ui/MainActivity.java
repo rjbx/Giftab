@@ -56,6 +56,7 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.getArgs;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -176,8 +177,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, null, null, null);
-            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, null, null, null);
+            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, DatabaseContract.CompanyEntry.COLUMN_UID, getArgs(mUser.getUid()), null);
+            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID, getArgs(mUser.getUid()), null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -191,16 +192,14 @@ public class MainActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                List<Giving> givingList = new ArrayList<>();
+                Giving[] givings = new Giving[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
                         Giving giving = new Giving();
                         DatabaseAccessor.cursorRowToEntry(data, giving);
-                        if (giving.getUid().equals(mUser.getUid()))
-                            givingList.add(giving);
+                        givings[i] = giving;
                     } while (data.moveToNext());
-                    mGivingArray = givingList.toArray(new Giving[givingList.size()]);
                 }
 //                DatabaseService.startActionFetchGiving(this);
                 break;

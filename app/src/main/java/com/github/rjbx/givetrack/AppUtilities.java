@@ -55,4 +55,11 @@ public class AppUtilities {
                     ));
         }
     }
+
+    public static String[] getArgs(String... strings) {
+        int arrayLength = strings.length;
+        String[] stringArray = new String[arrayLength];
+        for (int i = 0; i < arrayLength; i++) stringArray[i] = strings[i];
+        return stringArray;
+    }
 }
