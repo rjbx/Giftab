@@ -55,8 +55,10 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
@@ -168,14 +170,18 @@ public class RecordActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                Record[] records = new Record[data.getCount()];
                 int i = 0;
-                do {
-                    Record record = new Record();
-                    DatabaseAccessor.cursorRowToEntry(data, record);
-                    records[i++] = record;
-                } while (data.moveToNext());
-                mAdapter.swapValues(records);
+                List<Record> recordList = new ArrayList<>();
+                if (data.moveToFirst()) {
+                    do {
+                        Record record = new Record();
+                        DatabaseAccessor.cursorRowToEntry(data, record);
+                        if (record.getUid().equals(mUser.getUid()))
+                            recordList.add(record);
+                    } while (data.moveToNext());
+                    Record[] records = recordList.toArray(new Record[recordList.size()]);
+                    mAdapter.swapValues(records);
+                }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));

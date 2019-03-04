@@ -200,19 +200,20 @@ public class MainActivity extends AppCompatActivity implements
                         if (giving.getUid().equals(mUser.getUid()))
                             givingList.add(giving);
                     } while (data.moveToNext());
+                    mGivingArray = givingList.toArray(new Giving[givingList.size()]);
                 }
-                mGivingArray = givingList.toArray(new Giving[givingList.size()]);
 //                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
-                mRecordArray = new Record[data.getCount()];
+                List<Record> recordList = new ArrayList<>();
                 if (data.moveToFirst()) {
-                    int i = 0;
                     do {
                         Record record = new Record();
                         DatabaseAccessor.cursorRowToEntry(data, record);
-                        mRecordArray[i++] = record;
+                        if (record.getUid().equals(mUser.getUid()))
+                            recordList.add(record);
                     } while (data.moveToNext());
+                    mRecordArray = recordList.toArray(new Record[recordList.size()]);
                 }
                 break;
             case DatabaseContract.LOADER_ID_USER:
