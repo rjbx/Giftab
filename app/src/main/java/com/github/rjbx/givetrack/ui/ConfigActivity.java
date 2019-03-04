@@ -80,6 +80,7 @@ public class ConfigActivity
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                     if (sharedPreferences.getAll().isEmpty())
                         mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+                    break;
                 }
             } while (data.moveToNext());
         }

@@ -228,6 +228,7 @@ public class MainActivity extends AppCompatActivity implements
                             }
                             getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
                             getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            break;
                         }
                     } while (data.moveToNext());
                 }
