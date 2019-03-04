@@ -51,6 +51,7 @@ public final class DatabaseContract {
         public static final String COLUMN_NAVIGATOR_URL = "navigatorUrl";
         public static final String COLUMN_PHONE_NUMBER = "phoneNumber";
         public static final String COLUMN_EMAIL_ADDRESS = "emailAddress";
+        public static final String COLUMN_SOCIAL_HANDLE = "socialHandle";
         public static final String COLUMN_DONATION_IMPACT = "donationTotal";
         public static final String COLUMN_DONATION_TYPE = "donationType";
         public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
@@ -71,12 +72,13 @@ public final class DatabaseContract {
         public static final int INDEX_NAVIGATOR_URL = 10;
         public static final int INDEX_PHONE_NUMBER = 11;
         public static final int INDEX_EMAIL_ADDRESS = 12;
-        public static final int INDEX_DONATION_IMPACT = 13;
-        public static final int INDEX_DONATION_TYPE = 14;
-        public static final int INDEX_DONATION_PERCENTAGE = 15;
-        public static final int INDEX_DONATION_MEMO = 15;
-        public static final int INDEX_DONATION_FREQUENCY = 16;
-        public static final int INDEX_DONATION_TIME = 16;
+        public static final int INDEX_SOCIAL_HANDLE = 13;
+        public static final int INDEX_DONATION_IMPACT = 14;
+        public static final int INDEX_DONATION_TYPE = 15;
+        public static final int INDEX_DONATION_PERCENTAGE = 16;
+        public static final int INDEX_DONATION_MEMO = 16;
+        public static final int INDEX_DONATION_FREQUENCY = 17;
+        public static final int INDEX_DONATION_TIME = 17;
     }
 
     public static final class UserEntry implements BaseColumns {

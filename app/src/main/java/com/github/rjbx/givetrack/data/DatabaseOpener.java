@@ -48,6 +48,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
 
@@ -72,6 +73,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
                         CompanyEntry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
@@ -98,6 +100,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
                         CompanyEntry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
