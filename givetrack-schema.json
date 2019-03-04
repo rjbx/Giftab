@@ -1,7 +1,7 @@
 {
   "giving" : {
     "uid" : {
-      "ein": {
+      "stamp": {
         "ein": "",
         "email": "",
         "frequency": 0,
@@ -47,7 +47,7 @@
   },
   "search" : {
     "uid" : {
-      "ein": {
+      "stamp": {
         "ein": "",
         "email": "",
         "homepageUrl": "",

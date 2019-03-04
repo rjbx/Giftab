@@ -58,9 +58,9 @@ public final class DatabaseContract {
         public static final String COLUMN_DONATION_MEMO = "donationMemo";
         public static final String COLUMN_DONATION_TIME = "donationTime";
 
-        public static final int INDEX_UID = 0;
-        public static final int INDEX_EIN = 1;
-        public static final int INDEX_TIMESTAMP = 2;
+        public static final int INDEX_STAMP = 0;
+        public static final int INDEX_UID = 1;
+        public static final int INDEX_EIN = 2;
         public static final int INDEX_CHARITY_NAME = 3;
         public static final int INDEX_LOCATION_STREET = 4;
         public static final int INDEX_LOCATION_DETAIL = 5;

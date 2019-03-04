@@ -35,9 +35,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " +
                         CompanyEntry.TABLE_NAME_SEARCH             + " ("                              +
 
-                        CompanyEntry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER NOT NULL,"                      +
+                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
@@ -51,7 +51,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
 
-                        "UNIQUE (" + CompanyEntry.COLUMN_EIN +
+                        "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_GIVING_TABLE =
@@ -59,9 +59,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " +
                         CompanyEntry.TABLE_NAME_GIVING             + " ("                              +
 
-                        CompanyEntry.COLUMN_EIN                    + " TEXT PRIMARY KEY NOT NULL, "    +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER NOT NULL," +
+                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
@@ -77,7 +77,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"              +
 
-                        "UNIQUE (" + CompanyEntry.COLUMN_EIN +
+                        "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_RECORD_TABLE =
@@ -85,9 +85,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                 "CREATE TABLE IF NOT EXISTS " +
                         CompanyEntry.TABLE_NAME_RECORD             + " ("                              +
 
-                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL," +
+                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +

@@ -153,13 +153,13 @@ public class DatabaseProvider extends ContentProvider {
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_SEARCH;
                 break;
@@ -214,19 +214,19 @@ public class DatabaseProvider extends ContentProvider {
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_GIVING;
                 break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_SEARCH;
                 break;
 
             case CODE_RECORD_WITH_ID:
-                selection = COLUMN_STAMP+ " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_RECORD;
                 break;
@@ -272,12 +272,12 @@ public class DatabaseProvider extends ContentProvider {
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
             case CODE_GIVING_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_GIVING; break;
 
             case CODE_SEARCH_WITH_ID:
-                selection = COLUMN_EIN + " = ? ";
+                selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_SEARCH; break;
 
