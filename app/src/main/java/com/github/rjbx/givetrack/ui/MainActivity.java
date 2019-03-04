@@ -45,7 +45,9 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -184,21 +186,24 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     * Replaces old data that is to be subsequently released from the {@l
+     * ink Loader}.
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_GIVING:
-                mGivingArray = new Giving[data.getCount()];
+                List<Giving> givingList = new ArrayList<>();
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
                         Giving giving = new Giving();
                         DatabaseAccessor.cursorRowToEntry(data, giving);
-                        mGivingArray[i++] = giving;
+                        if (giving.getUid().equals(mUser.getUid()))
+                            givingList.add(giving);
                     } while (data.moveToNext());
                 }
+                mGivingArray = givingList.toArray(new Giving[givingList.size()]);
 //                DatabaseService.startActionFetchGiving(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
