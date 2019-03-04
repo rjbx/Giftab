@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements
                     do {
                         Giving giving = new Giving();
                         DatabaseAccessor.cursorRowToEntry(data, giving);
-                        mGivingArray[i] = giving;
+                        mGivingArray[i++] = giving;
                     } while (data.moveToNext());
                 }
 //                DatabaseService.startActionFetchGiving(this);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements
                     do {
                         Record record = new Record();
                         DatabaseAccessor.cursorRowToEntry(data, record);
-                        mRecordArray[i] = record;
+                        mRecordArray[i++] = record;
                     } while (data.moveToNext());
                 }
                 break;
