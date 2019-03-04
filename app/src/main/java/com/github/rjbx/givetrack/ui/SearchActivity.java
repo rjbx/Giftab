@@ -40,10 +40,14 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
@@ -161,14 +165,17 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
-                Search[] searches = new Search[data.getCount()];
-                int i = 0;
-                do {
-                    Search search = new Search();
-                    DatabaseAccessor.cursorRowToEntry(data, search);
-                    searches[i++] = search;
-                } while (data.moveToNext());
-                mAdapter.swapValues(searches);
+                List<Search> searchList = new ArrayList<>();
+                if (data.moveToFirst()) {
+                    do {
+                        Search search = new Search();
+                        DatabaseAccessor.cursorRowToEntry(data, search);
+                        if (search.getUid().equals(mUser.getUid()))
+                            searchList.add(search);
+                    } while (data.moveToNext());
+                    Search[] searches = searchList.toArray(new Search[searchList.size()]);
+                    mAdapter.swapValues(searches);
+                }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));

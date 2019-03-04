@@ -170,7 +170,6 @@ public class RecordActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                int i = 0;
                 List<Record> recordList = new ArrayList<>();
                 if (data.moveToFirst()) {
                     do {
