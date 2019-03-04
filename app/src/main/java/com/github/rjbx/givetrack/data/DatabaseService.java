@@ -633,19 +633,23 @@ public class DatabaseService extends IntentService {
 
     }
 
-    // TODO: Add Url to social media handle for replacing company names with handles in share messages
     private String urlToSocialHandle(String url) {
         String socialHandle = DEFAULT_VALUE_STR;
         if (url == null || url.isEmpty()) return socialHandle;
         try {
             List<String> socialHandles = urlToInfo(url, "twitter.com/", null, null, null);
+//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
+//            if (socialHandles.isEmpty())) {
+//                String searchEngineUrl  = String.format(
+//                        "https://webcache.googleusercontent.com/search?q=cache:%s",
+//                        url);
+//                socialHandles = urlToInfo(searchEngineUrl, "twitter.com/", null, null, null);
+//            }
             if (!socialHandles.isEmpty()) {
                 for (String handle : socialHandles) Timber.v("Social: @%s", handle);
                 socialHandle = socialHandles.get(0);
             }
-        } catch (IOException e) {
-            Timber.e(e);
-        }
+        } catch (IOException e) { Timber.e(e); }
         return socialHandle;
     }
 
@@ -654,14 +658,18 @@ public class DatabaseService extends IntentService {
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
             List<String> emailAddresses = urlToInfo(url, "mailto:", new String[] { "Donate", "Contact" }, null, " ");
-//          TODO: Impelement retrieval from additional sources
-//            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
+//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
+//            if (emailAddresses.isEmpty()) {
 //                String thirdPartyUrl = "";
 //                if (!url.equals(thirdPartyUrl)) emailAddress = urlToInfo();
 //            }
 //            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
-//                String searchEngineUrl  = "";
-//                if (!url.equals(searchEngineUrl)) emailAddress = urlToInfo();
+//                url.replace("http://", "").replace("https://", "").replace("www.", "");
+//                String searchEngineUrl  = String.format(
+//                        "https://www.google.com/search?q=site%%3A%s+contact+OR+support+\"*%%40%s\"",
+//                        url,
+//                        url);
+//                if (!url.equals(searchEngineUrl)) emailAddress = (searchEngineUrl, "mailto:", null, null, " ");
 //            }
             if (!emailAddresses.isEmpty()) {
                 for (String address : emailAddresses) Timber.v("Email: %s", address);
