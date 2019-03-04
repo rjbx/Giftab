@@ -617,6 +617,20 @@ public class DatabaseService extends IntentService {
     }
 
     // TODO: Add Url to social media handle for replacing company names with handles in share messages
+    private String urlToSocialHandle(String url) {
+        String socialHandle = DEFAULT_VALUE_STR;
+        try {
+            Document webpage = Jsoup.connect(url).get();
+            Elements info = webpage.select("div[class=cn-appear]");
+            List<String> socialHandles;
+            socialHandles = parseKeys(info, "twitter.com/", 15, "[^0-9]");
+            if (!socialHandles.isEmpty()) {
+                for (String handle : socialHandles) Timber.v("Social: @%s", handle);
+                socialHandle = socialHandles.get(0);
+            }
+        } catch (IOException e) { Timber.e(e);
+        } return socialHandle;
+    }
 
     private String urlToEmailAddress(String url) {
         String emailAddress = DEFAULT_VALUE_STR;
