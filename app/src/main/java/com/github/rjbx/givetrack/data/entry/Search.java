@@ -117,6 +117,7 @@ public class Search implements Company, Parcelable, Cloneable {
             String navigatorUrl,
             String phone,
             String email,
+            String social,
             String impact,
             int type) {
         this.uid = uid;
