@@ -364,6 +364,7 @@ public final class DatabaseAccessor {
         pathReference.child("uid").addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
                     if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime")
