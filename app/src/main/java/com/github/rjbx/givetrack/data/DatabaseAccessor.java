@@ -347,37 +347,33 @@ public final class DatabaseAccessor {
 
 // TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
-        if (local != null) return;
-        DatabaseReference reference = remote.getReference("updateTime");
-        reference.addValueEventListener(new ValueEventListener() {
+
+        String path = entryType.getSimpleName().toLowerCase();
+        DatabaseReference pathReference = remote.getReference(path);
+        pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                long localUpdateTime = 0;
-                long remoteUpdateTime = 0;
+                long localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
+                long remoteUpdateTime = dataSnapshot.child("updateTime").getValue(Long.class);
 
-                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-                if (cursor != null) {
-                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-                    cursor.close();
-                    for (User user : localUsers)
-                        if (user.getActive())
-                            localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
+                Iterator<DataSnapshot> iterator = dataSnapshot.child("uid").getChildren().iterator();
+                while (iterator.hasNext()) {
+//                    if (user != null && user.getActive()) remoteUpdateTime =
+//                    User user = iterator.next().getValue(User.class);
+//                    if (localUpdateTime < remoteUpdateTime) {
+//                        pullRemoteToLocalEntries(local, entryType);
+//                    } else if (localUpdateTime > remoteUpdateTime) {
+//                        remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
+//                        cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
+//                        if (cursor != null) {
+//                            List<T> entryList = getEntryListFromCursor(cursor, entryType);
+//                            cursor.close();
+//                            T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
+//                            for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
+//                            addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
+//                        } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
+//                    } else return;
                 }
-
-                remoteUpdateTime = dataSnapshot.getValue(Long.class);
-                if (localUpdateTime < remoteUpdateTime) {
-                    pullRemoteToLocalEntries(local, entryType);
-                } else if (localUpdateTime > remoteUpdateTime) {
-                    remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-                    cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
-                    if (cursor != null) {
-                        List<T> entryList = getEntryListFromCursor(cursor, entryType);
-                        cursor.close();
-                        T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
-                        for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
-                        addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
-                    } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-                } else return;
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
