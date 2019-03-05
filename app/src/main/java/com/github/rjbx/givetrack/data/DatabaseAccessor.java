@@ -282,10 +282,11 @@ public final class DatabaseAccessor {
      */
     static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
+        DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
+        userReference.child(entries[0].getUid()).child(DatabaseContract.getTimeTableColumn(entryType)).setValue(System.currentTimeMillis());
+
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
-        entryReference.child(entries[0].getUid()).child("updateTime").setValue(System.currentTimeMillis());
-
 //        if (entries.length == 1) {
 //            T entry = entries[0];
 //            pathReference = pathReference.child(entry.getUid());
@@ -322,6 +323,8 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
 
+        DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
+        userReference.child(entries[0].getUid()).child(DatabaseContract.getTimeTableColumn(entryType)).setValue(System.currentTimeMillis());
 
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
 
@@ -329,8 +332,6 @@ public final class DatabaseAccessor {
             reference.removeValue();
             return;
         }
-
-        reference.child(entries[0].getUid()).child("updateTime").setValue(System.currentTimeMillis());
 
         for (T entry : entries) reference.child(entry.getUid()).child(entry.getId()).removeValue();
     }

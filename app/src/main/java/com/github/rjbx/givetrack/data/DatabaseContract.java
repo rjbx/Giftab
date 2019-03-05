@@ -132,6 +132,17 @@ public final class DatabaseContract {
         }
     }
 
+    public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
+        String name = entryType.getSimpleName().toLowerCase();
+        switch (name) {
+            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_TIMEGIVING;
+            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_TIMERECORD;
+            case CompanyEntry.TABLE_NAME_SEARCH: return "";
+            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_TIMEUSER;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
+    }
+
     public static <T extends Entry> long getTableTime(Class<T> entryType, User user) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
