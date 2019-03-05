@@ -268,19 +268,9 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
+    static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
 
-        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-        if (cursor != null) {
-            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-            cursor.close();
-            for (User u : localUsers) {
-                if (u != null && u.getActive()) {
-                    u.setTimeUser(System.currentTimeMillis());
-                    local.insert(UserEntry.CONTENT_URI_USER, u);
-                }
-            }
-        }
+        updateLocalTableTime(local, entryType);
 
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
@@ -290,7 +280,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -322,21 +312,25 @@ public final class DatabaseAccessor {
             return;
         }
 
+        updateLocalTableTime(local, entryType);
+
+        for (Entry entry : entries) {
+            contentUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+            local.delete(contentUri, null, null);
+        }
+    }
+
+    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType) {
         Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
         if (cursor != null) {
             List<User> localUsers = getEntryListFromCursor(cursor, User.class);
             cursor.close();
             for (User u : localUsers) {
                 if (u != null && u.getActive()) {
-                    u.setTimeUser(System.currentTimeMillis());
-                    local.insert(UserEntry.CONTENT_URI_USER, u);
+                    DatabaseContract.setTableTime(entryType, u, System.currentTimeMillis());
+                    local.insert(UserEntry.CONTENT_URI_USER, u.toContentValues());
                 }
             }
-        }
-
-        for (Entry entry : entries) {
-            contentUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
-            local.delete(contentUri, null, null);
         }
     }
 
