@@ -284,7 +284,7 @@ public final class DatabaseAccessor {
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
-        entryReference.child("updateTime").setValue(System.currentTimeMillis());
+        entryReference.child(entries[0].getUid()).child("updateTime").setValue(System.currentTimeMillis());
 
 //        if (entries.length == 1) {
 //            T entry = entries[0];
@@ -320,6 +320,21 @@ public final class DatabaseAccessor {
         }
     }
 
+    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
+
+
+        DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
+
+        if (entries == null || entries.length == 0) {
+            reference.removeValue();
+            return;
+        }
+
+        reference.child(entries[0].getUid()).child("updateTime").setValue(System.currentTimeMillis());
+
+        for (T entry : entries) reference.child(entry.getUid()).child(entry.getId()).removeValue();
+    }
+
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType) {
         Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
         if (cursor != null) {
@@ -332,18 +347,6 @@ public final class DatabaseAccessor {
                 }
             }
         }
-    }
-
-    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
-
-
-        DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
-
-        if (entries == null || entries.length == 0) {
-            reference.removeValue();
-            return;
-        }
-        for (T entry : entries) reference.child(entry.getUid()).child(entry.getId()).removeValue();
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
