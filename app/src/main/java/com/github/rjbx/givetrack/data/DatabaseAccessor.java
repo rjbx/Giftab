@@ -269,6 +269,19 @@ public final class DatabaseAccessor {
     }
 
     public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
+
+        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        if (cursor != null) {
+            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+            cursor.close();
+            for (User u : localUsers) {
+                if (u != null && u.getActive()) {
+                    u.setTimeUser(System.currentTimeMillis());
+                    local.insert(UserEntry.CONTENT_URI_USER, u);
+                }
+            }
+        }
+
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
         local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
@@ -308,6 +321,19 @@ public final class DatabaseAccessor {
             local.delete(contentUri, null, null);
             return;
         }
+
+        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        if (cursor != null) {
+            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+            cursor.close();
+            for (User u : localUsers) {
+                if (u != null && u.getActive()) {
+                    u.setTimeUser(System.currentTimeMillis());
+                    local.insert(UserEntry.CONTENT_URI_USER, u);
+                }
+            }
+        }
+
         for (Entry entry : entries) {
             contentUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
             local.delete(contentUri, null, null);
@@ -316,8 +342,8 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
 
+
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
-        reference.child("updateTime").setValue(System.currentTimeMillis());
 
         if (entries == null || entries.length == 0) {
             reference.removeValue();
