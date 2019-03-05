@@ -113,8 +113,8 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
-        this.frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        this.percent = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
+        frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
+        percent = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
     }
 
     @Override public ContentValues toContentValues() {
@@ -126,8 +126,8 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
+        frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
+        percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
     }
 
     public Search getSuper() { return super.clone(); }

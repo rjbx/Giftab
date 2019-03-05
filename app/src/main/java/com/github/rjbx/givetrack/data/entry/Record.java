@@ -113,8 +113,8 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
-        this.memo = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_MEMO);
-        this.time = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_TIME);
+        memo = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_MEMO);
+        time = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_TIME);
     }
 
     @Override public ContentValues toContentValues() {
@@ -126,8 +126,8 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_MEMO);
-        this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIME);
+        memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_MEMO);
+        time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIME);
      }
 
     public Search getSuper() { return super.clone(); }
