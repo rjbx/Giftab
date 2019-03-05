@@ -106,9 +106,15 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
-        map.put("memo", memo);
-        map.put("time", time);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
         return map;
+    }
+
+    @Override public void fromParameterMap(Map<String, Object> map) {
+        super.fromParameterMap(map);
+        this.memo = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
+        this.time = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
     }
 
     @Override public ContentValues toContentValues() {

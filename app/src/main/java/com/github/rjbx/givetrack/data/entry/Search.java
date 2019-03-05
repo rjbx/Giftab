@@ -175,42 +175,42 @@ public class Search implements Company, Parcelable, Cloneable {
     
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
-        map.put("uid", uid);
-        map.put("ein", ein);
-        map.put("stamp", stamp);
-        map.put("name", name );
-        map.put("locationStreet", locationStreet);
-        map.put("locationDetail", locationDetail);
-        map.put("locationCity", locationCity);
-        map.put("locationState", locationState);
-        map.put("locationZip", locationZip);
-        map.put("homepageUrl", homepageUrl);
-        map.put("navigatorUrl", navigatorUrl);
-        map.put("phone", phone);
-        map.put("email", email);
-        map.put("social", social);
-        map.put("impact", impact);
-        map.put("type", type);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_STAMP, stamp);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY, locationCity);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STATE, locationState);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP, locationZip);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL, homepageUrl);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL, navigatorUrl);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER, phone);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS, email);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE, social);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT, impact);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE, type);
         return map;
     }
     
     @Override public void fromParameterMap(Map<String, Object> map) {
-        uid = (String) map.get("uid");
-        ein = (String) map.get("ein");
-        stamp = (long) map.get("stamp");
-        name = (String) map.get("name");
-        locationStreet = (String) map.get("locationStreet");
-        locationDetail = (String) map.get("locationDetail");
-        locationCity = (String) map.get("locationCity");
-        locationState = (String) map.get("locationState");
-        locationZip = (String) map.get("locationZip");
-        homepageUrl = (String) map.get("homepageUrl");
-        navigatorUrl = (String) map.get("navigatorUrl");
-        phone = (String) map.get("phone");
-        email = (String) map.get("email");
-        social = (String) map.get("social");
-        impact = (String) map.get("impact");
-        type = (int) map.get("type");
+        this.ein = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EIN);
+        this.stamp = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_STAMP);
+        this.name = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
+        this.locationStreet = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
+        this.locationDetail = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
+        this.locationCity = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY);
+        this.locationState = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STATE);
+        this.locationZip = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP);
+        this.homepageUrl = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL);
+        this.navigatorUrl = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL);
+        this.phone = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER);
+        this.email = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS);
+        this.social = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE);
+        this.impact = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT);
+        this.type = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
+
     }
 
     @Override public ContentValues toContentValues() {
