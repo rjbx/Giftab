@@ -105,7 +105,7 @@ public final class DatabaseAccessor {
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
         // Store data
-//        removeEntriesFromLocal(local, Search.class, null);
+        removeEntriesFromLocal(local, Search.class);
         addEntriesToLocal(local, Search.class, parsedResponse);
         addEntriesToRemote(remote, Search.class, parsedResponse);
     }
@@ -362,7 +362,7 @@ public final class DatabaseAccessor {
                     cursor.close();
                     for (User user : localUsers)
                         if (user.getActive())
-                            localUpdateTime = DatabaseProvider.getTableTime(entryType);
+                            localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
                 }
 
                 remoteUpdateTime = dataSnapshot.getValue(Long.class);

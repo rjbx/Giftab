@@ -122,7 +122,7 @@ public final class DatabaseContract {
     }
 
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
-        String name = entryType.getSimpleName().toLowerCase();
+        String name = classToTableName(entryType);
         switch (name) {
             case CompanyEntry.TABLE_NAME_GIVING: return CompanyEntry.CONTENT_URI_GIVING;
             case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
@@ -130,5 +130,9 @@ public final class DatabaseContract {
             case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
+    }
+
+    public static <T extends Entry> String classToTableName(Class<T> entryType) {
+        return entryType.getSimpleName().toLowerCase();
     }
 }
