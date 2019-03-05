@@ -11,6 +11,7 @@ import android.util.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
@@ -18,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -48,6 +50,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+// TODO:  Fully implement validation
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
@@ -434,22 +437,23 @@ public final class DatabaseAccessor {
         HttpURLConnection urlConnection = null;
         String response = null;
         try {
-            urlConnection = (HttpURLConnection) url.openConnection();
-
-            if (password != null) {
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setDoOutput(true);
-                urlConnection.setRequestMethod("PUT");
-
-                String credential = "Basic " + new String(Base64.encode(password.getBytes(), Base64.NO_WRAP));
-                urlConnection.setRequestProperty("Authorization", credential);
-
-                String format = "{\"format\":\"json\",\"pattern\":\"#\"}";
-                OutputStreamWriter oStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
-                oStreamWriter.write(format);
-                oStreamWriter.close();
-            }
-            InputStream in = urlConnection.getInputStream();
+//            TODO: Resolve FileNotFoundException or replace network API
+//            urlConnection = (HttpURLConnection) url.openConnection();
+//
+//            if (password != null) {
+//                urlConnection.setRequestProperty("Content-Type", "application/json");
+//                urlConnection.setDoOutput(true);
+//                urlConnection.setRequestMethod("PUT");
+//
+//                String credential = "Basic " + new String(Base64.encode(password.getBytes(StandardCharsets.UTF_8), Base64.NO_WRAP));
+//                urlConnection.setRequestProperty("Authorization", credential);
+//
+//                String format = "{\"format\":\"json\",\"pattern\":\"#\"}";
+//                OutputStreamWriter oStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
+//                oStreamWriter.write(format);
+//                oStreamWriter.close();
+//            }
+            InputStreamReader in = new InputStreamReader(urlConnection.getInputStream());
 
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");

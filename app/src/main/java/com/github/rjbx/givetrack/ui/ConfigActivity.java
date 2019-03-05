@@ -48,6 +48,7 @@ import androidx.annotation.Nullable;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+// TODO: Fully implement clear Search
 // TODO: Add change email option to UserPreferenceFragment
 // TODO: Add anchor reset option for GivingPreferenceFragment
 // TODO: Add show all option for all PreferenceFragments
