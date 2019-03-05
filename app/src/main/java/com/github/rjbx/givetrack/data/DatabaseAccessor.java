@@ -348,26 +348,26 @@ public final class DatabaseAccessor {
 // TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
+        User user = null;
+        long localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
+        long remoteUpdateTime = 0;
+
+        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        if (cursor != null) {
+            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+            cursor.close();
+            for (User u : localUsers) if (user.getActive()) user = u;
+        }
+
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        pathReference.addValueEventListener(new ValueEventListener() {
+        pathReference.child("uid").addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                long localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
-                long remoteUpdateTime = dataSnapshot.child("updateTime").getValue(Long.class);
-
-                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-                if (cursor != null) {
-                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-                    cursor.close();
-                    for (User user : localUsers)
-                        if (user.getActive())
-                            localUpdateTime = DatabaseContract.getTableTime(entryType, user);
-                }
-
-                Iterator<DataSnapshot> iterator = dataSnapshot.child("uid").getChildren().iterator();
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
-                    if (user != null && user.getActive()) remoteUpdateTime =
+                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime")
+
                     User user = iterator.next().getValue(User.class);
                     if (localUpdateTime < remoteUpdateTime) {
                         pullRemoteToLocalEntries(local, entryType);
