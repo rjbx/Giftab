@@ -279,11 +279,8 @@ public final class DatabaseAccessor {
      */
     static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
-
-        DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
-        userReference.child(entries[0].getUid()).updateChildren(map);
+        String uid = entries[0].getUid();
+        updateRemoteTableTime(remote, entryType, uid);
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -295,7 +292,7 @@ public final class DatabaseAccessor {
 //        } else {
 //             TODO: Handle multiple entries with single update
             for (T entry: entries) {
-                DatabaseReference childReference = entryReference.child(entry.getUid());
+                DatabaseReference childReference = entryReference.child(uid);
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
                 childReference.updateChildren(entry.toParameterMap());
             }
@@ -323,20 +320,17 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
 
-        Map<String, Object> map = new HashMap<>();
-        map.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
+        // TODO: Split into reset and remove method or add User parameter for updating table time on null entries argument
 
-        DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
-        userReference.child(entries[0].getUid()).updateChildren(map);
-
+        String uid = entries[0].getUid();
+        updateRemoteTableTime(remote, entryType, uid);
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
 
         if (entries == null || entries.length == 0) {
             reference.removeValue();
             return;
         }
-
-        for (T entry : entries) reference.child(entry.getUid()).child(entry.getId()).removeValue();
+        for (T entry : entries) reference.child(uid).child(entry.getId()).removeValue();
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType) {
@@ -351,6 +345,15 @@ public final class DatabaseAccessor {
                 }
             }
         }
+    }
+
+    static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, String uid) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
+
+        DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
+        userReference.child(uid).updateChildren(map);
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
