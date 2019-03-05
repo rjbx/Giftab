@@ -7,19 +7,15 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.util.Base64;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -105,9 +101,6 @@ public final class DatabaseAccessor {
         String response = requestResponseFromUrl(url, null);
         if (response == null) return;
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
-
-        String formattedUrl = parsedResponse[0].getHomepageUrl().split("www.")[1].replace("/", "");
-        String dataResponse = urlToCompanyData(context, formattedUrl);
 
         // Store data
         removeEntriesFromLocal(local, Search.class, null);
@@ -401,12 +394,12 @@ public final class DatabaseAccessor {
         return user;
     }
 
-    private static String urlToCompanyData(Context context, String homepageUrlStr) {
-
-        String clearbitUrlStr = "https://company.clearbit.com/v2/companies/find?domain=" + homepageUrlStr;
-        URL clearbitURL = getUrl(new Uri.Builder().path(clearbitUrlStr).build());
-        return requestResponseFromUrl(clearbitURL, context.getString(R.string.cb_api_key));
-    }
+//    private static String urlToCompanyData(Context context, String homepageUrlStr) {
+//        String formattedUrl = parsedResponse[0].getHomepageUrl().split("www.")[1].replace("/", "");
+//        String clearbitUrlStr = "https://api.com/v1/enrichment/domain=" + homepageUrlStr
+//        URL clearbitURL = getUrl(new Uri.Builder().path(clearbitUrlStr).build());
+//        return requestResponseFromUrl(clearbitURL, context.getString(R.string.cb_api_key));
+//    }
 
     /**
      * Builds the proper {@link Uri} for requesting movie data.
@@ -437,8 +430,8 @@ public final class DatabaseAccessor {
         HttpURLConnection urlConnection = null;
         String response = null;
         try {
+            urlConnection = (HttpURLConnection) url.openConnection();
 //            TODO: Resolve FileNotFoundException or replace network API
-//            urlConnection = (HttpURLConnection) url.openConnection();
 //
 //            if (password != null) {
 //                urlConnection.setRequestProperty("Content-Type", "application/json");
