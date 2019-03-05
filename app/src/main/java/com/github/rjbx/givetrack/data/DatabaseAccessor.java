@@ -284,22 +284,11 @@ public final class DatabaseAccessor {
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
-//        if (entries.length == 1) {
-//            T entry = entries[0];
-//            pathReference = pathReference.child(entry.getUid());
-//            if (entry instanceof Company) pathReference = pathReference.child((entry.getId()));
-//            pathReference.updateChildren(entry.toParameterMap());
-//        } else {
-//             TODO: Handle multiple entries with single update
-            for (T entry: entries) {
-                DatabaseReference childReference = entryReference.child(uid);
-                if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.updateChildren(entry.toParameterMap());
-            }
-//            Map<String, Object> entryMap = new HashMap<>();
-//            entryMap.put(entry.getId(), entry);
-//            pathReference.updateChildren(entryMap);
-//        }
+        for (T entry: entries) {
+            DatabaseReference childReference = entryReference.child(uid);
+            if (entry instanceof Company) childReference = childReference.child(entry.getId());
+            childReference.updateChildren(entry.toParameterMap());
+        }
     }
 
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
@@ -324,13 +313,18 @@ public final class DatabaseAccessor {
 
         String uid = entries[0].getUid();
         updateRemoteTableTime(remote, entryType, uid);
-        DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
-
-        if (entries == null || entries.length == 0) {
-            reference.removeValue();
-            return;
+        String entryPath = entryType.getSimpleName().toLowerCase();
+        DatabaseReference entryReference = remote.getReference(entryPath);
+        for (T entry: entries) {
+            DatabaseReference childReference = entryReference.child(uid);
+            if (entry instanceof Company) childReference = childReference.child(entry.getId());
+            childReference.removeValue();
         }
-        for (T entry : entries) reference.child(uid).child(entry.getId()).removeValue();
+
+//        if (entries == null || entries.length == 0) {
+//            reference.removeValue();
+//            return;
+//        }
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType) {
