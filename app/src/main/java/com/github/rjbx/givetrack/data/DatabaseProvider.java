@@ -361,9 +361,9 @@ public class DatabaseProvider extends ContentProvider {
 
     public static <T extends Entry> long setTableTime(String tableName, long time) {
         switch (tableName) {
-            case CompanyEntry.TABLE_NAME_GIVING: mGivingTime = time;
-            case CompanyEntry.TABLE_NAME_RECORD: mRecordTime = time;
-            case UserEntry.TABLE_NAME_USER: mUserTime = time;
+            case CompanyEntry.TABLE_NAME_GIVING: mGivingTime = time; break;
+            case CompanyEntry.TABLE_NAME_RECORD: mRecordTime = time; break;
+            case UserEntry.TABLE_NAME_USER: mUserTime = time; break;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
     }
