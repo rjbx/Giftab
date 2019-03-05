@@ -1,77 +1,79 @@
 {
   "giving" : {
     "uid" : {
-      "updateTime" : 0,
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "frequency": 0,
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "name": "",
-        "navigatorUrl": "",
-        "percent": "",
-        "phone": "",
-        "stamp": 0,
-        "type": 0,
-        "uid": ""
-      }
+      "active" : false,
+      "stamp" : {
+        "ein" : "",
+        "email" : "",
+        "frequency" : 0,
+        "homepageUrl" : "",
+        "impact" : "",
+        "locationCity" : "",
+        "locationDetail" : "",
+        "locationState" : "",
+        "locationStreet" : "",
+        "locationZip" : "",
+        "name" : "",
+        "navigatorUrl" : "",
+        "percent" : "",
+        "phone" : "",
+        "stamp" : 0,
+        "type" : 0,
+        "uid" : ""
+      },
+      "updateTime" : 0
     }
   },
   "record" : {
     "uid" : {
-      "updateTime" : 0,
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "memo": "",
-        "name": "",
-        "navigatorUrl": "",
-        "phone": "",
-        "stamp": 0,
-        "time": 0,
-        "type": 0,
-        "uid": ""
-      }
+      "active" : false,
+      "stamp" : {
+        "ein" : "",
+        "email" : "",
+        "homepageUrl" : "",
+        "impact" : "",
+        "locationCity" : "",
+        "locationDetail" : "",
+        "locationState" : "",
+        "locationStreet" : "",
+        "locationZip" : "",
+        "memo" : "",
+        "name" : "",
+        "navigatorUrl" : "",
+        "phone" : "",
+        "stamp" : 0,
+        "time" : 0,
+        "type" : 0,
+        "uid" : ""
+      },
+      "updateTime" : 0
     }
   },
   "search" : {
     "uid" : {
-      "updateTime" : 0,
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "name": "",
-        "navigatorUrl": "",
-        "phone": "",
-        "stamp": 0,
-        "type": 0,
-        "uid": ""
-      }
+      "active" : false,
+      "stamp" : {
+        "ein" : "",
+        "email" : "",
+        "homepageUrl" : "",
+        "impact" : "",
+        "locationCity" : "",
+        "locationDetail" : "",
+        "locationState" : "",
+        "locationStreet" : "",
+        "locationZip" : "",
+        "name" : "",
+        "navigatorUrl" : "",
+        "phone" : "",
+        "stamp" : 0,
+        "type" : 0,
+        "uid" : ""
+      },
+      "updateTime" : 0
     }
   },
   "user" : {
     "uid" : {
-      "updateTime" : 0,
       "active" : true,
       "anchor" : 0,
       "birthdate" : "0/0/2000",
@@ -100,6 +102,7 @@
       "timerecord" : 0,
       "timetrack" : 0,
       "timeuser" : 0,
+      "updateTime" : 0,
       "viewtrack" : false,
       "zip" : ""
     }

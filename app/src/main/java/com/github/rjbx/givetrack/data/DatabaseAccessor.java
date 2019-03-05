@@ -356,23 +356,32 @@ public final class DatabaseAccessor {
                 long localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
                 long remoteUpdateTime = dataSnapshot.child("updateTime").getValue(Long.class);
 
+                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+                if (cursor != null) {
+                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+                    cursor.close();
+                    for (User user : localUsers)
+                        if (user.getActive())
+                            localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+                }
+
                 Iterator<DataSnapshot> iterator = dataSnapshot.child("uid").getChildren().iterator();
                 while (iterator.hasNext()) {
-//                    if (user != null && user.getActive()) remoteUpdateTime =
-//                    User user = iterator.next().getValue(User.class);
-//                    if (localUpdateTime < remoteUpdateTime) {
-//                        pullRemoteToLocalEntries(local, entryType);
-//                    } else if (localUpdateTime > remoteUpdateTime) {
-//                        remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-//                        cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
-//                        if (cursor != null) {
-//                            List<T> entryList = getEntryListFromCursor(cursor, entryType);
-//                            cursor.close();
-//                            T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
-//                            for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
-//                            addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
-//                        } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-//                    } else return;
+                    if (user != null && user.getActive()) remoteUpdateTime =
+                    User user = iterator.next().getValue(User.class);
+                    if (localUpdateTime < remoteUpdateTime) {
+                        pullRemoteToLocalEntries(local, entryType);
+                    } else if (localUpdateTime > remoteUpdateTime) {
+                        remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
+                        cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
+                        if (cursor != null) {
+                            List<T> entryList = getEntryListFromCursor(cursor, entryType);
+                            cursor.close();
+                            T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
+                            for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
+                            addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
+                        } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
+                    } else return;
                 }
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
