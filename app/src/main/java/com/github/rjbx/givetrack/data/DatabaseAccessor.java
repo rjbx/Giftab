@@ -279,7 +279,6 @@ public final class DatabaseAccessor {
      */
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        if (entryType != null) return;
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         entryReference.child("updateTime").setValue(System.currentTimeMillis());
