@@ -172,7 +172,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
 
             case CODE_USER_WITH_ID:
-                selection = COLUMN_EMAIL + " = ? ";
+                selection = COLUMN_USER_EMAIL + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_USER;
                 break;
@@ -233,7 +233,7 @@ public class DatabaseProvider extends ContentProvider {
                 break;
 
             case CODE_USER_WITH_ID:
-                selection = COLUMN_EMAIL + " = ? ";
+                selection = COLUMN_USER_EMAIL + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_USER;
                 break;
@@ -288,7 +288,7 @@ public class DatabaseProvider extends ContentProvider {
                 tableName = TABLE_NAME_RECORD; break;
 
             case CODE_USER_WITH_ID:
-                selection = COLUMN_EMAIL + " = ? ";
+                selection = COLUMN_USER_EMAIL + " = ? ";
                 selectionArgs = new String[]{ Id };
                 tableName = TABLE_NAME_USER;
                 break;

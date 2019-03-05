@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
-                if (mUser.getHistorical() != 0) calendar.setTimeInMillis(mUser.getAnchor());
+                if (mUser.getGiveTiming() != 0) calendar.setTimeInMillis(mUser.getGiveAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
@@ -216,13 +216,13 @@ public class MainActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (user.getActive()) {
+                        if (user.getUserActive()) {
                             mUser = user;
-                            if (mUser.getHistorical() == 0) {
-                                long difference = System.currentTimeMillis() - mUser.getAnchor();
+                            if (mUser.getGiveTiming() == 0) {
+                                long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
                                 int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
                                 if (days != 0) {
-                                    mUser.setAnchor(System.currentTimeMillis());
+                                    mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
                                 }
                             }
@@ -300,8 +300,8 @@ public class MainActivity extends AppCompatActivity implements
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    mUser.setAnchor(mAnchorTime);
-                    long difference = System.currentTimeMillis() - mUser.getAnchor();
+                    mUser.setGiveAnchor(mAnchorTime);
+                    long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
                     int daysDifference = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
                     if (daysDifference != 0) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements
                         mCurrentDialog.show();
                         mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
                         mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-                    } else mUser.setHistorical(0);
+                    } else mUser.setGiveTiming(0);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:
@@ -319,11 +319,11 @@ public class MainActivity extends AppCompatActivity implements
         } else if (dialog == mCurrentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    mUser.setHistorical(2);
+                    mUser.setGiveTiming(2);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    mUser.setHistorical(1);
+                    mUser.setGiveTiming(1);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
                 default:

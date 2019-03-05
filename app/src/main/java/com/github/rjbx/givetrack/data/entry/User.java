@@ -19,36 +19,36 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 @IgnoreExtraProperties public class User implements Entry, Parcelable, Cloneable {
 
     private String uid;
-    private String email;
-    private boolean active;
-    private String birthdate;
-    private String gender;
-    private String donation;
-    private String magnitude;
-    private long anchor;
-    private int historical;
-    private long timetrack;
-    private boolean viewtrack;
-    private int theme;
-    private boolean searchguide;
-    private boolean focus;
-    private boolean filter;
-    private String company;
-    private String term;
-    private String city;
-    private String state;
-    private String zip;
-    private String minrating;
-    private String pages;
-    private String rows;
-    private boolean ratingReset;
+    private String userEmail;
+    private boolean userActive;
+    private String userBirthdate;
+    private String userGender;
+    private String giveImpact;
+    private String giveMagnitude;
+    private long giveAnchor;
+    private int giveTiming;
+    private long glanceAnchor;
+    private boolean glanceSince;
+    private int glanceTheme;
+    private boolean searchDialog;
+    private boolean searchFocus;
+    private boolean searchFilter;
+    private String searchCompany;
+    private String searchTerm;
+    private String searchCity;
+    private String searchState;
+    private String searchZip;
+    private String searchMinrating;
+    private String searchPages;
+    private String searchRows;
+    private boolean giveReset;
     private String searchSort;
     private String searchOrder;
     private String recordSort;
     private String recordOrder;
-    private long timeGiving;
-    private long timeRecord;
-    private long timeUser;
+    private long giveStamp;
+    private long recordStamp;
+    private long userStamp;
 
     @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
@@ -57,106 +57,106 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
     @Override public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(uid);
-        dest.writeString(email);
-        dest.writeInt(active ? 1 : 0);
-        dest.writeString(birthdate);
-        dest.writeString(gender);
-        dest.writeString(donation);
-        dest.writeString(magnitude);
-        dest.writeLong(anchor);
-        dest.writeInt(historical);
-        dest.writeLong(timetrack);
-        dest.writeInt(viewtrack ? 1 : 0);
-        dest.writeInt(theme);
-        dest.writeInt(searchguide ? 1 : 0);
-        dest.writeInt(focus ? 1 : 0);
-        dest.writeInt(filter ? 1 : 0);
-        dest.writeString(company);
-        dest.writeString(term);
-        dest.writeString(city);
-        dest.writeString(state);
-        dest.writeString(zip);
-        dest.writeString(minrating);
-        dest.writeString(pages);
-        dest.writeString(rows);
-        dest.writeInt(ratingReset ? 1 : 0);
+        dest.writeString(userEmail);
+        dest.writeInt(userActive ? 1 : 0);
+        dest.writeString(userBirthdate);
+        dest.writeString(userGender);
+        dest.writeString(giveImpact);
+        dest.writeString(giveMagnitude);
+        dest.writeLong(giveAnchor);
+        dest.writeInt(giveTiming);
+        dest.writeLong(glanceAnchor);
+        dest.writeInt(glanceSince ? 1 : 0);
+        dest.writeInt(glanceTheme);
+        dest.writeInt(searchDialog ? 1 : 0);
+        dest.writeInt(searchFocus ? 1 : 0);
+        dest.writeInt(searchFilter ? 1 : 0);
+        dest.writeString(searchCompany);
+        dest.writeString(searchTerm);
+        dest.writeString(searchCity);
+        dest.writeString(searchState);
+        dest.writeString(searchZip);
+        dest.writeString(searchMinrating);
+        dest.writeString(searchPages);
+        dest.writeString(searchRows);
+        dest.writeInt(giveReset ? 1 : 0);
         dest.writeString(searchSort);
         dest.writeString(searchOrder);
         dest.writeString(recordSort);
         dest.writeString(recordOrder);
-        dest.writeLong(timeGiving);
-        dest.writeLong(timeRecord);
-        dest.writeLong(timeUser);
+        dest.writeLong(giveStamp);
+        dest.writeLong(recordStamp);
+        dest.writeLong(userStamp);
     }
 
     @Override public int describeContents() { return 0; }
 
     public User (Parcel source) {
         uid = source.readString();
-        email = source.readString();
-        active = source.readInt() == 1;
-        birthdate = source.readString();
-        gender = source.readString();
-        donation = source.readString();
-        magnitude = source.readString();
-        anchor = source.readLong();
-        historical = source.readInt();
-        timetrack = source.readLong();
-        viewtrack = source.readInt() == 1;
-        theme = source.readInt();
-        searchguide = source.readInt() == 1;
-        focus = source.readInt() == 1;
-        filter = source.readInt() == 1;
-        company = source.readString();
-        term = source.readString();
-        city = source.readString();
-        state = source.readString();
-        zip = source.readString();
-        minrating = source.readString();
-        pages = source.readString();
-        rows = source.readString();
-        ratingReset = source.readInt() == 1;
+        userEmail = source.readString();
+        userActive = source.readInt() == 1;
+        userBirthdate = source.readString();
+        userGender = source.readString();
+        giveImpact = source.readString();
+        giveMagnitude = source.readString();
+        giveAnchor = source.readLong();
+        giveTiming = source.readInt();
+        glanceAnchor = source.readLong();
+        glanceSince = source.readInt() == 1;
+        glanceTheme = source.readInt();
+        searchDialog = source.readInt() == 1;
+        searchFocus = source.readInt() == 1;
+        searchFilter = source.readInt() == 1;
+        searchCompany = source.readString();
+        searchTerm = source.readString();
+        searchCity = source.readString();
+        searchState = source.readString();
+        searchZip = source.readString();
+        searchMinrating = source.readString();
+        searchPages = source.readString();
+        searchRows = source.readString();
+        giveReset = source.readInt() == 1;
         searchSort = source.readString();
         searchOrder = source.readString();
         recordSort = source.readString();
         recordOrder = source.readString();
-        timeGiving = source.readLong();
-        timeRecord = source.readLong();
-        timeUser = source.readLong();
+        giveStamp = source.readLong();
+        recordStamp = source.readLong();
+        userStamp = source.readLong();
     }
     
     public User(User user) {
         this.uid = user.uid;
-        this.email = user.email;
-        this.active = user.active;
-        this.birthdate = user.birthdate;
-        this.gender = user.gender;
-        this.donation = user.donation;
-        this.magnitude = user.magnitude;
-        this.anchor = user.anchor;
-        this.historical = user.historical;
-        this.timetrack = user.timetrack;
-        this.viewtrack = user.viewtrack;
-        this.theme = user.theme;
-        this.searchguide = user.searchguide;
-        this.focus = user.focus;
-        this.filter = user.filter;
-        this.company = user.company;
-        this.term = user.term;
-        this.city = user.city;
-        this.state = user.state;
-        this.zip = user.zip;
-        this.minrating = user.minrating;
-        this.pages = user.pages;
-        this.rows = user.rows;
-        this.ratingReset = user.ratingReset;
+        this.userEmail = user.userEmail;
+        this.userActive = user.userActive;
+        this.userBirthdate = user.userBirthdate;
+        this.userGender = user.userGender;
+        this.giveImpact = user.giveImpact;
+        this.giveMagnitude = user.giveMagnitude;
+        this.giveAnchor = user.giveAnchor;
+        this.giveTiming = user.giveTiming;
+        this.glanceAnchor = user.glanceAnchor;
+        this.glanceSince = user.glanceSince;
+        this.glanceTheme = user.glanceTheme;
+        this.searchDialog = user.searchDialog;
+        this.searchFocus = user.searchFocus;
+        this.searchFilter = user.searchFilter;
+        this.searchCompany = user.searchCompany;
+        this.searchTerm = user.searchTerm;
+        this.searchCity = user.searchCity;
+        this.searchState = user.searchState;
+        this.searchZip = user.searchZip;
+        this.searchMinrating = user.searchMinrating;
+        this.searchPages = user.searchPages;
+        this.searchRows = user.searchRows;
+        this.giveReset = user.giveReset;
         this.searchSort = user.searchSort;
         this.searchOrder = user.searchOrder;
         this.recordSort = user.recordSort;
         this.recordOrder = user.recordOrder;
-        this.timeGiving = user.timeGiving;
-        this.timeRecord = user.timeRecord;
-        this.timeUser = user.timeUser;
+        this.giveStamp = user.giveStamp;
+        this.recordStamp = user.recordStamp;
+        this.userStamp = user.userStamp;
     }
 
     /**
@@ -169,117 +169,117 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
      */
     public User(
             String uid,
-            String email,
-            boolean active,
-            String birthdate,
-            String gender,
-            long anchor,
-            int historical,
-            long timetrack,
-            boolean viewtrack,
-            String donation,
-            String magnitude,
-            int theme,
-            boolean searchguide,
-            boolean focus,
-            boolean filter,
-            String company,
-            String term,
-            String city,
-            String state,
-            String zip,
-            String minrating,
-            String pages,
-            String rows,
-            boolean ratingReset,
+            String userEmail,
+            boolean userActive,
+            String userBirthdate,
+            String userGender,
+            long giveAnchor,
+            int giveTiming,
+            long glanceAnchor,
+            boolean glanceSince,
+            String giveImpact,
+            String giveMagnitude,
+            int glanceTheme,
+            boolean searchDialog,
+            boolean searchFocus,
+            boolean searchFilter,
+            String searchCompany,
+            String searchTerm,
+            String searchCity,
+            String searchState,
+            String searchZip,
+            String searchMinrating,
+            String searchPages,
+            String searchRows,
+            boolean giveReset,
             String searchSort,
             String searchOrder,
             String recordSort,
             String recordOrder,
-            long timeGiving,
-            long timeRecord,
-            long timeUser) {
+            long giveStamp,
+            long recordStamp,
+            long userStamp) {
         this.uid = uid;
-        this.email = email;
-        this.active = active;
-        this.birthdate = birthdate;
-        this.gender = gender;
-        this.donation = donation;
-        this.magnitude = magnitude;
-        this.anchor = anchor;
-        this.historical = historical;
-        this.timetrack = timetrack;
-        this.viewtrack = viewtrack;
-        this.theme = theme;
-        this.searchguide = searchguide;
-        this.focus = focus;
-        this.filter = filter;
-        this.company = company;
-        this.term = term;
-        this.city = city;
-        this.state = state;
-        this.zip = zip;
-        this.minrating = minrating;
-        this.pages = pages;
-        this.rows = rows;
-        this.ratingReset = ratingReset;
+        this.userEmail = userEmail;
+        this.userActive = userActive;
+        this.userBirthdate = userBirthdate;
+        this.userGender = userGender;
+        this.giveImpact = giveImpact;
+        this.giveMagnitude = giveMagnitude;
+        this.giveAnchor = giveAnchor;
+        this.giveTiming = giveTiming;
+        this.glanceAnchor = glanceAnchor;
+        this.glanceSince = glanceSince;
+        this.glanceTheme = glanceTheme;
+        this.searchDialog = searchDialog;
+        this.searchFocus = searchFocus;
+        this.searchFilter = searchFilter;
+        this.searchCompany = searchCompany;
+        this.searchTerm = searchTerm;
+        this.searchCity = searchCity;
+        this.searchState = searchState;
+        this.searchZip = searchZip;
+        this.searchMinrating = searchMinrating;
+        this.searchPages = searchPages;
+        this.searchRows = searchRows;
+        this.giveReset = giveReset;
         this.searchSort = searchSort;
         this.searchOrder = searchOrder;
         this.recordSort = recordSort;
         this.recordOrder = recordOrder;
-        this.timeGiving = timeGiving;
-        this.timeRecord = timeRecord;
-        this.timeUser = timeUser;
+        this.giveStamp = giveStamp;
+        this.recordStamp = recordStamp;
+        this.userStamp = userStamp;
     }
 
     public String getUid() { return uid; }
     public void setUid(String uid) { this.uid = uid; }
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-    public boolean getActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
-    public String getBirthdate() { return birthdate; }
-    public void setBirthdate(String birthday) { this.birthdate = birthday; }
-    public String getGender() { return gender; }
-    public void setGender(String gender) { this.gender = gender; }
-    public String getDonation() { return donation; }
-    public void setDonation(String donation) { this.donation = donation; }
-    public String getMagnitude() { return magnitude; }
-    public void setMagnitude(String magnitude) { this.magnitude = magnitude; }
-    public long getAnchor() { return anchor; }
-    public void setAnchor(long anchor) { this.anchor = anchor; }
-    public int getHistorical() { return historical; }
-    public void setHistorical(int historical) { this.historical = historical; }
-    public long getTimetrack() { return timetrack; }
-    public void setTimetrack(long timetrack) { this.timetrack = timetrack; }
-    public boolean getViewtrack() { return viewtrack; }
-    public void setViewtrack(boolean viewtrack) { this.viewtrack = viewtrack; }
-    public int getTheme() { return theme; }
-    public void setTheme(int theme) { this.theme = theme; }
-    public boolean getSearchguide() { return searchguide; }
-    public void setSearchguide(boolean searchguide) { this.searchguide = searchguide; }
-    public String getCompany() { return company; }
-    public void setCompany(String company) { this.company = company; }
-    public boolean getFocus() { return focus; }
-    public void setFocus(boolean focus) { this.focus = focus; }
-    public boolean getFilter() { return filter; }
-    public void setFilter(boolean filter) { this.filter = filter; }
-    public String getTerm() { return term; }
-    public void setTerm(String term) { this.term = term; }
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
-    public String getState() { return state; }
-    public void setState(String state) { this.state = state; }
-    public String getZip() { return zip; }
-    public void setZip(String zip) { this.zip = zip; }
-    public String getMinrating() { return minrating; }
-    public void setMinrating(String minrating) { this.minrating = minrating; }
-    public String getPages() { return pages; }
-    public void setPages(String pages) { this.pages = pages; }
-    public String getRows() { return rows; }
-    public void setRows(String rows){ this.rows = rows; }
-    public boolean getRatingReset() { return ratingReset; }
-    public void setRatingReset(boolean ratingReset) { this.ratingReset = ratingReset; }
+    public String getUserEmail() { return userEmail; }
+    public void setUserEmail(String userEmail) { this.userEmail = userEmail; }
+    public boolean getUserActive() { return userActive; }
+    public void setUserActive(boolean userActive) { this.userActive = userActive; }
+    public String getUserBirthdate() { return userBirthdate; }
+    public void setUserBirthdate(String birthday) { this.userBirthdate = birthday; }
+    public String getUserGender() { return userGender; }
+    public void setUserGender(String userGender) { this.userGender = userGender; }
+    public String getGiveImpact() { return giveImpact; }
+    public void setGiveImpact(String giveImpact) { this.giveImpact = giveImpact; }
+    public String getGiveMagnitude() { return giveMagnitude; }
+    public void setGiveMagnitude(String giveMagnitude) { this.giveMagnitude = giveMagnitude; }
+    public long getGiveAnchor() { return giveAnchor; }
+    public void setGiveAnchor(long giveAnchor) { this.giveAnchor = giveAnchor; }
+    public int getGiveTiming() { return giveTiming; }
+    public void setGiveTiming(int giveTiming) { this.giveTiming = giveTiming; }
+    public long getGlanceAnchor() { return glanceAnchor; }
+    public void setGlanceAnchor(long glanceAnchor) { this.glanceAnchor = glanceAnchor; }
+    public boolean getGlanceSince() { return glanceSince; }
+    public void setGlanceSince(boolean glanceSince) { this.glanceSince = glanceSince; }
+    public int getGlanceTheme() { return glanceTheme; }
+    public void setGlanceTheme(int glanceTheme) { this.glanceTheme = glanceTheme; }
+    public boolean getSearchDialog() { return searchDialog; }
+    public void setSearchDialog(boolean searchDialog) { this.searchDialog = searchDialog; }
+    public String getSearchCompany() { return searchCompany; }
+    public void setSearchCompany(String searchCompany) { this.searchCompany = searchCompany; }
+    public boolean getSearchFocus() { return searchFocus; }
+    public void setSearchFocus(boolean searchFocus) { this.searchFocus = searchFocus; }
+    public boolean getSearchFilter() { return searchFilter; }
+    public void setSearchFilter(boolean searchFilter) { this.searchFilter = searchFilter; }
+    public String getSearchTerm() { return searchTerm; }
+    public void setSearchTerm(String searchTerm) { this.searchTerm = searchTerm; }
+    public String getSearchCity() { return searchCity; }
+    public void setSearchCity(String searchCity) { this.searchCity = searchCity; }
+    public String getSearchState() { return searchState; }
+    public void setSearchState(String searchState) { this.searchState = searchState; }
+    public String getSearchZip() { return searchZip; }
+    public void setSearchZip(String searchZip) { this.searchZip = searchZip; }
+    public String getSearchMinrating() { return searchMinrating; }
+    public void setSearchMinrating(String searchMinrating) { this.searchMinrating = searchMinrating; }
+    public String getSearchPages() { return searchPages; }
+    public void setSearchPages(String searchPages) { this.searchPages = searchPages; }
+    public String getSearchRows() { return searchRows; }
+    public void setSearchRows(String searchRows){ this.searchRows = searchRows; }
+    public boolean getGiveReset() { return giveReset; }
+    public void setGiveReset(boolean giveReset) { this.giveReset = giveReset; }
     public String getSearchSort() { return searchSort; }
     public void setSearchSort(String searchSort) { this.searchSort = searchSort; }
     public String getSearchOrder() { return searchOrder; }
@@ -288,153 +288,153 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setRecordSort(String recordSort) { this.recordSort = recordSort; }
     public String getRecordOrder() { return recordOrder; }
     public void setRecordOrder(String recordOrder) { this.recordOrder = recordOrder; }
-    public long getTimeGiving() { return timeGiving; }
-    public void setTimeGiving(long timeGiving) { this.timeGiving = timeGiving; }
-    public long getTimeRecord() { return timeRecord; }
-    public void setTimeRecord(long timeRecord) { this.timeRecord = timeRecord; }
-    public long getTimeUser() { return timeUser; }
-    public void setTimeUser(long timeUser) { this.timeUser = timeUser; }
+    public long getGiveStamp() { return giveStamp; }
+    public void setGiveStamp(long giveStamp) { this.giveStamp = giveStamp; }
+    public long getRecordStamp() { return recordStamp; }
+    public void setRecordStamp(long recordStamp) { this.recordStamp = recordStamp; }
+    public long getUserStamp() { return userStamp; }
+    public void setUserStamp(long userStamp) { this.userStamp = userStamp; }
     @Override public String getId() { return uid; }
     public User getObject() { return this; }
 
     public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
-        map.put("active", active);
-        map.put("email", email);
-        map.put("birthdate", birthdate);
-        map.put("gender", gender);
-        map.put("donation", donation);
-        map.put("magnitude", magnitude);
-        map.put("anchor", anchor);
-        map.put("historical", historical);
-        map.put("timetrack", timetrack);
-        map.put("viewtrack", viewtrack);
-        map.put("theme", theme);
-        map.put("searchguide", searchguide);
-        map.put("focus", focus);
-        map.put("filter", filter);
-        map.put("company", company);
-        map.put("term", term);
-        map.put("city", city);
-        map.put("state", state);
-        map.put("zip", zip);
-        map.put("minrating", minrating);
-        map.put("pages", pages);
-        map.put("rows", rows);
-        map.put("ratingReset", ratingReset);
+        map.put("userActive", userActive);
+        map.put("userEmail", userEmail);
+        map.put("userBirthdate", userBirthdate);
+        map.put("userGender", userGender);
+        map.put("giveImpact", giveImpact);
+        map.put("giveMagnitude", giveMagnitude);
+        map.put("giveAnchor", giveAnchor);
+        map.put("giveTiming", giveTiming);
+        map.put("glanceAnchor", glanceAnchor);
+        map.put("glanceSince", glanceSince);
+        map.put("glanceTheme", glanceTheme);
+        map.put("searchDialog", searchDialog);
+        map.put("searchFocus", searchFocus);
+        map.put("searchFilter", searchFilter);
+        map.put("searchCompany", searchCompany);
+        map.put("searchTerm", searchTerm);
+        map.put("searchCity", searchCity);
+        map.put("searchState", searchState);
+        map.put("searchZip", searchZip);
+        map.put("searchMinrating", searchMinrating);
+        map.put("searchPages", searchPages);
+        map.put("searchRows", searchRows);
+        map.put("giveReset", giveReset);
         map.put("searchSort", searchSort);
         map.put("searchOrder", searchOrder);
         map.put("recordSort", recordSort);
         map.put("recordOrder", recordOrder);
-        map.put("timeGiving", timeGiving);
-        map.put("timeRecord", timeRecord);
-        map.put("timeUser", timeUser);
+        map.put("giveStamp", giveStamp);
+        map.put("recordStamp", recordStamp);
+        map.put("userStamp", userStamp);
         return map;
     }
 
     public void fromParameterMap(Map<String, Object> map) {
         uid = (String) map.get("uid");
-        email = (String) map.get("email");
-        active = (boolean) map.get("active");
-        birthdate = (String) map.get("birthdate");
-        gender = (String) map.get("gender");
-        anchor = (long) map.get("anchor");
-        historical = (int) map.get("historical");
-        timetrack = (long) map.get("timetrack");
-        viewtrack = (boolean) map.get("viewtrack");
-        theme = (int) map.get("theme");
-        searchguide = (boolean) map.get("searchguide");
-        focus = (boolean) map.get("focus");
-        filter = (boolean) map.get("filter");
-        company = (String) map.get("company");
-        magnitude = (String) map.get("magnitude");
-        donation = (String) map.get("donation");
-        term = (String) map.get("term");
-        city = (String) map.get("city");
-        state = (String) map.get("state");
-        zip = (String) map.get("zip");
-        minrating = (String) map.get("minrating");
-        pages = (String) map.get("pages");
-        rows = (String) map.get("rows");
-        ratingReset = (boolean) map.get("ratingReset");
+        userEmail = (String) map.get("userEmail");
+        userActive = (boolean) map.get("userActive");
+        userBirthdate = (String) map.get("userBirthdate");
+        userGender = (String) map.get("userGender");
+        giveAnchor = (long) map.get("giveAnchor");
+        giveTiming = (int) map.get("giveTiming");
+        glanceAnchor = (long) map.get("glanceAnchor");
+        glanceSince = (boolean) map.get("glanceSince");
+        glanceTheme = (int) map.get("glanceTheme");
+        searchDialog = (boolean) map.get("searchDialog");
+        searchFocus = (boolean) map.get("searchFocus");
+        searchFilter = (boolean) map.get("searchFilter");
+        searchCompany = (String) map.get("searchCompany");
+        giveMagnitude = (String) map.get("giveMagnitude");
+        giveImpact = (String) map.get("giveImpact");
+        searchTerm = (String) map.get("searchTerm");
+        searchCity = (String) map.get("searchCity");
+        searchState = (String) map.get("searchState");
+        searchZip = (String) map.get("searchZip");
+        searchMinrating = (String) map.get("searchMinrating");
+        searchPages = (String) map.get("searchPages");
+        searchRows = (String) map.get("searchRows");
+        giveReset = (boolean) map.get("giveReset");
         searchSort = (String) map.get("searchSort");
         searchOrder = (String) map.get("searchOrder");
         recordSort = (String) map.get("recordSort");
         recordOrder = (String) map.get("recordOrder");
-        timeGiving = (long) map.get("timeGiving");
-        timeRecord = (long) map.get("timeRecord");
-        timeUser = (long) map.get("timeUser");
+        giveStamp = (long) map.get("giveStamp");
+        recordStamp = (long) map.get("recordStamp");
+        userStamp = (long) map.get("userStamp");
     }
 
     @Override public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
-        values.put(COLUMN_EMAIL, email);
-        values.put(COLUMN_ACTIVE, active);
-        values.put(COLUMN_BIRTHDATE, birthdate);
-        values.put(COLUMN_GENDER, gender);
-        values.put(COLUMN_ANCHOR, anchor);
-        values.put(COLUMN_HISTORICAL, historical);
-        values.put(COLUMN_TIMETRACK, timetrack);
-        values.put(COLUMN_VIEWTRACK, viewtrack);
-        values.put(COLUMN_THEME, theme);
-        values.put(COLUMN_SEARCHGUIDE, searchguide);
-        values.put(COLUMN_FOCUS, focus);
-        values.put(COLUMN_FILTER, filter);
-        values.put(COLUMN_COMPANY, company);
-        values.put(COLUMN_MAGNITUDE, magnitude);
-        values.put(COLUMN_DONATION, donation);
-        values.put(COLUMN_TERM, term);
-        values.put(COLUMN_CITY, city);
-        values.put(COLUMN_STATE,state);
-        values.put(COLUMN_ZIP, zip);
-        values.put(COLUMN_MINRATING, minrating);
-        values.put(COLUMN_PAGES, pages);
-        values.put(COLUMN_ROWS, rows);
-        values.put(COLUMN_RATINGRESET, ratingReset);
-        values.put(COLUMN_SEARCHSORT, searchSort);
-        values.put(COLUMN_SEARCHORDER, searchOrder);
-        values.put(COLUMN_RECORDSORT, recordSort);
-        values.put(COLUMN_RECORDORDER, recordOrder);
-        values.put(COLUMN_TIMEGIVING, timeGiving);
-        values.put(COLUMN_TIMERECORD, timeRecord);
-        values.put(COLUMN_TIMEUSER, timeUser);
+        values.put(COLUMN_USER_EMAIL, userEmail);
+        values.put(COLUMN_USER_ACTIVE, userActive);
+        values.put(COLUMN_USER_BIRTHDATE, userBirthdate);
+        values.put(COLUMN_USER_GENDER, userGender);
+        values.put(COLUMN_GIVE_ANCHOR, giveAnchor);
+        values.put(COLUMN_GIVE_TIMING, giveTiming);
+        values.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
+        values.put(COLUMN_GLANCE_SINCE, glanceSince);
+        values.put(COLUMN_GLANCE_THEME, glanceTheme);
+        values.put(COLUMN_SEARCH_DIALOG, searchDialog);
+        values.put(COLUMN_SEARCH_FOCUS, searchFocus);
+        values.put(COLUMN_SEARCH_FILTER, searchFilter);
+        values.put(COLUMN_SEARCH_COMPANY, searchCompany);
+        values.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
+        values.put(COLUMN_GIVE_IMPACT, giveImpact);
+        values.put(COLUMN_SEARCH_TERM, searchTerm);
+        values.put(COLUMN_SEARCH_CITY, searchCity);
+        values.put(COLUMN_SEARCH_STATE, searchState);
+        values.put(COLUMN_SEARCH_ZIP, searchZip);
+        values.put(COLUMN_SEARCH_MINRATING, searchMinrating);
+        values.put(COLUMN_SEARCH_PAGES, searchPages);
+        values.put(COLUMN_SEARCH_ROWS, searchRows);
+        values.put(COLUMN_GIVE_RESET, giveReset);
+        values.put(COLUMN_SEARCH_SORT, searchSort);
+        values.put(COLUMN_SEARCH_ORDER, searchOrder);
+        values.put(COLUMN_RECORD_SORT, recordSort);
+        values.put(COLUMN_RECORD_ORDER, recordOrder);
+        values.put(COLUMN_GIVE_STAMP, giveStamp);
+        values.put(COLUMN_RECORD_STAMP, recordStamp);
+        values.put(COLUMN_USER_STAMP, userStamp);
         return values;
     }
 
     @Override public void fromContentValues(ContentValues values) {
         this.uid = values.getAsString(COLUMN_UID);
-        this.email = values.getAsString(COLUMN_EMAIL);
-        this.active = values.getAsInteger(COLUMN_ACTIVE) == 1;
-        this.birthdate = values.getAsString(COLUMN_BIRTHDATE);
-        this.gender = values.getAsString(COLUMN_GENDER);
-        this.donation = values.getAsString(COLUMN_DONATION);
-        this.magnitude = values.getAsString(COLUMN_MAGNITUDE);
-        this.anchor = values.getAsLong(COLUMN_ANCHOR);
-        this.historical = values.getAsInteger(COLUMN_HISTORICAL);
-        this.timetrack = values.getAsLong(COLUMN_TIMETRACK);
-        this.viewtrack = values.getAsInteger(COLUMN_VIEWTRACK) == 1;
-        this.theme = values.getAsInteger(COLUMN_THEME);
-        this.searchguide = values.getAsInteger(COLUMN_SEARCHGUIDE) == 1;
-        this.focus = values.getAsInteger(COLUMN_FOCUS) == 1;
-        this.filter = values.getAsInteger(COLUMN_FILTER) == 1;
-        this.company = values.getAsString(COLUMN_COMPANY);
-        this.term = values.getAsString(COLUMN_TERM);
-        this.city = values.getAsString(COLUMN_CITY);
-        this.state = values.getAsString(COLUMN_STATE);
-        this.zip = values.getAsString(COLUMN_ZIP);
-        this.minrating = values.getAsString(COLUMN_MINRATING);
-        this.pages = values.getAsString(COLUMN_PAGES);
-        this.rows = values.getAsString(COLUMN_ROWS);
-        this.ratingReset = values.getAsBoolean(COLUMN_RATINGRESET);
-        this.searchSort = values.getAsString(COLUMN_SEARCHSORT);
-        this.searchOrder = values.getAsString(COLUMN_SEARCHORDER);
-        this.recordSort = values.getAsString(COLUMN_RECORDSORT);
-        this.recordOrder = values.getAsString(COLUMN_RECORDORDER);
-        this.timeGiving = values.getAsLong(COLUMN_TIMEGIVING);
-        this.timeRecord = values.getAsLong(COLUMN_TIMERECORD);
-        this.timeUser = values.getAsLong(COLUMN_TIMEUSER);
+        this.userEmail = values.getAsString(COLUMN_USER_EMAIL);
+        this.userActive = values.getAsInteger(COLUMN_USER_ACTIVE) == 1;
+        this.userBirthdate = values.getAsString(COLUMN_USER_BIRTHDATE);
+        this.userGender = values.getAsString(COLUMN_USER_GENDER);
+        this.giveImpact = values.getAsString(COLUMN_GIVE_IMPACT);
+        this.giveMagnitude = values.getAsString(COLUMN_GIVE_MAGNITUDE);
+        this.giveAnchor = values.getAsLong(COLUMN_GIVE_ANCHOR);
+        this.giveTiming = values.getAsInteger(COLUMN_GIVE_TIMING);
+        this.glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
+        this.glanceSince = values.getAsInteger(COLUMN_GLANCE_SINCE) == 1;
+        this.glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
+        this.searchDialog = values.getAsInteger(COLUMN_SEARCH_DIALOG) == 1;
+        this.searchFocus = values.getAsInteger(COLUMN_SEARCH_FOCUS) == 1;
+        this.searchFilter = values.getAsInteger(COLUMN_SEARCH_FILTER) == 1;
+        this.searchCompany = values.getAsString(COLUMN_SEARCH_COMPANY);
+        this.searchTerm = values.getAsString(COLUMN_SEARCH_TERM);
+        this.searchCity = values.getAsString(COLUMN_SEARCH_CITY);
+        this.searchState = values.getAsString(COLUMN_SEARCH_STATE);
+        this.searchZip = values.getAsString(COLUMN_SEARCH_ZIP);
+        this.searchMinrating = values.getAsString(COLUMN_SEARCH_MINRATING);
+        this.searchPages = values.getAsString(COLUMN_SEARCH_PAGES);
+        this.searchRows = values.getAsString(COLUMN_SEARCH_ROWS);
+        this.giveReset = values.getAsBoolean(COLUMN_GIVE_RESET);
+        this.searchSort = values.getAsString(COLUMN_SEARCH_SORT);
+        this.searchOrder = values.getAsString(COLUMN_SEARCH_ORDER);
+        this.recordSort = values.getAsString(COLUMN_RECORD_SORT);
+        this.recordOrder = values.getAsString(COLUMN_RECORD_ORDER);
+        this.giveStamp = values.getAsLong(COLUMN_GIVE_STAMP);
+        this.recordStamp = values.getAsLong(COLUMN_RECORD_STAMP);
+        this.userStamp = values.getAsLong(COLUMN_USER_STAMP);
     }
 
     @Override public User clone() {
@@ -448,36 +448,36 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public static User getDefault() {
         User user = new User();
         user.uid = "";
-        user.email = "";
-        user.active = true;
-        user.birthdate = "0/0/2000";
-        user.gender = "";
-        user.donation = "0";
-        user.magnitude = "0.01";
-        user.anchor = 0;
-        user.historical = 0;
-        user.timetrack = 0;
-        user.viewtrack = false;
-        user.theme = 0;
-        user.searchguide = false;
-        user.focus = false;
-        user.filter = true;
-        user.company = "";
-        user.term = "";
-        user.city = "";
-        user.state = "";
-        user.zip = "";
-        user.minrating = "";
-        user.pages = "";
-        user.rows = "";
-        user.ratingReset = false;
+        user.userEmail = "";
+        user.userActive = true;
+        user.userBirthdate = "0/0/2000";
+        user.userGender = "";
+        user.giveImpact = "0";
+        user.giveMagnitude = "0.01";
+        user.giveAnchor = 0;
+        user.giveTiming = 0;
+        user.glanceAnchor = 0;
+        user.glanceSince = false;
+        user.glanceTheme = 0;
+        user.searchDialog = false;
+        user.searchFocus = false;
+        user.searchFilter = true;
+        user.searchCompany = "";
+        user.searchTerm = "";
+        user.searchCity = "";
+        user.searchState = "";
+        user.searchZip = "";
+        user.searchMinrating = "";
+        user.searchPages = "";
+        user.searchRows = "";
+        user.giveReset = false;
         user.searchSort = "RATING";
         user.searchOrder = "DESC";
         user.recordSort = "donationTime";
         user.recordOrder = "DESC";
-        user.timeGiving = 0;
-        user.timeRecord = 0;
-        user.timeUser = 0;
+        user.giveStamp = 0;
+        user.recordStamp = 0;
+        user.userStamp = 0;
         return user;
     }
 }

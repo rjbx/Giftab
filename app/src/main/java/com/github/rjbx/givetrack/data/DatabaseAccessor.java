@@ -1,6 +1,5 @@
 package com.github.rjbx.givetrack.data;
 
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,7 +35,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
@@ -62,20 +59,20 @@ public final class DatabaseAccessor {
         List<User> entries = getEntryListFromCursor(cursor, User.class);
         
         User user = null;
-        for (User u : entries) if (u.getActive()) user = u;
+        for (User u : entries) if (u.getUserActive()) user = u;
         
         Map<String, String> request = new HashMap<>();
-        if (user.getFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getCompany());
+        if (user.getSearchFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getSearchCompany());
         else {
-            request.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, user.getTerm());
-            request.put(DatabaseAccessor.FetchContract.PARAM_CITY, user.getCity());
-            request.put(DatabaseAccessor.FetchContract.PARAM_STATE, user.getState());
-            request.put(DatabaseAccessor.FetchContract.PARAM_ZIP, user.getZip());
-            request.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, user.getMinrating());
-            request.put(DatabaseAccessor.FetchContract.PARAM_FILTER, user.getFilter() ? "1" : "0");
+            request.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, user.getSearchTerm());
+            request.put(DatabaseAccessor.FetchContract.PARAM_CITY, user.getSearchCity());
+            request.put(DatabaseAccessor.FetchContract.PARAM_STATE, user.getSearchState());
+            request.put(DatabaseAccessor.FetchContract.PARAM_ZIP, user.getSearchZip());
+            request.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, user.getSearchMinrating());
+            request.put(DatabaseAccessor.FetchContract.PARAM_FILTER, user.getSearchFilter() ? "1" : "0");
             request.put(DatabaseAccessor.FetchContract.PARAM_SORT, user.getSearchSort() + ":" + user.getSearchOrder());
-            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, user.getPages());
-            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, user.getRows());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, user.getSearchPages());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, user.getSearchRows());
         }
 
         Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
@@ -342,7 +339,7 @@ public final class DatabaseAccessor {
             List<User> localUsers = getEntryListFromCursor(cursor, User.class);
             cursor.close();
             for (User u : localUsers) {
-                if (u != null && u.getActive()) {
+                if (u != null && u.getUserActive()) {
                     DatabaseContract.setTableTime(entryType, u, System.currentTimeMillis());
                     local.insert(UserEntry.CONTENT_URI_USER, u.toContentValues());
                 }
@@ -385,12 +382,12 @@ public final class DatabaseAccessor {
 //                if (cursor != null) {
 //                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
 //                    cursor.close();
-//                    for (User u : localUsers) if (user.getActive()) user = u;
+//                    for (User u : localUsers) if (user.getUserActive()) user = u;
 //                }
 //
 //                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
 //                while (iterator.hasNext()) {
-//                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime");
+//                    if (user != null && user.getUserActive()) remoteUpdateTime = iterator.next().child("updateTime");
 //
 //                    User user = iterator.next().getValue(User.class);
 //                    if (localUpdateTime < remoteUpdateTime) {
@@ -419,8 +416,8 @@ public final class DatabaseAccessor {
 
         User user = User.getDefault();
         user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
-        user.setEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
-        user.setActive(true);
+        user.setUserEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+        user.setUserActive(true);
         return user;
     }
 

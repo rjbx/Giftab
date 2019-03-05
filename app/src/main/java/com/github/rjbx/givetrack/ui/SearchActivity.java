@@ -40,7 +40,6 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,8 +48,6 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -186,14 +183,14 @@ public class SearchActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (user.getActive()) {
+                        if (user.getUserActive()) {
                             mUser = user;
                             getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
                             break;
                         }
                     } while (data.moveToNext());
                 }
-                sDialogShown = mUser.getSearchguide();
+                sDialogShown = mUser.getSearchDialog();
                 break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
@@ -252,7 +249,7 @@ public class SearchActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
-                    mUser.setSearchguide(sDialogShown);
+                    mUser.setSearchDialog(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT);
                     break;

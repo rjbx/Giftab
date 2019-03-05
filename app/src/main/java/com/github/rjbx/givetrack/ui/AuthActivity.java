@@ -96,7 +96,7 @@ public class AuthActivity extends AppCompatActivity implements
 
                 User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 for (int i = 0; i < mUsers.size(); i++)
-                    mUsers.get(i).setActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                    mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                 mUsers.add(activeUser);
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
 
@@ -136,12 +136,12 @@ public class AuthActivity extends AppCompatActivity implements
 
         // TODO: Enable user selection
         User user = null;
-        for (User u : mUsers) if (u.getActive()) { user = u; break; }
+        for (User u : mUsers) if (u.getUserActive()) { user = u; break; }
         if (action != null) {
             switch (action) {
                 case ACTION_SIGN_OUT:
                     User deactivatedUser = user;
-                    deactivatedUser.setActive(false);
+                    deactivatedUser.setUserActive(false);
                     DISK_IO.execute(() -> {
                     DatabaseService.startActionUpdateUser(this, deactivatedUser);
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();

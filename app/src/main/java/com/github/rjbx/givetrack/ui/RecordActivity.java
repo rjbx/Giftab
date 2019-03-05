@@ -62,9 +62,7 @@ import java.util.List;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 //TODO: Implement toggle for type attribute and launcher for memo
@@ -191,7 +189,7 @@ public class RecordActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (user.getActive()) {
+                        if (user.getUserActive()) {
                             mUser = user;
                             getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
@@ -432,7 +430,7 @@ public class RecordActivity extends AppCompatActivity implements
 
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(mUser.getAnchor());
+                    calendar.setTimeInMillis(mUser.getGiveAnchor());
                     DatePickerDialog datePicker = new DatePickerDialog(
                             context,
                             this,

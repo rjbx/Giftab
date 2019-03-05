@@ -115,38 +115,38 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.TABLE_NAME_USER                   + " ("                              +
 
                         UserEntry.COLUMN_UID                        + " TEXT PRIMARY KEY NOT NULL, "    +
-                        UserEntry.COLUMN_EMAIL                      + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_ACTIVE                     + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_BIRTHDATE                  + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GENDER                     + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_DONATION                   + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_MAGNITUDE                  + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_ANCHOR                     + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_HISTORICAL                 + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_TIMETRACK                  + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_VIEWTRACK                  + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_THEME                      + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCHGUIDE                + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_FOCUS                      + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_FILTER                     + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_COMPANY                    + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_TERM                       + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_CITY                       + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_STATE                      + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_ZIP                        + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_MINRATING                  + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_PAGES                      + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_ROWS                       + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_RATINGRESET                + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCHSORT                 + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCHORDER                + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_RECORDSORT                 + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_RECORDORDER                + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_TIMEGIVING                 + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_TIMERECORD                 + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_TIMEUSER                   + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_EMAIL + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_USER_ACTIVE + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_BIRTHDATE + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_USER_GENDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_IMPACT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_MAGNITUDE + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_ANCHOR + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GIVE_TIMING + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_THEME + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCH_DIALOG + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCH_FOCUS + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCH_FILTER + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCH_COMPANY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_TERM + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_CITY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_STATE + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_ZIP + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_MINRATING + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_PAGES + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_ROWS + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_RESET + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SEARCH_SORT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SEARCH_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_RECORD_SORT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_RECORD_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_STAMP + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_RECORD_STAMP + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_STAMP + " INTEGER NOT NULL, "             +
 
-                        "UNIQUE (" + UserEntry.COLUMN_EMAIL +
+                        "UNIQUE (" + UserEntry.COLUMN_USER_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";
 
         db.execSQL(SQL_CREATE_SEARCH_TABLE);

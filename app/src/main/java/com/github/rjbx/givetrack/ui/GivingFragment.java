@@ -142,8 +142,8 @@ public class GivingFragment extends Fragment implements
             sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
         }
 
-        mAmountTotal = Float.parseFloat(sUser.getDonation());
-        mMagnitude = Float.parseFloat(sUser.getMagnitude());
+        mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
+        mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
@@ -276,7 +276,7 @@ public class GivingFragment extends Fragment implements
                         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                         return false;
                     }
-                    sUser.setDonation(String.valueOf(mAmountTotal));
+                    sUser.setGiveImpact(String.valueOf(mAmountTotal));
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
@@ -299,7 +299,7 @@ public class GivingFragment extends Fragment implements
     @OnClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
-            sUser.setDonation(String.valueOf(mAmountTotal));
+            sUser.setGiveImpact(String.valueOf(mAmountTotal));
             DatabaseService.startActionUpdateUser(getContext(), sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
@@ -313,7 +313,7 @@ public class GivingFragment extends Fragment implements
      */
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
-        sUser.setDonation(String.valueOf(mAmountTotal));
+        sUser.setGiveImpact(String.valueOf(mAmountTotal));
         DatabaseService.startActionUpdateUser(getContext(), sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -368,17 +368,17 @@ public class GivingFragment extends Fragment implements
         for (int i = 0; i < sValuesArray.length; i++) {
             if (sValuesArray[i].getPercent() == 0d) continue;
             double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-            sUser.setAnchor(sUser.getAnchor() + 1);
-            long time = sUser.getAnchor();
+            sUser.setGiveAnchor(sUser.getGiveAnchor() + 1);
+            long time = sUser.getGiveAnchor();
             Record record = Record.fromSuper(sValuesArray[i].getSuper());
             record.setStamp(System.currentTimeMillis() + i);
             record.setTime(time);
             record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
             records.add(record);
         }
-        if (sUser.getHistorical() == 1) {
-            sUser.setAnchor(System.currentTimeMillis());
-            sUser.setHistorical(0);
+        if (sUser.getGiveTiming() == 1) {
+            sUser.setGiveAnchor(System.currentTimeMillis());
+            sUser.setGiveTiming(0);
         }
         DatabaseService.startActionUpdateUser(getContext(), sUser);
         DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
@@ -595,13 +595,13 @@ public class GivingFragment extends Fragment implements
                 sPercentages[i] = sValuesArray[i].getPercent();
             }
             boolean adjusted;
-            boolean recalibrate = sUser.getRatingReset();
+            boolean recalibrate = sUser.getGiveReset();
             if (recalibrate) adjusted = Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
             else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) {
                 syncPercentages();
                 if (recalibrate) {
-                    sUser.setRatingReset(false);
+                    sUser.setGiveReset(false);
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
                 }
             }

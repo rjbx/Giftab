@@ -46,11 +46,11 @@
     <string name="description_credit_button">Press this button to add to your credit by %s</string>
     <string name="description_credit_toggle_button">Press this button to change the response of the big circle button. The current response is to add credit by %s</string>
     <string name="description_payment_text">Your available paid credit is %s</string>
-    <string name="description_donation_text">Press this button to add to your total donation amount. The total amount that will be allocated among your charities on each converted smile or stride is %s</string>
-    <string name="description_decrement_donation_text">Press this button to decrease your total donation amount</string>
-    <string name="description_increment_donation_text">Press this button to increase your total donation amount</string>
-    <string name="description_decrement_percentage_text">Press this button to decrease the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
-    <string name="description_increment_percentage_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
+    <string name="description_donation_text">Press this button to add to your total giveImpact amount. The total amount that will be allocated among your charities on each converted smile or stride is %s</string>
+    <string name="description_decrement_donation_text">Press this button to decrease your total giveImpact amount</string>
+    <string name="description_increment_donation_text">Press this button to increase your total giveImpact amount</string>
+    <string name="description_decrement_percentage_text">Press this button to decrease the percentage of your total giveImpact amount to be allocated to this charity on each converted smile or stride</string>
+    <string name="description_increment_percentage_text">Press this button to increase the percentage of your total giveImpact amount to be allocated to this charity on each converted smile or stride</string>
 
     <!-- Screens -->
     <string name="title_activity_main">Main Activity</string>
@@ -79,7 +79,7 @@
     <string name="url_clearbit">https://clearbit.com/</string>
     <string name="tab_text_1">Give</string>
     <string name="tab_text_2">Track</string>
-    <string name="historical_dialog_message">Do you want to change back to the current date after recording the next donation?</string>
+    <string name="historical_dialog_message">Do you want to change back to the current date after recording the next giveImpact?</string>
     <string name="anchor_dialog_message">Do you want to change the date to %s for recording donations?</string>
 
     <!-- Auth -->
@@ -88,11 +88,11 @@
     <string name="prompt_password">Password (optional)</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_email">This userEmail address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">Contacts permissions are needed for providing email completions.</string>
+    <string name="permission_rationale">Contacts permissions are needed for providing userEmail completions.</string>
     <string name="dialog_description_account_deletion">Are you sure you want to delete your account? Your data will be erased and cannot be recovered.</string>
     <string name="message_logout">You successfully logged out</string>
     <string name="message_data_erase">Your account data has been erased from our servers</string>
@@ -105,7 +105,7 @@
 
     <!-- Charity -->
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
-    <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
+    <string name="dialog_description_magnitude_adjustment">Change the giveMagnitude of increments and decrements.The current giveMagnitude is %s</string>
     <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_charity">Remove %s from your collection?</string>
     <string name="dialog_removal_record">Remove %s from your records?</string>
@@ -135,25 +135,25 @@
     <string name="symbol_decrement_button">—</string>
 
     <!-- SharedPreferences -->
-    <string name="pref_term_key" translatable="false">term</string>
-    <string name="pref_city_key" translatable="false">city</string>
-    <string name="pref_state_key" translatable="false">state</string>
-    <string name="pref_zip_key" translatable="false">zip</string>
-    <string name="pref_pages_key" translatable="false">pages</string>
-    <string name="pref_size_key" translatable="false">rows</string>
-    <string name="pref_minrating_key" translatable="false">minrating</string>
+    <string name="pref_term_key" translatable="false">searchTerm</string>
+    <string name="pref_city_key" translatable="false">searchCity</string>
+    <string name="pref_state_key" translatable="false">searchState</string>
+    <string name="pref_zip_key" translatable="false">searchZip</string>
+    <string name="pref_pages_key" translatable="false">searchPages</string>
+    <string name="pref_size_key" translatable="false">searchRows</string>
+    <string name="pref_minrating_key" translatable="false">searchMinrating</string>
     <string name="pref_filter_key" translatable="false">fundraising</string>
     <string name="pref_searchSort_key" translatable="false">searchSort</string>
     <string name="pref_searchOrder_key" translatable="false">searchOrder</string>
     <string name="pref_recordSort_key" translatable="false">recordSort</string>
     <string name="pref_recordOrder_key" translatable="false">recordOrder</string>
-    <string name="pref_focus_key" translatable="false">focus</string>
-    <string name="pref_gender_key" translatable="false">gender</string>
-    <string name="pref_birthdate_key" translatable="false">birthdate</string>
+    <string name="pref_focus_key" translatable="false">searchFocus</string>
+    <string name="pref_gender_key" translatable="false">userGender</string>
+    <string name="pref_birthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
-    <string name="pref_recalibrate_key" translatable="false">ratingReset</string>
-    <string name="pref_magnitude_key" translatable="false">magnitude</string>
-    <string name="pref_company_key" translatable="false">company</string>
+    <string name="pref_recalibrate_key" translatable="false">giveReset</string>
+    <string name="pref_magnitude_key" translatable="false">giveMagnitude</string>
+    <string name="pref_company_key" translatable="false">searchCompany</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
     <string name="pref_show_key" translatable="false">showAll</string>
     <string name="pref_payments_key" translatable="false">payments</string>

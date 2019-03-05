@@ -76,7 +76,7 @@ public class ConfigActivity
             do {
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
-                if (user.getActive()) {
+                if (user.getUserActive()) {
                     mUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                     if (sharedPreferences.getAll().isEmpty())
@@ -285,7 +285,7 @@ public class ConfigActivity
         public boolean onPreferenceClick(Preference preference) {
             if (getString(R.string.pref_birthdate_key).equals(preference.getKey())) {
                 mCalendar = Calendar.getInstance();
-                String birthdate = mUser.getBirthdate();
+                String birthdate = mUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
                 mCalendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
                 DatePickerDialog datePicker = new DatePickerDialog(
@@ -460,7 +460,7 @@ public class ConfigActivity
         public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
-                String magnitudeStr = mUser.getMagnitude();
+                String magnitudeStr = mUser.getGiveMagnitude();
                 mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
@@ -526,8 +526,8 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mUser.setMagnitude(percentIntToDecimalString(mSeekProgress));
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), mUser.getMagnitude()).apply();
+                        mUser.setGiveMagnitude(percentIntToDecimalString(mSeekProgress));
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), mUser.getGiveMagnitude()).apply();
                         Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
                         handlePreferenceChange(magnitudePreference, this);
                         break;
@@ -539,7 +539,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mUser.setRatingReset(true);
+                        mUser.setGiveReset(true);
                         DatabaseService.startActionUpdateUser(getActivity(), mUser);
                         break;
                     default:

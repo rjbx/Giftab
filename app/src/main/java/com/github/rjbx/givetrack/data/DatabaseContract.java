@@ -95,10 +95,10 @@ public final class DatabaseContract {
     public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_TIMEGIVING;
-            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_TIMERECORD;
+            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_GIVE_STAMP;
+            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
             case CompanyEntry.TABLE_NAME_SEARCH: return "";
-            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_TIMEUSER;
+            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
     }
@@ -107,9 +107,9 @@ public final class DatabaseContract {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
             case CompanyEntry.TABLE_NAME_SEARCH: return 0;
-            case CompanyEntry.TABLE_NAME_GIVING: return user.getTimeGiving();
-            case CompanyEntry.TABLE_NAME_RECORD: return user.getTimeRecord();
-            case UserEntry.TABLE_NAME_USER: return user.getTimeUser();
+            case CompanyEntry.TABLE_NAME_GIVING: return user.getGiveStamp();
+            case CompanyEntry.TABLE_NAME_RECORD: return user.getRecordStamp();
+            case UserEntry.TABLE_NAME_USER: return user.getUserStamp();
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
     }
@@ -118,9 +118,9 @@ public final class DatabaseContract {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
             case CompanyEntry.TABLE_NAME_SEARCH: break;
-            case CompanyEntry.TABLE_NAME_GIVING: user.setTimeGiving(time); break;
-            case CompanyEntry.TABLE_NAME_RECORD: user.setTimeRecord(time); break;
-            case UserEntry.TABLE_NAME_USER: user.setTimeUser(time); break;
+            case CompanyEntry.TABLE_NAME_GIVING: user.setGiveStamp(time); break;
+            case CompanyEntry.TABLE_NAME_RECORD: user.setRecordStamp(time); break;
+            case UserEntry.TABLE_NAME_USER: user.setUserStamp(time); break;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
     }
@@ -132,35 +132,35 @@ public final class DatabaseContract {
                 BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
 
         public static final String COLUMN_UID = "uid";
-        public static final String COLUMN_EMAIL = "userEmail";
-        public static final String COLUMN_ACTIVE = "userActive";
-        public static final String COLUMN_BIRTHDATE = "userBirthdate";
-        public static final String COLUMN_GENDER = "userGender";
-        public static final String COLUMN_DONATION = "giveImpact";
-        public static final String COLUMN_MAGNITUDE = "giveMagnitude";
-        public static final String COLUMN_ANCHOR = "giveAnchor";
-        public static final String COLUMN_HISTORICAL = "giveTiming";
-        public static final String COLUMN_TIMETRACK = "glanceAnchor";
-        public static final String COLUMN_VIEWTRACK = "glanceSince";
-        public static final String COLUMN_THEME = "glanceTheme";
-        public static final String COLUMN_SEARCHGUIDE = "searchDialog";
-        public static final String COLUMN_FOCUS = "searchFocus";
-        public static final String COLUMN_FILTER = "searchFilter";
-        public static final String COLUMN_COMPANY = "searchCompany";
-        public static final String COLUMN_TERM = "searchTerm";
-        public static final String COLUMN_CITY = "searchCity";
-        public static final String COLUMN_STATE = "searchState";
-        public static final String COLUMN_ZIP = "searchZip";
-        public static final String COLUMN_MINRATING = "searchMinrating";
-        public static final String COLUMN_PAGES = "searchPages";
-        public static final String COLUMN_ROWS = "20";
-        public static final String COLUMN_RATINGRESET = "giveReset";
-        public static final String COLUMN_SEARCHSORT = "searchSort";
-        public static final String COLUMN_SEARCHORDER = "searchOrder";
-        public static final String COLUMN_RECORDSORT = "recordSort";
-        public static final String COLUMN_RECORDORDER = "recordOrder";
-        public static final String COLUMN_TIMEGIVING = "giveStamp";
-        public static final String COLUMN_TIMERECORD = "recordStamp";
-        public static final String COLUMN_TIMEUSER = "userStamp";
+        public static final String COLUMN_USER_STAMP = "userStamp";
+        public static final String COLUMN_USER_EMAIL = "userEmail";
+        public static final String COLUMN_USER_ACTIVE = "userActive";
+        public static final String COLUMN_USER_BIRTHDATE = "userBirthdate";
+        public static final String COLUMN_USER_GENDER = "userGender";
+        public static final String COLUMN_GIVE_IMPACT = "giveImpact";
+        public static final String COLUMN_GIVE_MAGNITUDE = "giveMagnitude";
+        public static final String COLUMN_GIVE_ANCHOR = "giveAnchor";
+        public static final String COLUMN_GIVE_TIMING = "giveTiming";
+        public static final String COLUMN_GIVE_RESET = "giveReset";
+        public static final String COLUMN_GIVE_STAMP = "giveStamp";
+        public static final String COLUMN_RECORD_SORT = "recordSort";
+        public static final String COLUMN_RECORD_ORDER = "recordOrder";
+        public static final String COLUMN_RECORD_STAMP = "recordStamp";
+        public static final String COLUMN_GLANCE_ANCHOR = "glanceAnchor";
+        public static final String COLUMN_GLANCE_SINCE = "glanceSince";
+        public static final String COLUMN_GLANCE_THEME = "glanceTheme";
+        public static final String COLUMN_SEARCH_DIALOG = "searchDialog";
+        public static final String COLUMN_SEARCH_FOCUS = "searchFocus";
+        public static final String COLUMN_SEARCH_FILTER = "searchFilter";
+        public static final String COLUMN_SEARCH_COMPANY = "searchCompany";
+        public static final String COLUMN_SEARCH_TERM = "searchTerm";
+        public static final String COLUMN_SEARCH_CITY = "searchCity";
+        public static final String COLUMN_SEARCH_STATE = "searchState";
+        public static final String COLUMN_SEARCH_ZIP = "searchZip";
+        public static final String COLUMN_SEARCH_MINRATING = "searchMinrating";
+        public static final String COLUMN_SEARCH_PAGES = "searchPages";
+        public static final String COLUMN_SEARCH_ROWS = "searchRows";
+        public static final String COLUMN_SEARCH_SORT = "searchSort";
+        public static final String COLUMN_SEARCH_ORDER = "searchOrder";
     }
 }

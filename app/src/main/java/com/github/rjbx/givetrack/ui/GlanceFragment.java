@@ -138,11 +138,11 @@ public class GlanceFragment extends Fragment implements
         if (args != null)
             sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
             sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
-        Date date = new Date(sUser.getTimetrack());
+        Date date = new Date(sUser.getGlanceAnchor());
         DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
         String formattedDate = DATE_FORMATTER.format(date);
         mTimeTracked = String.format("since %s", formattedDate);
-        mViewTracked = sUser.getViewtrack();
+        mViewTracked = sUser.getGlanceSince();
         mTotalTime = "all-time";
 
         return rootView;
@@ -188,7 +188,7 @@ public class GlanceFragment extends Fragment implements
                     mTimeDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    sUser.setTimetrack(System.currentTimeMillis());
+                    sUser.setGlanceAnchor(System.currentTimeMillis());
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
                     mAmountView.setText("0");
                     break;
@@ -234,7 +234,7 @@ public class GlanceFragment extends Fragment implements
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
-        sUser.setTheme(sThemeIndex);
+        sUser.setGlanceTheme(sThemeIndex);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
 
@@ -244,7 +244,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_amount_label)
     void toggleTracked(TextView amountLabel) {
         mViewTracked = !mViewTracked;
-        sUser.setViewtrack(mViewTracked);
+        sUser.setGlanceSince(mViewTracked);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
@@ -347,7 +347,7 @@ public class GlanceFragment extends Fragment implements
         int highDifference = 0;
 
         float tracked = 0f;
-        long tracktime = sUser.getTimetrack();
+        long tracktime = sUser.getGlanceAnchor();
 
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
