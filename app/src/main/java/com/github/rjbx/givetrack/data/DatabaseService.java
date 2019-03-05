@@ -486,7 +486,7 @@ public class DatabaseService extends IntentService {
 //            giving.setPhone(phoneNumber);
 //
 //            String emailAddress = urlToEmailAddress(giving);
-//            giving.setUserEmail(emailAddress);
+//            giving.setEmail(emailAddress);
 
 
             DatabaseAccessor.addGiving(this, giving);

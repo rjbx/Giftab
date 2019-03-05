@@ -352,7 +352,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         giveImpact = (String) map.get("giveImpact");
         searchTerm = (String) map.get("searchTerm");
         searchCity = (String) map.get("searchCity");
-        searchState = (String) map.get("searchState");
+        searchState = (String) map.get("state");
         searchZip = (String) map.get("searchZip");
         searchMinrating = (String) map.get("searchMinrating");
         searchPages = (String) map.get("searchPages");

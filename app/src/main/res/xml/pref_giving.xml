@@ -23,7 +23,7 @@
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all saved items and related data.\nClearing does not impact giveTiming records."/>
+        android:summary="Clear all saved items and related data.\nClearing does not impact historical records."/>
 
     <Preference
         android:key="@string/pref_show_key"

@@ -382,12 +382,12 @@ public final class DatabaseAccessor {
 //                if (cursor != null) {
 //                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
 //                    cursor.close();
-//                    for (User u : localUsers) if (user.getUserActive()) user = u;
+//                    for (User u : localUsers) if (user.getActive()) user = u;
 //                }
 //
 //                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
 //                while (iterator.hasNext()) {
-//                    if (user != null && user.getUserActive()) remoteUpdateTime = iterator.next().child("updateTime");
+//                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime");
 //
 //                    User user = iterator.next().getValue(User.class);
 //                    if (localUpdateTime < remoteUpdateTime) {

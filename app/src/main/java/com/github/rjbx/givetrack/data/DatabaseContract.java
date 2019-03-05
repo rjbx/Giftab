@@ -132,7 +132,6 @@ public final class DatabaseContract {
                 BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
 
         public static final String COLUMN_UID = "uid";
-        public static final String COLUMN_USER_STAMP = "userStamp";
         public static final String COLUMN_USER_EMAIL = "userEmail";
         public static final String COLUMN_USER_ACTIVE = "userActive";
         public static final String COLUMN_USER_BIRTHDATE = "userBirthdate";
@@ -141,11 +140,6 @@ public final class DatabaseContract {
         public static final String COLUMN_GIVE_MAGNITUDE = "giveMagnitude";
         public static final String COLUMN_GIVE_ANCHOR = "giveAnchor";
         public static final String COLUMN_GIVE_TIMING = "giveTiming";
-        public static final String COLUMN_GIVE_RESET = "giveReset";
-        public static final String COLUMN_GIVE_STAMP = "giveStamp";
-        public static final String COLUMN_RECORD_SORT = "recordSort";
-        public static final String COLUMN_RECORD_ORDER = "recordOrder";
-        public static final String COLUMN_RECORD_STAMP = "recordStamp";
         public static final String COLUMN_GLANCE_ANCHOR = "glanceAnchor";
         public static final String COLUMN_GLANCE_SINCE = "glanceSince";
         public static final String COLUMN_GLANCE_THEME = "glanceTheme";
@@ -160,7 +154,13 @@ public final class DatabaseContract {
         public static final String COLUMN_SEARCH_MINRATING = "searchMinrating";
         public static final String COLUMN_SEARCH_PAGES = "searchPages";
         public static final String COLUMN_SEARCH_ROWS = "searchRows";
+        public static final String COLUMN_GIVE_RESET = "giveReset";
         public static final String COLUMN_SEARCH_SORT = "searchSort";
         public static final String COLUMN_SEARCH_ORDER = "searchOrder";
+        public static final String COLUMN_RECORD_SORT = "recordSort";
+        public static final String COLUMN_RECORD_ORDER = "recordOrder";
+        public static final String COLUMN_GIVE_STAMP = "giveStamp";
+        public static final String COLUMN_RECORD_STAMP = "recordStamp";
+        public static final String COLUMN_USER_STAMP = "userStamp";
     }
 }

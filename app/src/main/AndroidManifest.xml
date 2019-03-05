@@ -12,12 +12,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:glanceTheme="@style/AppTheme">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
             android:label="@string/app_name"
-            android:glanceTheme="@style/AppTheme.NoActionBar">
-            <intent-searchFilter>
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -25,13 +25,13 @@
                     android:scheme="http"
                     android:host="github.com"
                     android:pathPattern="/rjbx/Givetrack" />
-            </intent-searchFilter>
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.SearchActivity"
             android:label="@string/title_search_results"
             android:parentActivityName=".ui.MainActivity"
-            android:glanceTheme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.rjbx.givetrack.ui.MainActivity" />
@@ -40,7 +40,7 @@
             android:name=".ui.RecordActivity"
             android:label="History"
             android:parentActivityName=".ui.MainActivity"
-            android:glanceTheme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.rjbx.givetrack.ui.MainActivity" />
@@ -48,20 +48,20 @@
         <activity
             android:name=".ui.ConfigActivity"
             android:label="@string/title_activity_settings"
-            android:glanceTheme="@style/AppTheme.StatusBarOverlay" />
+            android:theme="@style/AppTheme.StatusBarOverlay" />
         <activity
             android:name=".ui.AuthActivity"
             android:label="@string/app_name">
-            <intent-searchFilter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-searchFilter>
+            </intent-filter>
         </activity>
 
         <receiver android:name=".AppWidget">
-            <intent-searchFilter>
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-searchFilter>
+            </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
