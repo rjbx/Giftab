@@ -279,8 +279,10 @@ public final class DatabaseAccessor {
      */
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        String rootPath = entryType.getSimpleName().toLowerCase();
-        DatabaseReference pathReference = remote.getReference(rootPath);
+        remote.getReference("updateTime").setValue(System.currentTimeMillis());
+
+        String entryPath = entryType.getSimpleName().toLowerCase();
+        DatabaseReference entryReference = remote.getReference(entryPath);
 
 //        if (entries.length == 1) {
 //            T entry = entries[0];
@@ -290,7 +292,7 @@ public final class DatabaseAccessor {
 //        } else {
 //             TODO: Handle multiple entries with single update
             for (T entry: entries) {
-                DatabaseReference childReference = pathReference.child(entry.getUid());
+                DatabaseReference childReference = entryReference.child(entry.getUid());
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
                 childReference.updateChildren(entry.toParameterMap());
             }
@@ -314,6 +316,8 @@ public final class DatabaseAccessor {
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
+
+        remote.getReference("updateTime").setValue(System.currentTimeMillis());
 
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
 
