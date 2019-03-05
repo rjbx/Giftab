@@ -1,71 +1,49 @@
 {
-  "giving" : {
-    "uid" : {
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "frequency": 0,
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "name": "",
-        "navigatorUrl": "",
-        "percent": "",
-        "phone": "",
-        "stamp": 0,
-        "type": 0,
-        "uid": ""
-      }
-    }
-  },
   "record" : {
     "uid" : {
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "memo": "",
-        "name": "",
-        "navigatorUrl": "",
-        "phone": "",
-        "stamp": 0,
-        "time": 0,
-        "type": 0,
-        "uid": ""
+      "stamp" : {
+        "ein" : "",
+        "email" : "",
+        "homepageUrl" : "",
+        "impact" : "",
+        "locationCity" : "",
+        "locationDetail" : "",
+        "locationState" : "",
+        "locationStreet" : "",
+        "locationZip" : "",
+        "memo" : "",
+        "name" : "",
+        "navigatorUrl" : "",
+        "phone" : "",
+        "stamp" : 0,
+        "time" : 0,
+        "type" : 0,
+        "uid" : ""
       }
     }
   },
   "search" : {
     "uid" : {
-      "stamp": {
-        "ein": "",
-        "email": "",
-        "homepageUrl": "",
-        "impact": "",
-        "locationCity": "",
-        "locationDetail": "",
-        "locationState": "",
-        "locationStreet": "",
-        "locationZip": "",
-        "name": "",
-        "navigatorUrl": "",
-        "phone": "",
-        "stamp": 0,
-        "type": 0,
-        "uid": ""
+      "stamp" : {
+        "ein" : "",
+        "email" : "",
+        "homepageUrl" : "",
+        "impact" : "",
+        "locationCity" : "",
+        "locationDetail" : "",
+        "locationState" : "",
+        "locationStreet" : "",
+        "locationZip" : "",
+        "name" : "",
+        "navigatorUrl" : "",
+        "phone" : "",
+        "stamp" : 0,
+        "type" : 0,
+        "uid" : ""
       }
     }
   },
+  "updateTime" : 0,
   "user" : {
     "uid" : {
       "active" : true,
