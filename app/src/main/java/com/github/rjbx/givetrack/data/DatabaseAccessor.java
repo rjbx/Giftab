@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.data;
 
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -357,13 +358,13 @@ public final class DatabaseAccessor {
                     cursor.close();
                     for (User user : localUsers)
                         if (user.getActive())
-                            localUpdateTime = DatabaseContract.getTableTime(entryType, user);
+                            localUpdateTime = DatabaseProvider.getUpdateTime();
                 }
 
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
                     User user = iterator.next().getValue(User.class);
-                    if (user != null && user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
+//                    if (user != null && user.getActive()) remoteUpdateTime = DatabaseContract.getTableTime(entryType, user);
                     if (localUpdateTime < remoteUpdateTime) {
                         pullRemoteToLocalEntries(local, entryType);
                     } else if (localUpdateTime > remoteUpdateTime) {

@@ -31,7 +31,7 @@ public class DatabaseProvider extends ContentProvider {
     private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    private long mUpdateTime;
+    private static long mUpdateTime;
 
     /**
      * Builds a {@link UriMatcher} for identifying distinct {@link Uri} and defining corresponding behaviors.
@@ -343,5 +343,5 @@ public class DatabaseProvider extends ContentProvider {
         if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
     }
 
-    public long getUpdateTime() { return mUpdateTime; }
+    public static long getUpdateTime() { return mUpdateTime; }
 }
