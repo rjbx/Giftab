@@ -11,6 +11,7 @@ import android.util.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
@@ -101,6 +102,9 @@ public final class DatabaseAccessor {
         String response = requestResponseFromUrl(url, null);
         if (response == null) return;
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
+
+        String formattedUrl = parsedResponse[0].getHomepageUrl().split("www.")[1].replace("/", "");
+        String dataResponse = urlToCompanyData(context, formattedUrl);
 
         // Store data
         removeEntriesFromLocal(local, Search.class, null);
@@ -394,7 +398,7 @@ public final class DatabaseAccessor {
         return user;
     }
 
-    private String urlToCompanyData(Context context, String homepageUrlStr) {
+    private static String urlToCompanyData(Context context, String homepageUrlStr) {
 
         String clearbitUrlStr = "https://company.clearbit.com/v2/companies/find?domain=" + homepageUrlStr;
         URL clearbitURL = getUrl(new Uri.Builder().path(clearbitUrlStr).build());
@@ -431,12 +435,22 @@ public final class DatabaseAccessor {
         String response = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-            InputStream in = urlConnection.getInputStream();
 
             if (password != null) {
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setDoOutput(true);
+                urlConnection.setRequestMethod("PUT");
+
                 String credential = "Basic " + new String(Base64.encode(password.getBytes(), Base64.NO_WRAP));
                 urlConnection.setRequestProperty("Authorization", credential);
+
+                String format = "{\"format\":\"json\",\"pattern\":\"#\"}";
+                OutputStreamWriter oStreamWriter = new OutputStreamWriter(urlConnection.getOutputStream());
+                oStreamWriter.write(format);
+                oStreamWriter.close();
             }
+            InputStream in = urlConnection.getInputStream();
+
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
             boolean hasInput = scanner.hasNext();
