@@ -178,7 +178,7 @@ public class Search implements Company, Parcelable, Cloneable {
         map.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
         map.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
         map.put(DatabaseContract.CompanyEntry.COLUMN_STAMP, stamp);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_NAME, name);
         map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
         map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
         map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY, locationCity);
@@ -186,18 +186,18 @@ public class Search implements Company, Parcelable, Cloneable {
         map.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP, locationZip);
         map.put(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL, homepageUrl);
         map.put(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL, navigatorUrl);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER, phone);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS, email);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE, social);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT, impact);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE, type);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_PHONE, phone);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL, email);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL, social);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, impact);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_TYPE, type);
         return map;
     }
     
     @Override public void fromParameterMap(Map<String, Object> map) {
         this.ein = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EIN);
         this.stamp = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_STAMP);
-        this.name = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
+        this.name = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_NAME);
         this.locationStreet = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
         this.locationDetail = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
         this.locationCity = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY);
@@ -205,11 +205,11 @@ public class Search implements Company, Parcelable, Cloneable {
         this.locationZip = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP);
         this.homepageUrl = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL);
         this.navigatorUrl = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL);
-        this.phone = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER);
-        this.email = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS);
-        this.social = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE);
-        this.impact = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT);
-        this.type = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
+        this.phone = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PHONE);
+        this.email = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EMAIL);
+        this.social = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SOCIAL);
+        this.impact = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_IMPACT);
+        this.type = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_TYPE);
 
     }
 
@@ -218,7 +218,7 @@ public class Search implements Company, Parcelable, Cloneable {
         values.put(DatabaseContract.CompanyEntry.COLUMN_UID, uid);
         values.put(DatabaseContract.CompanyEntry.COLUMN_EIN, ein);
         values.put(DatabaseContract.CompanyEntry.COLUMN_STAMP, stamp);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME, name);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_NAME, name);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET, locationStreet);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL, locationDetail);
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY, locationCity);
@@ -226,11 +226,11 @@ public class Search implements Company, Parcelable, Cloneable {
         values.put(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP, locationZip);
         values.put(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL, homepageUrl);
         values.put(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL, navigatorUrl);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER, phone);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS, email);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE, social);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT, impact);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE, type);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_PHONE, phone);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL, email);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL, social);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, impact);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_TYPE, type);
         return values;
     }
 
@@ -238,7 +238,7 @@ public class Search implements Company, Parcelable, Cloneable {
         this.uid = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_UID);
         this.ein = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EIN);
         this.stamp = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_STAMP);
-        this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_CHARITY_NAME);
+        this.name = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_NAME);
         this.locationStreet = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_STREET);
         this.locationDetail = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_DETAIL);
         this.locationCity = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_CITY);
@@ -246,11 +246,11 @@ public class Search implements Company, Parcelable, Cloneable {
         this.locationZip = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_LOCATION_ZIP);
         this.homepageUrl = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_HOMEPAGE_URL);
         this.navigatorUrl = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_NAVIGATOR_URL);
-        this.phone = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PHONE_NUMBER);
-        this.email = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EMAIL_ADDRESS);
-        this.social = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_SOCIAL_HANDLE);
-        this.impact = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_IMPACT);
-        this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_TYPE);
+        this.phone = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PHONE);
+        this.email = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EMAIL);
+        this.social = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_SOCIAL);
+        this.impact = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_IMPACT);
+        this.type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_TYPE);
     }
 
     @Override public Search clone() {

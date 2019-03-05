@@ -11,7 +11,9 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.ui.MainActivity;
 import com.github.rjbx.givetrack.ui.RecordActivity;
 import com.github.rjbx.givetrack.ui.SearchActivity;
@@ -102,24 +104,25 @@ public class AppWidget extends AppWidgetProvider {
 
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
+            Giving giving = Giving.getDefault();
+            DatabaseAccessor.cursorRowToEntry(mCursor, giving);
 
-            String name = mCursor.getString(DatabaseContract.CompanyEntry.INDEX_CHARITY_NAME);
+            String name = giving.getName();
             if (name.length() > 15) { name = name.substring(0, 15);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
-            Float amount = Float.parseFloat(mCursor.getString(DatabaseContract.CompanyEntry.INDEX_DONATION_IMPACT));
+            Float amount = Float.parseFloat(giving.getImpact()));
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            Float percentage = Float.parseFloat(mCursor.getString(DatabaseContract.CompanyEntry.INDEX_DONATION_PERCENTAGE));
-            String percentStr = PERCENT_FORMATTER.format(percentage);
+            String percentStr = PERCENT_FORMATTER.format(giving.getPercent());
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);
-            remoteViews.setTextViewText(R.id.widget_item_percentage, percentStr);
+            remoteViews.setTextViewText(R.id.widget_item_percent, percentStr);
             remoteViews.setTextViewText(R.id.widget_item_amount, amountStr);
             remoteViews.setOnClickFillInIntent(R.id.widget_item, new Intent());
 

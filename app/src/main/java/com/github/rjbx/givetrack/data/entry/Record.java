@@ -106,28 +106,28 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_MEMO, memo);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_TIME, time);
         return map;
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
-        this.memo = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
-        this.time = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
+        this.memo = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_MEMO);
+        this.time = (long) map.get(DatabaseContract.CompanyEntry.COLUMN_TIME);
     }
 
     @Override public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO, memo);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME, time);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_MEMO, memo);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_TIME, time);
         return values;
     }
 
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_MEMO);
-        this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_DONATION_TIME);
+        this.memo = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_MEMO);
+        this.time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIME);
      }
 
     public Search getSuper() { return super.clone(); }

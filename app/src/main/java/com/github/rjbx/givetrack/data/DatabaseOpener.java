@@ -38,7 +38,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
@@ -46,11 +46,11 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
@@ -63,7 +63,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
@@ -71,13 +71,13 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
-                        CompanyEntry.COLUMN_DONATION_PERCENTAGE    + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_FREQUENCY     + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_PERCENT + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_FREQUENCY + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
@@ -90,7 +90,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_CHARITY_NAME           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
@@ -98,13 +98,13 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
                         CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE_NUMBER           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL_ADDRESS          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL_HANDLE          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_IMPACT        + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_TYPE          + " INTEGER NOT NULL,"              +
-                        CompanyEntry.COLUMN_DONATION_MEMO          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_DONATION_TIME          + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_MEMO + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TIME + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";

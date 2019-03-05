@@ -106,28 +106,28 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY, frequency);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE, percent);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY, frequency);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, percent);
         return map;
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
-        this.frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY);
-        this.percent = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);
+        this.frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
+        this.percent = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
     }
 
     @Override public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY, frequency);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE, percent);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY, frequency);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, percent);
         return values;
     }
 
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
-        this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_DONATION_FREQUENCY);
-        this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_DONATION_PERCENTAGE);
+        this.frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
+        this.percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
     }
 
     public Search getSuper() { return super.clone(); }

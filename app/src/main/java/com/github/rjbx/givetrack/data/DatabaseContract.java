@@ -41,7 +41,7 @@ public final class DatabaseContract {
         public static final String COLUMN_UID = "uid";
         public static final String COLUMN_EIN = "ein";
         public static final String COLUMN_STAMP = "stamp";
-        public static final String COLUMN_CHARITY_NAME = "charityName";
+        public static final String COLUMN_NAME = "name";
         public static final String COLUMN_LOCATION_STREET = "locationStreet";
         public static final String COLUMN_LOCATION_DETAIL = "locationDetail";
         public static final String COLUMN_LOCATION_CITY = "locationCity";
@@ -49,36 +49,15 @@ public final class DatabaseContract {
         public static final String COLUMN_LOCATION_ZIP = "locationZip";
         public static final String COLUMN_HOMEPAGE_URL = "homepageUrl";
         public static final String COLUMN_NAVIGATOR_URL = "navigatorUrl";
-        public static final String COLUMN_PHONE_NUMBER = "phoneNumber";
-        public static final String COLUMN_EMAIL_ADDRESS = "emailAddress";
-        public static final String COLUMN_SOCIAL_HANDLE = "socialHandle";
-        public static final String COLUMN_DONATION_IMPACT = "donationTotal";
-        public static final String COLUMN_DONATION_TYPE = "donationType";
-        public static final String COLUMN_DONATION_PERCENTAGE = "donationPercentage";
-        public static final String COLUMN_DONATION_FREQUENCY = "donationFrequency";
-        public static final String COLUMN_DONATION_MEMO = "donationMemo";
-        public static final String COLUMN_DONATION_TIME = "donationTime";
-
-        public static final int INDEX_STAMP = 0;
-        public static final int INDEX_UID = 1;
-        public static final int INDEX_EIN = 2;
-        public static final int INDEX_CHARITY_NAME = 3;
-        public static final int INDEX_LOCATION_STREET = 4;
-        public static final int INDEX_LOCATION_DETAIL = 5;
-        public static final int INDEX_LOCATION_CITY = 6;
-        public static final int INDEX_LOCATION_STATE = 7;
-        public static final int INDEX_LOCATION_ZIP = 8;
-        public static final int INDEX_HOMEPAGE_URL = 9;
-        public static final int INDEX_NAVIGATOR_URL = 10;
-        public static final int INDEX_PHONE_NUMBER = 11;
-        public static final int INDEX_EMAIL_ADDRESS = 12;
-        public static final int INDEX_SOCIAL_HANDLE = 13;
-        public static final int INDEX_DONATION_IMPACT = 14;
-        public static final int INDEX_DONATION_TYPE = 15;
-        public static final int INDEX_DONATION_PERCENTAGE = 16;
-        public static final int INDEX_DONATION_MEMO = 16;
-        public static final int INDEX_DONATION_FREQUENCY = 17;
-        public static final int INDEX_DONATION_TIME = 17;
+        public static final String COLUMN_PHONE = "phone";
+        public static final String COLUMN_EMAIL = "email";
+        public static final String COLUMN_SOCIAL = "social";
+        public static final String COLUMN_IMPACT = "impact";
+        public static final String COLUMN_TYPE = "type";
+        public static final String COLUMN_PERCENT = "percent";
+        public static final String COLUMN_FREQUENCY = "frequency";
+        public static final String COLUMN_MEMO = "memo";
+        public static final String COLUMN_TIME = "time";
     }
 
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
