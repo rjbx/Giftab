@@ -135,7 +135,7 @@ public final class DatabaseContract {
     public static <T extends Entry> long getTableTime(Class<T> entryType, User user) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_SEARCH: return;
+            case CompanyEntry.TABLE_NAME_SEARCH: return 0;
             case CompanyEntry.TABLE_NAME_GIVING: return user.getTimeGiving();
             case CompanyEntry.TABLE_NAME_RECORD: return user.getTimeRecord();
             case UserEntry.TABLE_NAME_USER: return user.getTimeUser();
@@ -143,7 +143,7 @@ public final class DatabaseContract {
         }
     }
 
-    public static <T extends Entry> long setTableTime(Class<T> entryType, User user, long time) {
+    public static <T extends Entry> void setTableTime(Class<T> entryType, User user, long time) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
             case CompanyEntry.TABLE_NAME_SEARCH: break;
