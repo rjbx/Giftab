@@ -31,6 +31,8 @@ public class DatabaseProvider extends ContentProvider {
     private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
+    private long mUpdateTime;
+
     /**
      * Builds a {@link UriMatcher} for identifying distinct {@link Uri} and defining corresponding behaviors.
      * @return {@link UriMatcher}
@@ -336,7 +338,10 @@ public class DatabaseProvider extends ContentProvider {
      * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
     private void notifyResolverOfChange(Uri uri, int rowsChanged) {
+        mUpdateTime = System.currentTimeMillis();
         Context context = getContext();
         if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
     }
+
+    public long getUpdateTime() { return mUpdateTime; }
 }

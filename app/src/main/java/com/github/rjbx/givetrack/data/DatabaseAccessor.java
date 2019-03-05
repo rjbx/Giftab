@@ -187,6 +187,7 @@ public final class DatabaseAccessor {
                 contentUri, null, null, null, null
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
+
         cursor.close();
         return entries;
     }
