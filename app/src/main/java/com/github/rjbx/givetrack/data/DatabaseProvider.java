@@ -352,6 +352,7 @@ public class DatabaseProvider extends ContentProvider {
 
     public static <T extends Entry> long getTableTime(String tableName) {
         switch (tableName) {
+            case CompanyEntry.TABLE_NAME_SEARCH: return mSearchTime;
             case CompanyEntry.TABLE_NAME_GIVING: return mGivingTime;
             case CompanyEntry.TABLE_NAME_RECORD: return mRecordTime;
             case UserEntry.TABLE_NAME_USER: return mUserTime;
@@ -361,6 +362,7 @@ public class DatabaseProvider extends ContentProvider {
 
     public static <T extends Entry> void setTableTime(String tableName, long time) {
         switch (tableName) {
+            case CompanyEntry.TABLE_NAME_SEARCH: mSearchTime = time; break;
             case CompanyEntry.TABLE_NAME_GIVING: mGivingTime = time; break;
             case CompanyEntry.TABLE_NAME_RECORD: mRecordTime = time; break;
             case UserEntry.TABLE_NAME_USER: mUserTime = time; break;
