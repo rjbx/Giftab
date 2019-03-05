@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.util.Base64;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,7 +98,7 @@ public final class DatabaseAccessor {
         URL url = getUrl(builder.build());
 
         // Retrieve data
-        String response = requestResponseFromUrl(url);
+        String response = requestResponseFromUrl(url, null);
         if (response == null) return;
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
@@ -393,11 +394,11 @@ public final class DatabaseAccessor {
         return user;
     }
 
-    private String urlToCompanyData(String homepageUrlStr) {
+    private String urlToCompanyData(Context context, String homepageUrlStr) {
 
-        String clearbitUrlStr = "https://combined.clearbit.com/v2/combined/find?domain=" + homepageUrlStr;
+        String clearbitUrlStr = "https://company.clearbit.com/v2/companies/find?domain=" + homepageUrlStr;
         URL clearbitURL = getUrl(new Uri.Builder().path(clearbitUrlStr).build());
-        String jsonResponse = requestResponseFromUrl(clearbitURL);
+        return requestResponseFromUrl(clearbitURL, context.getString(R.string.cb_api_key));
     }
 
     /**
@@ -424,13 +425,18 @@ public final class DatabaseAccessor {
      * @return the result of the HTTP request; null if none received.
      * @throws IOException caused by network and stream reading.
      */
-    private static String requestResponseFromUrl(URL url) {
+    private static String requestResponseFromUrl(URL url, @Nullable String password) {
 
         HttpURLConnection urlConnection = null;
         String response = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = urlConnection.getInputStream();
+
+            if (password != null) {
+                String credential = "Basic " + new String(Base64.encode(password.getBytes(), Base64.NO_WRAP));
+                urlConnection.setRequestProperty("Authorization", credential);
+            }
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
             boolean hasInput = scanner.hasNext();
