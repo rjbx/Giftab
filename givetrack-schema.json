@@ -1,7 +1,6 @@
 {
   "giving" : {
     "uid" : {
-      "active" : false,
       "stamp" : {
         "ein" : "",
         "email" : "",
@@ -26,7 +25,6 @@
   },
   "record" : {
     "uid" : {
-      "active" : false,
       "stamp" : {
         "ein" : "",
         "email" : "",
@@ -51,7 +49,6 @@
   },
   "search" : {
     "uid" : {
-      "active" : false,
       "stamp" : {
         "ein" : "",
         "email" : "",
