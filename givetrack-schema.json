@@ -72,14 +72,14 @@
       "giveImpact" : "0",
       "giveMagnitude" : "0.1",
       "giveReset" : false,
-      "giveTime" : 0,
+      "giveStamp" : 0,
       "giveTiming" : 0,
       "glanceAnchor" : 0,
       "glanceSince" : false,
       "glanceTheme" : 0,
       "recordOrder" : "",
       "recordSort" : "",
-      "recordTime" : 0,
+      "recordStamp" : 0,
       "searchCity" : "",
       "searchCompany" : "",
       "searchDialog" : false,
@@ -97,7 +97,7 @@
       "userBirthdate" : "0/0/2000",
       "userEmail" : "",
       "userGender" : "0",
-      "userTime" : 0
+      "userStamp" : 0
     }
   }
 }

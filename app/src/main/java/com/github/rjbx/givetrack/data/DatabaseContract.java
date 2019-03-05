@@ -81,46 +81,6 @@ public final class DatabaseContract {
         public static final int INDEX_DONATION_TIME = 17;
     }
 
-    public static final class UserEntry implements BaseColumns {
-        static final String TABLE_NAME_USER = "user";
-
-        public static final Uri CONTENT_URI_USER =
-                BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
-
-        public static final String COLUMN_UID = "uid";
-        public static final String COLUMN_EMAIL = "email";
-        public static final String COLUMN_ACTIVE = "active";
-        public static final String COLUMN_BIRTHDATE = "birthdate";
-        public static final String COLUMN_GENDER = "gender";
-        public static final String COLUMN_DONATION = "donation";
-        public static final String COLUMN_MAGNITUDE = "magnitude";
-        public static final String COLUMN_ANCHOR = "anchor";
-        public static final String COLUMN_HISTORICAL = "historical";
-        public static final String COLUMN_TIMETRACK = "timetrack";
-        public static final String COLUMN_VIEWTRACK = "viewtrack";
-        public static final String COLUMN_THEME = "theme";
-        public static final String COLUMN_SEARCHGUIDE = "searchguide";
-        public static final String COLUMN_FOCUS = "focus";
-        public static final String COLUMN_FILTER = "filter";
-        public static final String COLUMN_COMPANY = "company";
-        public static final String COLUMN_TERM = "term";
-        public static final String COLUMN_CITY = "city";
-        public static final String COLUMN_STATE = "state";
-        public static final String COLUMN_ZIP = "zip";
-        public static final String COLUMN_MINRATING = "minrating";
-        public static final String COLUMN_FUNDRAISING = "fundraising";
-        public static final String COLUMN_PAGES = "pages";
-        public static final String COLUMN_ROWS = "rows";
-        public static final String COLUMN_RATINGRESET = "ratingReset";
-        public static final String COLUMN_SEARCHSORT = "sortSearch";
-        public static final String COLUMN_SEARCHORDER = "orderSearch";
-        public static final String COLUMN_RECORDSORT = "sortRecord";
-        public static final String COLUMN_RECORDORDER = "orderRecord";
-        public static final String COLUMN_TIMEGIVING = "timeGiving";
-        public static final String COLUMN_TIMERECORD = "timeRecord";
-        public static final String COLUMN_TIMEUSER = "timeUser";
-    }
-
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
@@ -163,5 +123,44 @@ public final class DatabaseContract {
             case UserEntry.TABLE_NAME_USER: user.setTimeUser(time); break;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
+    }
+
+    public static final class UserEntry implements BaseColumns {
+        static final String TABLE_NAME_USER = "user";
+
+        public static final Uri CONTENT_URI_USER =
+                BASE_URI.buildUpon().appendPath(PATH_USER_TABLE).build();
+
+        public static final String COLUMN_UID = "uid";
+        public static final String COLUMN_EMAIL = "userEmail";
+        public static final String COLUMN_ACTIVE = "userActive";
+        public static final String COLUMN_BIRTHDATE = "userBirthdate";
+        public static final String COLUMN_GENDER = "userGender";
+        public static final String COLUMN_DONATION = "giveImpact";
+        public static final String COLUMN_MAGNITUDE = "giveMagnitude";
+        public static final String COLUMN_ANCHOR = "giveAnchor";
+        public static final String COLUMN_HISTORICAL = "giveTiming";
+        public static final String COLUMN_TIMETRACK = "glanceAnchor";
+        public static final String COLUMN_VIEWTRACK = "glanceSince";
+        public static final String COLUMN_THEME = "glanceTheme";
+        public static final String COLUMN_SEARCHGUIDE = "searchDialog";
+        public static final String COLUMN_FOCUS = "searchFocus";
+        public static final String COLUMN_FILTER = "searchFilter";
+        public static final String COLUMN_COMPANY = "searchCompany";
+        public static final String COLUMN_TERM = "searchTerm";
+        public static final String COLUMN_CITY = "searchCity";
+        public static final String COLUMN_STATE = "searchState";
+        public static final String COLUMN_ZIP = "searchZip";
+        public static final String COLUMN_MINRATING = "searchMinrating";
+        public static final String COLUMN_PAGES = "searchPages";
+        public static final String COLUMN_ROWS = "20";
+        public static final String COLUMN_RATINGRESET = "giveReset";
+        public static final String COLUMN_SEARCHSORT = "searchSort";
+        public static final String COLUMN_SEARCHORDER = "searchOrder";
+        public static final String COLUMN_RECORDSORT = "recordSort";
+        public static final String COLUMN_RECORDORDER = "recordOrder";
+        public static final String COLUMN_TIMEGIVING = "giveStamp";
+        public static final String COLUMN_TIMERECORD = "recordStamp";
+        public static final String COLUMN_TIMEUSER = "userStamp";
     }
 }
