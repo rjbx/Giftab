@@ -359,7 +359,7 @@ public class DatabaseProvider extends ContentProvider {
         }
     }
 
-    public static <T extends Entry> long setTableTime(String tableName, long time) {
+    public static <T extends Entry> void setTableTime(String tableName, long time) {
         switch (tableName) {
             case CompanyEntry.TABLE_NAME_GIVING: mGivingTime = time; break;
             case CompanyEntry.TABLE_NAME_RECORD: mRecordTime = time; break;
