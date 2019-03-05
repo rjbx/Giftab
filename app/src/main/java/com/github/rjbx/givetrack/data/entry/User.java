@@ -46,6 +46,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     private String searchOrder;
     private String recordSort;
     private String recordOrder;
+    private long timeGiving;
+    private long timeRecord;
+    private long timeUser;
 
     @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
@@ -81,6 +84,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         dest.writeString(searchOrder);
         dest.writeString(recordSort);
         dest.writeString(recordOrder);
+        dest.writeLong(timeGiving);
+        dest.writeLong(timeRecord);
+        dest.writeLong(timeUser);
     }
 
     @Override public int describeContents() { return 0; }
@@ -114,6 +120,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         searchOrder = source.readString();
         recordSort = source.readString();
         recordOrder = source.readString();
+        timeGiving = source.readLong();
+        timeRecord = source.readLong();
+        timeUser = source.readLong();
     }
     
     public User(User user) {
@@ -145,6 +154,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.searchOrder = user.searchOrder;
         this.recordSort = user.recordSort;
         this.recordOrder = user.recordOrder;
+        this.timeGiving = user.timeGiving;
+        this.timeRecord = user.timeRecord;
+        this.timeUser = user.timeUser;
     }
 
     /**
@@ -183,7 +195,10 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             String searchSort,
             String searchOrder,
             String recordSort,
-            String recordOrder) {
+            String recordOrder,
+            long timeGiving,
+            long timeRecord,
+            long timeUser) {
         this.uid = uid;
         this.email = email;
         this.active = active;
@@ -212,6 +227,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.searchOrder = searchOrder;
         this.recordSort = recordSort;
         this.recordOrder = recordOrder;
+        this.timeGiving = timeGiving;
+        this.timeRecord = timeRecord;
+        this.timeUser = timeUser;
     }
 
     public String getUid() { return uid; }
@@ -270,6 +288,12 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public void setRecordSort(String recordSort) { this.recordSort = recordSort; }
     public String getRecordOrder() { return recordOrder; }
     public void setRecordOrder(String recordOrder) { this.recordOrder = recordOrder; }
+    public long getTimeGiving() { return timeGiving; }
+    public void setTimeGiving(long timeGiving) { this.timeGiving = timeGiving; }
+    public long getTimeRecord() { return timeRecord; }
+    public void setTimeRecord(long timeRecord) { this.timeRecord = timeRecord; }
+    public long getTimeUser() { return timeUser; }
+    public void setTimeUser(long timeUser) { this.timeUser = timeUser; }
     @Override public String getId() { return uid; }
     public User getObject() { return this; }
 
@@ -303,6 +327,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         map.put("searchOrder", searchOrder);
         map.put("recordSort", recordSort);
         map.put("recordOrder", recordOrder);
+        map.put("timeGiving", timeGiving);
+        map.put("timeRecord", timeRecord);
+        map.put("timeUser", timeUser);
         return map;
     }
 
@@ -335,6 +362,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         searchOrder = (String) map.get("searchOrder");
         recordSort = (String) map.get("recordSort");
         recordOrder = (String) map.get("recordOrder");
+        timeGiving = (long) map.get("timeGiving");
+        timeRecord = (long) map.get("timeRecord");
+        timeUser = (long) map.get("timeUser");
     }
 
     @Override public ContentValues toContentValues() {
@@ -367,6 +397,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         values.put(COLUMN_SEARCHORDER, searchOrder);
         values.put(COLUMN_RECORDSORT, recordSort);
         values.put(COLUMN_RECORDORDER, recordOrder);
+        values.put(COLUMN_TIMEGIVING, timeGiving);
+        values.put(COLUMN_TIMERECORD, timeRecord);
+        values.put(COLUMN_TIMEUSER, timeUser);
         return values;
     }
 
@@ -399,6 +432,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         this.searchOrder = values.getAsString(COLUMN_SEARCHORDER);
         this.recordSort = values.getAsString(COLUMN_RECORDSORT);
         this.recordOrder = values.getAsString(COLUMN_RECORDORDER);
+        this.timeGiving = values.getAsLong(COLUMN_TIMEGIVING);
+        this.timeRecord = values.getAsLong(COLUMN_TIMERECORD);
+        this.timeUser = values.getAsLong(COLUMN_TIMEUSER);
     }
 
     @Override public User clone() {
@@ -439,6 +475,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         user.searchOrder = "DESC";
         user.recordSort = "donationTime";
         user.recordOrder = "DESC";
+        user.timeGiving = 0;
+        user.timeRecord = 0;
+        user.timeUser = 0;
         return user;
     }
 }

@@ -349,25 +349,24 @@ public final class DatabaseAccessor {
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         User user = null;
-        long localUpdateTime = DatabaseProvider.getTableTime(DatabaseContract.classToTableName(entryType));
+        long localUpdateTime = 0;
         long remoteUpdateTime = 0;
-
-        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-        if (cursor != null) {
-            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-            cursor.close();
-            for (User u : localUsers) if (user.getActive()) user = u;
-        }
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
         pathReference.child("uid").addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+                if (cursor != null) {
+                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
+                    cursor.close();
+                    for (User u : localUsers) if (user.getActive()) user = u;
+                }
 
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
-                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime")
+                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime");
 
                     User user = iterator.next().getValue(User.class);
                     if (localUpdateTime < remoteUpdateTime) {
