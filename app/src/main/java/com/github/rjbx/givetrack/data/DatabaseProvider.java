@@ -8,6 +8,9 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
+import com.github.rjbx.givetrack.data.entry.Entry;
+
 import androidx.annotation.NonNull;
 
 import timber.log.Timber;
@@ -31,7 +34,10 @@ public class DatabaseProvider extends ContentProvider {
     private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
-    private static long mUpdateTime;
+    private static long mSearchTime;
+    private static long mGivingTime;
+    private static long mRecordTime;
+    private static long mUserTime;
 
     /**
      * Builds a {@link UriMatcher} for identifying distinct {@link Uri} and defining corresponding behaviors.
@@ -97,7 +103,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        notifyResolverOfChange(uri, rowsInserted);
+        notifyDataSetChange(uri, tableName, rowsInserted);
         return rowsInserted;
     }
 
@@ -128,7 +134,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        notifyResolverOfChange(uri, rowsInserted);
+        notifyDataSetChange(uri, tableName, rowsInserted);
         return uri;
     }
 
@@ -188,7 +194,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        notifyResolverOfChange(uri, rowsUpdated);
+        notifyDataSetChange(uri, tableName, rowsUpdated);
         return rowsUpdated;
     }
 
@@ -304,7 +310,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        notifyResolverOfChange(uri, rowsDeleted);
+        notifyDataSetChange(uri, tableName, rowsDeleted);
         return rowsDeleted;
     }
 
@@ -337,11 +343,28 @@ public class DatabaseProvider extends ContentProvider {
      * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
      * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
-    private void notifyResolverOfChange(Uri uri, int rowsChanged) {
-        mUpdateTime = System.currentTimeMillis();
+    private void notifyDataSetChange(Uri uri, String tableName, int rowsChanged) {
+        setTableTime(tableName, System.currentTimeMillis());
+        mUserTime = System.currentTimeMillis();
         Context context = getContext();
         if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
     }
 
-    public static long getUpdateTime() { return mUpdateTime; }
+    public static <T extends Entry> long getTableTime(String tableName) {
+        switch (tableName) {
+            case CompanyEntry.TABLE_NAME_GIVING: return mGivingTime;
+            case CompanyEntry.TABLE_NAME_RECORD: return mRecordTime;
+            case UserEntry.TABLE_NAME_USER: return mUserTime;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
+    }
+
+    public static <T extends Entry> long setTableTime(String tableName, long time) {
+        switch (tableName) {
+            case CompanyEntry.TABLE_NAME_GIVING: mGivingTime = time;
+            case CompanyEntry.TABLE_NAME_RECORD: mRecordTime = time;
+            case UserEntry.TABLE_NAME_USER: mUserTime = time;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
+    }
 }

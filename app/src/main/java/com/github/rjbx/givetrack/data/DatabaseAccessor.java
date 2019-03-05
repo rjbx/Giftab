@@ -105,7 +105,7 @@ public final class DatabaseAccessor {
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
         // Store data
-        removeEntriesFromLocal(local, Search.class, null);
+//        removeEntriesFromLocal(local, Search.class, null);
         addEntriesToLocal(local, Search.class, parsedResponse);
         addEntriesToRemote(remote, Search.class, parsedResponse);
     }
@@ -279,10 +279,10 @@ public final class DatabaseAccessor {
      */
     public static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
-        remote.getReference("updateTime").setValue(System.currentTimeMillis());
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
+        entryReference.child("updateTime").setValue(System.currentTimeMillis());
 
 //        if (entries.length == 1) {
 //            T entry = entries[0];
@@ -317,9 +317,8 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
 
-        remote.getReference("updateTime").setValue(System.currentTimeMillis());
-
         DatabaseReference reference = remote.getReference(entryType.getSimpleName().toLowerCase());
+        reference.child("updateTime").setValue(System.currentTimeMillis());
 
         if (entries == null || entries.length == 0) {
             reference.removeValue();
@@ -363,7 +362,7 @@ public final class DatabaseAccessor {
                     cursor.close();
                     for (User user : localUsers)
                         if (user.getActive())
-                            localUpdateTime = DatabaseProvider.getUpdateTime();
+                            localUpdateTime = DatabaseProvider.getTableTime(entryType);
                 }
 
                 remoteUpdateTime = dataSnapshot.getValue(Long.class);

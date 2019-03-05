@@ -131,24 +131,4 @@ public final class DatabaseContract {
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
     }
-
-//    public static <T extends Entry> long getTableTime(Class<T> entryType) {
-//        String name = entryType.getSimpleName().toLowerCase();
-//        switch (name) {
-//            case CompanyEntry.TABLE_NAME_GIVING: return user.getTimeGiving();
-//            case CompanyEntry.TABLE_NAME_RECORD: return user.getTimeRecord();
-//            case UserEntry.TABLE_NAME_USER: return user.getTimeUser();
-//            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-//        }
-//    }
-//
-//    public static <T extends Entry> long setTableTime(Class<T> entryType, long time) {
-//        String name = entryType.getSimpleName().toLowerCase();
-//        switch (name) {
-//            case CompanyEntry.TABLE_NAME_GIVING: user.setTimeGiving(time);
-//            case CompanyEntry.TABLE_NAME_RECORD: user.setTimeRecord(time);
-//            case UserEntry.TABLE_NAME_USER: user.setTimeUser(time);
-//            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-//        }
-//    }
 }
