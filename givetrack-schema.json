@@ -1,7 +1,7 @@
 {
   "giving" : {
-    "updateTime" : 0,
     "uid" : {
+      "updateTime" : 0,
       "stamp": {
         "ein": "",
         "email": "",
@@ -24,8 +24,8 @@
     }
   },
   "record" : {
-    "updateTime" : 0,
     "uid" : {
+      "updateTime" : 0,
       "stamp": {
         "ein": "",
         "email": "",
@@ -48,8 +48,8 @@
     }
   },
   "search" : {
-    "updateTime" : 0,
     "uid" : {
+      "updateTime" : 0,
       "stamp": {
         "ein": "",
         "email": "",
@@ -70,8 +70,8 @@
     }
   },
   "user" : {
-    "updateTime" : 0,
     "uid" : {
+      "updateTime" : 0,
       "active" : true,
       "anchor" : 0,
       "birthdate" : "0/0/2000",
