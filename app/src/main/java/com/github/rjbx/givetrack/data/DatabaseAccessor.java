@@ -303,10 +303,9 @@ public final class DatabaseAccessor {
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-
-        String uid = "";
-        if (entries == null) {
-            uid = getActiveUser(local).getUid();
+        String uid;
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromLocal(local).getUid();
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
         } else {
             uid = entries[0].getUid();
@@ -314,44 +313,55 @@ public final class DatabaseAccessor {
                 Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
                 local.delete(rowUri, null, null);
             }
-        }
-
-        updateLocalTableTime(local, entryType, stamp, uid);
+        } updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    static User getActiveUser(ContentResolver local) {
+    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
+
+        String entryPath = entryType.getSimpleName().toLowerCase();
+        DatabaseReference entryReference = remote.getReference(entryPath);
+        String uid;
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromRemote(remote).getUid();
+            DatabaseReference childReference = entryReference.child(uid);
+            childReference.removeValue();
+        } else {
+            uid = entries[0].getUid();
+            for (T entry : entries) {
+                DatabaseReference childReference = entryReference.child(uid);
+                if (entry instanceof Company) childReference = childReference.child(entry.getId());
+                childReference.removeValue();
+            }
+        } updateRemoteTableTime(remote, entryType, stamp, uid);
+    }
+
+    static User getActiveUserFromLocal(ContentResolver local) {
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
         if (data == null) return null;
         if (data.moveToFirst()) {
             do {
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
-                if (user.getUserActive()) {
-                    return user;
-                }
+                if (user.getUserActive()) return user;
             } while (data.moveToNext());
-        }
-        return null;
+        } return null;
     }
 
-    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
-
-        // TODO: Split into reset and remove method or add User parameter for updating table time on null entries argument
-
-        String uid = entries[0].getUid();
-        updateRemoteTableTime(remote, entryType, stamp, uid);
-        String entryPath = entryType.getSimpleName().toLowerCase();
-        DatabaseReference entryReference = remote.getReference(entryPath);
-        for (T entry: entries) {
-            DatabaseReference childReference = entryReference.child(uid);
-            if (entry instanceof Company) childReference = childReference.child(entry.getId());
-            childReference.removeValue();
-        }
-
-//        if (entries == null || entries.length == 0) {
-//            reference.removeValue();
-//            return;
-//        }
+    static User getActiveUserFromRemote(FirebaseDatabase remote) {
+        User u = User.getDefault();
+        DatabaseReference entryReference = remote.getReference(User.class.getSimpleName());
+        entryReference.addValueEventListener(new ValueEventListener() {
+            User activeUser = u;
+            @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while (iterator.hasNext()) {
+                    User user = iterator.next().getValue(User.class);
+                    if (user != null && user.getUserActive()) activeUser = user;
+                }
+            }
+            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+        return u;
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
