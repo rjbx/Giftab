@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mNavigation.setNavigationItemSelectedListener(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        if (mUser == null) return;
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
@@ -229,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
                                 }
+                                if (mGivingArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+                                if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             }
                             break;
                         }
