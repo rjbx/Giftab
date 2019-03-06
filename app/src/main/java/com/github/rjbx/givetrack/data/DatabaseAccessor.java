@@ -102,9 +102,10 @@ public final class DatabaseAccessor {
         Search[] parsedResponse = parseSearches(response, user.getUid(), single);
 
         // Store data
-        removeEntriesFromLocal(local, Search.class);
-        addEntriesToLocal(local, Search.class, parsedResponse);
-        addEntriesToRemote(remote, Search.class, parsedResponse);
+        long stamp = System.currentTimeMillis();
+        removeEntriesFromLocal(local, Search.class, stamp);
+        addEntriesToLocal(local, Search.class, stamp, parsedResponse);
+        addEntriesToRemote(remote, Search.class, stamp, parsedResponse);
     }
 
     static List<Search> getSearch(Context context) {
@@ -123,15 +124,17 @@ public final class DatabaseAccessor {
     static void addSearch(Context context, Search... entries) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
-        
-        addEntriesToLocal(local, Search.class, entries);
+
+        long stamp = System.currentTimeMillis();
+        addEntriesToLocal(local, Search.class, stamp, entries);
     }
 
     static void removeSearch(Context context, @Nullable Search... search) {
         ContentResolver local = context.getContentResolver();
         validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
 
-        removeEntriesFromLocal(local, Search.class, search);
+        long stamp = System.currentTimeMillis();
+        removeEntriesFromLocal(local, Search.class, stamp, search);
      }
 
     static void fetchGiving(Context context) {
@@ -157,9 +160,10 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, Giving.class);
-        
-        addEntriesToLocal(local, Giving.class, entries);
-        addEntriesToRemote(remote, Giving.class, entries);
+
+        long stamp = System.currentTimeMillis();
+        addEntriesToLocal(local, Giving.class, stamp, entries);
+        addEntriesToRemote(remote, Giving.class, stamp, entries);
     }
 
     static void removeGiving(Context context, Giving... giving) {
@@ -167,8 +171,9 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
 
-        removeEntriesFromLocal(local, Giving.class, giving);
-        removeEntriesFromRemote(remote, Giving.class, giving);
+        long stamp = System.currentTimeMillis();
+        removeEntriesFromLocal(local, Giving.class, stamp, giving);
+        removeEntriesFromRemote(remote, Giving.class, stamp, giving);
     }
 
     static void fetchRecord(Context context) {
@@ -196,8 +201,9 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, Record.class);
 
-        addEntriesToLocal(local, Record.class, entries);
-        addEntriesToRemote(remote, Record.class, entries);
+        long stamp = System.currentTimeMillis();
+        addEntriesToLocal(local, Record.class, stamp, entries);
+        addEntriesToRemote(remote, Record.class, stamp, entries);
     }
 
     static void removeRecord(Context context, @Nullable Record... record) {
@@ -205,8 +211,9 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
-        removeEntriesFromLocal(local, Record.class, record);
-        removeEntriesFromRemote(remote, Record.class, record);
+        long stamp = System.currentTimeMillis();
+        removeEntriesFromLocal(local, Record.class, stamp, record);
+        removeEntriesFromRemote(remote, Record.class, stamp,  record);
     }
 
     static void fetchUser(Context context) {
@@ -233,8 +240,9 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, remote, User.class);
 
-        addEntriesToLocal(local, User.class, entries);
-        addEntriesToRemote(remote, User.class, entries);
+        long stamp = System.currentTimeMillis();
+        addEntriesToLocal(local, User.class, stamp, entries);
+        addEntriesToRemote(remote, User.class, stamp, entries);
     }
 
     static void removeUser(Context context, @Nullable User... user) {
@@ -242,8 +250,9 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
         validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
-        removeEntriesFromLocal(local, User.class, user);
-        removeEntriesFromRemote(remote, User.class, user);
+        long stamp = System.currentTimeMillis();
+        removeEntriesFromLocal(local, User.class, stamp, user);
+        removeEntriesFromRemote(remote, User.class, stamp, user);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
@@ -265,9 +274,10 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, T... entries) {
+    static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
-        updateLocalTableTime(local, entryType);
+        String uid = entries[0].getUid();
+        updateLocalTableTime(local, entryType, uid);
 
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
@@ -277,7 +287,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
         updateRemoteTableTime(remote, entryType, uid);
@@ -290,7 +300,7 @@ public final class DatabaseAccessor {
         }
     }
 
-    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
+    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         String uid = entries[0].getUid();
         updateLocalTableTime(local, entryType, uid);
@@ -306,7 +316,7 @@ public final class DatabaseAccessor {
 //        }
     }
 
-    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
+    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         // TODO: Split into reset and remove method or add User parameter for updating table time on null entries argument
 
@@ -326,7 +336,7 @@ public final class DatabaseAccessor {
 //        }
     }
 
-    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, String uid) {
+    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
@@ -335,7 +345,7 @@ public final class DatabaseAccessor {
         local.insert(uri, values);
     }
 
-    static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, String uid) {
+    static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         Map<String, Object> map = new HashMap<>();
         map.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
