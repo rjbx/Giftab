@@ -277,11 +277,10 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    static <T extends Entry> /*Task<Void>*/void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
+    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, T... entries) {
 
         String uid = entries[0].getUid();
         updateRemoteTableTime(remote, entryType, uid);
-
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         for (T entry: entries) {
@@ -327,18 +326,13 @@ public final class DatabaseAccessor {
 //        }
     }
 
-    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType) {
-        Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-        if (cursor != null) {
-            List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-            cursor.close();
-            for (User u : localUsers) {
-                if (u != null && u.getUserActive()) {
-                    DatabaseContract.setTableTime(entryType, u, System.currentTimeMillis());
-                    local.insert(UserEntry.CONTENT_URI_USER, u.toContentValues());
-                }
-            }
-        }
+    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, String uid) {
+
+        ContentValues values = new ContentValues();
+        values.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
+
+        Uri uri = DatabaseContract.getContentUri(entryType).buildUpon().path(uid).build();
+        local.insert(uri, values);
     }
 
     static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, String uid) {
