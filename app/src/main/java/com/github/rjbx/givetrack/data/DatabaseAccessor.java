@@ -290,6 +290,9 @@ public final class DatabaseAccessor {
      */
     static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
+
+        if (entryType.equals(Search.class)) return;
+
         String uid = entries[0].getUid();
 
         String entryPath = entryType.getSimpleName().toLowerCase();
@@ -320,6 +323,8 @@ public final class DatabaseAccessor {
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
+
+        if (entryType.equals(Search.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -368,6 +373,8 @@ public final class DatabaseAccessor {
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
+
+        if (entryType.equals(Search.class)) return;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
