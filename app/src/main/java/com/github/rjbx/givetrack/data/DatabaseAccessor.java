@@ -302,18 +302,36 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
-        String uid = entries[0].getUid();
-        updateLocalTableTime(local, entryType, stamp, uid);
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-        for (Entry entry : entries) {
-            Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
-            local.delete(rowUri, null, null);
+
+        String uid = "";
+        if (entries == null) {
+            uid = getActiveUser(local).getUid();
+            local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
+        } else {
+            uid = entries[0].getUid();
+            for (Entry entry : entries) {
+                Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+                local.delete(rowUri, null, null);
+            }
         }
 
-//        if (entries == null || entries.length == 0) {
-//            local.delete(contentUri, null, null);
-//            return;
-//        }
+        updateLocalTableTime(local, entryType, stamp, uid);
+    }
+
+    static User getActiveUser(ContentResolver local) {
+        Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        if (data == null) return null;
+        if (data.moveToFirst()) {
+            do {
+                User user = User.getDefault();
+                DatabaseAccessor.cursorRowToEntry(data, user);
+                if (user.getUserActive()) {
+                    return user;
+                }
+            } while (data.moveToNext());
+        }
+        return null;
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
