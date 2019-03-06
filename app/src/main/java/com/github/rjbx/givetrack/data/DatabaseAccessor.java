@@ -164,8 +164,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Giving.class, stamp, entries);
         addEntriesToRemote(remote, Giving.class, stamp, entries);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(Giving.class), null);
     }
 
     static void removeGiving(Context context, Giving... giving) {
@@ -176,8 +174,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Giving.class, stamp, giving);
         removeEntriesFromRemote(remote, Giving.class, stamp, giving);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(Giving.class), null);
     }
 
     static void fetchRecord(Context context) {
@@ -208,8 +204,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Record.class, stamp, entries);
         addEntriesToRemote(remote, Record.class, stamp, entries);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(Record.class), null);
     }
 
     static void removeRecord(Context context, @Nullable Record... record) {
@@ -220,8 +214,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Record.class, stamp, record);
         removeEntriesFromRemote(remote, Record.class, stamp,  record);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(Record.class), null);
     }
 
     static void fetchUser(Context context) {
@@ -251,8 +243,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, User.class, stamp, entries);
         addEntriesToRemote(remote, User.class, stamp, entries);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(User.class), null);
     }
 
     static void removeUser(Context context, @Nullable User... user) {
@@ -263,8 +253,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, User.class, stamp, user);
         removeEntriesFromRemote(remote, User.class, stamp, user);
-
-        context.getContentResolver().notifyChange(DatabaseContract.getContentUri(User.class), null);
     }
 
     public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
