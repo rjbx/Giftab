@@ -372,7 +372,7 @@ public final class DatabaseAccessor {
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
 
-        Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().path(uid).build();
+        Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build();
         local.insert(uri, values);
     }
 
