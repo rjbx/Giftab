@@ -211,7 +211,7 @@ public class GivingFragment extends Fragment implements
      */
     @Override public void onPause() {
         super.onPause();
-        if (sPercentagesAdjusted) syncPercentages();
+//        if (sPercentagesAdjusted) syncPercentages();
     }
 
     /**

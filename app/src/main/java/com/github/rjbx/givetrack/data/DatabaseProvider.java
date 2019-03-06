@@ -337,7 +337,7 @@ public class DatabaseProvider extends ContentProvider {
      * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
     private void notifyDataSetChange(Uri uri, int rowsChanged) {
-        Context context = getContext();
-        if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
+//        Context context = getContext();
+//        if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
     }
 }

@@ -185,8 +185,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     /**
-     * Replaces old data that is to be subsequently released from the {@l
-     * ink Loader}.
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
@@ -223,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements
                             mUser = user;
                             if (mUser.getGiveTiming() == 0) {
                                 long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
-                                int days = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+                                long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
                                 if (days != 0) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
@@ -252,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mGivingArray = null;
         mRecordArray = null;
+        mUser = null;
     }
 
     /**
