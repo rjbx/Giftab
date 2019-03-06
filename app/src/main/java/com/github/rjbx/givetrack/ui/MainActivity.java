@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
+    private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private SectionsPagerAdapter mPagerAdapter;
     private Giving[] mGivingArray;
     private Record[] mRecordArray;
@@ -101,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             mGivingArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY), Giving.class);
             mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
+            mUser = savedInstanceState.getParcelable(STATE_ACTIVE_USER);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArray(STATE_GIVING_ARRAY, mGivingArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
+        outState.putParcelable(STATE_ACTIVE_USER, mUser);
         super.onSaveInstanceState(outState);
     }
 
