@@ -277,11 +277,12 @@ public final class DatabaseAccessor {
     static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
-        updateLocalTableTime(local, entryType, stamp, uid);
 
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
         local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
+
+        updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     /**
@@ -290,7 +291,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
-        updateRemoteTableTime(remote, entryType, stamp, uid);
+
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         for (T entry: entries) {
@@ -298,6 +299,8 @@ public final class DatabaseAccessor {
             if (entry instanceof Company) childReference = childReference.child(entry.getId());
             childReference.updateChildren(entry.toParameterMap());
         }
+
+        updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
