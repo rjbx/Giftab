@@ -292,18 +292,18 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, @Nullable T... entries) {
 
+        String uid = entries[0].getUid();
+        updateLocalTableTime(local, entryType, uid);
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-        if (entries == null || entries.length == 0) {
-            local.delete(contentUri, null, null);
-            return;
-        }
-
-        updateLocalTableTime(local, entryType);
-
         for (Entry entry : entries) {
-            contentUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
-            local.delete(contentUri, null, null);
+            Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+            local.delete(rowUri, null, null);
         }
+
+//        if (entries == null || entries.length == 0) {
+//            local.delete(contentUri, null, null);
+//            return;
+//        }
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, @Nullable T... entries) {
