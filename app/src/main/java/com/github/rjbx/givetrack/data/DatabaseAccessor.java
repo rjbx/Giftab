@@ -277,7 +277,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
-        updateLocalTableTime(local, entryType, uid);
+        updateLocalTableTime(local, entryType, stamp, uid);
 
         ContentValues[] values = new ContentValues[entries.length];
         for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
@@ -290,7 +290,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
-        updateRemoteTableTime(remote, entryType, uid);
+        updateRemoteTableTime(remote, entryType, stamp, uid);
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         for (T entry: entries) {
@@ -303,7 +303,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         String uid = entries[0].getUid();
-        updateLocalTableTime(local, entryType, uid);
+        updateLocalTableTime(local, entryType, stamp, uid);
         Uri contentUri = DatabaseContract.getContentUri(entryType);
         for (Entry entry : entries) {
             Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
@@ -321,7 +321,7 @@ public final class DatabaseAccessor {
         // TODO: Split into reset and remove method or add User parameter for updating table time on null entries argument
 
         String uid = entries[0].getUid();
-        updateRemoteTableTime(remote, entryType, uid);
+        updateRemoteTableTime(remote, entryType, stamp, uid);
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         for (T entry: entries) {
