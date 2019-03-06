@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mNavigation.setNavigationItemSelectedListener(this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
 
     public Context getContext() {
@@ -228,8 +230,6 @@ public class MainActivity extends AppCompatActivity implements
                                     DatabaseService.startActionUpdateUser(this, mUser);
                                 }
                             }
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
                         }
                     } while (data.moveToNext());
