@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements
     private Giving[] mGivingArray;
     private Record[] mRecordArray;
     private User mUser;
+    private boolean mLock = true;
     private long mAnchorTime;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
@@ -116,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
+
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser == null) return;
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
@@ -222,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
+                            mLock = false;
                             mUser = user;
                             if (mUser.getGiveTiming() == 0) {
                                 long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
@@ -232,14 +235,13 @@ public class MainActivity extends AppCompatActivity implements
                                 }
                                 if (mGivingArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
                                 if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
-                            }
-                            break;
+                            } break;
                         }
                     } while (data.moveToNext());
                 }
                 break;
         }
-        if (mGivingArray != null && mRecordArray != null && mUser != null) {
+        if (!mLock && mGivingArray != null && mRecordArray != null && mUser != null) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
@@ -408,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
+            mLock = true;
             if (mGivingArray == null || mGivingArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
                 Bundle argsGiving = new Bundle();
