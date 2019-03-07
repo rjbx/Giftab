@@ -46,9 +46,6 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -165,7 +162,7 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
-                mValuesArray = new Record[data.getCount()];
+                mValuesArray = new Search[][data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
