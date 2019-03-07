@@ -169,9 +169,9 @@ public class SearchActivity extends AppCompatActivity implements
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
-                        Record record = new Record();
-                        DatabaseAccessor.cursorRowToEntry(data, record);
-                        mValuesArray[i++] = record;
+                        Search search = Search.getDefault();
+                        DatabaseAccessor.cursorRowToEntry(data, search);
+                        mValuesArray[i++] = search;
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
