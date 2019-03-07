@@ -377,7 +377,7 @@ public final class DatabaseAccessor {
         if (entryType.equals(Search.class)) return;
 
         ContentValues values = new ContentValues();
-        values.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
+        values.put(DatabaseContract.getTimeTableColumn(entryType), stamp);
 
         Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build();
         local.update(uri, values, null, /*new String[] { DatabaseProvider.ARGS_NO_NOTIFICATION }*/null);
@@ -386,7 +386,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         Map<String, Object> map = new HashMap<>();
-        map.put(DatabaseContract.getTimeTableColumn(entryType), System.currentTimeMillis());
+        map.put(DatabaseContract.getTimeTableColumn(entryType), stamp);
 
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         userReference.child(uid).updateChildren(map);
