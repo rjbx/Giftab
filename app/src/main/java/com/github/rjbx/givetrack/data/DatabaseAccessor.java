@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
@@ -33,6 +34,9 @@ import com.github.rjbx.givetrack.data.entry.Giving;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -333,8 +337,7 @@ public final class DatabaseAccessor {
         DatabaseReference entryReference = remote.getReference(entryPath);
         String uid;
         if (entries == null || entries.length == 0) {
-            User user = User.getDefault();
-            getActiveUserFromRemote(remote, user);
+            User user = getActiveUserFromRemote(remote);
             uid = user.getUid();
             DatabaseReference childReference = entryReference.child(uid);
             childReference.removeValue();
@@ -361,22 +364,29 @@ public final class DatabaseAccessor {
         } return u;
     }
 
-    static void getActiveUserFromRemote(FirebaseDatabase remote, User user) {
+    static User getActiveUserFromRemote(FirebaseDatabase remote) {
+
+        TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
+
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName());
-        // TODO Synchronize asynchronous callback with validation logic
-        entryReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                AppExecutors.getInstance().getDiskIO().execute(() -> {
-                    Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                    while (iterator.hasNext()) {
-                        User u = iterator.next().getValue(User.class);
-                        if (u != null && u.getUserActive())
-                            user.fromContentValues(u.toContentValues());
-                    }
-                });
-//            }
+                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                while (iterator.hasNext()) {
+                    User u = iterator.next().getValue(User.class);
+                    if (u != null && u.getUserActive()) taskSource.setResult(u);
+                }
+            }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+        Task<User> task = taskSource.getTask();
+        try { Tasks.await(task); }
+        catch (ExecutionException|InterruptedException e) { Tasks.forException(e); }
+
+        User user = User.getDefault();
+        if (task.isSuccessful()) user = task.getResult();
+        return user;
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
@@ -412,7 +422,7 @@ public final class DatabaseAccessor {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        pathReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 List<T> entryList = new ArrayList<>();
@@ -430,8 +440,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(local);
-        User remoteUser = User.getDefault();
-        getActiveUserFromRemote(remote, remoteUser);
+        User remoteUser = getActiveUserFromRemote(remote);
 
         long localTableStamp = DatabaseContract.getTableTime(entryType, localUser);
         long remoteTableStamp = DatabaseContract.getTableTime(entryType, remoteUser);
