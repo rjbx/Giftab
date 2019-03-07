@@ -162,7 +162,7 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
-                mValuesArray = new Search[][data.getCount()];
+                mValuesArray = new Search[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
