@@ -380,7 +380,7 @@ public final class DatabaseAccessor {
         values.put(DatabaseContract.getTimeTableColumn(entryType), stamp);
 
         Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build();
-        local.update(uri, values, null, /*new String[] { DatabaseProvider.ARGS_NO_NOTIFICATION }*/null);
+        local.update(uri, values, null,null);
     }
 
     static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {

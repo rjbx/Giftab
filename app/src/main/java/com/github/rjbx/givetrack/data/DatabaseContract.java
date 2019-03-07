@@ -60,50 +60,6 @@ public final class DatabaseContract {
         public static final String COLUMN_TIME = "time";
     }
 
-    public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVING: return CompanyEntry.CONTENT_URI_GIVING;
-            case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
-            case CompanyEntry.TABLE_NAME_SEARCH: return CompanyEntry.CONTENT_URI_SEARCH;
-            case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_GIVE_STAMP;
-            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
-            case CompanyEntry.TABLE_NAME_SEARCH: return "";
-            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> long getTableTime(Class<T> entryType, User user) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_SEARCH: return 0;
-            case CompanyEntry.TABLE_NAME_GIVING: return user.getGiveStamp();
-            case CompanyEntry.TABLE_NAME_RECORD: return user.getRecordStamp();
-            case UserEntry.TABLE_NAME_USER: return user.getUserStamp();
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> void setTableTime(Class<T> entryType, User user, long time) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_SEARCH: break;
-            case CompanyEntry.TABLE_NAME_GIVING: user.setGiveStamp(time); break;
-            case CompanyEntry.TABLE_NAME_RECORD: user.setRecordStamp(time); break;
-            case UserEntry.TABLE_NAME_USER: user.setUserStamp(time); break;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
     public static final class UserEntry implements BaseColumns {
         static final String TABLE_NAME_USER = "user";
 
@@ -141,5 +97,27 @@ public final class DatabaseContract {
         public static final String COLUMN_GIVE_STAMP = "giveStamp";
         public static final String COLUMN_RECORD_STAMP = "recordStamp";
         public static final String COLUMN_USER_STAMP = "userStamp";
+    }
+
+    public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
+        String name = entryType.getSimpleName().toLowerCase();
+        switch (name) {
+            case CompanyEntry.TABLE_NAME_GIVING: return CompanyEntry.CONTENT_URI_GIVING;
+            case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
+            case CompanyEntry.TABLE_NAME_SEARCH: return CompanyEntry.CONTENT_URI_SEARCH;
+            case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
+    }
+
+    public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
+        String name = entryType.getSimpleName().toLowerCase();
+        switch (name) {
+            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_GIVE_STAMP;
+            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
+            case CompanyEntry.TABLE_NAME_SEARCH: return "";
+            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
+            default: throw new IllegalArgumentException("Argument must implement Entry interface");
+        }
     }
 }

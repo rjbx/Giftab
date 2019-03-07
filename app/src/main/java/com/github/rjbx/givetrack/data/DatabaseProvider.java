@@ -31,7 +31,6 @@ public class DatabaseProvider extends ContentProvider {
     private static final int CODE_RECORD_WITH_ID = 202;
     private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
-    public static final String ARGS_NO_NOTIFICATION = "com.github.rjbx.givetrack.data.arg.NO_NOTIFICATION";
 
     /**
      * Builds a {@link UriMatcher} for identifying distinct {@link Uri} and defining corresponding behaviors.
@@ -189,9 +188,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        boolean notify = true;
-        for (String arg : selectionArgs) if (arg.equals(ARGS_NO_NOTIFICATION)) notify = false;
-        if (notify) notifyDataSetChange(uri, rowsUpdated);
+        notifyDataSetChange(uri, rowsUpdated);
         return rowsUpdated;
     }
 
