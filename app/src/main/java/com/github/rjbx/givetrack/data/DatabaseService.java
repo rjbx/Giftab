@@ -479,15 +479,14 @@ public class DatabaseService extends IntentService {
             giving.setPercent(percent);
             giving.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
+            String phoneNumber = urlToPhoneNumber(giving);
+            giving.setPhone(phoneNumber);
+
+            String emailAddress = urlToEmailAddress(giving);
+            giving.setEmail(emailAddress);
+
             String socialHandle = urlToSocialHandle(giving);
             giving.setSocial(socialHandle);
-
-//            String phoneNumber = urlToPhoneNumber(giving);
-//            giving.setPhone(phoneNumber);
-//
-//            String emailAddress = urlToEmailAddress(giving);
-//            giving.setEmail(emailAddress);
-
 
             DatabaseAccessor.addGiving(this, giving);
         });
@@ -634,6 +633,7 @@ public class DatabaseService extends IntentService {
 
     }
 
+//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
     private String urlToSocialHandle(Giving giving) {
         String socialHandle = DEFAULT_VALUE_STR;
         String url = giving.getHomepageUrl();
@@ -647,8 +647,7 @@ public class DatabaseService extends IntentService {
 //                        giving.getEin().substring(2));
 //                socialHandles = urlToElementContent(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
 //            }
-//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
-//            if (socialHandles.isEmpty())) {
+//           if (socialHandles.isEmpty())) {
 //                String searchEngineUrl  = String.format(
 //                        "https://webcache.googleusercontent.com/search?q=cache:%s",
 //                        url);
@@ -668,7 +667,6 @@ public class DatabaseService extends IntentService {
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
             List<String> emailAddresses = urlToElementContent(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
-//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
 //            if (emailAddresses.isEmpty()) {
 //                String thirdPartyUrl = "";
 //                if (!url.equals(thirdPartyUrl)) emailAddress = urlToElementContent();

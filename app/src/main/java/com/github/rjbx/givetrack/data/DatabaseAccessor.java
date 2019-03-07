@@ -45,7 +45,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-// TODO:  Fully implement validation
+// TODO:  1 Fully implement validation
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
@@ -411,7 +411,7 @@ public final class DatabaseAccessor {
         });
     }
 
-// TODO: Consider adding entry parameter to all fetch methods to prevent additional cursor query
+// TODO: 1a Consider adding entry parameter to all fetch methods to prevent additional cursor query
     static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 //
 //        User user = null;
@@ -503,7 +503,7 @@ public final class DatabaseAccessor {
         String response = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-//            TODO: Resolve FileNotFoundException or replace network API
+//            TODO: Replace network API with Retrofit
 //
 //            if (password != null) {
 //                urlConnection.setRequestProperty("Content-Type", "application/json");
