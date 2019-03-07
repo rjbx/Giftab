@@ -394,30 +394,27 @@ public final class DatabaseAccessor {
         userReference.child(uid).updateChildren(map);
     }
 
-    // TODO Genericize
-    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
+    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
-        List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
+        List<T> entries = getEntryListFromCursor(cursor, entryType);
         cursor.close();
-//        addEntriesToRemote(remote, Giving.class, localUser.getGiveStamp(), entries.toArray(new Giving[entries.size()]));
+        addEntriesToRemote(remote, entryType, stamp, entries.toArray(new T[entries.size()]));
     }
 
-    // TODO Genericize
-    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
+    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
 
-        Uri uri = DatabaseContract.getContentUri(entryType);
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                T[] entries = new T[(int) dataSnapshot.getChildrenCount()];
+                int i = 0;
                 while (iterator.hasNext()) {
-                    Giving giving = iterator.next().getValue(Giving.class);
-                    local.insert(uri, giving.toContentValues());
-                }
+                    entries[i++] = iterator.next().getValue(entryType);
+                } addEntriesToLocal(local, entryType, stamp, entries);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
