@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 
 import com.github.rjbx.givetrack.R;
@@ -138,11 +139,11 @@ public final class DatabaseAccessor {
         removeEntriesFromLocal(local, Search.class, stamp, search);
      }
 
-    static void fetchGiving(Context context) {
-        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
-        context.getContentResolver().delete(contentUri, null, null);
-        pullRemoteToLocalEntries(context.getContentResolver(), Giving.class);
-    }
+//    static void fetchGiving(Context context) {
+//        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+//        context.getContentResolver().delete(contentUri, null, null);
+//        pullRemoteToLocalEntries(context.getContentResolver(), Giving.class);
+//    }
 
     static List<Giving> getGiving(Context context) {
         ContentResolver local = context.getContentResolver();
@@ -177,11 +178,11 @@ public final class DatabaseAccessor {
         removeEntriesFromRemote(remote, Giving.class, stamp, giving);
     }
 
-    static void fetchRecord(Context context) {
-        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
-        context.getContentResolver().delete(contentUri, null, null);
-        pullRemoteToLocalEntries(context.getContentResolver(), Record.class);
-    }
+//    static void fetchRecord(Context context) {
+//        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
+//        context.getContentResolver().delete(contentUri, null, null);
+//        pullRemoteToLocalEntries(context.getContentResolver(), Record.class);
+//    }
 
     static List<Record> getRecord(Context context) {
         ContentResolver local = context.getContentResolver();
@@ -217,11 +218,11 @@ public final class DatabaseAccessor {
         removeEntriesFromRemote(remote, Record.class, stamp,  record);
     }
 
-    static void fetchUser(Context context) {
-        Uri contentUri = UserEntry.CONTENT_URI_USER;
-        context.getContentResolver().delete(contentUri, null, null);
-        pullRemoteToLocalEntries(context.getContentResolver(), User.class);
-    }
+//    static void fetchUser(Context context) {
+//        Uri contentUri = UserEntry.CONTENT_URI_USER;
+//        context.getContentResolver().delete(contentUri, null, null);
+//        pullRemoteToLocalEntries(context.getContentResolver(), User.class);
+//    }
 
     static List<User> getUser(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
@@ -398,9 +399,9 @@ public final class DatabaseAccessor {
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
-        List<T> entries = getEntryListFromCursor(cursor, entryType);
+        List<T> entryList = getEntryListFromCursor(cursor, entryType);
         cursor.close();
-        addEntriesToRemote(remote, entryType, stamp, entries.toArray(new T[entries.size()]));
+        addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
@@ -410,11 +411,12 @@ public final class DatabaseAccessor {
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                T[] entries = new T[(int) dataSnapshot.getChildrenCount()];
+                List<T> entryList = new ArrayList<>();
                 int i = 0;
                 while (iterator.hasNext()) {
-                    entries[i++] = iterator.next().getValue(entryType);
-                } addEntriesToLocal(local, entryType, stamp, entries);
+                    entryList.add(iterator.next().getValue(entryType));
+                }
+                addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
@@ -426,12 +428,13 @@ public final class DatabaseAccessor {
         User localUser = getActiveUserFromLocal(local);
         User remoteUser = getActiveUserFromRemote(remote);
 
-        int giveLocalToRemote = Long.compare(DatabaseContract.getTableTime(entryType, localUser), DatabaseContract.getTableTime(entryType, remoteUser));
-        if (giveLocalToRemote > 0) {
-            pullLocalToRemoteEntries(local, remote, entryType);
-        } else (giveLocalToRemote < 0) {
-            pullRemoteToLocalEntries(local, remote, entryType);
-        } else return;
+        long localTableStamp = DatabaseContract.getTableTime(entryType, localUser);
+        long remoteTableStamp = DatabaseContract.getTableTime(entryType, remoteUser);
+        int giveLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
+
+        if (giveLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        else if (giveLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
+        else return;
     }
 
     /**

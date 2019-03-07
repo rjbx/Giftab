@@ -358,12 +358,12 @@ public class DatabaseService extends IntentService {
 //                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
                 handleActionFetchSearch();
                 break;
-            case ACTION_FETCH_GIVING:
-                handleActionFetchGiving();
-                break;
-            case ACTION_FETCH_RECORD:
-                handleActionFetchRecord();
-                break;
+//            case ACTION_FETCH_GIVING:
+//                handleActionFetchGiving();
+//                break;
+//            case ACTION_FETCH_RECORD:
+//                handleActionFetchRecord();
+//                break;
             case ACTION_GIVE_SEARCH:
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
@@ -435,23 +435,23 @@ public class DatabaseService extends IntentService {
         NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this));
     }
 
-    /**
-     * Handles action FetchGiving in the provided background thread.
-     */
-    private void handleActionFetchGiving() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
-    }
-
-    /**
-     * Handles action FetchRecord in the provided background thread.
-     */
-    private void handleActionFetchRecord() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
-    }
-
-    private void handleActionFetchUser() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
-    }
+//    /**
+//     * Handles action FetchGiving in the provided background thread.
+//     */
+//    private void handleActionFetchGiving() {
+//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
+//    }
+//
+//    /**
+//     * Handles action FetchRecord in the provided background thread.
+//     */
+//    private void handleActionFetchRecord() {
+//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
+//    }
+//
+//    private void handleActionFetchUser() {
+//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
+//    }
 
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.
