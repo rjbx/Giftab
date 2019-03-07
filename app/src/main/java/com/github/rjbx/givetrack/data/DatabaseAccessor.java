@@ -11,6 +11,7 @@ import android.net.Uri;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -344,15 +345,16 @@ public final class DatabaseAccessor {
     }
 
     static User getActiveUserFromLocal(ContentResolver local) {
+        User u = User.getDefault();
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-        if (data == null) return null;
+        if (data == null) return u;
         if (data.moveToFirst()) {
             do {
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
                 if (user.getUserActive()) return user;
             } while (data.moveToNext());
-        } return null;
+        } return u;
     }
 
     static User getActiveUserFromRemote(FirebaseDatabase remote) {
@@ -392,6 +394,9 @@ public final class DatabaseAccessor {
         userReference.child(uid).updateChildren(map);
     }
 
+    // TODO Implement
+    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, Class<T> entryType) {}
+
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
 
         Uri uri = DatabaseContract.getContentUri(entryType);
@@ -412,46 +417,48 @@ public final class DatabaseAccessor {
     }
 
 // TODO: 1a Consider adding entry parameter to all fetch methods to prevent additional cursor query
-    static <T extends Entry> void validateEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
-//
-//        User user = null;
-//        long localUpdateTime = 0;
-//        long remoteUpdateTime = 0;
-//
-//        String path = entryType.getSimpleName().toLowerCase();
-//        DatabaseReference pathReference = remote.getReference(path);
-//        pathReference.child("uid").addValueEventListener(new ValueEventListener() {
-//            @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//
-//                Cursor cursor = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
-//                if (cursor != null) {
-//                    List<User> localUsers = getEntryListFromCursor(cursor, User.class);
-//                    cursor.close();
-//                    for (User u : localUsers) if (user.getActive()) user = u;
-//                }
-//
-//                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-//                while (iterator.hasNext()) {
-//                    if (user != null && user.getActive()) remoteUpdateTime = iterator.next().child("updateTime");
-//
-//                    User user = iterator.next().getValue(User.class);
-//                    if (localUpdateTime < remoteUpdateTime) {
-//                        pullRemoteToLocalEntries(local, entryType);
-//                    } else if (localUpdateTime > remoteUpdateTime) {
-//                        remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-//                        cursor = local.query(DatabaseContract.getContentUri(entryType), null, null, null, null);
-//                        if (cursor != null) {
-//                            List<T> entryList = getEntryListFromCursor(cursor, entryType);
-//                            cursor.close();
-//                            T[] entries = (T[]) Array.newInstance(entryType, entryList.size());
-//                            for (int i = 0; i < entries.length; i++) entries[i] = entryList.get(i);
-//                            addEntriesToRemote(FirebaseDatabase.getInstance(), entryType, entries);
-//                        } else remote.getReference(entryType.getSimpleName().toLowerCase()).removeValue();
-//                    } else return;
-//                }
-//            }
-//            @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-//        });
+    static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
+
+        User localUser = getActiveUserFromLocal(local);
+        User remoteUser = getActiveUserFromRemote(remote);
+
+        // TODO Genericize
+        
+        int giveLocalToRemote = Long.compare(localUser.getGiveStamp(), remoteUser.getGiveStamp());
+        if (giveLocalToRemote > 0) {
+            Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+            Cursor cursor = local.query(contentUri, null, null, null, null);
+            if (cursor == null) return;
+            List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
+            cursor.close();
+            addEntriesToRemote(remote, Giving.class, localUser.getGiveStamp(), entries.toArray(new Giving[entries.size()]));
+        } else (giveLocalToRemote < 0) {
+            pullRemoteToLocalEntries(local, Giving.class);
+        } else return;
+
+        int recordLocalToRemote = Long.compare(localUser.getRecordStamp(), remoteUser.getRecordStamp());
+        if (recordLocalToRemote > 0) {
+            Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
+            Cursor cursor = local.query(contentUri, null, null, null, null);
+            if (cursor == null) return;
+            List<Record> entries = getEntryListFromCursor(cursor, Record.class);
+            cursor.close();
+            addEntriesToRemote(remote, Record.class, localUser.getRecordStamp(), entries.toArray(new Record[entries.size()]));
+        } else (recordLocalToRemote < 0) {
+            pullRemoteToLocalEntries(local, Record.class);
+        } else return;
+
+        int userLocalToRemote = Long.compare(localUser.getUserStamp(), remoteUser.getUserStamp());
+        if (userLocalToRemote > 0) {
+            Uri contentUri = UserEntry.CONTENT_URI_USER;
+            Cursor cursor = local.query(contentUri, null, null, null, null);
+            if (cursor == null) return;
+            List<User> entries = getEntryListFromCursor(cursor, User.class);
+            cursor.close();
+            addEntriesToRemote(remote, User.class, localUser.getUserStamp(), entries.toArray(new User[entries.size()]));
+        } else (userLocalToRemote < 0) {
+            pullRemoteToLocalEntries(local, User.class);
+        } else return;
     }
 
     /**
