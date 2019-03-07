@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -332,7 +333,9 @@ public final class DatabaseAccessor {
         DatabaseReference entryReference = remote.getReference(entryPath);
         String uid;
         if (entries == null || entries.length == 0) {
-            uid = getActiveUserFromRemote(remote).getUid();
+            User user = User.getDefault();
+            getActiveUserFromRemote(remote, user);
+            uid = user.getUid();
             DatabaseReference childReference = entryReference.child(uid);
             childReference.removeValue();
         } else {
@@ -358,21 +361,22 @@ public final class DatabaseAccessor {
         } return u;
     }
 
-    static User getActiveUserFromRemote(FirebaseDatabase remote) {
-        User u = User.getDefault();
+    static void getActiveUserFromRemote(FirebaseDatabase remote, User user) {
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName());
-        entryReference.addValueEventListener(new ValueEventListener() {
-            User activeUser = u;
+        // TODO Synchronize asynchronous callback with validation logic
+        entryReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                while (iterator.hasNext()) {
-                    User user = iterator.next().getValue(User.class);
-                    if (user != null && user.getUserActive()) activeUser = user;
-                }
-            }
+//                AppExecutors.getInstance().getDiskIO().execute(() -> {
+                    Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                    while (iterator.hasNext()) {
+                        User u = iterator.next().getValue(User.class);
+                        if (u != null && u.getUserActive())
+                            user.fromContentValues(u.toContentValues());
+                    }
+                });
+//            }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-        return u;
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
@@ -408,7 +412,7 @@ public final class DatabaseAccessor {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        pathReference.addValueEventListener(new ValueEventListener() {
+        pathReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 List<T> entryList = new ArrayList<>();
@@ -426,7 +430,8 @@ public final class DatabaseAccessor {
     static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(local);
-        User remoteUser = getActiveUserFromRemote(remote);
+        User remoteUser = User.getDefault();
+        getActiveUserFromRemote(remote, remoteUser);
 
         long localTableStamp = DatabaseContract.getTableTime(entryType, localUser);
         long remoteTableStamp = DatabaseContract.getTableTime(entryType, remoteUser);
