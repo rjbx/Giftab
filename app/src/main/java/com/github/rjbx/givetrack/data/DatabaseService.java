@@ -86,45 +86,45 @@ public class DatabaseService extends IntentService {
 //        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
-
-    /**
-     * Starts this service to perform action FetchGiving with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionFetchGiving(Context context) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_GIVING);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action FetchRecord with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionFetchRecord(Context context) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_RECORD);
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action FetchUser with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionFetchUser(Context context) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_USER);
-        context.startService(intent);
-    }
+//
+//    /**
+//     * Starts this service to perform action FetchGiving with the given parameters.
+//     * If the service is already performing a task this action will be queued.
+//     *
+//     * @see IntentService
+//     */
+//    public static void startActionFetchGiving(Context context) {
+//        if (context == null) return;
+//        Intent intent = new Intent(context, DatabaseService.class);
+//        intent.setAction(ACTION_FETCH_GIVING);
+//        context.startService(intent);
+//    }
+//
+//    /**
+//     * Starts this service to perform action FetchRecord with the given parameters.
+//     * If the service is already performing a task this action will be queued.
+//     *
+//     * @see IntentService
+//     */
+//    public static void startActionFetchRecord(Context context) {
+//        if (context == null) return;
+//        Intent intent = new Intent(context, DatabaseService.class);
+//        intent.setAction(ACTION_FETCH_RECORD);
+//        context.startService(intent);
+//    }
+//
+//    /**
+//     * Starts this service to perform action FetchUser with the given parameters.
+//     * If the service is already performing a task this action will be queued.
+//     *
+//     * @see IntentService
+//     */
+//    public static void startActionFetchUser(Context context) {
+//        if (context == null) return;
+//        Intent intent = new Intent(context, DatabaseService.class);
+//        intent.setAction(ACTION_FETCH_USER);
+//        context.startService(intent);
+//    }
 
     /**
      * Starts this service to perform action GiveSearch with the given parameters.

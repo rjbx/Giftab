@@ -396,7 +396,7 @@ public final class DatabaseAccessor {
     }
 
     static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
-        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+        Uri contentUri = DatabaseContract.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
         List<T> entryList = getEntryListFromCursor(cursor, entryType);
