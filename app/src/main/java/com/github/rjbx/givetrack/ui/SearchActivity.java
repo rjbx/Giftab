@@ -183,6 +183,7 @@ public class SearchActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
+                            mLock = false;
                             mUser = user;
                             if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
                             break;
