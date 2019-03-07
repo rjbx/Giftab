@@ -394,13 +394,20 @@ public final class DatabaseAccessor {
         userReference.child(uid).updateChildren(map);
     }
 
-    // TODO Implement
-    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, Class<T> entryType) {}
+    // TODO Genericize
+    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
+        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+        Cursor cursor = local.query(contentUri, null, null, null, null);
+        if (cursor == null) return;
+        List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
+        cursor.close();
+//        addEntriesToRemote(remote, Giving.class, localUser.getGiveStamp(), entries.toArray(new Giving[entries.size()]));
+    }
 
-    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, Class<T> entryType) {
+    // TODO Genericize
+    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType) {
 
         Uri uri = DatabaseContract.getContentUri(entryType);
-        FirebaseDatabase remote = FirebaseDatabase.getInstance();
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
 
@@ -422,42 +429,11 @@ public final class DatabaseAccessor {
         User localUser = getActiveUserFromLocal(local);
         User remoteUser = getActiveUserFromRemote(remote);
 
-        // TODO Genericize
-        
-        int giveLocalToRemote = Long.compare(localUser.getGiveStamp(), remoteUser.getGiveStamp());
+        int giveLocalToRemote = Long.compare(DatabaseContract.getTableTime(entryType, localUser), DatabaseContract.getTableTime(entryType, remoteUser));
         if (giveLocalToRemote > 0) {
-            Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
-            Cursor cursor = local.query(contentUri, null, null, null, null);
-            if (cursor == null) return;
-            List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
-            cursor.close();
-            addEntriesToRemote(remote, Giving.class, localUser.getGiveStamp(), entries.toArray(new Giving[entries.size()]));
+            pullLocalToRemoteEntries(local, remote, entryType);
         } else (giveLocalToRemote < 0) {
-            pullRemoteToLocalEntries(local, Giving.class);
-        } else return;
-
-        int recordLocalToRemote = Long.compare(localUser.getRecordStamp(), remoteUser.getRecordStamp());
-        if (recordLocalToRemote > 0) {
-            Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
-            Cursor cursor = local.query(contentUri, null, null, null, null);
-            if (cursor == null) return;
-            List<Record> entries = getEntryListFromCursor(cursor, Record.class);
-            cursor.close();
-            addEntriesToRemote(remote, Record.class, localUser.getRecordStamp(), entries.toArray(new Record[entries.size()]));
-        } else (recordLocalToRemote < 0) {
-            pullRemoteToLocalEntries(local, Record.class);
-        } else return;
-
-        int userLocalToRemote = Long.compare(localUser.getUserStamp(), remoteUser.getUserStamp());
-        if (userLocalToRemote > 0) {
-            Uri contentUri = UserEntry.CONTENT_URI_USER;
-            Cursor cursor = local.query(contentUri, null, null, null, null);
-            if (cursor == null) return;
-            List<User> entries = getEntryListFromCursor(cursor, User.class);
-            cursor.close();
-            addEntriesToRemote(remote, User.class, localUser.getUserStamp(), entries.toArray(new User[entries.size()]));
-        } else (userLocalToRemote < 0) {
-            pullRemoteToLocalEntries(local, User.class);
+            pullRemoteToLocalEntries(local, remote, entryType);
         } else return;
     }
 
