@@ -79,10 +79,12 @@ public class RecordActivity extends AppCompatActivity implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private long mDeletedTime;
     private static boolean sDualPane;
+    private Record[] mValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mRemoveDialog;
     private String mSnackbar;
     private User mUser;
+    private boolean mLock = true;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
     @BindView(R.id.record_list_container) View mListContainer;
@@ -100,6 +102,7 @@ public class RecordActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
+        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
         Bundle bundle = getIntent().getExtras();
         if (sDualPane) showDualPane(bundle);
@@ -131,7 +134,6 @@ public class RecordActivity extends AppCompatActivity implements
      * Generates an options Menu.
      */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.record, menu);
         return true;
     }
@@ -168,16 +170,15 @@ public class RecordActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_RECORD:
-                List<Record> recordList = new ArrayList<>();
+                mValuesArray = new Record[data.getCount()];
                 if (data.moveToFirst()) {
+                    int i = 0;
                     do {
                         Record record = new Record();
                         DatabaseAccessor.cursorRowToEntry(data, record);
-                        if (record.getUid().equals(mUser.getUid()))
-                            recordList.add(record);
+                        mValuesArray[i++] = record;
                     } while (data.moveToNext());
-                    Record[] records = recordList.toArray(new Record[recordList.size()]);
-                    mAdapter.swapValues(records);
+                    if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
@@ -190,8 +191,9 @@ public class RecordActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
+                            mLock = false;
                             mUser = user;
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
                         }
                     } while (data.moveToNext());
@@ -307,6 +309,11 @@ public class RecordActivity extends AppCompatActivity implements
 
         private Record[] mValuesArray;
         private int mLastPosition;
+
+        public ListAdapter() {
+            super();
+            mLock = true;
+        }
 
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation

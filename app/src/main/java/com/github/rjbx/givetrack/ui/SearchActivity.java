@@ -40,6 +40,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -66,10 +67,12 @@ public class SearchActivity extends AppCompatActivity implements
     private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
+    private Search[] mValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mSearchDialog;
     private String mSnackbar;
     private User mUser;
+    private boolean mLock = true;
     @BindView(R.id.search_fab) FloatingActionButton mFab;
     @BindView(R.id.search_toolbar) Toolbar mToolbar;
     @BindView(R.id.search_list) RecyclerView mRecyclerView;
@@ -86,6 +89,7 @@ public class SearchActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
@@ -124,7 +128,6 @@ public class SearchActivity extends AppCompatActivity implements
      * Generates an options Menu.
      */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-
         getMenuInflater().inflate(R.menu.search, menu);
         return true;
     }
@@ -162,16 +165,15 @@ public class SearchActivity extends AppCompatActivity implements
         switch (id) {
             case DatabaseContract.LOADER_ID_SEARCH:
                 mSearchProgress.setVisibility(View.GONE);
-                List<Search> searchList = new ArrayList<>();
+                mValuesArray = new Record[data.getCount()];
                 if (data.moveToFirst()) {
+                    int i = 0;
                     do {
-                        Search search = new Search();
-                        DatabaseAccessor.cursorRowToEntry(data, search);
-                        if (search.getUid().equals(mUser.getUid()))
-                            searchList.add(search);
+                        Record record = new Record();
+                        DatabaseAccessor.cursorRowToEntry(data, record);
+                        mValuesArray[i++] = record;
                     } while (data.moveToNext());
-                    Search[] searches = searchList.toArray(new Search[searchList.size()]);
-                    mAdapter.swapValues(searches);
+                    if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
@@ -185,7 +187,7 @@ public class SearchActivity extends AppCompatActivity implements
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
                             mUser = user;
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
                             break;
                         }
                     } while (data.moveToNext());
@@ -317,8 +319,12 @@ public class SearchActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private Search[] mValuesArray;
-
         private View mLastClicked;
+
+        public ListAdapter() {
+            super();
+            mLock = true;
+        }
 
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation
