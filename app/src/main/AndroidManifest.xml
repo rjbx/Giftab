@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,22 +28,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SearchActivity"
-            android:label="@string/title_search_results"
-            android:parentActivityName=".ui.MainActivity"
+            android:name=".ui.IndexActivity"
+            android:label="@string/title_spawn_results"
+            android:parentActivityName=".ui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.rjbx.givetrack.ui.MainActivity" />
+                android:value="com.github.rjbx.givetrack.ui.HomeActivity" />
         </activity>
         <activity
-            android:name=".ui.RecordActivity"
+            android:name=".ui.JournalActivity"
             android:label="History"
-            android:parentActivityName=".ui.MainActivity"
+            android:parentActivityName=".ui.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.rjbx.givetrack.ui.MainActivity" />
+                android:value="com.github.rjbx.givetrack.ui.HomeActivity" />
         </activity>
         <activity
             android:name=".ui.ConfigActivity"

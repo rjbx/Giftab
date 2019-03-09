@@ -86,7 +86,7 @@ public class GlanceFragment extends Fragment implements
     private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
-    private MainActivity mParentActivity;
+    private HomeActivity mParentActivity;
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
     private AlertDialog mChartDialog;
@@ -136,8 +136,8 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null)
-            sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(MainActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
-            sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
+            sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
+            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
         Date date = new Date(sUser.getGlanceAnchor());
         DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
         String formattedDate = DATE_FORMATTER.format(date);
@@ -154,8 +154,8 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
-        mParentActivity = (MainActivity) getActivity();
+        if (getActivity() == null || !(getActivity() instanceof HomeActivity)) return;
+        mParentActivity = (HomeActivity) getActivity();
     }
 
     /**
@@ -686,7 +686,7 @@ public class GlanceFragment extends Fragment implements
     private void shareDialogText(String message) {
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
-                .setText(String.format("My give trends: %s\n\n#%s App",
+                .setText(String.format("My giving trends: %s\n\n#%s App",
                         message,
                         getString(R.string.app_name)))
                 .getIntent();

@@ -8,17 +8,17 @@
         android:title="@string/pref_header_user" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$SearchPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$IndexPreferenceFragment"
         android:icon="@drawable/menu_filter"
-        android:title="@string/pref_header_search" />
+        android:title="@string/pref_header_spawn" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GivePreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$HomePreferenceFragment"
         android:icon="@drawable/arrow_expand_horizontal_dark"
         android:title="@string/pref_header_give" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$RecordPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$JournalPreferenceFragment"
         android:icon="@drawable/filter_outline"
         android:title="@string/pref_header_record" />
 

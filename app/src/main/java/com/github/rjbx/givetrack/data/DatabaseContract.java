@@ -12,29 +12,29 @@ import com.github.rjbx.givetrack.data.entry.User;
 public final class DatabaseContract {
 
     static final String AUTHORITY = "com.github.rjbx.givetrack";
-    static final String PATH_SEARCH_TABLE = "search.table";
-    static final String PATH_GIVE_TABLE = "give.table";
+    static final String PATH_SPAWN_TABLE = "spawn.table";
+    static final String PATH_TARGET_TABLE = "target.table";
     static final String PATH_RECORD_TABLE = "record.table";
     static final String PATH_USER_TABLE = "user.table";
 
     private static final String SCHEME = "content";
     private static final Uri BASE_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
 
-    public static final int LOADER_ID_SEARCH = 1;
-    public static final int LOADER_ID_GIVE = 2;
+    public static final int LOADER_ID_SPAWN = 1;
+    public static final int LOADER_ID_TARGET = 2;
     public static final int LOADER_ID_RECORD = 3;
     public static final int LOADER_ID_USER = 4;
 
     public static final class CompanyEntry implements BaseColumns {
 
-        static final String TABLE_NAME_SEARCH = "search";
-        static final String TABLE_NAME_GIVE = "give";
+        static final String TABLE_NAME_SPAWN = "spawn";
+        static final String TABLE_NAME_TARGET = "target";
         static final String TABLE_NAME_RECORD = "record";
         
-        public static final Uri CONTENT_URI_SEARCH =
-                BASE_URI.buildUpon().appendPath(PATH_SEARCH_TABLE).build();
-        public static final Uri CONTENT_URI_GIVE =
-                BASE_URI.buildUpon().appendPath(PATH_GIVE_TABLE).build();
+        public static final Uri CONTENT_URI_SPAWN =
+                BASE_URI.buildUpon().appendPath(PATH_SPAWN_TABLE).build();
+        public static final Uri CONTENT_URI_TARGET =
+                BASE_URI.buildUpon().appendPath(PATH_TARGET_TABLE).build();
         public static final Uri CONTENT_URI_RECORD =
                 BASE_URI.buildUpon().appendPath(PATH_RECORD_TABLE).build();
 
@@ -78,23 +78,23 @@ public final class DatabaseContract {
         public static final String COLUMN_GLANCE_ANCHOR = "glanceAnchor";
         public static final String COLUMN_GLANCE_SINCE = "glanceSince";
         public static final String COLUMN_GLANCE_THEME = "glanceTheme";
-        public static final String COLUMN_SEARCH_DIALOG = "searchDialog";
-        public static final String COLUMN_SEARCH_FOCUS = "searchFocus";
-        public static final String COLUMN_SEARCH_FILTER = "searchFilter";
-        public static final String COLUMN_SEARCH_COMPANY = "searchCompany";
-        public static final String COLUMN_SEARCH_TERM = "searchTerm";
-        public static final String COLUMN_SEARCH_CITY = "searchCity";
-        public static final String COLUMN_SEARCH_STATE = "searchState";
-        public static final String COLUMN_SEARCH_ZIP = "searchZip";
-        public static final String COLUMN_SEARCH_MINRATING = "searchMinrating";
-        public static final String COLUMN_SEARCH_PAGES = "searchPages";
-        public static final String COLUMN_SEARCH_ROWS = "searchRows";
+        public static final String COLUMN_SPAWN_DIALOG = "spawnDialog";
+        public static final String COLUMN_SPAWN_FOCUS = "spawnFocus";
+        public static final String COLUMN_SPAWN_FILTER = "spawnFilter";
+        public static final String COLUMN_SPAWN_COMPANY = "spawnCompany";
+        public static final String COLUMN_SPAWN_TERM = "spawnTerm";
+        public static final String COLUMN_SPAWN_CITY = "spawnCity";
+        public static final String COLUMN_SPAWN_STATE = "spawnState";
+        public static final String COLUMN_SPAWN_ZIP = "spawnZip";
+        public static final String COLUMN_SPAWN_MINRATING = "spawnMinrating";
+        public static final String COLUMN_SPAWN_PAGES = "spawnPages";
+        public static final String COLUMN_SPAWN_ROWS = "spawnRows";
         public static final String COLUMN_GIVE_RESET = "giveReset";
-        public static final String COLUMN_SEARCH_SORT = "searchSort";
-        public static final String COLUMN_SEARCH_ORDER = "searchOrder";
+        public static final String COLUMN_SPAWN_SORT = "spawnSort";
+        public static final String COLUMN_SPAWN_ORDER = "spawnOrder";
         public static final String COLUMN_RECORD_SORT = "recordSort";
         public static final String COLUMN_RECORD_ORDER = "recordOrder";
-        public static final String COLUMN_GIVE_STAMP = "giveStamp";
+        public static final String COLUMN_TARGET_STAMP = "giveStamp";
         public static final String COLUMN_RECORD_STAMP = "recordStamp";
         public static final String COLUMN_USER_STAMP = "userStamp";
     }
@@ -102,9 +102,9 @@ public final class DatabaseContract {
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVE: return CompanyEntry.CONTENT_URI_GIVE;
+            case CompanyEntry.TABLE_NAME_TARGET: return CompanyEntry.CONTENT_URI_TARGET;
             case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
-            case CompanyEntry.TABLE_NAME_SEARCH: return CompanyEntry.CONTENT_URI_SEARCH;
+            case CompanyEntry.TABLE_NAME_SPAWN: return CompanyEntry.CONTENT_URI_SPAWN;
             case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
@@ -113,9 +113,9 @@ public final class DatabaseContract {
     public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVE: return UserEntry.COLUMN_GIVE_STAMP;
+            case CompanyEntry.TABLE_NAME_TARGET: return UserEntry.COLUMN_TARGET_STAMP;
             case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
-            case CompanyEntry.TABLE_NAME_SEARCH: return "";
+            case CompanyEntry.TABLE_NAME_SPAWN: return "";
             case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
         }
@@ -124,8 +124,8 @@ public final class DatabaseContract {
     public static <T extends Entry> long getTableTime(Class<T> entryType, User user) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_SEARCH: return 0;
-            case CompanyEntry.TABLE_NAME_GIVE: return user.getGiveStamp();
+            case CompanyEntry.TABLE_NAME_SPAWN: return 0;
+            case CompanyEntry.TABLE_NAME_TARGET: return user.getTargetStamp();
             case CompanyEntry.TABLE_NAME_RECORD: return user.getRecordStamp();
             case UserEntry.TABLE_NAME_USER: return user.getUserStamp();
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
@@ -135,8 +135,8 @@ public final class DatabaseContract {
     public static <T extends Entry> void setTableTime(Class<T> entryType, User user, long time) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_SEARCH: break;
-            case CompanyEntry.TABLE_NAME_GIVE: user.setGiveStamp(time); break;
+            case CompanyEntry.TABLE_NAME_SPAWN: break;
+            case CompanyEntry.TABLE_NAME_TARGET: user.setTargetStamp(time); break;
             case CompanyEntry.TABLE_NAME_RECORD: user.setRecordStamp(time); break;
             case UserEntry.TABLE_NAME_USER: user.setUserStamp(time); break;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");

@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 @IgnoreExtraProperties
-public class Record extends Search implements Company, Parcelable, Cloneable {
+public class Record extends Spawn implements Company, Parcelable, Cloneable {
 
     private String memo;
     private long time;
@@ -42,8 +42,8 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         time = source.readLong();
     }
 
-    public Record(Search search, String memo, long time) {
-        super(search);
+    public Record(Spawn spawn, String memo, long time) {
+        super(spawn);
         this.memo = memo;
         this.time = time;
     }
@@ -130,10 +130,10 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
         time = values.getAsLong(DatabaseContract.CompanyEntry.COLUMN_TIME);
      }
 
-    public Search getSuper() { return super.clone(); }
+    public Spawn getSuper() { return super.clone(); }
 
-    public static Record fromSuper(Search search) {
-        Record record = new Record(search, "", 0);
+    public static Record fromSuper(Spawn spawn) {
+        Record record = new Record(spawn, "", 0);
         return record;
     }
 

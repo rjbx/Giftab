@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,9 +28,9 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
-import com.github.rjbx.givetrack.data.entry.Give;
+import com.github.rjbx.givetrack.data.entry.Spawn;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
-import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -54,7 +53,7 @@ import timber.log.Timber;
 // TODO:  Pull UID from FirebaseUser or add parameters to all accessor entry update and service handler methods
 public final class DatabaseAccessor {
 
-    static void fetchSearch(Context context) {
+    static void fetchSpawn(Context context) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
@@ -68,17 +67,17 @@ public final class DatabaseAccessor {
         for (User u : entries) if (u.getUserActive()) user = u;
         
         Map<String, String> request = new HashMap<>();
-        if (user.getSearchFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getSearchCompany());
+        if (user.getIndexFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getIndexCompany());
         else {
-            request.put(DatabaseAccessor.FetchContract.PARAM_SEARCH, user.getSearchTerm());
-            request.put(DatabaseAccessor.FetchContract.PARAM_CITY, user.getSearchCity());
-            request.put(DatabaseAccessor.FetchContract.PARAM_STATE, user.getSearchState());
-            request.put(DatabaseAccessor.FetchContract.PARAM_ZIP, user.getSearchZip());
-            request.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, user.getSearchMinrating());
-            request.put(DatabaseAccessor.FetchContract.PARAM_FILTER, user.getSearchFilter() ? "1" : "0");
-            request.put(DatabaseAccessor.FetchContract.PARAM_SORT, user.getSearchSort() + ":" + user.getSearchOrder());
-            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, user.getSearchPages());
-            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, user.getSearchRows());
+            request.put(DatabaseAccessor.FetchContract.PARAM_SPAWN, user.getIndexTerm());
+            request.put(DatabaseAccessor.FetchContract.PARAM_CITY, user.getIndexCity());
+            request.put(DatabaseAccessor.FetchContract.PARAM_STATE, user.getIndexState());
+            request.put(DatabaseAccessor.FetchContract.PARAM_ZIP, user.getIndexZip());
+            request.put(DatabaseAccessor.FetchContract.PARAM_MIN_RATING, user.getIndexMinrating());
+            request.put(DatabaseAccessor.FetchContract.PARAM_FILTER, user.getIndexFilter() ? "1" : "0");
+            request.put(DatabaseAccessor.FetchContract.PARAM_SORT, user.getIndexSort() + ":" + user.getIndexOrder());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_NUM, user.getIndexPages());
+            request.put(DatabaseAccessor.FetchContract.PARAM_PAGE_SIZE, user.getIndexRows());
         }
 
         Uri.Builder builder = Uri.parse(FetchContract.BASE_URL).buildUpon();
@@ -105,76 +104,76 @@ public final class DatabaseAccessor {
         // Retrieve data
         String response = requestResponseFromUrl(url, null);
         if (response == null) return;
-        Search[] parsedResponse = parseSearches(response, user.getUid(), single);
+        Spawn[] parsedResponse = parseSpawnes(response, user.getUid(), single);
 
         // Store data
         long stamp = System.currentTimeMillis();
-        removeEntriesFromLocal(local, Search.class, stamp);
-        addEntriesToLocal(local, Search.class, stamp, parsedResponse);
-        addEntriesToRemote(remote, Search.class, stamp, parsedResponse);
+        removeEntriesFromLocal(local, Spawn.class, stamp);
+        addEntriesToLocal(local, Spawn.class, stamp, parsedResponse);
+        addEntriesToRemote(remote, Spawn.class, stamp, parsedResponse);
     }
 
-    static List<Search> getSearch(Context context) {
+    static List<Spawn> getSpawn(Context context) {
         ContentResolver local = context.getContentResolver();
         
-        Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
+        Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
-        List<Search> entries = getEntryListFromCursor(cursor, Search.class);
+        List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
         cursor.close();
         return entries;
     }
 
-    static void addSearch(Context context, Search... entries) {
+    static void addSpawn(Context context, Spawn... entries) {
         ContentResolver local = context.getContentResolver();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Search.class, stamp, entries);
+        addEntriesToLocal(local, Spawn.class, stamp, entries);
     }
 
-    static void removeSearch(Context context, @Nullable Search... search) {
+    static void removeSpawn(Context context, @Nullable Spawn... spawns) {
         ContentResolver local = context.getContentResolver();
 
         long stamp = System.currentTimeMillis();
-        removeEntriesFromLocal(local, Search.class, stamp, search);
+        removeEntriesFromLocal(local, Spawn.class, stamp, spawns);
     }
 
-    static void fetchGive(Context context) {
+    static void fetchTarget(Context context) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
-        validateEntries(local, remote, Give.class);
+        validateEntries(local, remote, Target.class);
     }
 
-    static List<Give> getGive(Context context) {
+    static List<Target> getTarget(Context context) {
         ContentResolver local = context.getContentResolver();
         
-        Uri contentUri = CompanyEntry.CONTENT_URI_GIVE;
+        Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
-        List<Give> entries = getEntryListFromCursor(cursor, Give.class);
+        List<Target> entries = getEntryListFromCursor(cursor, Target.class);
         cursor.close();
         return entries;
     }
 
-    static void addGive(Context context, Give... entries) {
+    static void addTarget(Context context, Target... entries) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Give.class, stamp, entries);
-        addEntriesToRemote(remote, Give.class, stamp, entries);
+        addEntriesToLocal(local, Target.class, stamp, entries);
+        addEntriesToRemote(remote, Target.class, stamp, entries);
     }
 
-    static void removeGive(Context context, Give... give) {
+    static void removeTarget(Context context, Target... target) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        removeEntriesFromLocal(local, Give.class, stamp, give);
-        removeEntriesFromRemote(remote, Give.class, stamp, give);
+        removeEntriesFromLocal(local, Target.class, stamp, target);
+        removeEntriesFromRemote(remote, Target.class, stamp, target);
     }
 
     static void fetchRecord(Context context) {
@@ -288,7 +287,7 @@ public final class DatabaseAccessor {
     static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
 
-        if (entryType.equals(Search.class)) return;
+        if (entryType.equals(Spawn.class)) return;
 
         String uid = entries[0].getUid();
 
@@ -321,7 +320,7 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
 
-        if (entryType.equals(Search.class)) return;
+        if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -381,7 +380,7 @@ public final class DatabaseAccessor {
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
 
-        if (entryType.equals(Search.class)) return;
+        if (entryType.equals(Spawn.class)) return;
 
         ContentValues values = new ContentValues();
         values.put(DatabaseContract.getTimeTableColumn(entryType), stamp);
@@ -522,39 +521,39 @@ public final class DatabaseAccessor {
     }
 
     /**
-     * This method parses JSON String of data API response and returns array of {@link Search}.
+     * This method parses JSON String of data API response and returns array of {@link Spawn}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search[] parseSearches(@NonNull String jsonResponse, String uid, boolean single) {
+    private static Spawn[] parseSpawnes(@NonNull String jsonResponse, String uid, boolean single) {
 
-        Search[] searches = null;
+        Spawn[] spawns = null;
         try {
             if (single) {
-                searches = new Search[1];
-                searches[0] = parseSearch(new JSONObject(jsonResponse),uid);
-                Timber.v("Parsed Response: %s", searches[0].toString());
+                spawns = new Spawn[1];
+                spawns[0] = parseSpawn(new JSONObject(jsonResponse),uid);
+                Timber.v("Parsed Response: %s", spawns[0].toString());
             } else {
                 JSONArray charityArray = new JSONArray(jsonResponse);
-                searches = new Search[charityArray.length()];
+                spawns = new Spawn[charityArray.length()];
                 for (int i = 0; i < charityArray.length(); i++) {
                     JSONObject charityObject = charityArray.getJSONObject(i);
-                    Search search = parseSearch(charityObject, uid);
-                    searches[i] = search;
-                    Timber.v("Parsed Response: %s", search.toString());
+                    Spawn spawn = parseSpawn(charityObject, uid);
+                    spawns[i] = spawn;
+                    Timber.v("Parsed Response: %s", spawn.toString());
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
             Timber.e(e);
         }
-        return searches;
+        return spawns;
     }
 
     /**
-     * This method parses JSONObject of JSONArray and returns {@link Search}.
+     * This method parses JSONObject of JSONArray and returns {@link Spawn}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Search parseSearch(JSONObject charityObject, String uid) throws JSONException {
+    private static Spawn parseSpawn(JSONObject charityObject, String uid) throws JSONException {
 
         JSONObject locationObject = charityObject.getJSONObject(FetchContract.KEY_LOCATION);
         String ein = charityObject.getString(FetchContract.KEY_EIN);
@@ -567,7 +566,7 @@ public final class DatabaseAccessor {
         String homepageUrl = charityObject.getString(FetchContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(FetchContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Search(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "", "0", 0);
+        return new Spawn(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "", "0", 0);
     }
 
     /**
@@ -594,8 +593,8 @@ public final class DatabaseAccessor {
         public static final String PARAM_EIN = "ein";
         public static final String PARAM_PAGE_NUM = "pageNum";
         public static final String PARAM_PAGE_SIZE = "pageSize";
-        public static final String PARAM_SEARCH = "search";
-        public static final String PARAM_SEARCH_TYPE ="searchType";
+        public static final String PARAM_SPAWN = "spawn";
+        public static final String PARAM_SPAWN_TYPE ="spawnType";
         public static final String PARAM_RATED = "rated";
         public static final String PARAM_CATEGORY_ID = "categoryID";
         public static final String PARAM_CAUSE_ID = "causeID";
@@ -634,8 +633,8 @@ public final class DatabaseAccessor {
         private static final String[] OPTIONAL_PARAMS = {
                 PARAM_PAGE_NUM,
                 PARAM_PAGE_SIZE,
-                PARAM_SEARCH,
-                PARAM_SEARCH_TYPE,
+                PARAM_SPAWN,
+                PARAM_SPAWN_TYPE,
                 PARAM_RATED,
                 PARAM_CATEGORY_ID,
                 PARAM_CAUSE_ID,

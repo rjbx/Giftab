@@ -1,5 +1,5 @@
 {
-  "give" : {
+  "target" : {
     "uid" : {
       "stamp" : {
         "ein" : "",
@@ -45,7 +45,7 @@
       }
     }
   },
-  "search" : {
+  "spawn" : {
     "uid" : {
       "stamp" : {
         "ein" : "",
@@ -72,27 +72,27 @@
       "giveImpact" : "0",
       "giveMagnitude" : "0.1",
       "giveReset" : false,
-      "giveStamp" : 0,
       "giveTiming" : 0,
       "glanceAnchor" : 0,
       "glanceSince" : false,
       "glanceTheme" : 0,
-      "recordOrder" : "",
-      "recordSort" : "",
+      "journalOrder" : "",
+      "journalSort" : "",
+      "indexCity" : "",
+      "indexCompany" : "",
+      "indexDialog" : false,
+      "indexFilter" : true,
+      "indexFocus" : false,
+      "indexMinrating" : "0",
+      "indexOrder" : "RATING",
+      "indexPages" : "1",
+      "indexRows" : "20",
+      "indexSort" : "DESC",
+      "indexState" : "",
+      "indexTerm" : "",
+      "indexZip" : "",
       "recordStamp" : 0,
-      "searchCity" : "",
-      "searchCompany" : "",
-      "searchDialog" : false,
-      "searchFilter" : true,
-      "searchFocus" : false,
-      "searchMinrating" : "0",
-      "searchOrder" : "RATING",
-      "searchPages" : "1",
-      "searchRows" : "20",
-      "searchSort" : "DESC",
-      "searchState" : "",
-      "searchTerm" : "",
-      "searchZip" : "",
+      "targetStamp": 0,
       "uid" : "",
       "userActive" : false,
       "userBirthdate" : "0/0/2000",

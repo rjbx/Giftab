@@ -33,8 +33,8 @@ import butterknife.OnClick;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Give;
-import com.github.rjbx.givetrack.data.entry.Search;
+import com.github.rjbx.givetrack.data.entry.Target;
+import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -51,7 +51,7 @@ public class DetailFragment extends Fragment {
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
-    private static Search sCompany;
+    private static Spawn sCompany;
     private static boolean sInitialState;
     private static boolean sCurrentState;
     private static int sScrollState = 0;
@@ -128,7 +128,7 @@ public class DetailFragment extends Fragment {
 
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
-            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_GIVE.buildUpon()
+            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_TARGET.buildUpon()
                     .appendPath(sCompany.getEin()).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }
@@ -164,8 +164,8 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onStop() {
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), sCompany);
-            else DatabaseService.startActionRemoveGive(mParentActivity, Give.fromSuper(sCompany));
+            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
+            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
         }
         mUnbinder.unbind();
         super.onStop();
@@ -222,7 +222,7 @@ public class DetailFragment extends Fragment {
                         .getColor(R.color.colorPrimaryDark))
                 .build()
                 .launchUrl(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
-        mParentActivity.getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+        mParentActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
     }
 
     /**

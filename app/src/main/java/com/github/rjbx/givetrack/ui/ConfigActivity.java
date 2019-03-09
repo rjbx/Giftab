@@ -48,9 +48,9 @@ import androidx.annotation.Nullable;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Fully implement clear Search
+// TODO: Fully implement clear Spawn
 // TODO: Add change email option to UserPreferenceFragment
-// TODO: Add anchor reset option for GivePreferenceFragment
+// TODO: Add anchor reset option for HomePreferenceFragment
 // TODO: Add show all option for all PreferenceFragments
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
 // TODO: Remove unused options
@@ -65,7 +65,7 @@ public class ConfigActivity
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            // TODO: Decide whether to recalibrate Give from callback data of Loader initialized from GivePreferneceFragment.onCreate
+            // TODO: Decide whether to recalibrate Target from callback data of Loader initialized from GivePreferneceFragment.onCreate
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -122,9 +122,9 @@ public class ConfigActivity
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || UserPreferenceFragment.class.getName().equals(fragmentName)
-                || SearchPreferenceFragment.class.getName().equals(fragmentName)
-                || GivePreferenceFragment.class.getName().equals(fragmentName)
-                || RecordPreferenceFragment.class.getName().equals(fragmentName)
+                || IndexPreferenceFragment.class.getName().equals(fragmentName)
+                || HomePreferenceFragment.class.getName().equals(fragmentName)
+                || JournalPreferenceFragment.class.getName().equals(fragmentName)
                 || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
@@ -216,14 +216,14 @@ public class ConfigActivity
         if (id == android.R.id.home) {
             String action = getIntent().getAction();
             switch (action) {
-                case RecordActivity.ACTION_RECORD_INTENT:
-                    startActivity(new Intent(this, RecordActivity.class));
+                case JournalActivity.ACTION_RECORD_INTENT:
+                    startActivity(new Intent(this, JournalActivity.class));
                     return true;
-                case SearchActivity.ACTION_SEARCH_INTENT:
-                    startActivity(new Intent(this, SearchActivity.class));
+                case IndexActivity.ACTION_SPAWN_INTENT:
+                    startActivity(new Intent(this, IndexActivity.class));
                     return true;
-                case MainActivity.ACTION_MAIN_INTENT:
-                    startActivity(new Intent(this, MainActivity.class));
+                case HomeActivity.ACTION_MAIN_INTENT:
+                    startActivity(new Intent(this, HomeActivity.class));
                     return true;
             }
         }
@@ -301,9 +301,9 @@ public class ConfigActivity
     }
 
     /**
-     * Fragment bound to preference header for updating search settings.
+     * Fragment bound to preference header for updating spawn settings.
      */
-    public static class SearchPreferenceFragment extends PreferenceFragment implements
+    public static class IndexPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
@@ -316,7 +316,7 @@ public class ConfigActivity
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_search);
+            addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
         }
 
@@ -331,11 +331,11 @@ public class ConfigActivity
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_searchSort_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_spawnSort_key));
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_searchOrder_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_spawnOrder_key));
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
@@ -347,8 +347,8 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_minrating_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_pages_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_size_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_searchSort_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_searchOrder_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_spawnSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_spawnOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_company_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_focus_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
@@ -402,8 +402,8 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetSearch(getActivity());
-                        startActivity(new Intent(getActivity(), SearchActivity.class));
+                        DatabaseService.startActionResetSpawn(getActivity());
+                        startActivity(new Intent(getActivity(), IndexActivity.class));
                         break;
                     default:
                 }
@@ -412,9 +412,9 @@ public class ConfigActivity
     }
 
     /**
-     * Fragment bound to preference header for updating give settings.
+     * Fragment bound to preference header for updating target settings.
      */
-    public static class GivePreferenceFragment extends PreferenceFragment implements
+    public static class HomePreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener,
@@ -432,7 +432,7 @@ public class ConfigActivity
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_give);
+            addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
         }
 
@@ -462,7 +462,7 @@ public class ConfigActivity
             if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
                 String magnitudeStr = mUser.getGiveMagnitude();
                 mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
-                View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_main, new LinearLayout(getActivity()));
+                View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
                 mSeekReadout = view.findViewById(R.id.main_readout);
@@ -550,8 +550,8 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetGive(getActivity());
-                        startActivity(new Intent(getActivity(), MainActivity.class));
+                        DatabaseService.startActionResetTarget(getActivity());
+                        startActivity(new Intent(getActivity(), HomeActivity.class));
                         break;
                     default:
                 }
@@ -568,9 +568,9 @@ public class ConfigActivity
     }
 
     /**
-     * Fragment bound to preference header for updating give settings.
+     * Fragment bound to preference header for updating target settings.
      */
-    public static class RecordPreferenceFragment extends PreferenceFragment implements
+    public static class JournalPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener {
@@ -583,7 +583,7 @@ public class ConfigActivity
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_record);
+            addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
         }
 
@@ -650,7 +650,7 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseService.startActionResetRecord(getActivity());
-                        startActivity(new Intent(getActivity(), RecordActivity.class));
+                        startActivity(new Intent(getActivity(), JournalActivity.class));
                         break;
                     default:
                 }

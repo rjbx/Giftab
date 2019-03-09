@@ -8,8 +8,9 @@
     android:orientation="horizontal"
     android:background="@color/colorAccentDark">
 
+
     <ImageButton
-        android:id="@+id/widget_search"
+        android:id="@+id/widget_spawn"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_weight=".4"

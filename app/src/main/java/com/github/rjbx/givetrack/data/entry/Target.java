@@ -12,17 +12,17 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Give extends Search implements Company, Rateraid.RatedObject<Give>, Parcelable, Cloneable {
+public class Target extends Spawn implements Company, Rateraid.RatedObject<Target>, Parcelable, Cloneable {
 
     private int frequency;
     private String percent;
     
-    @Exclude public static final Parcelable.Creator<Give> CREATOR = new Parcelable.Creator<Give>() {
-        @Override public Give createFromParcel(Parcel source) {
-            return new Give(source);
+    @Exclude public static final Parcelable.Creator<Target> CREATOR = new Parcelable.Creator<Target>() {
+        @Override public Target createFromParcel(Parcel source) {
+            return new Target(source);
         }
-        @Override public Give[] newArray(int size) {
-            return new Give[size];
+        @Override public Target[] newArray(int size) {
+            return new Target[size];
         }
     };
 
@@ -36,14 +36,14 @@ public class Give extends Search implements Company, Rateraid.RatedObject<Give>,
         return 0;
     }
 
-    public Give(Parcel source) {
+    public Target(Parcel source) {
         super(source);
         frequency = source.readInt();
         percent = source.readString();
     }
 
-    public Give(Search search, int frequency, String percent) {
-        super(search);
+    public Target(Spawn spawn, int frequency, String percent) {
+        super(spawn);
         this.frequency = frequency;
         this.percent = percent;
     }
@@ -51,12 +51,12 @@ public class Give extends Search implements Company, Rateraid.RatedObject<Give>,
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public Give() {}
+    public Target() {}
 
     /**
      * Provides POJO constructor required for object relational mapping.
      */
-    public Give(
+    public Target(
             String uid,
             String ein,
             long stamp,
@@ -102,7 +102,7 @@ public class Give extends Search implements Company, Rateraid.RatedObject<Give>,
     @Override public double getPercent() { return Double.parseDouble(percent); }
     @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
     @Override public String getId() { return super.getId(); }
-    @Exclude @Override public Give getObject() { return this; }
+    @Exclude @Override public Target getObject() { return this; }
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
@@ -130,37 +130,37 @@ public class Give extends Search implements Company, Rateraid.RatedObject<Give>,
         percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
     }
 
-    public Search getSuper() { return super.clone(); }
+    public Spawn getSuper() { return super.clone(); }
 
-    public static Give fromSuper(Search search) {
-        Give give = new Give(search, 0, "0");
-        return give;
+    public static Target fromSuper(Spawn spawn) {
+        Target target = new Target(spawn, 0, "0");
+        return target;
     }
 
-    @Override public Give clone() {
+    @Override public Target clone() {
         super.clone();
-        return new Give(getSuper(), this.frequency, this.percent);
+        return new Target(getSuper(), this.frequency, this.percent);
     }
 
-    public static Give getDefault() {
-        Give give = new Give();
-        give.setUid("");
-        give.setEin("");
-        give.setStamp(0);
-        give.setName("");
-        give.setLocationStreet("");
-        give.setLocationDetail("");
-        give.setLocationCity("");
-        give.setLocationState("");
-        give.setLocationZip("");
-        give.setHomepageUrl("");
-        give.setNavigatorUrl("");
-        give.setPhone("");
-        give.setEmail("");
-        give.setImpact("");
-        give.setType(0);
-        give.setFrequency(0);
-        give.setPercent(0d);
-        return give;
+    public static Target getDefault() {
+        Target target = new Target();
+        target.setUid("");
+        target.setEin("");
+        target.setStamp(0);
+        target.setName("");
+        target.setLocationStreet("");
+        target.setLocationDetail("");
+        target.setLocationCity("");
+        target.setLocationState("");
+        target.setLocationZip("");
+        target.setHomepageUrl("");
+        target.setNavigatorUrl("");
+        target.setPhone("");
+        target.setEmail("");
+        target.setImpact("");
+        target.setType(0);
+        target.setFrequency(0);
+        target.setPercent(0d);
+        return target;
     }
 }

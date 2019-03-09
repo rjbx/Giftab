@@ -76,7 +76,7 @@ public class AuthActivity extends AppCompatActivity implements
     /**
      * Hides {@link ProgressBar} when launching AuthUI
      * and unregisters this Activity from listening to Preference changes
-     * in order to prevent relaunching MainActivity.
+     * in order to prevent relaunching HomeActivity.
      */
     @Override protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
@@ -100,7 +100,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mUsers.add(activeUser);
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
 
-                startActivity(new Intent(AuthActivity.this, MainActivity.class).setAction(ACTION_SIGN_IN));
+                startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -193,7 +193,7 @@ public class AuthActivity extends AppCompatActivity implements
                     } else {
                         finish();
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, MainActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
+                        startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                     }
             }
         }

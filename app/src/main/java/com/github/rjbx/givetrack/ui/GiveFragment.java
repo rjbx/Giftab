@@ -46,7 +46,7 @@ import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Give;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
@@ -76,13 +76,13 @@ public class GiveFragment extends Fragment implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
-    private static Give[] sValuesArray;
+    private static Target[] sValuesArray;
     private static User sUser;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private static double[] sPercentages;
     private InputMethodManager mMethodManager;
-    private MainActivity mParentActivity;
+    private HomeActivity mParentActivity;
     private DetailFragment mDetailFragment;
     private ListAdapter mListAdapter;
     private Unbinder mUnbinder;
@@ -130,16 +130,16 @@ public class GiveFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
-            Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVE_ATTRIBUTES);
+            Parcelable[] parcelableArray = args.getParcelableArray(HomeActivity.ARGS_TARGET_ATTRIBUTES);
             if (parcelableArray != null) {
                 // TODO: Factor out with accessor validation
-                Give[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Give.class);
+                Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
                 }
                 sValuesArray = valuesArray;
             }
-            sUser = args.getParcelable(MainActivity.ARGS_USER_ATTRIBUTES);
+            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
         }
 
         mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
@@ -171,8 +171,8 @@ public class GiveFragment extends Fragment implements
      */
     @Override public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() == null || !(getActivity() instanceof MainActivity)) return;
-        mParentActivity = (MainActivity) getActivity();
+        if (getActivity() == null || !(getActivity() instanceof HomeActivity)) return;
+        mParentActivity = (HomeActivity) getActivity();
         if (sDualPane) showDualPane(getArguments());
     }
 
@@ -346,7 +346,7 @@ public class GiveFragment extends Fragment implements
             sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        DatabaseService.startActionUpdateGive(getContext(), sValuesArray);
+        DatabaseService.startActionUpdateTarget(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -362,7 +362,7 @@ public class GiveFragment extends Fragment implements
             double totalImpact = Float.parseFloat(sValuesArray[i].getImpact()) + transactionImpact;
             sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
-        DatabaseService.startActionUpdateGive(getContext(), sValuesArray);
+        DatabaseService.startActionUpdateTarget(getContext(), sValuesArray);
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
@@ -488,14 +488,14 @@ public class GiveFragment extends Fragment implements
         @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_donor, parent, false);
+                    .inflate(R.layout.item_give, parent, false);
             else view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.button_collect, parent, false);
             return new ViewHolder(view);
         }
 
         /**
-         * Reserves the last element in the list to an add button for launching {@link SearchActivity}.
+         * Reserves the last element in the list to an add button for launching {@link IndexActivity}.
          */
         @Override public int getItemViewType(int position) {
             if (position == getItemCount() - 1) return VIEW_TYPE_BUTTON;
@@ -509,8 +509,8 @@ public class GiveFragment extends Fragment implements
 
             if (position == getItemCount() - 1) {
                 holder.mAddButton.setOnClickListener(clickedView -> {
-                    Intent searchIntent = new Intent(getContext(), SearchActivity.class);
-                    startActivity(searchIntent);
+                    Intent spawnIntent = new Intent(getContext(), IndexActivity.class);
+                    startActivity(spawnIntent);
                 });
                 return;
             }
@@ -529,7 +529,7 @@ public class GiveFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            Give values = sValuesArray[position];
+            Target values = sValuesArray[position];
             final String name = values.getName();
             final int frequency =
                     values.getFrequency();
@@ -647,10 +647,10 @@ public class GiveFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
-                            Give give = (Give) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
+                            Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveGive(getContext(), give);
+                            DatabaseService.startActionRemoveTarget(getContext(), target);
                             break;
                         default:
                     }
@@ -662,7 +662,7 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
 
-                Give values = sValuesArray[(int) v.getTag()];
+                Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
                 mEin = values.getEin();
 
@@ -683,7 +683,7 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.inspect_button) void inspectGive(View v) {
 
                 int position = (int) v.getTag();
-                Give values = sValuesArray[position];
+                Target values = sValuesArray[position];
                 String name = values.getName();
                 String ein = values.getEin();
                 String navUrl = values.getNavigatorUrl();
@@ -709,7 +709,7 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.share_button) void shareGive(View v) {
 
-                Give values = sValuesArray[(int) v.getTag()];
+                Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
@@ -789,7 +789,7 @@ public class GiveFragment extends Fragment implements
         /**
          * Initializes value instance fields and generates an instance of this layout.
          */
-        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Give values) {
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Target values) {
             mAlertDialog = alertDialog;
             mPhone = values.getPhone();
             mEmail = values.getEmail();
@@ -802,7 +802,7 @@ public class GiveFragment extends Fragment implements
         /**
          * Converts a set of ContentValues to a single formatted String.
          */
-        private static String valuesToAddress(Give values) {
+        private static String valuesToAddress(Target values) {
             String street = values.getLocationStreet();
             String detail = values.getLocationDetail();
             String city = values.getLocationCity();

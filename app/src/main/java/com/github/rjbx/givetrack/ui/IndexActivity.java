@@ -40,53 +40,52 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Record;
-import com.github.rjbx.givetrack.data.entry.Search;
+import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SEARCH;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SPAWN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class SearchActivity extends AppCompatActivity implements
+public class IndexActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
 
-    public static final String ACTION_SEARCH_INTENT = "com.github.rjbx.givetrack.ui.action.SEARCH_INTENT";
-    private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
-    private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SEARCH_PANE";
+    public static final String ACTION_SPAWN_INTENT = "com.github.rjbx.givetrack.ui.action.SPAWN_INTENT";
+    private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
+    private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
     private static boolean sDialogShown;
     private static boolean sDualPane;
-    private Search[] mValuesArray;
+    private Spawn[] mValuesArray;
     private ListAdapter mAdapter;
-    private AlertDialog mSearchDialog;
+    private AlertDialog mSpawnDialog;
     private String mSnackbar;
     private User mUser;
     private boolean mLock = true;
-    @BindView(R.id.search_fab) FloatingActionButton mFab;
-    @BindView(R.id.search_toolbar) Toolbar mToolbar;
-    @BindView(R.id.search_list) RecyclerView mRecyclerView;
-    @BindView(R.id.search_list_container) View mListContainer;
-    @BindView(R.id.search_item_container) View mItemContainer;
-    @BindView(R.id.search_progress) View mSearchProgress;
+    @BindView(R.id.spawn_fab) FloatingActionButton mFab;
+    @BindView(R.id.spawn_toolbar) Toolbar mToolbar;
+    @BindView(R.id.spawn_list) RecyclerView mRecyclerView;
+    @BindView(R.id.spawn_list_container) View mListContainer;
+    @BindView(R.id.spawn_item_container) View mItemContainer;
+    @BindView(R.id.spawn_progress) View mSpawnProgress;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView(R.layout.activity_index);
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
-        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
+        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
@@ -125,7 +124,7 @@ public class SearchActivity extends AppCompatActivity implements
      * Generates an options Menu.
      */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search, menu);
+        getMenuInflater().inflate(R.menu.index, menu);
         return true;
     }
 
@@ -136,10 +135,10 @@ public class SearchActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
-                startActivity(new Intent(this, MainActivity.class));
+                startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_filter):
-                AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_SPAWN_INTENT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -147,7 +146,7 @@ public class SearchActivity extends AppCompatActivity implements
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             // TODO: Decide whether to implement sort on fetch as well as stored entries
-            case LOADER_ID_SEARCH: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SEARCH, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
+            case LOADER_ID_SPAWN: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SPAWN, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -160,19 +159,19 @@ public class SearchActivity extends AppCompatActivity implements
         if (data == null || !data.moveToFirst()) return;
         int id = loader.getId();
         switch (id) {
-            case DatabaseContract.LOADER_ID_SEARCH:
-                mSearchProgress.setVisibility(View.GONE);
-                mValuesArray = new Search[data.getCount()];
+            case DatabaseContract.LOADER_ID_SPAWN:
+                mSpawnProgress.setVisibility(View.GONE);
+                mValuesArray = new Spawn[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
-                        Search search = Search.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(data, search);
-                        mValuesArray[i++] = search;
+                        Spawn spawn = Spawn.getDefault();
+                        DatabaseAccessor.cursorRowToEntry(data, spawn);
+                        mValuesArray[i++] = spawn;
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
-                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_search_refresh);
+                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                 sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 sb.show();
@@ -185,12 +184,12 @@ public class SearchActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SEARCH, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
                             break;
                         }
                     } while (data.moveToNext());
                 }
-                sDialogShown = mUser.getSearchDialog();
+                sDialogShown = mUser.getIndexDialog();
                 break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
@@ -216,8 +215,8 @@ public class SearchActivity extends AppCompatActivity implements
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
     @Override public void showDualPane(Bundle args) {
-        if (args != null) SearchActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.search_item_container, DetailFragment.newInstance(args))
+        if (args != null) IndexActivity.this.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.spawn_item_container, DetailFragment.newInstance(args))
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -242,16 +241,16 @@ public class SearchActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
-        if (dialog == mSearchDialog) {
+        if (dialog == mSpawnDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    mSearchDialog.dismiss();
+                    mSpawnDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
-                    mUser.setSearchDialog(sDialogShown);
+                    mUser.setIndexDialog(sDialogShown);
                     DatabaseService.startActionUpdateUser(this, mUser);
-                    AppUtilities.launchPreferenceFragment(this, ACTION_SEARCH_INTENT);
+                    AppUtilities.launchPreferenceFragment(this, ACTION_SPAWN_INTENT);
                     break;
                 default:
             }
@@ -259,28 +258,28 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     /**
-     * Populates {@link SearchActivity} {@link RecyclerView}.
+     * Populates {@link IndexActivity} {@link RecyclerView}.
      */
-    @OnClick(R.id.search_fab) public void refreshResults() {
+    @OnClick(R.id.spawn_fab) public void refreshResults() {
         fetchResults();
     }
 
     private void showDialog() {
-        mSearchDialog = new AlertDialog.Builder(this).create();
-        mSearchDialog.setMessage(getString(R.string.dialog_filter_setup));
-        mSearchDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
-        mSearchDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
-        mSearchDialog.show();
-        mSearchDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-        mSearchDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mSpawnDialog = new AlertDialog.Builder(this).create();
+        mSpawnDialog.setMessage(getString(R.string.dialog_filter_setup));
+        mSpawnDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
+        mSpawnDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
+        mSpawnDialog.show();
+        mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
     }
 
     // TODO: Handled by accessor fetch; factor out
     private void fetchResults() {
-        mSearchProgress.setVisibility(View.VISIBLE);
+        mSpawnProgress.setVisibility(View.VISIBLE);
 
-        DatabaseService.startActionFetchSearch(getBaseContext());
-        mSnackbar = getString(R.string.message_search_refresh);
+        DatabaseService.startActionFetchSpawn(getBaseContext());
+        mSnackbar = getString(R.string.message_spawn_refresh);
     }
 
     private ItemTouchHelper.SimpleCallback getSimpleCallback(int dragDirs, int swipeDirs) {
@@ -294,16 +293,16 @@ public class SearchActivity extends AppCompatActivity implements
                 Bundle bundle = (Bundle) viewHolder.itemView.getTag();
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        final Search values =  bundle.getParcelable(DetailFragment.ARG_ITEM_COMPANY);
-                        DatabaseService.startActionRemoveSearch(getBaseContext(), values);
+                        final Spawn values =  bundle.getParcelable(DetailFragment.ARG_ITEM_COMPANY);
+                        DatabaseService.startActionRemoveSpawn(getBaseContext(), values);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
                                 .build()
-                                .launchUrl(SearchActivity.this, Uri.parse(url));
-                        getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                                .launchUrl(IndexActivity.this, Uri.parse(url));
+                        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
                         break;
                     default:
                 }
@@ -312,11 +311,11 @@ public class SearchActivity extends AppCompatActivity implements
     }
 
     /**
-     * Populates {@link SearchActivity} {@link RecyclerView}.
+     * Populates {@link IndexActivity} {@link RecyclerView}.
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        private Search[] mValuesArray;
+        private Spawn[] mValuesArray;
         private View mLastClicked;
 
         public ListAdapter() {
@@ -330,7 +329,7 @@ public class SearchActivity extends AppCompatActivity implements
         @Override public @NonNull ViewHolder onCreateViewHolder(
                 @NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_search, parent, false);
+                    .inflate(R.layout.item_index, parent, false);
             return new ViewHolder(view);
         }
 
@@ -341,7 +340,7 @@ public class SearchActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
-            Search values = mValuesArray[position];
+            Spawn values = mValuesArray[position];
             String ein = values.getEin();
             String name = values.getName();
             String city = values.getLocationCity();
@@ -354,7 +353,7 @@ public class SearchActivity extends AppCompatActivity implements
             holder.mIdView.setText(String.format("EIN: %s", ein));
             holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
 
-            Glide.with(SearchActivity.this).load("https://logo.clearbit.com/" + homepage)
+            Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
                     .into(holder.mLogoView);
 
             Bundle arguments = new Bundle();
@@ -374,7 +373,7 @@ public class SearchActivity extends AppCompatActivity implements
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        private void swapValues(Search[] valuesArray) {
+        private void swapValues(Spawn[] valuesArray) {
             mValuesArray = valuesArray;
             notifyDataSetChanged();
         }
@@ -383,10 +382,10 @@ public class SearchActivity extends AppCompatActivity implements
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.search_item_primary) TextView mNameView;
-            @BindView(R.id.search_item_secondary) TextView mIdView;
-            @BindView(R.id.search_item_tertiary) TextView mAddressView;
-            @BindView(R.id.search_item_logo) ImageView mLogoView;
+            @BindView(R.id.spawn_item_primary) TextView mNameView;
+            @BindView(R.id.spawn_item_secondary) TextView mIdView;
+            @BindView(R.id.spawn_item_tertiary) TextView mAddressView;
+            @BindView(R.id.spawn_item_logo) ImageView mLogoView;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -397,9 +396,9 @@ public class SearchActivity extends AppCompatActivity implements
             }
 
             /**
-             * Defines behavior on click of search item view.
+             * Defines behavior on click of spawn item view.
              */
-            @OnClick(R.id.search_item_view) void togglePane(View v) {
+            @OnClick(R.id.spawn_item_view) void togglePane(View v) {
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 

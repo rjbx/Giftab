@@ -30,10 +30,10 @@ public class DatabaseOpener extends SQLiteOpenHelper {
      */
     @Override public void onCreate(SQLiteDatabase db) {
 
-        final String SQL_CREATE_SEARCH_TABLE =
+        final String SQL_CREATE_SPAWN_TABLE =
 
                 "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_SEARCH             + " ("                              +
+                        CompanyEntry.TABLE_NAME_SPAWN + " ("                              +
 
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
@@ -58,7 +58,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
         final String SQL_CREATE_GIVE_TABLE =
 
                 "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_GIVE             + " ("                              +
+                        CompanyEntry.TABLE_NAME_TARGET + " ("                              +
 
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
@@ -126,30 +126,30 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_THEME + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCH_DIALOG + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCH_FOCUS + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCH_FILTER + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCH_COMPANY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_TERM + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_CITY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_STATE + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_ZIP + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_MINRATING + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_PAGES + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_ROWS + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_DIALOG + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SPAWN_FOCUS + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SPAWN_FILTER + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_SPAWN_COMPANY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_TERM + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_CITY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_STATE + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_ZIP + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_MINRATING + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_PAGES + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_ROWS + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GIVE_RESET + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SEARCH_SORT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SEARCH_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_SORT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_SPAWN_ORDER + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_RECORD_SORT + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_RECORD_ORDER + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GIVE_STAMP + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_TARGET_STAMP + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_RECORD_STAMP + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_USER_STAMP + " INTEGER NOT NULL, "             +
 
                         "UNIQUE (" + UserEntry.COLUMN_USER_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";
 
-        db.execSQL(SQL_CREATE_SEARCH_TABLE);
+        db.execSQL(SQL_CREATE_SPAWN_TABLE);
         db.execSQL(SQL_CREATE_GIVE_TABLE);
         db.execSQL(SQL_CREATE_RECORD_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
@@ -160,8 +160,8 @@ public class DatabaseOpener extends SQLiteOpenHelper {
      */
     @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_SEARCH);
-        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_GIVE);
+        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_SPAWN);
+        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_TARGET);
         db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_RECORD);
         db.execSQL("DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME_USER);
         onCreate(db);

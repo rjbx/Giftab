@@ -12,9 +12,9 @@ import timber.log.Timber;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
-import com.github.rjbx.givetrack.data.entry.Give;
+import com.github.rjbx.givetrack.data.entry.Spawn;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
-import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import org.jsoup.Jsoup;
@@ -40,21 +40,21 @@ public class DatabaseService extends IntentService {
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
     private static final Executor MAIN_THREAD = AppExecutors.getInstance().getMainThread();
 
-    private static final String ACTION_FETCH_SEARCH = "com.github.rjbx.givetrack.data.action.FETCH_SEARCH";
-    private static final String ACTION_FETCH_GIVE = "com.github.rjbx.givetrack.data.action.FETCH_GIVE";
+    private static final String ACTION_FETCH_SPAWN = "com.github.rjbx.givetrack.data.action.FETCH_SPAWN";
+    private static final String ACTION_FETCH_TARGET = "com.github.rjbx.givetrack.data.action.FETCH_TARGET";
     private static final String ACTION_FETCH_RECORD = "com.github.rjbx.givetrack.data.action.FETCH_RECORD";
     private static final String ACTION_FETCH_USER = "com.github.rjbx.givetrack.data.action.FETCH_USER";
-    private static final String ACTION_REMOVE_SEARCH = "com.github.rjbx.givetrack.data.action.REMOVE_SEARCH";
-    private static final String ACTION_REMOVE_GIVE = "com.github.rjbx.givetrack.data.action.REMOVE_GIVE";
+    private static final String ACTION_REMOVE_SPAWN = "com.github.rjbx.givetrack.data.action.REMOVE_SPAWN";
+    private static final String ACTION_REMOVE_TARGET = "com.github.rjbx.givetrack.data.action.REMOVE_TARGET";
     private static final String ACTION_REMOVE_RECORD = "com.github.rjbx.givetrack.data.action.REMOVE_RECORD";
     private static final String ACTION_REMOVE_USER = "com.github.rjbx.givetrack.data.action.REMOVE_USER";
-    private static final String ACTION_RESET_SEARCH = "com.github.rjbx.givetrack.data.action.RESET_SEARCH";
-    private static final String ACTION_RESET_GIVE = "com.github.rjbx.givetrack.data.action.RESET_GIVE";
+    private static final String ACTION_RESET_SPAWN = "com.github.rjbx.givetrack.data.action.RESET_SPAWN";
+    private static final String ACTION_RESET_TARGET = "com.github.rjbx.givetrack.data.action.RESET_TARGET";
     private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
     private static final String ACTION_RESET_USER = "com.github.rjbx.givetrack.data.action.RESET_USER";
-    private static final String ACTION_GIVE_SEARCH = "com.github.rjbx.givetrack.data.action.GIVE_SEARCH";
-    private static final String ACTION_RECORD_GIVE = "com.github.rjbx.givetrack.data.action.RECORD_GIVE";
-    private static final String ACTION_UPDATE_GIVE = "com.github.rjbx.givetrack.data.action.UPDATE_GIVE";
+    private static final String ACTION_TARGET_SPAWN = "com.github.rjbx.givetrack.data.action.GIVE_SPAWN";
+    private static final String ACTION_RECORD_TARGET = "com.github.rjbx.givetrack.data.action.RECORD_TARGET";
+    private static final String ACTION_UPDATE_TARGET = "com.github.rjbx.givetrack.data.action.UPDATE_TARGET";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_RECORD = "com.github.rjbx.givetrack.data.action.UPDATE_RECORD";
     private static final String ACTION_UPDATE_USER = "com.github.rjbx.givetrack.data.action.UPDATE_USER";
@@ -75,21 +75,21 @@ public class DatabaseService extends IntentService {
     // TODO: Add boolean returns for launching error message
 
     /**
-     * Starts this service to perform action FetchSearch with the given parameters.
+     * Starts this service to perform action FetchSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionFetchSearch(Context context) {
+    public static void startActionFetchSpawn(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_SEARCH);
+        intent.setAction(ACTION_FETCH_SPAWN);
 //        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action FetchGive with the given parameters.
+     * Starts this service to perform action FetchTargetwith the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
@@ -97,7 +97,7 @@ public class DatabaseService extends IntentService {
     public static void startActionFetchGive(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_GIVE);
+        intent.setAction(ACTION_FETCH_SPAWN);
         context.startService(intent);
     }
 
@@ -128,61 +128,61 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action GiveSearch with the given parameters.
+     * Starts this service to perform action GiveSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionGiveSearch(Context context, Search search) {
+    public static void startActionGiveSpawn(Context context, Spawn spawn) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_GIVE_SEARCH);
-        intent.putExtra(EXTRA_ITEM_VALUES, search);
+        intent.setAction(ACTION_TARGET_SPAWN);
+        intent.putExtra(EXTRA_ITEM_VALUES, spawn);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action RecordGive with the given parameters.
+     * Starts this service to perform action RecordTarget with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionRecordGive(Context context, Give... give) {
+    public static void startActionRecordTarget(Context context, Target... target) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_RECORD_GIVE);
-        if (give.length > 1) intent.putExtra(EXTRA_LIST_VALUES, give);
-        intent.putExtra(EXTRA_ITEM_VALUES, give[0]);
+        intent.setAction(ACTION_RECORD_TARGET);
+        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
+        intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action RemoveSearch with the given parameters.
+     * Starts this service to perform action RemoveSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionRemoveSearch(Context context, Search... search) {
+    public static void startActionRemoveSpawn(Context context, Spawn... spawns) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_REMOVE_SEARCH);
-        if (search.length > 1) intent.putExtra(EXTRA_LIST_VALUES, search);
-        else intent.putExtra(EXTRA_ITEM_VALUES, search[0]);
+        intent.setAction(ACTION_REMOVE_SPAWN);
+        if (spawns.length > 1) intent.putExtra(EXTRA_LIST_VALUES, spawns);
+        else intent.putExtra(EXTRA_ITEM_VALUES, spawns[0]);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action RemoveGive with the given parameters.
+     * Starts this service to perform action RemoveTarget with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionRemoveGive(Context context, Give... give) {
+    public static void startActionRemoveTarget(Context context, Target... target) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_REMOVE_GIVE);
-        if (give.length > 1) intent.putExtra(EXTRA_LIST_VALUES, give);
-        else intent.putExtra(EXTRA_ITEM_VALUES, give[0]);
+        intent.setAction(ACTION_REMOVE_TARGET);
+        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
+        else intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
         context.startService(intent);
     }
 
@@ -217,28 +217,28 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action ResetSearch with the given parameters.
+     * Starts this service to perform action ResetSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionResetSearch(Context context) {
+    public static void startActionResetSpawn(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_RESET_SEARCH);
+        intent.setAction(ACTION_RESET_SPAWN);
         context.startService(intent);
     }
 
     /**
-     * Starts this service to perform action ResetGive with the given parameters.
+     * Starts this service to perform action ResetTargetwith the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionResetGive(Context context) {
+    public static void startActionResetTarget(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_RESET_GIVE);
+        intent.setAction(ACTION_RESET_TARGET);
         context.startService(intent);
     }
 
@@ -269,18 +269,18 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdateGive with the given parameters.
+     * Starts this service to perform action UpdateTargetwith the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionUpdateGive(Context context, Give... give) {
+    public static void startActionUpdateTarget(Context context, Target... target) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_GIVE);
-        intent.putExtra(EXTRA_ITEM_VALUES, give);
-        if (give.length > 1) intent.putExtra(EXTRA_LIST_VALUES, give);
-        else intent.putExtra(EXTRA_ITEM_VALUES, give[0]);
+        intent.setAction(ACTION_UPDATE_TARGET);
+        intent.putExtra(EXTRA_ITEM_VALUES, target);
+        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
+        else intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
 
         context.startService(intent);
     }
@@ -328,7 +328,7 @@ public class DatabaseService extends IntentService {
     public static void startActionUpdateFrequency(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_GIVE);
+        intent.setAction(ACTION_UPDATE_TARGET);
         context.startService(intent);
     }
 
@@ -355,12 +355,12 @@ public class DatabaseService extends IntentService {
         if (intent == null || intent.getAction() == null) return;
         final String action = intent.getAction();
         switch (action) {
-            case ACTION_FETCH_SEARCH:
-//                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
-                handleActionFetchSearch();
+            case ACTION_FETCH_SPAWN:
+//                final HashMap fetchSpawnMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
+                handleActionFetchSpawn();
                 break;
-            case ACTION_FETCH_GIVE:
-                handleActionFetchGive();
+            case ACTION_FETCH_TARGET:
+                handleActionFetchTarget();
                 break;
             case ACTION_FETCH_RECORD:
                 handleActionFetchRecord();
@@ -368,23 +368,23 @@ public class DatabaseService extends IntentService {
             case ACTION_FETCH_USER:
                 handleActionFetchUser();
                 break;
-            case ACTION_GIVE_SEARCH:
-                handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+            case ACTION_TARGET_SPAWN:
+                handleActionGiveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_RECORD_GIVE:
+            case ACTION_RECORD_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRecordGive(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Give.class));
-                else handleActionRecordGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    handleActionRecordTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                else handleActionRecordTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_REMOVE_SEARCH:
+            case ACTION_REMOVE_SPAWN:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveSearch(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Search.class));
-                else handleActionRemoveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    handleActionRemoveSpawn(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Spawn.class));
+                else handleActionRemoveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_REMOVE_GIVE:
+            case ACTION_REMOVE_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveGive(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Give.class));
-                else handleActionRemoveGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    handleActionRemoveTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                else handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_RECORD:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -396,11 +396,11 @@ public class DatabaseService extends IntentService {
                     handleActionRemoveUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
                 else handleActionRemoveUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
-            case ACTION_RESET_SEARCH:
-                handleActionResetSearch();
+            case ACTION_RESET_SPAWN:
+                handleActionResetSpawn();
                 break;
-            case ACTION_RESET_GIVE:
-                handleActionResetGive();
+            case ACTION_RESET_TARGET:
+                handleActionResetTarget();
                 break;
             case ACTION_RESET_RECORD:
                 handleActionResetRecord();
@@ -410,10 +410,10 @@ public class DatabaseService extends IntentService {
                 break;
             case ACTION_UPDATE_CONTACT:
                 break;
-            case ACTION_UPDATE_GIVE:
+            case ACTION_UPDATE_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionUpdateGive(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Give.class));
-                else handleActionUpdateGive(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    handleActionUpdateTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                else handleActionUpdateTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_UPDATE_RECORD:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -433,17 +433,17 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action FetchSearch in the provided background thread with the provided parameters.
+     * Handles action FetchSpawn in the provided background thread with the provided parameters.
      */
-    private void handleActionFetchSearch() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this));
+    private void handleActionFetchSpawn() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSpawn(this));
     }
 
     /**
-     * Handles action FetchGive in the provided background thread.
+     * Handles action FetchTargetin the provided background thread.
      */
-    private void handleActionFetchGive() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGive(this));
+    private void handleActionFetchTarget() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchTarget(this));
     }
 
     /**
@@ -458,9 +458,9 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action GiveSearch in the provided background thread with the provided parameters.
+     * Handles action GiveSpawn in the provided background thread with the provided parameters.
      */
-    private void handleActionGiveSearch(Search search) {
+    private void handleActionGiveSpawn(Spawn spawn) {
 
         NETWORK_IO.execute(() -> {
 
@@ -469,39 +469,39 @@ public class DatabaseService extends IntentService {
 
             List<Record> records = DatabaseAccessor.getRecord(this);
             for (Record record : records) {
-                if (record.getEin().equals(search.getEin())) {
+                if (record.getEin().equals(spawn.getEin())) {
                     impact += Float.parseFloat(record.getImpact());
                     frequency++;
                 }
             }
 
-            List<Give> gives = DatabaseAccessor.getGive(this);
-            int size = gives.size();
+            List<Target> targets = DatabaseAccessor.getTarget(this);
+            int size = targets.size();
             double percent = size == 1 ? size : 0d;
-            Give give = Give.fromSuper(search);
-            give.setFrequency(frequency);
-            give.setPercent(percent);
-            give.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+            Target target = Target.fromSuper(spawn);
+            target.setFrequency(frequency);
+            target.setPercent(percent);
+            target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
-            String phoneNumber = urlToPhoneNumber(give);
-            give.setPhone(phoneNumber);
+            String phoneNumber = urlToPhoneNumber(target);
+            target.setPhone(phoneNumber);
 
-            String emailAddress = urlToEmailAddress(give);
-            give.setEmail(emailAddress);
+            String emailAddress = urlToEmailAddress(target);
+            target.setEmail(emailAddress);
 
-            String socialHandle = urlToSocialHandle(give);
-            give.setSocial(socialHandle);
+            String socialHandle = urlToSocialHandle(target);
+            target.setSocial(socialHandle);
 
-            DatabaseAccessor.addGive(this, give);
+            DatabaseAccessor.addTarget(this, target);
         });
     }
 
-    private void handleActionRecordGive(Give... give) {
+    private void handleActionRecordTarget(Target... target) {
 
-        Record[] record = new Record[give.length];
-        for (int i = 0; i < give.length; i++) {
+        Record[] record = new Record[target.length];
+        for (int i = 0; i < target.length; i++) {
             long time = System.currentTimeMillis();
-            record[i] = Record.fromSuper(give[i].getSuper());
+            record[i] = Record.fromSuper(target[i].getSuper());
             record[i].setStamp(time);
             record[i].setTime(time);
         }
@@ -509,17 +509,17 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action RemoveSearch in the provided background thread with the provided parameters.
+     * Handles action RemoveSpawn in the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveSearch(Search... searches) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this, searches));
+    private void handleActionRemoveSpawn(Spawn... spawns) {
+        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawns));
     }
 
     /**
-     * Handles action RemoveGive in the provided background thread with the provided parameters.
+     * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveGive(Give... gives) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeGive(this, gives));
+    private void handleActionRemoveTarget(Target... targets) {
+        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
     }
 
     /**
@@ -530,14 +530,14 @@ public class DatabaseService extends IntentService {
         DISK_IO.execute(() -> {
             DatabaseAccessor.removeRecord(this, records);
 
-            List<Give> gives = DatabaseAccessor.getGive(this);
-            for (Give give : gives) {
+            List<Target> targets = DatabaseAccessor.getTarget(this);
+            for (Target target : targets) {
                 for (Record record : records) {
-                    if (record.getEin().equals(give.getEin())) {
-                        give.setFrequency(give.getFrequency() - 1);
-                        float impact = Float.parseFloat(give.getImpact()) - Float.parseFloat(record.getImpact());
-                        give.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                        DatabaseAccessor.addGive(this, give);
+                    if (record.getEin().equals(target.getEin())) {
+                        target.setFrequency(target.getFrequency() - 1);
+                        float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
+                        target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+                        DatabaseAccessor.addTarget(this, target);
                         break;
                     }
                 }
@@ -549,17 +549,17 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
 
-            List<Search> searches = DatabaseAccessor.getSearch(this);
-            List<Give> gives = DatabaseAccessor.getGive(this);
+            List<Spawn> spawns = DatabaseAccessor.getSpawn(this);
+            List<Target> targets = DatabaseAccessor.getTarget(this);
             List<Record> records = DatabaseAccessor.getRecord(this);
 
             for (User user : users) {
-                for (Search search : searches)
-                    if (!search.getUid().equals(user.getUid()))
-                        DatabaseAccessor.removeSearch(this, search);
-                for (Give give : gives)
-                    if (!give.getUid().equals(user.getUid()))
-                        DatabaseAccessor.removeGive(this, give);
+                for (Spawn spawn : spawns)
+                    if (!spawn.getUid().equals(user.getUid()))
+                        DatabaseAccessor.removeSpawn(this, spawn);
+                for (Target target : targets)
+                    if (!target.getUid().equals(user.getUid()))
+                        DatabaseAccessor.removeTarget(this, target);
                 for (Record record : records)
                     if (!record.getUid().equals(user.getUid()))
                         DatabaseAccessor.removeRecord(this, record);
@@ -569,17 +569,17 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action ResetSearch in the provided background thread with the provided parameters.
+     * Handles action ResetSpawn in the provided background thread with the provided parameters.
      */
-    private void handleActionResetSearch() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSearch(this));
+    private void handleActionResetSpawn() {
+        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this));
     }
 
     /**
-     * Handles action ResetGive in the provided background thread with the provided parameters.
+     * Handles action ResetTargetin the provided background thread with the provided parameters.
      */
-    private void handleActionResetGive() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeGive(this));
+    private void handleActionResetTarget() {
+        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
     }
 
     /**
@@ -589,19 +589,19 @@ public class DatabaseService extends IntentService {
 
         DISK_IO.execute(() -> {
             DatabaseAccessor.removeRecord(this);
-            List<Give> gives = DatabaseAccessor.getGive(this);
-            for (Give give : gives) {
-                give.setImpact("0");
-                give.setFrequency(0);
+            List<Target> targets = DatabaseAccessor.getTarget(this);
+            for (Target target : targets) {
+                target.setImpact("0");
+                target.setFrequency(0);
             }
-            DatabaseAccessor.addGive(this, gives.toArray(new Give[gives.size()]));
+            DatabaseAccessor.addTarget(this, targets.toArray(new Target[targets.size()]));
         });
     }
 
     private void handleActionResetUser() {
         DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSearch(this);
-            DatabaseAccessor.removeGive(this);
+            DatabaseAccessor.removeSpawn(this);
+            DatabaseAccessor.removeTarget(this);
             DatabaseAccessor.removeRecord(this);
             DatabaseAccessor.removeUser(this);
         });
@@ -610,8 +610,8 @@ public class DatabaseService extends IntentService {
     /**
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
-    private void handleActionUpdateGive(Give... gives) {
-        DISK_IO.execute(() -> DatabaseAccessor.addGive(this, gives));
+    private void handleActionUpdateTarget(Target... targets) {
+        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     private void handleActionUpdateRecord(Record... records) {
@@ -628,8 +628,8 @@ public class DatabaseService extends IntentService {
     private void handleActionResetData() {
 
         DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSearch(this);
-            DatabaseAccessor.removeGive(this);
+            DatabaseAccessor.removeSpawn(this);
+            DatabaseAccessor.removeTarget(this);
             DatabaseAccessor.removeRecord(this);
             DatabaseAccessor.removeUser(this);
         });
@@ -638,9 +638,9 @@ public class DatabaseService extends IntentService {
     }
 
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
-    private String urlToSocialHandle(Give give) {
+    private String urlToSocialHandle(Target target) {
         String socialHandle = DEFAULT_VALUE_STR;
-        String url = give.getHomepageUrl();
+        String url = target.getHomepageUrl();
         if (url == null || url.isEmpty()) return socialHandle;
         try {
             List<String> socialHandles = urlToElementContent(url, "a", "twitter.com/", null, null, " ");
@@ -652,10 +652,10 @@ public class DatabaseService extends IntentService {
 //                socialHandles = urlToElementContent(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
 //            }
 //           if (socialHandles.isEmpty())) {
-//                String searchEngineUrl  = String.format(
-//                        "https://webcache.googleusercontent.com/search?q=cache:%s",
+//                String spawnEngineUrl  = String.format(
+//                        "https://webcache.googleusercontent.com/spawn?q=cache:%s",
 //                        url);
-//                socialHandles = urlToElementContent(searchEngineUrl, "twitter.com/", null, null, null);
+//                socialHandles = urlToElementContent(spawnEngineUrl, "twitter.com/", null, null, null);
 //            }
             if (!socialHandles.isEmpty()) {
                 for (String handle : socialHandles) Timber.v("Social: @%s", handle);
@@ -665,9 +665,9 @@ public class DatabaseService extends IntentService {
         return socialHandle;
     }
 
-    private String urlToEmailAddress(Give give) {
+    private String urlToEmailAddress(Target target) {
         String emailAddress = DEFAULT_VALUE_STR;
-        String url = give.getHomepageUrl();
+        String url = target.getHomepageUrl();
         if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
         try {
             List<String> emailAddresses = urlToElementContent(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
@@ -677,11 +677,11 @@ public class DatabaseService extends IntentService {
 //            }
 //            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
 //                url.replace("http://", "").replace("https://", "").replace("www.", "");
-//                String searchEngineUrl  = String.format(
-//                        "https://www.google.com/search?q=site%%3A%s+contact+OR+support+\"*%%40%s\"",
+//                String spawnEngineUrl  = String.format(
+//                        "https://www.google.com/spawn?q=site%%3A%s+contact+OR+support+\"*%%40%s\"",
 //                        url,
 //                        url);
-//                if (!url.equals(searchEngineUrl)) emailAddress = (searchEngineUrl, "mailto:", null, null, " ");
+//                if (!url.equals(spawnEngineUrl)) emailAddress = (spawnEngineUrl, "mailto:", null, null, " ");
 //            }
             if (!emailAddresses.isEmpty()) {
                 for (String address : emailAddresses) Timber.v("Email: %s", address);
@@ -691,9 +691,9 @@ public class DatabaseService extends IntentService {
         return emailAddress;
     }
 
-    private String urlToPhoneNumber(Give give) {
+    private String urlToPhoneNumber(Target target) {
         String phoneNumber = DEFAULT_VALUE_STR;
-        String url = give.getNavigatorUrl();
+        String url = target.getNavigatorUrl();
         if (url == null || url.isEmpty()) return phoneNumber;
         try {
             List<String> phoneNumbers = urlToElementContent(url, "div[class=cn-appear]", "tel:", null, 15, "[^0-9]");

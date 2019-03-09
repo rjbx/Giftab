@@ -23,7 +23,7 @@
             android:paddingBottom="4dp"
             android:background="@color/colorNeutral"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_search"/>
+            tools:listitem="@layout/item_index"/>
 
         <FrameLayout
             android:id="@+id/donation_detail_container"

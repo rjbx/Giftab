@@ -51,18 +51,18 @@
 
     <ListPreference
         android:dependency="@string/pref_focus_key"
-        android:entries="@array/list_preference_sortSearch"
-        android:entryValues="@array/list_preference_sortSearch_values"
-        android:key="@string/pref_searchSort_key"
+        android:entries="@array/list_preference_sortSpawn"
+        android:entryValues="@array/list_preference_sortSpawn_values"
+        android:key="@string/pref_spawnSort_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_sort_label"/>
 
     <ListPreference
         android:dependency="@string/pref_focus_key"
-        android:entries="@array/list_preference_orderSearch"
-        android:entryValues="@array/list_preference_orderSearch_values"
-        android:key="@string/pref_searchOrder_key"
+        android:entries="@array/list_preference_orderSpawn"
+        android:entryValues="@array/list_preference_orderSpawn_values"
+        android:key="@string/pref_spawnOrder_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_order_label"/>
@@ -92,13 +92,13 @@
         android:disableDependentsState="true"
         android:key="@string/pref_focus_key"
         android:title="@string/pref_focused_label"
-        android:summaryOn="Search for single charity"
-        android:summaryOff="Search for multiple charities"/>
+        android:summaryOn="Spawn for single charity"
+        android:summaryOff="Spawn for multiple charities"/>
 
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all search results.\nClearing does not impact saved items."/>
+        android:summary="Clear all spawn results.\nClearing does not impact saved items."/>
 
     <Preference
         android:key="@string/pref_show_key"

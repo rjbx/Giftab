@@ -13,10 +13,10 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.entry.Give;
-import com.github.rjbx.givetrack.ui.MainActivity;
-import com.github.rjbx.givetrack.ui.RecordActivity;
-import com.github.rjbx.givetrack.ui.SearchActivity;
+import com.github.rjbx.givetrack.data.entry.Target;
+import com.github.rjbx.givetrack.ui.JournalActivity;
+import com.github.rjbx.givetrack.ui.HomeActivity;
+import com.github.rjbx.givetrack.ui.IndexActivity;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
@@ -36,15 +36,15 @@ public class AppWidget extends AppWidgetProvider {
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-        Intent listIntent = new Intent(context, MainActivity.class);
+        Intent listIntent = new Intent(context, HomeActivity.class);
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
-        Intent searchIntent = new Intent(context, SearchActivity.class);
-        PendingIntent searchPendingIntent = PendingIntent.getActivity(context, 0, searchIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_search, searchPendingIntent);
+        Intent spawnIntent = new Intent(context, IndexActivity.class);
+        PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
 
-        Intent recordIntent = new Intent(context, RecordActivity.class);
+        Intent recordIntent = new Intent(context, JournalActivity.class);
         PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
         
@@ -92,7 +92,7 @@ public class AppWidget extends AppWidgetProvider {
         @Override public void onDataSetChanged() {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
-            mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVE,
+            mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
                     null, null, null, null);
             Binder.restoreCallingIdentity(token);
         }
@@ -104,21 +104,21 @@ public class AppWidget extends AppWidgetProvider {
 
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
-            Give give = Give.getDefault();
-            DatabaseAccessor.cursorRowToEntry(mCursor, give);
+            Target target = Target.getDefault();
+            DatabaseAccessor.cursorRowToEntry(mCursor, target);
 
-            String name = give.getName();
+            String name = target.getName();
             if (name.length() > 15) { name = name.substring(0, 15);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
-            Float amount = Float.parseFloat(give.getImpact());
+            Float amount = Float.parseFloat(target.getImpact());
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            String percentStr = PERCENT_FORMATTER.format(give.getPercent());
+            String percentStr = PERCENT_FORMATTER.format(target.getPercent());
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);

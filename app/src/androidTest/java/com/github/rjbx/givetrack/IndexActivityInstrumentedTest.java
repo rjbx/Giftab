@@ -1,5 +1,5 @@
 package com.github.rjbx.givetrack;
 
-public class SearchActivityInstrumentedTest {
+public class IndexActivityInstrumentedTest {
     // TODO: Implement
 }

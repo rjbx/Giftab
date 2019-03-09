@@ -55,10 +55,8 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
@@ -70,7 +68,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  * Presents a list of API request generated items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class RecordActivity extends AppCompatActivity implements
+public class JournalActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
@@ -95,7 +93,7 @@ public class RecordActivity extends AppCompatActivity implements
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_record);
+        setContentView(R.layout.activity_journal);
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
@@ -134,7 +132,7 @@ public class RecordActivity extends AppCompatActivity implements
      * Generates an options Menu.
      */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.record, menu);
+        getMenuInflater().inflate(R.menu.journal, menu);
         return true;
     }
 
@@ -145,7 +143,7 @@ public class RecordActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
-                navigateUpTo(new Intent(this, MainActivity.class));
+                navigateUpTo(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_record):
                 AppUtilities.launchPreferenceFragment(this, ACTION_RECORD_INTENT);
@@ -218,7 +216,7 @@ public class RecordActivity extends AppCompatActivity implements
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
     @Override public void showDualPane(Bundle args) {
-        if (args != null) RecordActivity.this.getSupportFragmentManager().beginTransaction()
+        if (args != null) JournalActivity.this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.record_item_container, DetailFragment.newInstance(args))
                 .commit();
 
@@ -277,11 +275,11 @@ public class RecordActivity extends AppCompatActivity implements
                         String name = values.getName();
                         String formattedDate = DATE_FORMATTER.getDateInstance().format(mDeletedTime);
                         mDeletedTime = values.getTime();
-                        mRemoveDialog = new AlertDialog.Builder(RecordActivity.this).create();
+                        mRemoveDialog = new AlertDialog.Builder(JournalActivity.this).create();
                         String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
                         mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, messageArgs));
-                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), RecordActivity.this);
-                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), RecordActivity.this);
+                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), JournalActivity.this);
+                        mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), JournalActivity.this);
                         mRemoveDialog.show();
                         mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                         Button button = mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
@@ -293,8 +291,8 @@ public class RecordActivity extends AppCompatActivity implements
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
                                 .build()
-                                .launchUrl(RecordActivity.this, Uri.parse(url));
-                        getIntent().setAction(MainActivity.ACTION_CUSTOM_TABS);
+                                .launchUrl(JournalActivity.this, Uri.parse(url));
+                        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
                         break;
                     default:
                 }
@@ -303,7 +301,7 @@ public class RecordActivity extends AppCompatActivity implements
     }
 
     /**
-     * Populates {@link RecordActivity} {@link RecyclerView}.
+     * Populates {@link JournalActivity} {@link RecyclerView}.
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
@@ -321,7 +319,7 @@ public class RecordActivity extends AppCompatActivity implements
         @Override public @NonNull ViewHolder onCreateViewHolder(
                 @NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_record, parent, false);
+                    .inflate(R.layout.item_journal, parent, false);
             return new ViewHolder(view);
         }
 
@@ -463,7 +461,7 @@ public class RecordActivity extends AppCompatActivity implements
                 long time = values.getTime();
                 float impact = Float.parseFloat(values.getImpact());
 
-                Intent shareIntent = ShareCompat.IntentBuilder.from(RecordActivity.this)
+                Intent shareIntent = ShareCompat.IntentBuilder.from(JournalActivity.this)
                         .setType("text/plain")
                         .setText(String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
                                 DATE_FORMATTER.format(new Date(time)),
@@ -478,7 +476,7 @@ public class RecordActivity extends AppCompatActivity implements
              * Defines behavior on click of contact button.
              */
             @Optional @OnClick(R.id.record_contact_button) void viewContacts(View v) {
-                mContactDialog = new AlertDialog.Builder(RecordActivity.this).create();
+                mContactDialog = new AlertDialog.Builder(JournalActivity.this).create();
                 ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, mValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
@@ -502,12 +500,12 @@ public class RecordActivity extends AppCompatActivity implements
                             return false;
                         }
                         record.setImpact(String.valueOf(amountTotal));
-                        DatabaseService.startActionUpdateRecord(RecordActivity.this, record);
+                        DatabaseService.startActionUpdateRecord(JournalActivity.this, record);
                         String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
                         mAmountView.setText(formattedAmount);
                         mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
                         InputMethodManager inputMethodManager =
-                                (InputMethodManager) RecordActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                                (InputMethodManager) JournalActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (inputMethodManager == null) return false;
                         inputMethodManager.toggleSoftInput(0, 0);
                         return true;
@@ -547,7 +545,7 @@ public class RecordActivity extends AppCompatActivity implements
                             int position = (int) mDateDialog.getButton(DialogInterface.BUTTON_POSITIVE).getTag();
                             Record record = mValuesArray[position];
                             record.setTime(mTime);
-                            DatabaseService.startActionUpdateRecord(RecordActivity.this, record);
+                            DatabaseService.startActionUpdateRecord(JournalActivity.this, record);
                         default:
                     }
                 }

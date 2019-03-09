@@ -39,7 +39,7 @@ import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
-import com.github.rjbx.givetrack.data.entry.Give;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
@@ -54,14 +54,14 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVE;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
  * Provides the main screen for this application.
  */
-public class MainActivity extends AppCompatActivity implements
+public class HomeActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         NavigationView.OnNavigationItemSelectedListener,
         DialogInterface.OnClickListener,
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
-    public static final String ARGS_GIVE_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
+    public static final String ARGS_TARGET_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
     public static final String ARGS_USER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.USER_ATTRIBUTES";
 
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements
     private static final String STATE_GIVE_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private SectionsPagerAdapter mPagerAdapter;
-    private Give[] mGiveArray;
+    private Target[] mTargetArray;
     private Record[] mRecordArray;
     private User mUser;
     private boolean mLock = true;
@@ -96,17 +96,17 @@ public class MainActivity extends AppCompatActivity implements
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
 
-        DatabaseService.startActionFetchUser(MainActivity.this);
-        DatabaseService.startActionFetchGive(MainActivity.this);
-        DatabaseService.startActionFetchRecord(MainActivity.this);
+        DatabaseService.startActionFetchUser(HomeActivity.this);
+        DatabaseService.startActionFetchGive(HomeActivity.this);
+        DatabaseService.startActionFetchRecord(HomeActivity.this);
 
         if (savedInstanceState != null) {
-            mGiveArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVE_ARRAY), Give.class);
+            mTargetArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVE_ARRAY), Target.class);
             mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
             mUser = savedInstanceState.getParcelable(STATE_ACTIVE_USER);
         }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser == null) return;
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVE, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements
      * Generates an options Menu.
      */
     @Override public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.home, menu);
         return true;
     }
 
@@ -171,15 +171,15 @@ public class MainActivity extends AppCompatActivity implements
                         calendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
                 break;
-            case R.id.action_add: startActivity(new Intent(this, SearchActivity.class)); break;
-            case R.id.action_history: startActivity(new Intent(this, RecordActivity.class));
+            case R.id.action_add: startActivity(new Intent(this, IndexActivity.class)); break;
+            case R.id.action_history: startActivity(new Intent(this, JournalActivity.class));
             default: return super.onOptionsItemSelected(item);
         } return false;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArray(STATE_GIVE_ARRAY, mGiveArray);
+        outState.putParcelableArray(STATE_GIVE_ARRAY, mTargetArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
         outState.putParcelable(STATE_ACTIVE_USER, mUser);
         super.onSaveInstanceState(outState);
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_GIVE: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVE, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
+            case LOADER_ID_TARGET: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_TARGET, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
@@ -200,14 +200,14 @@ public class MainActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
-            case DatabaseContract.LOADER_ID_GIVE:
-                mGiveArray = new Give[data.getCount()];
+            case DatabaseContract.LOADER_ID_TARGET:
+                mTargetArray = new Target[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
-                        Give give = new Give();
-                        DatabaseAccessor.cursorRowToEntry(data, give);
-                        mGiveArray[i++] = give;
+                        Target target = new Target();
+                        DatabaseAccessor.cursorRowToEntry(data, target);
+                        mTargetArray[i++] = target;
                     } while (data.moveToNext());
                 }
 //                DatabaseService.startActionFetchGive(this);
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
                                 }
-                                if (mGiveArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVE, null, this);
+                                if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
                                 if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             } break;
                         }
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
         }
-        if (!mLock && mGiveArray != null && mRecordArray != null && mUser != null) {
+        if (!mLock && mTargetArray != null && mRecordArray != null && mUser != null) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mGiveArray = null;
+        mTargetArray = null;
         mRecordArray = null;
         mUser = null;
     }
@@ -271,8 +271,8 @@ public class MainActivity extends AppCompatActivity implements
 
         int id = item.getItemId();
         switch (id) {
-            case (R.id.nav_search): startActivity(new Intent(this, SearchActivity.class)); break;
-            case (R.id.nav_record): startActivity(new Intent(this, RecordActivity.class)); break;
+            case (R.id.nav_spawn): startActivity(new Intent(this, IndexActivity.class)); break;
+            case (R.id.nav_record): startActivity(new Intent(this, JournalActivity.class)); break;
             case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
@@ -395,9 +395,9 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         /**
-         * Defines behavior on click of launch search button.
+         * Defines behavior on click of launch spawn button.
          */
-        @OnClick(R.id.placeholder_button) void launchSearch()  { startActivity(new Intent(getActivity(), SearchActivity.class)); }
+        @OnClick(R.id.placeholder_button) void launchSpawn()  { startActivity(new Intent(getActivity(), IndexActivity.class)); }
     }
 
     /**
@@ -416,17 +416,17 @@ public class MainActivity extends AppCompatActivity implements
         @Override public Fragment getItem(int position) {
 
             mLock = true;
-            if (mGiveArray == null || mGiveArray.length == 0) return PlaceholderFragment.newInstance(null);
+            if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
-                Bundle argsGive = new Bundle();
+                Bundle argsTarget= new Bundle();
                 Bundle argsRecord = new Bundle();
-                argsGive.putParcelableArray(ARGS_GIVE_ATTRIBUTES, mGiveArray);
+                argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
-                argsGive.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+                argsTarget.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
                 argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
 
                 switch (position) {
-                    case 0: return GiveFragment.newInstance(argsGive);
+                    case 0: return GiveFragment.newInstance(argsTarget);
                     case 1: return GlanceFragment.newInstance(argsRecord);
                     default: return PlaceholderFragment.newInstance(null);
                 }
@@ -462,13 +462,13 @@ public class MainActivity extends AppCompatActivity implements
 //     */
 //    private static class StatusAsyncTask extends AsyncTask<Give[], Void, Boolean> {
 //
-//        private WeakReference<MainActivity> mActivity;
+//        private WeakReference<HomeActivity> mActivity;
 //
 //        /**
 //         * Constructs an instance with a Fragment that is converted to a {@link WeakReference} in order
 //         * to prevent memory leak.
 //         */
-//        StatusAsyncTask(MainActivity mainActivity) {
+//        StatusAsyncTask(HomeActivity mainActivity) {
 //            mActivity = new WeakReference<>(mainActivity);
 //        }
 //
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements
 //            Give[] valuesArray = giveArray[0];
 //            if (valuesArray == null || valuesArray.length == 0) return false;
 //            Boolean isCurrent = true;
-//            for (Give give: valuesArray) {
+//            for (Targetgive: valuesArray) {
 //               isCurrent = eins.contains(give.getEin());
 //            }
 //            if (!isCurrent) DatabaseService.startActionFetchGive(mActivity.get());

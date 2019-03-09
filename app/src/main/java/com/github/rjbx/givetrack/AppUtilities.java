@@ -6,9 +6,9 @@ import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
 import com.github.rjbx.givetrack.ui.ConfigActivity;
-import com.github.rjbx.givetrack.ui.MainActivity;
-import com.github.rjbx.givetrack.ui.RecordActivity;
-import com.github.rjbx.givetrack.ui.SearchActivity;
+import com.github.rjbx.givetrack.ui.JournalActivity;
+import com.github.rjbx.givetrack.ui.HomeActivity;
+import com.github.rjbx.givetrack.ui.IndexActivity;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -39,17 +39,17 @@ public class AppUtilities {
 
     public static String getPreferenceFragmentName(String action) {
         switch (action) {
-            case MainActivity.ACTION_MAIN_INTENT:
-                return ConfigActivity.GivePreferenceFragment.class.getName();
-            case SearchActivity.ACTION_SEARCH_INTENT:
-                return ConfigActivity.SearchPreferenceFragment.class.getName();
-            case RecordActivity.ACTION_RECORD_INTENT:
-                return ConfigActivity.RecordPreferenceFragment.class.getName();
+            case HomeActivity.ACTION_MAIN_INTENT:
+                return ConfigActivity.HomePreferenceFragment.class.getName();
+            case IndexActivity.ACTION_SPAWN_INTENT:
+                return ConfigActivity.IndexPreferenceFragment.class.getName();
+            case JournalActivity.ACTION_RECORD_INTENT:
+                return ConfigActivity.JournalPreferenceFragment.class.getName();
             default: throw new IllegalArgumentException(
                     String.format("Action must derive from %s, %s or %s",
-                            MainActivity.ACTION_MAIN_INTENT,
-                            SearchActivity.ACTION_SEARCH_INTENT,
-                            RecordActivity.ACTION_RECORD_INTENT
+                            HomeActivity.ACTION_MAIN_INTENT,
+                            IndexActivity.ACTION_SPAWN_INTENT,
+                            JournalActivity.ACTION_RECORD_INTENT
                     ));
         }
     }

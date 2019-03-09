@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Search implements Company, Parcelable, Cloneable {
+public class Spawn implements Company, Parcelable, Cloneable {
 
     private String uid;
     private String ein;
@@ -31,9 +31,9 @@ public class Search implements Company, Parcelable, Cloneable {
     private String impact;
     private int type;
 
-    @Exclude public static final Parcelable.Creator<Search> CREATOR = new Parcelable.Creator<Search>() {
-        @Override public Search createFromParcel(Parcel source) { return new Search(source); }
-        @Override public Search[] newArray(int size) { return new Search[size]; }
+    @Exclude public static final Parcelable.Creator<Spawn> CREATOR = new Parcelable.Creator<Spawn>() {
+        @Override public Spawn createFromParcel(Parcel source) { return new Spawn(source); }
+        @Override public Spawn[] newArray(int size) { return new Spawn[size]; }
     };
 
     @Override public void writeToParcel(Parcel dest, int flags) {
@@ -57,7 +57,7 @@ public class Search implements Company, Parcelable, Cloneable {
 
     @Override public int describeContents() { return 0; }
 
-    public Search(Parcel source) {
+    public Spawn(Parcel source) {
         uid = source.readString();
         ein = source.readString();
         stamp = source.readLong();
@@ -76,34 +76,34 @@ public class Search implements Company, Parcelable, Cloneable {
         type = source.readInt();
     }
 
-    public Search(Search search) {
-        this.uid = search.uid;
-        this.ein = search.ein;
-        this.stamp = search.stamp;
-        this.name = search.name;
-        this.locationStreet = search.locationStreet;
-        this.locationDetail = search.locationDetail;
-        this.locationCity = search.locationCity;
-        this.locationState = search.locationState;
-        this.locationZip = search.locationZip;
-        this.homepageUrl = search.homepageUrl;
-        this.navigatorUrl = search.navigatorUrl;
-        this.phone = search.phone;
-        this.email = search.email;
-        this.social = search.social;
-        this.impact = search.impact;
-        this.type = search.type;
+    public Spawn(Spawn spawn) {
+        this.uid = spawn.uid;
+        this.ein = spawn.ein;
+        this.stamp = spawn.stamp;
+        this.name = spawn.name;
+        this.locationStreet = spawn.locationStreet;
+        this.locationDetail = spawn.locationDetail;
+        this.locationCity = spawn.locationCity;
+        this.locationState = spawn.locationState;
+        this.locationZip = spawn.locationZip;
+        this.homepageUrl = spawn.homepageUrl;
+        this.navigatorUrl = spawn.navigatorUrl;
+        this.phone = spawn.phone;
+        this.email = spawn.email;
+        this.social = spawn.social;
+        this.impact = spawn.impact;
+        this.type = spawn.type;
     }
 
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public Search() {}
+    public Spawn() {}
 
     /**
      * Provides POJO constructor required for object relational mapping.
      */
-    public Search(
+    public Spawn(
             String uid,
             String ein,
             long stamp,
@@ -171,7 +171,7 @@ public class Search implements Company, Parcelable, Cloneable {
     @Override public int getType() { return type; }
     @Override public void setType(int type) { this.type = type; }
     @Override public String getId() { return String.valueOf(stamp); }
-    @Exclude @Override public Search getObject() { return this; }
+    @Exclude @Override public Spawn getObject() { return this; }
     
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
@@ -253,32 +253,32 @@ public class Search implements Company, Parcelable, Cloneable {
         type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_TYPE);
     }
 
-    @Override public Search clone() {
-        Search clone  = new Search(this);
+    @Override public Spawn clone() {
+        Spawn clone  = new Spawn(this);
         try { super.clone();
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
     }
 
-    public static Search getDefault() {
-        Search search = new Search();
-        search.uid = "";
-        search.ein = "";
-        search.stamp = 0;
-        search.name = "";
-        search.locationStreet = "";
-        search.locationDetail = "";
-        search.locationCity = "";
-        search.locationState = "";
-        search.locationZip = "";
-        search.homepageUrl = "";
-        search.navigatorUrl = "";
-        search.phone = "";
-        search.email = "";
-        search.social = "";
-        search.impact = "";
-        search.type = 0;
-        return search;
+    public static Spawn getDefault() {
+        Spawn spawn = new Spawn();
+        spawn.uid = "";
+        spawn.ein = "";
+        spawn.stamp = 0;
+        spawn.name = "";
+        spawn.locationStreet = "";
+        spawn.locationDetail = "";
+        spawn.locationCity = "";
+        spawn.locationState = "";
+        spawn.locationZip = "";
+        spawn.homepageUrl = "";
+        spawn.navigatorUrl = "";
+        spawn.phone = "";
+        spawn.email = "";
+        spawn.social = "";
+        spawn.impact = "";
+        spawn.type = 0;
+        return spawn;
     }
 }

@@ -12,9 +12,9 @@
             <menu>
 
                 <item
-                    android:id="@+id/nav_search"
+                    android:id="@+id/nav_spawn"
                     android:icon="@drawable/menu_search"
-                    android:title="@string/nav_item_search" />
+                    android:title="@string/nav_item_spawn" />
 
                 <item
                     android:id="@+id/nav_record"

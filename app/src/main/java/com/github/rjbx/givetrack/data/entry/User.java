@@ -22,27 +22,27 @@ public class User implements Entry, Parcelable, Cloneable {
     private String giveImpact;
     private String giveMagnitude;
     private boolean giveReset;
-    private long giveStamp;
+    private long targetStamp;
     private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
     private int glanceTheme;
-    private String recordOrder;
-    private String recordSort;
+    private String journalOrder;
+    private String journalSort;
     private long recordStamp;
-    private String searchCity;
-    private String searchCompany;
-    private boolean searchDialog;
-    private boolean searchFilter;
-    private boolean searchFocus;
-    private String searchMinrating;
-    private String searchOrder;
-    private String searchPages;
-    private String searchRows;
-    private String searchSort;
-    private String searchState;
-    private String searchTerm;
-    private String searchZip;
+    private String indexCity;
+    private String indexCompany;
+    private boolean indexDialog;
+    private boolean indexFilter;
+    private boolean indexFocus;
+    private String indexMinrating;
+    private String indexOrder;
+    private String indexPages;
+    private String indexRows;
+    private String indexSort;
+    private String indexState;
+    private String indexTerm;
+    private String indexZip;
     private String uid;
     private boolean userActive;
     private String userBirthdate;
@@ -68,23 +68,23 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeLong(glanceAnchor);
         dest.writeInt(glanceSince ? 1 : 0);
         dest.writeInt(glanceTheme);
-        dest.writeInt(searchDialog ? 1 : 0);
-        dest.writeInt(searchFocus ? 1 : 0);
-        dest.writeInt(searchFilter ? 1 : 0);
-        dest.writeString(searchCompany);
-        dest.writeString(searchTerm);
-        dest.writeString(searchCity);
-        dest.writeString(searchState);
-        dest.writeString(searchZip);
-        dest.writeString(searchMinrating);
-        dest.writeString(searchPages);
-        dest.writeString(searchRows);
+        dest.writeInt(indexDialog ? 1 : 0);
+        dest.writeInt(indexFocus ? 1 : 0);
+        dest.writeInt(indexFilter ? 1 : 0);
+        dest.writeString(indexCompany);
+        dest.writeString(indexTerm);
+        dest.writeString(indexCity);
+        dest.writeString(indexState);
+        dest.writeString(indexZip);
+        dest.writeString(indexMinrating);
+        dest.writeString(indexPages);
+        dest.writeString(indexRows);
         dest.writeInt(giveReset ? 1 : 0);
-        dest.writeString(searchSort);
-        dest.writeString(searchOrder);
-        dest.writeString(recordSort);
-        dest.writeString(recordOrder);
-        dest.writeLong(giveStamp);
+        dest.writeString(indexSort);
+        dest.writeString(indexOrder);
+        dest.writeString(journalSort);
+        dest.writeString(journalOrder);
+        dest.writeLong(targetStamp);
         dest.writeLong(recordStamp);
         dest.writeLong(userStamp);
     }
@@ -104,23 +104,23 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceAnchor = source.readLong();
         glanceSince = source.readInt() == 1;
         glanceTheme = source.readInt();
-        searchDialog = source.readInt() == 1;
-        searchFocus = source.readInt() == 1;
-        searchFilter = source.readInt() == 1;
-        searchCompany = source.readString();
-        searchTerm = source.readString();
-        searchCity = source.readString();
-        searchState = source.readString();
-        searchZip = source.readString();
-        searchMinrating = source.readString();
-        searchPages = source.readString();
-        searchRows = source.readString();
+        indexDialog = source.readInt() == 1;
+        indexFocus = source.readInt() == 1;
+        indexFilter = source.readInt() == 1;
+        indexCompany = source.readString();
+        indexTerm = source.readString();
+        indexCity = source.readString();
+        indexState = source.readString();
+        indexZip = source.readString();
+        indexMinrating = source.readString();
+        indexPages = source.readString();
+        indexRows = source.readString();
         giveReset = source.readInt() == 1;
-        searchSort = source.readString();
-        searchOrder = source.readString();
-        recordSort = source.readString();
-        recordOrder = source.readString();
-        giveStamp = source.readLong();
+        indexSort = source.readString();
+        indexOrder = source.readString();
+        journalSort = source.readString();
+        journalOrder = source.readString();
+        targetStamp = source.readLong();
         recordStamp = source.readLong();
         userStamp = source.readLong();
     }
@@ -138,23 +138,23 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceAnchor = user.glanceAnchor;
         this.glanceSince = user.glanceSince;
         this.glanceTheme = user.glanceTheme;
-        this.searchDialog = user.searchDialog;
-        this.searchFocus = user.searchFocus;
-        this.searchFilter = user.searchFilter;
-        this.searchCompany = user.searchCompany;
-        this.searchTerm = user.searchTerm;
-        this.searchCity = user.searchCity;
-        this.searchState = user.searchState;
-        this.searchZip = user.searchZip;
-        this.searchMinrating = user.searchMinrating;
-        this.searchPages = user.searchPages;
-        this.searchRows = user.searchRows;
+        this.indexDialog = user.indexDialog;
+        this.indexFocus = user.indexFocus;
+        this.indexFilter = user.indexFilter;
+        this.indexCompany = user.indexCompany;
+        this.indexTerm = user.indexTerm;
+        this.indexCity = user.indexCity;
+        this.indexState = user.indexState;
+        this.indexZip = user.indexZip;
+        this.indexMinrating = user.indexMinrating;
+        this.indexPages = user.indexPages;
+        this.indexRows = user.indexRows;
         this.giveReset = user.giveReset;
-        this.searchSort = user.searchSort;
-        this.searchOrder = user.searchOrder;
-        this.recordSort = user.recordSort;
-        this.recordOrder = user.recordOrder;
-        this.giveStamp = user.giveStamp;
+        this.indexSort = user.indexSort;
+        this.indexOrder = user.indexOrder;
+        this.journalSort = user.journalSort;
+        this.journalOrder = user.journalOrder;
+        this.targetStamp = user.targetStamp;
         this.recordStamp = user.recordStamp;
         this.userStamp = user.userStamp;
     }
@@ -180,23 +180,23 @@ public class User implements Entry, Parcelable, Cloneable {
             String giveImpact,
             String giveMagnitude,
             int glanceTheme,
-            boolean searchDialog,
-            boolean searchFocus,
-            boolean searchFilter,
-            String searchCompany,
-            String searchTerm,
-            String searchCity,
-            String searchState,
-            String searchZip,
-            String searchMinrating,
-            String searchPages,
-            String searchRows,
+            boolean indexDialog,
+            boolean indexFocus,
+            boolean indexFilter,
+            String indexCompany,
+            String indexTerm,
+            String indexCity,
+            String indexState,
+            String indexZip,
+            String indexMinrating,
+            String indexPages,
+            String indexRows,
             boolean giveReset,
-            String searchSort,
-            String searchOrder,
-            String recordSort,
-            String recordOrder,
-            long giveStamp,
+            String indexSort,
+            String indexOrder,
+            String journalSort,
+            String journalOrder,
+            long targetStamp,
             long recordStamp,
             long userStamp) {
         this.uid = uid;
@@ -211,23 +211,23 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceAnchor = glanceAnchor;
         this.glanceSince = glanceSince;
         this.glanceTheme = glanceTheme;
-        this.searchDialog = searchDialog;
-        this.searchFocus = searchFocus;
-        this.searchFilter = searchFilter;
-        this.searchCompany = searchCompany;
-        this.searchTerm = searchTerm;
-        this.searchCity = searchCity;
-        this.searchState = searchState;
-        this.searchZip = searchZip;
-        this.searchMinrating = searchMinrating;
-        this.searchPages = searchPages;
-        this.searchRows = searchRows;
+        this.indexDialog = indexDialog;
+        this.indexFocus = indexFocus;
+        this.indexFilter = indexFilter;
+        this.indexCompany = indexCompany;
+        this.indexTerm = indexTerm;
+        this.indexCity = indexCity;
+        this.indexState = indexState;
+        this.indexZip = indexZip;
+        this.indexMinrating = indexMinrating;
+        this.indexPages = indexPages;
+        this.indexRows = indexRows;
         this.giveReset = giveReset;
-        this.searchSort = searchSort;
-        this.searchOrder = searchOrder;
-        this.recordSort = recordSort;
-        this.recordOrder = recordOrder;
-        this.giveStamp = giveStamp;
+        this.indexSort = indexSort;
+        this.indexOrder = indexOrder;
+        this.journalSort = journalSort;
+        this.journalOrder = journalOrder;
+        this.targetStamp = targetStamp;
         this.recordStamp = recordStamp;
         this.userStamp = userStamp;
     }
@@ -256,40 +256,40 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGlanceSince(boolean glanceSince) { this.glanceSince = glanceSince; }
     public int getGlanceTheme() { return glanceTheme; }
     public void setGlanceTheme(int glanceTheme) { this.glanceTheme = glanceTheme; }
-    public boolean getSearchDialog() { return searchDialog; }
-    public void setSearchDialog(boolean searchDialog) { this.searchDialog = searchDialog; }
-    public String getSearchCompany() { return searchCompany; }
-    public void setSearchCompany(String searchCompany) { this.searchCompany = searchCompany; }
-    public boolean getSearchFocus() { return searchFocus; }
-    public void setSearchFocus(boolean searchFocus) { this.searchFocus = searchFocus; }
-    public boolean getSearchFilter() { return searchFilter; }
-    public void setSearchFilter(boolean searchFilter) { this.searchFilter = searchFilter; }
-    public String getSearchTerm() { return searchTerm; }
-    public void setSearchTerm(String searchTerm) { this.searchTerm = searchTerm; }
-    public String getSearchCity() { return searchCity; }
-    public void setSearchCity(String searchCity) { this.searchCity = searchCity; }
-    public String getSearchState() { return searchState; }
-    public void setSearchState(String searchState) { this.searchState = searchState; }
-    public String getSearchZip() { return searchZip; }
-    public void setSearchZip(String searchZip) { this.searchZip = searchZip; }
-    public String getSearchMinrating() { return searchMinrating; }
-    public void setSearchMinrating(String searchMinrating) { this.searchMinrating = searchMinrating; }
-    public String getSearchPages() { return searchPages; }
-    public void setSearchPages(String searchPages) { this.searchPages = searchPages; }
-    public String getSearchRows() { return searchRows; }
-    public void setSearchRows(String searchRows){ this.searchRows = searchRows; }
+    public boolean getIndexDialog() { return indexDialog; }
+    public void setIndexDialog(boolean indexDialog) { this.indexDialog = indexDialog; }
+    public String getIndexCompany() { return indexCompany; }
+    public void setIndexCompany(String indexCompany) { this.indexCompany = indexCompany; }
+    public boolean getIndexFocus() { return indexFocus; }
+    public void setIndexFocus(boolean indexFocus) { this.indexFocus = indexFocus; }
+    public boolean getIndexFilter() { return indexFilter; }
+    public void setIndexFilter(boolean indexFilter) { this.indexFilter = indexFilter; }
+    public String getIndexTerm() { return indexTerm; }
+    public void setIndexTerm(String indexTerm) { this.indexTerm = indexTerm; }
+    public String getIndexCity() { return indexCity; }
+    public void setIndexCity(String indexCity) { this.indexCity = indexCity; }
+    public String getIndexState() { return indexState; }
+    public void setIndexState(String indexState) { this.indexState = indexState; }
+    public String getIndexZip() { return indexZip; }
+    public void setIndexZip(String indexZip) { this.indexZip = indexZip; }
+    public String getIndexMinrating() { return indexMinrating; }
+    public void setIndexMinrating(String indexMinrating) { this.indexMinrating = indexMinrating; }
+    public String getIndexPages() { return indexPages; }
+    public void setIndexPages(String indexPages) { this.indexPages = indexPages; }
+    public String getIndexRows() { return indexRows; }
+    public void setIndexRows(String indexRows){ this.indexRows = indexRows; }
     public boolean getGiveReset() { return giveReset; }
     public void setGiveReset(boolean giveReset) { this.giveReset = giveReset; }
-    public String getSearchSort() { return searchSort; }
-    public void setSearchSort(String searchSort) { this.searchSort = searchSort; }
-    public String getSearchOrder() { return searchOrder; }
-    public void setSearchOrder(String searchOrder) { this.searchOrder = searchOrder; }
-    public String getRecordSort() { return recordSort; }
-    public void setRecordSort(String recordSort) { this.recordSort = recordSort; }
-    public String getRecordOrder() { return recordOrder; }
-    public void setRecordOrder(String recordOrder) { this.recordOrder = recordOrder; }
-    public long getGiveStamp() { return giveStamp; }
-    public void setGiveStamp(long giveStamp) { this.giveStamp = giveStamp; }
+    public String getIndexSort() { return indexSort; }
+    public void setIndexSort(String indexSort) { this.indexSort = indexSort; }
+    public String getIndexOrder() { return indexOrder; }
+    public void setIndexOrder(String indexOrder) { this.indexOrder = indexOrder; }
+    public String getJournalSort() { return journalSort; }
+    public void setJournalSort(String journalSort) { this.journalSort = journalSort; }
+    public String getJournalOrder() { return journalOrder; }
+    public void setJournalOrder(String journalOrder) { this.journalOrder = journalOrder; }
+    public long getTargetStamp() { return targetStamp; }
+    public void setTargetStamp(long targetStamp) { this.targetStamp = targetStamp; }
     public long getRecordStamp() { return recordStamp; }
     public void setRecordStamp(long recordStamp) { this.recordStamp = recordStamp; }
     public long getUserStamp() { return userStamp; }
@@ -309,62 +309,62 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         map.put(COLUMN_GLANCE_SINCE, glanceSince);
         map.put(COLUMN_GLANCE_THEME, glanceTheme);
-        map.put(COLUMN_SEARCH_DIALOG, searchDialog);
-        map.put(COLUMN_SEARCH_FOCUS, searchFocus);
-        map.put(COLUMN_SEARCH_FILTER, searchFilter);
-        map.put(COLUMN_SEARCH_COMPANY, searchCompany);
+        map.put(COLUMN_SPAWN_DIALOG, indexDialog);
+        map.put(COLUMN_SPAWN_FOCUS, indexFocus);
+        map.put(COLUMN_SPAWN_FILTER, indexFilter);
+        map.put(COLUMN_SPAWN_COMPANY, indexCompany);
         map.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
         map.put(COLUMN_GIVE_IMPACT, giveImpact);
-        map.put(COLUMN_SEARCH_TERM, searchTerm);
-        map.put(COLUMN_SEARCH_CITY, searchCity);
-        map.put(COLUMN_SEARCH_STATE, searchState);
-        map.put(COLUMN_SEARCH_ZIP, searchZip);
-        map.put(COLUMN_SEARCH_MINRATING, searchMinrating);
-        map.put(COLUMN_SEARCH_PAGES, searchPages);
-        map.put(COLUMN_SEARCH_ROWS, searchRows);
+        map.put(COLUMN_SPAWN_TERM, indexTerm);
+        map.put(COLUMN_SPAWN_CITY, indexCity);
+        map.put(COLUMN_SPAWN_STATE, indexState);
+        map.put(COLUMN_SPAWN_ZIP, indexZip);
+        map.put(COLUMN_SPAWN_MINRATING, indexMinrating);
+        map.put(COLUMN_SPAWN_PAGES, indexPages);
+        map.put(COLUMN_SPAWN_ROWS, indexRows);
         map.put(COLUMN_GIVE_RESET, giveReset);
-        map.put(COLUMN_SEARCH_SORT, searchSort);
-        map.put(COLUMN_SEARCH_ORDER, searchOrder);
-        map.put(COLUMN_RECORD_SORT, recordSort);
-        map.put(COLUMN_RECORD_ORDER, recordOrder);
-        map.put(COLUMN_GIVE_STAMP, giveStamp);
+        map.put(COLUMN_SPAWN_SORT, indexSort);
+        map.put(COLUMN_SPAWN_ORDER, indexOrder);
+        map.put(COLUMN_RECORD_SORT, journalSort);
+        map.put(COLUMN_RECORD_ORDER, journalOrder);
+        map.put(COLUMN_TARGET_STAMP, targetStamp);
         map.put(COLUMN_RECORD_STAMP, recordStamp);
         map.put(COLUMN_USER_STAMP, userStamp);
         return map;
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
+        giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
+        giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
+        giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
+        giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
+        giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
+        glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
+        glanceSince = (int) map.get(COLUMN_GLANCE_SINCE) == 1;
+        glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
+        indexDialog = (int) map.get(COLUMN_SPAWN_DIALOG) == 1;
+        indexFocus = (int) map.get(COLUMN_SPAWN_FOCUS) == 1;
+        indexFilter = (int) map.get(COLUMN_SPAWN_FILTER) == 1;
+        indexCompany = (String) map.get(COLUMN_SPAWN_COMPANY);
+        indexTerm = (String) map.get(COLUMN_SPAWN_TERM);
+        indexCity = (String) map.get(COLUMN_SPAWN_CITY);
+        indexState = (String) map.get(COLUMN_SPAWN_STATE);
+        indexZip = (String) map.get(COLUMN_SPAWN_ZIP);
+        indexMinrating = (String) map.get(COLUMN_SPAWN_MINRATING);
+        indexPages = (String) map.get(COLUMN_SPAWN_PAGES);
+        indexRows = (String) map.get(COLUMN_SPAWN_ROWS);
+        indexSort = (String) map.get(COLUMN_SPAWN_SORT);
+        indexOrder = (String) map.get(COLUMN_SPAWN_ORDER);
+        journalSort = (String) map.get(COLUMN_RECORD_SORT);
+        journalOrder = (String) map.get(COLUMN_RECORD_ORDER);
+        recordStamp = (long) map.get(COLUMN_RECORD_STAMP);
+        targetStamp = (long) map.get(COLUMN_TARGET_STAMP);
+        userStamp = (long) map.get(COLUMN_USER_STAMP);
         uid = (String) map.get(COLUMN_UID);
         userEmail = (String) map.get(COLUMN_USER_EMAIL);
         userActive = (int) map.get(COLUMN_USER_ACTIVE) == 1;
         userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
         userGender = (String) map.get(COLUMN_USER_GENDER);
-        giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
-        giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
-        giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
-        giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
-        glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
-        glanceSince = (int) map.get(COLUMN_GLANCE_SINCE) == 1;
-        glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
-        searchDialog = (int) map.get(COLUMN_SEARCH_DIALOG) == 1;
-        searchFocus = (int) map.get(COLUMN_SEARCH_FOCUS) == 1;
-        searchFilter = (int) map.get(COLUMN_SEARCH_FILTER) == 1;
-        searchCompany = (String) map.get(COLUMN_SEARCH_COMPANY);
-        searchTerm = (String) map.get(COLUMN_SEARCH_TERM);
-        searchCity = (String) map.get(COLUMN_SEARCH_CITY);
-        searchState = (String) map.get(COLUMN_SEARCH_STATE);
-        searchZip = (String) map.get(COLUMN_SEARCH_ZIP);
-        searchMinrating = (String) map.get(COLUMN_SEARCH_MINRATING);
-        searchPages = (String) map.get(COLUMN_SEARCH_PAGES);
-        searchRows = (String) map.get(COLUMN_SEARCH_ROWS);
-        giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
-        searchSort = (String) map.get(COLUMN_SEARCH_SORT);
-        searchOrder = (String) map.get(COLUMN_SEARCH_ORDER);
-        recordSort = (String) map.get(COLUMN_RECORD_SORT);
-        recordOrder = (String) map.get(COLUMN_RECORD_ORDER);
-        giveStamp = (long) map.get(COLUMN_GIVE_STAMP);
-        recordStamp = (long) map.get(COLUMN_RECORD_STAMP);
-        userStamp = (long) map.get(COLUMN_USER_STAMP);
     }
 
     @Override public ContentValues toContentValues() {
@@ -379,25 +379,25 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         values.put(COLUMN_GLANCE_SINCE, glanceSince);
         values.put(COLUMN_GLANCE_THEME, glanceTheme);
-        values.put(COLUMN_SEARCH_DIALOG, searchDialog);
-        values.put(COLUMN_SEARCH_FOCUS, searchFocus);
-        values.put(COLUMN_SEARCH_FILTER, searchFilter);
-        values.put(COLUMN_SEARCH_COMPANY, searchCompany);
+        values.put(COLUMN_SPAWN_DIALOG, indexDialog);
+        values.put(COLUMN_SPAWN_FOCUS, indexFocus);
+        values.put(COLUMN_SPAWN_FILTER, indexFilter);
+        values.put(COLUMN_SPAWN_COMPANY, indexCompany);
         values.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
         values.put(COLUMN_GIVE_IMPACT, giveImpact);
-        values.put(COLUMN_SEARCH_TERM, searchTerm);
-        values.put(COLUMN_SEARCH_CITY, searchCity);
-        values.put(COLUMN_SEARCH_STATE, searchState);
-        values.put(COLUMN_SEARCH_ZIP, searchZip);
-        values.put(COLUMN_SEARCH_MINRATING, searchMinrating);
-        values.put(COLUMN_SEARCH_PAGES, searchPages);
-        values.put(COLUMN_SEARCH_ROWS, searchRows);
+        values.put(COLUMN_SPAWN_TERM, indexTerm);
+        values.put(COLUMN_SPAWN_CITY, indexCity);
+        values.put(COLUMN_SPAWN_STATE, indexState);
+        values.put(COLUMN_SPAWN_ZIP, indexZip);
+        values.put(COLUMN_SPAWN_MINRATING, indexMinrating);
+        values.put(COLUMN_SPAWN_PAGES, indexPages);
+        values.put(COLUMN_SPAWN_ROWS, indexRows);
         values.put(COLUMN_GIVE_RESET, giveReset);
-        values.put(COLUMN_SEARCH_SORT, searchSort);
-        values.put(COLUMN_SEARCH_ORDER, searchOrder);
-        values.put(COLUMN_RECORD_SORT, recordSort);
-        values.put(COLUMN_RECORD_ORDER, recordOrder);
-        values.put(COLUMN_GIVE_STAMP, giveStamp);
+        values.put(COLUMN_SPAWN_SORT, indexSort);
+        values.put(COLUMN_SPAWN_ORDER, indexOrder);
+        values.put(COLUMN_RECORD_SORT, journalSort);
+        values.put(COLUMN_RECORD_ORDER, journalOrder);
+        values.put(COLUMN_TARGET_STAMP, targetStamp);
         values.put(COLUMN_RECORD_STAMP, recordStamp);
         values.put(COLUMN_USER_STAMP, userStamp);
         return values;
@@ -416,23 +416,23 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
         glanceSince = values.getAsInteger(COLUMN_GLANCE_SINCE) == 1;
         glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
-        searchDialog = values.getAsInteger(COLUMN_SEARCH_DIALOG) == 1;
-        searchFocus = values.getAsInteger(COLUMN_SEARCH_FOCUS) == 1;
-        searchFilter = values.getAsInteger(COLUMN_SEARCH_FILTER) == 1;
-        searchCompany = values.getAsString(COLUMN_SEARCH_COMPANY);
-        searchTerm = values.getAsString(COLUMN_SEARCH_TERM);
-        searchCity = values.getAsString(COLUMN_SEARCH_CITY);
-        searchState = values.getAsString(COLUMN_SEARCH_STATE);
-        searchZip = values.getAsString(COLUMN_SEARCH_ZIP);
-        searchMinrating = values.getAsString(COLUMN_SEARCH_MINRATING);
-        searchPages = values.getAsString(COLUMN_SEARCH_PAGES);
-        searchRows = values.getAsString(COLUMN_SEARCH_ROWS);
+        indexDialog = values.getAsInteger(COLUMN_SPAWN_DIALOG) == 1;
+        indexFocus = values.getAsInteger(COLUMN_SPAWN_FOCUS) == 1;
+        indexFilter = values.getAsInteger(COLUMN_SPAWN_FILTER) == 1;
+        indexCompany = values.getAsString(COLUMN_SPAWN_COMPANY);
+        indexTerm = values.getAsString(COLUMN_SPAWN_TERM);
+        indexCity = values.getAsString(COLUMN_SPAWN_CITY);
+        indexState = values.getAsString(COLUMN_SPAWN_STATE);
+        indexZip = values.getAsString(COLUMN_SPAWN_ZIP);
+        indexMinrating = values.getAsString(COLUMN_SPAWN_MINRATING);
+        indexPages = values.getAsString(COLUMN_SPAWN_PAGES);
+        indexRows = values.getAsString(COLUMN_SPAWN_ROWS);
         giveReset = values.getAsBoolean(COLUMN_GIVE_RESET);
-        searchSort = values.getAsString(COLUMN_SEARCH_SORT);
-        searchOrder = values.getAsString(COLUMN_SEARCH_ORDER);
-        recordSort = values.getAsString(COLUMN_RECORD_SORT);
-        recordOrder = values.getAsString(COLUMN_RECORD_ORDER);
-        giveStamp = values.getAsLong(COLUMN_GIVE_STAMP);
+        indexSort = values.getAsString(COLUMN_SPAWN_SORT);
+        indexOrder = values.getAsString(COLUMN_SPAWN_ORDER);
+        journalSort = values.getAsString(COLUMN_RECORD_SORT);
+        journalOrder = values.getAsString(COLUMN_RECORD_ORDER);
+        targetStamp = values.getAsLong(COLUMN_TARGET_STAMP);
         recordStamp = values.getAsLong(COLUMN_RECORD_STAMP);
         userStamp = values.getAsLong(COLUMN_USER_STAMP);
     }
@@ -459,23 +459,23 @@ public class User implements Entry, Parcelable, Cloneable {
         user.glanceAnchor = 0;
         user.glanceSince = false;
         user.glanceTheme = 0;
-        user.searchDialog = false;
-        user.searchFocus = false;
-        user.searchFilter = true;
-        user.searchCompany = "";
-        user.searchTerm = "";
-        user.searchCity = "";
-        user.searchState = "";
-        user.searchZip = "";
-        user.searchMinrating = "";
-        user.searchPages = "";
-        user.searchRows = "";
+        user.indexDialog = false;
+        user.indexFocus = false;
+        user.indexFilter = true;
+        user.indexCompany = "";
+        user.indexTerm = "";
+        user.indexCity = "";
+        user.indexState = "";
+        user.indexZip = "";
+        user.indexMinrating = "";
+        user.indexPages = "";
+        user.indexRows = "";
         user.giveReset = false;
-        user.searchSort = "RATING";
-        user.searchOrder = "DESC";
-        user.recordSort = "donationTime";
-        user.recordOrder = "DESC";
-        user.giveStamp = 0;
+        user.indexSort = "RATING";
+        user.indexOrder = "DESC";
+        user.journalSort = "donationTime";
+        user.journalOrder = "DESC";
+        user.targetStamp = 0;
         user.recordStamp = 0;
         user.userStamp = 0;
         return user;

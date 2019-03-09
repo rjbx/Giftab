@@ -5,7 +5,7 @@
     <string name="app_name">Givetrack</string>
 
     <!-- Errors -->
-    <string name="removal_error_message">An unexpected error occurred; could not remove %s from your search results.</string>
+    <string name="removal_error_message">An unexpected error occurred; could not remove %s from your spawn results.</string>
     <string name="network_error_message">There is a problem with the network. Please check your connection and try again.</string>
     <string name="provider_error_message">"Unable to establish a connection with %s. Please try again later.</string>
     <string name="create_error_message">%s: Failed to create file from path</string>
@@ -55,7 +55,7 @@
     <!-- Screens -->
     <string name="title_activity_main">Main Activity</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="title_search_results">Search Results</string>
+    <string name="title_spawn_results">Spawn Results</string>
     <string name="title_donor_records">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_settings">Settings</string>
@@ -69,7 +69,7 @@
     <string name="nav_menu_interact">Interact</string>
     <string name="nav_menu_manage">Manage</string>
     <string name="nav_menu_learn">Learn</string>
-    <string name="nav_item_search">Search</string>
+    <string name="nav_item_spawn">Spawn</string>
     <string name="nav_item_history">History</string>
     <string name="nav_item_settings">Settings</string>
     <string name="nav_item_logout">Logout</string>
@@ -105,15 +105,15 @@
 
     <!-- Charity -->
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
-    <string name="dialog_description_magnitude_adjustment">Change the giveMagnitude of increments and decrements.The current giveMagnitude is %s</string>
-    <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
+    <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
+    <string name="dialog_filter_setup">To set up your spawn filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_charity">Remove %s from your collection?</string>
     <string name="dialog_removal_record">Remove %s from your records?</string>
     <string name="snippet_all_charities">all charities</string>
     <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
     <string name="message_record_refresh">Your records have been updated.</string>
-    <string name="message_search_refresh">Your search results have been refreshed.</string>
-    <string name="message_generated_remove">%s has been removed from your search results. </string>
+    <string name="message_spawn_refresh">Your spawn results have been refreshed.</string>
+    <string name="message_generated_remove">%s has been removed from your spawn results. </string>
     <string name="message_collected_add">"%s has been added to your collection"</string>
     <string name="message_collected_remove">"%s has been removed from your collection"</string>
     <string name="indicator_donation_frequency">Number of donations: %s</string>
@@ -143,16 +143,16 @@
     <string name="pref_size_key" translatable="false">rows</string>
     <string name="pref_minrating_key" translatable="false">minrating</string>
     <string name="pref_filter_key" translatable="false">fundraising</string>
-    <string name="pref_searchSort_key" translatable="false">searchSort</string>
-    <string name="pref_searchOrder_key" translatable="false">searchOrder</string>
-    <string name="pref_recordSort_key" translatable="false">recordSort</string>
-    <string name="pref_recordOrder_key" translatable="false">recordOrder</string>
+    <string name="pref_spawnSort_key" translatable="false">indexSort</string>
+    <string name="pref_spawnOrder_key" translatable="false">indexOrder</string>
+    <string name="pref_recordSort_key" translatable="false">journalSort</string>
+    <string name="pref_recordOrder_key" translatable="false">journalOrder</string>
     <string name="pref_focus_key" translatable="false">focus</string>
     <string name="pref_gender_key" translatable="false">gender</string>
     <string name="pref_birthdate_key" translatable="false">birthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
     <string name="pref_recalibrate_key" translatable="false">ratingReset</string>
-    <string name="pref_magnitude_key" translatable="false">giveMagnitude</string>
+    <string name="pref_magnitude_key" translatable="false">magnitude</string>
     <string name="pref_company_key" translatable="false">company</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
     <string name="pref_show_key" translatable="false">showAll</string>
@@ -167,7 +167,7 @@
     <string name="pref_fundraising_label">Advisory Filter</string>
     <string name="pref_sort_label">Sort</string>
     <string name="pref_order_label">Order</string>
-    <string name="pref_focused_label">Focused Search</string>
+    <string name="pref_focused_label">Focused Spawn</string>
     <string name="pref_ein_label">Employer Identification Number</string>
     <string name="pref_gender_label">Gender</string>
     <string name="pref_birthdate_label">Birthdate</string>
@@ -196,8 +196,8 @@
         <item>-1</item>
     </string-array>
 
-    <!-- Search settings -->
-    <string name="pref_header_search">Search Filters</string>
+    <!-- Spawn settings -->
+    <string name="pref_header_spawn">Spawn Filters</string>
     <string-array name="list_preference_minrating">
         <item>No Preference</item>
         <item>★</item>
@@ -330,12 +330,12 @@
         <item>1</item>
         <item>0</item>
     </string-array>
-    <string-array name="list_preference_sortSearch">
+    <string-array name="list_preference_sortSpawn">
         <item>By rating</item>
         <item>By relevance</item>
         <item>By name</item>
     </string-array>
-    <string-array name="list_preference_sortSearch_values">
+    <string-array name="list_preference_sortSpawn_values">
         <item>RATING</item>
         <item>RELEVANCE</item>
         <item>NAME</item>
@@ -350,11 +350,11 @@
         <item>donationTotal</item>
         <item>charityName</item>
     </string-array>
-    <string-array name="list_preference_orderSearch">
+    <string-array name="list_preference_orderSpawn">
         <item>Descending</item>
         <item>Ascending</item>
     </string-array>
-    <string-array name="list_preference_orderSearch_values">
+    <string-array name="list_preference_orderSpawn_values">
         <item>DESC</item>
         <item>ASC</item>
     </string-array>
@@ -369,7 +369,7 @@
     <string-array name="multi_select_list_preference_default_value" />
 
 
-    <string name="pref_header_give">Give Tuners</string>
+    <string name="pref_header_give">Target Tuners</string>
 
     <string name="pref_header_record">Record Sorters</string>
 

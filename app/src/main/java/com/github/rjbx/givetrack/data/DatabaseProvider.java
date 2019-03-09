@@ -22,12 +22,12 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  */
 public class DatabaseProvider extends ContentProvider {
 
-    private static final int CODE_GIVE = 100;
-    private static final int CODE_SEARCH = 101;
+    private static final int CODE_TARGET= 100;
+    private static final int CODE_SPAWN = 101;
     private static final int CODE_RECORD = 102;
     private static final int CODE_USER = 103;
-    private static final int CODE_GIVE_WITH_ID = 200;
-    private static final int CODE_SEARCH_WITH_ID = 201;
+    private static final int CODE_TARGET_WITH_ID = 200;
+    private static final int CODE_SPAWN_WITH_ID = 201;
     private static final int CODE_RECORD_WITH_ID = 202;
     private static final int CODE_USER_WITH_ID = 203;
     private static final UriMatcher sUriMatcher = buildUriMatcher();
@@ -41,12 +41,12 @@ public class DatabaseProvider extends ContentProvider {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
         final String authority = AUTHORITY;
 
-        matcher.addURI(authority, PATH_SEARCH_TABLE, CODE_SEARCH);
-        matcher.addURI(authority, PATH_GIVE_TABLE, CODE_GIVE);
+        matcher.addURI(authority, PATH_SPAWN_TABLE, CODE_SPAWN);
+        matcher.addURI(authority, PATH_TARGET_TABLE, CODE_TARGET);
         matcher.addURI(authority, PATH_RECORD_TABLE, CODE_RECORD);
         matcher.addURI(authority, PATH_USER_TABLE, CODE_USER);
-        matcher.addURI(authority, PATH_SEARCH_TABLE + "/*", CODE_SEARCH_WITH_ID);
-        matcher.addURI(authority, PATH_GIVE_TABLE + "/*", CODE_GIVE_WITH_ID);
+        matcher.addURI(authority, PATH_SPAWN_TABLE + "/*", CODE_SPAWN_WITH_ID);
+        matcher.addURI(authority, PATH_TARGET_TABLE + "/*", CODE_TARGET_WITH_ID);
         matcher.addURI(authority, PATH_RECORD_TABLE + "/*", CODE_RECORD_WITH_ID);
         matcher.addURI(authority, PATH_USER_TABLE + "/*", CODE_USER_WITH_ID);
 
@@ -79,8 +79,8 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
         
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
-            case CODE_GIVE: tableName = TABLE_NAME_GIVE; break;
+            case CODE_SPAWN: tableName = TABLE_NAME_SPAWN; break;
+            case CODE_TARGET: tableName = TABLE_NAME_TARGET; break;
             case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
             case CODE_USER: tableName = TABLE_NAME_USER; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -112,8 +112,8 @@ public class DatabaseProvider extends ContentProvider {
         String tableName;
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
-            case CODE_GIVE: tableName = TABLE_NAME_GIVE; break;
+            case CODE_SPAWN: tableName = TABLE_NAME_SPAWN; break;
+            case CODE_TARGET: tableName = TABLE_NAME_TARGET; break;
             case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
             case CODE_USER: tableName = TABLE_NAME_USER; break;
             default: throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -149,21 +149,21 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
-            case CODE_GIVE: tableName = TABLE_NAME_GIVE; break;
+            case CODE_SPAWN: tableName = TABLE_NAME_SPAWN; break;
+            case CODE_TARGET: tableName = TABLE_NAME_TARGET; break;
             case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
-            case CODE_GIVE_WITH_ID:
+            case CODE_TARGET_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_GIVE;
+                tableName = TABLE_NAME_TARGET;
                 break;
 
-            case CODE_SEARCH_WITH_ID:
+            case CODE_SPAWN_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_SEARCH;
+                tableName = TABLE_NAME_SPAWN;
                 break;
 
             case CODE_RECORD_WITH_ID:
@@ -210,21 +210,21 @@ public class DatabaseProvider extends ContentProvider {
 
         switch (sUriMatcher.match(uri)) {
 
-            case CODE_GIVE: tableName = TABLE_NAME_GIVE; break;
-            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_TARGET: tableName = TABLE_NAME_TARGET; break;
+            case CODE_SPAWN: tableName = TABLE_NAME_SPAWN; break;
             case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
-            case CODE_GIVE_WITH_ID:
+            case CODE_TARGET_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_GIVE;
+                tableName = TABLE_NAME_TARGET;
                 break;
 
-            case CODE_SEARCH_WITH_ID:
+            case CODE_SPAWN_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_SEARCH;
+                tableName = TABLE_NAME_SPAWN;
                 break;
 
             case CODE_RECORD_WITH_ID:
@@ -268,20 +268,20 @@ public class DatabaseProvider extends ContentProvider {
         String Id = uri.getLastPathSegment();
 
         switch (sUriMatcher.match(uri)) {
-            case CODE_GIVE: tableName = TABLE_NAME_GIVE; break;
-            case CODE_SEARCH: tableName = TABLE_NAME_SEARCH; break;
+            case CODE_TARGET: tableName = TABLE_NAME_TARGET; break;
+            case CODE_SPAWN: tableName = TABLE_NAME_SPAWN; break;
             case CODE_RECORD: tableName = TABLE_NAME_RECORD; break;
             case CODE_USER: tableName = TABLE_NAME_USER; break;
 
-            case CODE_GIVE_WITH_ID:
+            case CODE_TARGET_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_GIVE; break;
+                tableName = TABLE_NAME_TARGET; break;
 
-            case CODE_SEARCH_WITH_ID:
+            case CODE_SPAWN_WITH_ID:
                 selection = COLUMN_STAMP + " = ? ";
                 selectionArgs = new String[]{ Id };
-                tableName = TABLE_NAME_SEARCH; break;
+                tableName = TABLE_NAME_SPAWN; break;
 
             case CODE_RECORD_WITH_ID:
                 selection = COLUMN_STAMP+ " = ? ";

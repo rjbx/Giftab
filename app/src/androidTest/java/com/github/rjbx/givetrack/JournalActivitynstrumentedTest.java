@@ -1,5 +1,5 @@
 package com.github.rjbx.givetrack;
 
-public class RecordActivitynstrumentedTest {
+public class JournalActivitynstrumentedTest {
     // TODO: Implement
 }
