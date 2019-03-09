@@ -94,7 +94,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
-
+                mPendingResult = false;
                 DatabaseService.startActionFetchUser(this);
                 mValidated = true;
             } else {
