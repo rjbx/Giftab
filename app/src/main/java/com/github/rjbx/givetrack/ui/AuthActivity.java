@@ -95,18 +95,8 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
 
-                User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                if (mUsers.contains(activeUser)) {
-                    int activeIndex = mUsers.indexOf(activeUser);
-                    mUsers.get(activeIndex).setUserActive(true);
-                } else {
-                    for (int i = 0; i < mUsers.size(); i++)
-                        mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-                    mUsers.add(activeUser);
-                }
-                DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
-                startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-                finish();
+                DatabaseService.startActionFetchUser(this);
+                mValidated = true;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
@@ -127,13 +117,24 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (mPendingResult) return;
-        if (!mValidated) {
-            DatabaseService.startActionFetchUser(this);
-            mValidated = true;
-        } else {
+        if (!mValidated) handleAction(getIntent().getAction());
+        else {
             mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
             data.close();
-            handleAction(getIntent().getAction());
+
+            User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+            if (mUsers.contains(activeUser)) {
+                int activeIndex = mUsers.indexOf(activeUser);
+                mUsers.get(activeIndex).setUserActive(true);
+            } else {
+                for (int i = 0; i < mUsers.size(); i++)
+                    mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                mUsers.add(activeUser);
+            }
+
+            DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
+            startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
+            finish();
         }
     }
 
