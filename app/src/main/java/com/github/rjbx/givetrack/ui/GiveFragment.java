@@ -46,7 +46,7 @@ import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Give;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
@@ -69,14 +69,14 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
  * Presents a list of collected items, which when touched, arrange the list of items and
  * item details side-by-side using two vertical panes.
  */
-public class GivingFragment extends Fragment implements
+public class GiveFragment extends Fragment implements
         DetailFragment.MasterDetailFlow,
         TextView.OnEditorActionListener {
 
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
-    private static Giving[] sValuesArray;
+    private static Give[] sValuesArray;
     private static User sUser;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
@@ -103,13 +103,13 @@ public class GivingFragment extends Fragment implements
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
      * to instantiate this Fragment.
      */
-    public GivingFragment() {}
+    public GiveFragment() {}
 
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static GivingFragment newInstance(@Nullable Bundle args) {
-        GivingFragment fragment = new GivingFragment();
+    public static GiveFragment newInstance(@Nullable Bundle args) {
+        GiveFragment fragment = new GiveFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
     }
@@ -123,17 +123,17 @@ public class GivingFragment extends Fragment implements
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_donor, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_give, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
         sPercentagesAdjusted = false;
 
         Bundle args = getArguments();
         if (args != null) {
-            Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVING_ATTRIBUTES);
+            Parcelable[] parcelableArray = args.getParcelableArray(MainActivity.ARGS_GIVE_ATTRIBUTES);
             if (parcelableArray != null) {
                 // TODO: Factor out with accessor validation
-                Giving[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Giving.class);
+                Give[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Give.class);
                 if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
                 }
@@ -346,7 +346,7 @@ public class GivingFragment extends Fragment implements
             sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
+        DatabaseService.startActionUpdateGive(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -362,7 +362,7 @@ public class GivingFragment extends Fragment implements
             double totalImpact = Float.parseFloat(sValuesArray[i].getImpact()) + transactionImpact;
             sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
-        DatabaseService.startActionUpdateGiving(getContext(), sValuesArray);
+        DatabaseService.startActionUpdateGive(getContext(), sValuesArray);
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
@@ -456,7 +456,7 @@ public class GivingFragment extends Fragment implements
     }
 
     /**
-     * Populates {@link GivingFragment} {@link RecyclerView}.
+     * Populates {@link GiveFragment} {@link RecyclerView}.
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
@@ -529,7 +529,7 @@ public class GivingFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            Giving values = sValuesArray[position];
+            Give values = sValuesArray[position];
             final String name = values.getName();
             final int frequency =
                     values.getFrequency();
@@ -647,10 +647,10 @@ public class GivingFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
-                            Giving giving = (Giving) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
+                            Give give = (Give) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveGiving(getContext(), giving);
+                            DatabaseService.startActionRemoveGive(getContext(), give);
                             break;
                         default:
                     }
@@ -660,9 +660,9 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of remove button.
              */
-            @Optional @OnClick(R.id.collection_remove_button) void removeGiving(View v) {
+            @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
 
-                Giving values = sValuesArray[(int) v.getTag()];
+                Give values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
                 mEin = values.getEin();
 
@@ -680,10 +680,10 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of inspect button.
              */
-            @Optional @OnClick(R.id.inspect_button) void inspectGiving(View v) {
+            @Optional @OnClick(R.id.inspect_button) void inspectGive(View v) {
 
                 int position = (int) v.getTag();
-                Giving values = sValuesArray[position];
+                Give values = sValuesArray[position];
                 String name = values.getName();
                 String ein = values.getEin();
                 String navUrl = values.getNavigatorUrl();
@@ -707,9 +707,9 @@ public class GivingFragment extends Fragment implements
             /**
              * Defines behavior on click of share button.
              */
-            @Optional @OnClick(R.id.share_button) void shareGiving(View v) {
+            @Optional @OnClick(R.id.share_button) void shareGive(View v) {
 
-                Giving values = sValuesArray[(int) v.getTag()];
+                Give values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
@@ -789,7 +789,7 @@ public class GivingFragment extends Fragment implements
         /**
          * Initializes value instance fields and generates an instance of this layout.
          */
-        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Giving values) {
+        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Give values) {
             mAlertDialog = alertDialog;
             mPhone = values.getPhone();
             mEmail = values.getEmail();
@@ -802,7 +802,7 @@ public class GivingFragment extends Fragment implements
         /**
          * Converts a set of ContentValues to a single formatted String.
          */
-        private static String valuesToAddress(Giving values) {
+        private static String valuesToAddress(Give values) {
             String street = values.getLocationStreet();
             String detail = values.getLocationDetail();
             String city = values.getLocationCity();

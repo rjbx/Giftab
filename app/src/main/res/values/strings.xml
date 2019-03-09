@@ -130,7 +130,7 @@
     <string name="chart_title_activity">Recent Activity</string>
     <string name="chart_title_usage">High Comparison</string>
     <string name="chart_title_percentage">Your Charities</string>
-    <string name="charts_title">%sly Giving</string>
+    <string name="charts_title">%sly Give</string>
     <string name="symbol_increment_button">+</string>
     <string name="symbol_decrement_button">—</string>
 
@@ -369,7 +369,7 @@
     <string-array name="multi_select_list_preference_default_value" />
 
 
-    <string name="pref_header_giving">Giving Tuners</string>
+    <string name="pref_header_give">Give Tuners</string>
 
     <string name="pref_header_record">Record Sorters</string>
 

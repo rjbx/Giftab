@@ -13,9 +13,9 @@
         android:title="@string/pref_header_search" />
 
     <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GivingPreferenceFragment"
+        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$GivePreferenceFragment"
         android:icon="@drawable/arrow_expand_horizontal_dark"
-        android:title="@string/pref_header_giving" />
+        android:title="@string/pref_header_give" />
 
     <header
         android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$RecordPreferenceFragment"

@@ -12,17 +12,17 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class Giving extends Search implements Company, Rateraid.RatedObject<Giving>, Parcelable, Cloneable {
+public class Give extends Search implements Company, Rateraid.RatedObject<Give>, Parcelable, Cloneable {
 
     private int frequency;
     private String percent;
     
-    @Exclude public static final Parcelable.Creator<Giving> CREATOR = new Parcelable.Creator<Giving>() {
-        @Override public Giving createFromParcel(Parcel source) {
-            return new Giving(source);
+    @Exclude public static final Parcelable.Creator<Give> CREATOR = new Parcelable.Creator<Give>() {
+        @Override public Give createFromParcel(Parcel source) {
+            return new Give(source);
         }
-        @Override public Giving[] newArray(int size) {
-            return new Giving[size];
+        @Override public Give[] newArray(int size) {
+            return new Give[size];
         }
     };
 
@@ -36,13 +36,13 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
         return 0;
     }
 
-    public Giving(Parcel source) {
+    public Give(Parcel source) {
         super(source);
         frequency = source.readInt();
         percent = source.readString();
     }
 
-    public Giving(Search search, int frequency, String percent) {
+    public Give(Search search, int frequency, String percent) {
         super(search);
         this.frequency = frequency;
         this.percent = percent;
@@ -51,12 +51,12 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     /**
      * Provides default constructor required for object relational mapping.
      */
-    public Giving() {}
+    public Give() {}
 
     /**
      * Provides POJO constructor required for object relational mapping.
      */
-    public Giving(
+    public Give(
             String uid,
             String ein,
             long stamp,
@@ -102,7 +102,7 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
     @Override public double getPercent() { return Double.parseDouble(percent); }
     @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
     @Override public String getId() { return super.getId(); }
-    @Exclude @Override public Giving getObject() { return this; }
+    @Exclude @Override public Give getObject() { return this; }
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
@@ -132,35 +132,35 @@ public class Giving extends Search implements Company, Rateraid.RatedObject<Givi
 
     public Search getSuper() { return super.clone(); }
 
-    public static Giving fromSuper(Search search) {
-        Giving giving = new Giving(search, 0, "0");
-        return giving;
+    public static Give fromSuper(Search search) {
+        Give give = new Give(search, 0, "0");
+        return give;
     }
 
-    @Override public Giving clone() {
+    @Override public Give clone() {
         super.clone();
-        return new Giving(getSuper(), this.frequency, this.percent);
+        return new Give(getSuper(), this.frequency, this.percent);
     }
 
-    public static Giving getDefault() {
-        Giving giving = new Giving();
-        giving.setUid("");
-        giving.setEin("");
-        giving.setStamp(0);
-        giving.setName("");
-        giving.setLocationStreet("");
-        giving.setLocationDetail("");
-        giving.setLocationCity("");
-        giving.setLocationState("");
-        giving.setLocationZip("");
-        giving.setHomepageUrl("");
-        giving.setNavigatorUrl("");
-        giving.setPhone("");
-        giving.setEmail("");
-        giving.setImpact("");
-        giving.setType(0);
-        giving.setFrequency(0);
-        giving.setPercent(0d);
-        return giving;
+    public static Give getDefault() {
+        Give give = new Give();
+        give.setUid("");
+        give.setEin("");
+        give.setStamp(0);
+        give.setName("");
+        give.setLocationStreet("");
+        give.setLocationDetail("");
+        give.setLocationCity("");
+        give.setLocationState("");
+        give.setLocationZip("");
+        give.setHomepageUrl("");
+        give.setNavigatorUrl("");
+        give.setPhone("");
+        give.setEmail("");
+        give.setImpact("");
+        give.setType(0);
+        give.setFrequency(0);
+        give.setPercent(0d);
+        return give;
     }
 }

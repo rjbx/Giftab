@@ -39,7 +39,7 @@ import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
-import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Give;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.navigation.NavigationView;
@@ -54,7 +54,7 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVING;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_GIVE;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -70,15 +70,15 @@ public class MainActivity extends AppCompatActivity implements
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
-    public static final String ARGS_GIVING_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVING_ATTRIBUTES";
+    public static final String ARGS_GIVE_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
     public static final String ARGS_USER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.USER_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
-    private static final String STATE_GIVING_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVING_ARRAY";
+    private static final String STATE_GIVE_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private SectionsPagerAdapter mPagerAdapter;
-    private Giving[] mGivingArray;
+    private Give[] mGiveArray;
     private Record[] mRecordArray;
     private User mUser;
     private boolean mLock = true;
@@ -102,11 +102,11 @@ public class MainActivity extends AppCompatActivity implements
 
 
         DatabaseService.startActionFetchUser(MainActivity.this);
-        DatabaseService.startActionFetchGiving(MainActivity.this);
+        DatabaseService.startActionFetchGive(MainActivity.this);
         DatabaseService.startActionFetchRecord(MainActivity.this);
 
         if (savedInstanceState != null) {
-            mGivingArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY), Giving.class);
+            mGiveArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVE_ARRAY), Give.class);
             mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
             mUser = savedInstanceState.getParcelable(STATE_ACTIVE_USER);
         }
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser == null) return;
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVE, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
 
@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArray(STATE_GIVING_ARRAY, mGivingArray);
+        outState.putParcelableArray(STATE_GIVE_ARRAY, mGiveArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
         outState.putParcelable(STATE_ACTIVE_USER, mUser);
         super.onSaveInstanceState(outState);
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_GIVING: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVING, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
+            case LOADER_ID_GIVE: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_GIVE, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
@@ -200,17 +200,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {
-            case DatabaseContract.LOADER_ID_GIVING:
-                mGivingArray = new Giving[data.getCount()];
+            case DatabaseContract.LOADER_ID_GIVE:
+                mGiveArray = new Give[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
-                        Giving giving = new Giving();
-                        DatabaseAccessor.cursorRowToEntry(data, giving);
-                        mGivingArray[i++] = giving;
+                        Give give = new Give();
+                        DatabaseAccessor.cursorRowToEntry(data, give);
+                        mGiveArray[i++] = give;
                     } while (data.moveToNext());
                 }
-//                DatabaseService.startActionFetchGiving(this);
+//                DatabaseService.startActionFetchGive(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new Record[data.getCount()];
@@ -238,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
                                 }
-                                if (mGivingArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVING, null, this);
+                                if (mGiveArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_GIVE, null, this);
                                 if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             } break;
                         }
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
         }
-        if (!mLock && mGivingArray != null && mRecordArray != null && mUser != null) {
+        if (!mLock && mGiveArray != null && mRecordArray != null && mUser != null) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mGivingArray = null;
+        mGiveArray = null;
         mRecordArray = null;
         mUser = null;
     }
@@ -416,17 +416,17 @@ public class MainActivity extends AppCompatActivity implements
         @Override public Fragment getItem(int position) {
 
             mLock = true;
-            if (mGivingArray == null || mGivingArray.length == 0) return PlaceholderFragment.newInstance(null);
+            if (mGiveArray == null || mGiveArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
-                Bundle argsGiving = new Bundle();
+                Bundle argsGive = new Bundle();
                 Bundle argsRecord = new Bundle();
-                argsGiving.putParcelableArray(ARGS_GIVING_ATTRIBUTES, mGivingArray);
+                argsGive.putParcelableArray(ARGS_GIVE_ATTRIBUTES, mGiveArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
-                argsGiving.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+                argsGive.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
                 argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
 
                 switch (position) {
-                    case 0: return GivingFragment.newInstance(argsGiving);
+                    case 0: return GiveFragment.newInstance(argsGive);
                     case 1: return GlanceFragment.newInstance(argsRecord);
                     default: return PlaceholderFragment.newInstance(null);
                 }
@@ -460,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements
 //    /**
 //     * Confirms whether item exists in collection table and updates status accordingly.
 //     */
-//    private static class StatusAsyncTask extends AsyncTask<Giving[], Void, Boolean> {
+//    private static class StatusAsyncTask extends AsyncTask<Give[], Void, Boolean> {
 //
 //        private WeakReference<MainActivity> mActivity;
 //
@@ -475,20 +475,20 @@ public class MainActivity extends AppCompatActivity implements
 //        /**
 //         * Retrieves the item collection status.
 //         */
-//        @Override protected Boolean doInBackground(Giving[]... givingArray) {
+//        @Override protected Boolean doInBackground(Give[]... giveArray) {
 //
 //            Context context = mActivity.get().getBaseContext();
 //            List<String> charities = UserPreferences.getCharities(context);
 //            List<String> eins = new ArrayList<>();
 //            for (String charity : charities) eins.add(charity.split(":")[0]);
 //            if (context == null) return false;
-//            Giving[] valuesArray = givingArray[0];
+//            Give[] valuesArray = giveArray[0];
 //            if (valuesArray == null || valuesArray.length == 0) return false;
 //            Boolean isCurrent = true;
-//            for (Giving giving: valuesArray) {
-//               isCurrent = eins.contains(giving.getEin());
+//            for (Give give: valuesArray) {
+//               isCurrent = eins.contains(give.getEin());
 //            }
-//            if (!isCurrent) DatabaseService.startActionFetchGiving(mActivity.get());
+//            if (!isCurrent) DatabaseService.startActionFetchGive(mActivity.get());
 //            return isCurrent;
 //        }
 //

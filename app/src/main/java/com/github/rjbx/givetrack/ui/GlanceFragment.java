@@ -686,7 +686,7 @@ public class GlanceFragment extends Fragment implements
     private void shareDialogText(String message) {
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
-                .setText(String.format("My giving trends: %s\n\n#%s App",
+                .setText(String.format("My give trends: %s\n\n#%s App",
                         message,
                         getString(R.string.app_name)))
                 .getIntent();

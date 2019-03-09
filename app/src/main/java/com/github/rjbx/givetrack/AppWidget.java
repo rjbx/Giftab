@@ -13,7 +13,7 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Give;
 import com.github.rjbx.givetrack.ui.MainActivity;
 import com.github.rjbx.givetrack.ui.RecordActivity;
 import com.github.rjbx.givetrack.ui.SearchActivity;
@@ -92,7 +92,7 @@ public class AppWidget extends AppWidgetProvider {
         @Override public void onDataSetChanged() {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
-            mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVING,
+            mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_GIVE,
                     null, null, null, null);
             Binder.restoreCallingIdentity(token);
         }
@@ -104,21 +104,21 @@ public class AppWidget extends AppWidgetProvider {
 
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
-            Giving giving = Giving.getDefault();
-            DatabaseAccessor.cursorRowToEntry(mCursor, giving);
+            Give give = Give.getDefault();
+            DatabaseAccessor.cursorRowToEntry(mCursor, give);
 
-            String name = giving.getName();
+            String name = give.getName();
             if (name.length() > 15) { name = name.substring(0, 15);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
-            Float amount = Float.parseFloat(giving.getImpact());
+            Float amount = Float.parseFloat(give.getImpact());
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            String percentStr = PERCENT_FORMATTER.format(giving.getPercent());
+            String percentStr = PERCENT_FORMATTER.format(give.getPercent());
 
             RemoteViews remoteViews = new RemoteViews(mContext.getPackageName(), R.layout.item_widget);
             remoteViews.setTextViewText(R.id.widget_item_name, name);

@@ -29,7 +29,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
-import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Give;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -140,41 +140,41 @@ public final class DatabaseAccessor {
         removeEntriesFromLocal(local, Search.class, stamp, search);
     }
 
-    static void fetchGiving(Context context) {
+    static void fetchGive(Context context) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
-        validateEntries(local, remote, Giving.class);
+        validateEntries(local, remote, Give.class);
     }
 
-    static List<Giving> getGiving(Context context) {
+    static List<Give> getGive(Context context) {
         ContentResolver local = context.getContentResolver();
         
-        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
+        Uri contentUri = CompanyEntry.CONTENT_URI_GIVE;
         Cursor cursor = local.query(
                 contentUri, null, null, null, null
         );
-        List<Giving> entries = getEntryListFromCursor(cursor, Giving.class);
+        List<Give> entries = getEntryListFromCursor(cursor, Give.class);
         cursor.close();
         return entries;
     }
 
-    static void addGiving(Context context, Giving... entries) {
+    static void addGive(Context context, Give... entries) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Giving.class, stamp, entries);
-        addEntriesToRemote(remote, Giving.class, stamp, entries);
+        addEntriesToLocal(local, Give.class, stamp, entries);
+        addEntriesToRemote(remote, Give.class, stamp, entries);
     }
 
-    static void removeGiving(Context context, Giving... giving) {
+    static void removeGive(Context context, Give... give) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        removeEntriesFromLocal(local, Giving.class, stamp, giving);
-        removeEntriesFromRemote(remote, Giving.class, stamp, giving);
+        removeEntriesFromLocal(local, Give.class, stamp, give);
+        removeEntriesFromRemote(remote, Give.class, stamp, give);
     }
 
     static void fetchRecord(Context context) {

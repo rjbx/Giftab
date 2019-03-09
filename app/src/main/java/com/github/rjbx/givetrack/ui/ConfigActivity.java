@@ -50,7 +50,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement clear Search
 // TODO: Add change email option to UserPreferenceFragment
-// TODO: Add anchor reset option for GivingPreferenceFragment
+// TODO: Add anchor reset option for GivePreferenceFragment
 // TODO: Add show all option for all PreferenceFragments
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
 // TODO: Remove unused options
@@ -65,7 +65,7 @@ public class ConfigActivity
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            // TODO: Decide whether to recalibrate Giving from callback data of Loader initialized from GivingPreferneceFragment.onCreate
+            // TODO: Decide whether to recalibrate Give from callback data of Loader initialized from GivePreferneceFragment.onCreate
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -123,7 +123,7 @@ public class ConfigActivity
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || UserPreferenceFragment.class.getName().equals(fragmentName)
                 || SearchPreferenceFragment.class.getName().equals(fragmentName)
-                || GivingPreferenceFragment.class.getName().equals(fragmentName)
+                || GivePreferenceFragment.class.getName().equals(fragmentName)
                 || RecordPreferenceFragment.class.getName().equals(fragmentName)
                 || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
@@ -412,9 +412,9 @@ public class ConfigActivity
     }
 
     /**
-     * Fragment bound to preference header for updating giving settings.
+     * Fragment bound to preference header for updating give settings.
      */
-    public static class GivingPreferenceFragment extends PreferenceFragment implements
+    public static class GivePreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener,
@@ -432,7 +432,7 @@ public class ConfigActivity
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_giving);
+            addPreferencesFromResource(R.xml.pref_give);
             setHasOptionsMenu(true);
         }
 
@@ -550,7 +550,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetGiving(getActivity());
+                        DatabaseService.startActionResetGive(getActivity());
                         startActivity(new Intent(getActivity(), MainActivity.class));
                         break;
                     default:
@@ -568,7 +568,7 @@ public class ConfigActivity
     }
 
     /**
-     * Fragment bound to preference header for updating giving settings.
+     * Fragment bound to preference header for updating give settings.
      */
     public static class RecordPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,

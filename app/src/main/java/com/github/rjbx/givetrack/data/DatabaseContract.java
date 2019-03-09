@@ -13,7 +13,7 @@ public final class DatabaseContract {
 
     static final String AUTHORITY = "com.github.rjbx.givetrack";
     static final String PATH_SEARCH_TABLE = "search.table";
-    static final String PATH_GIVING_TABLE = "giving.table";
+    static final String PATH_GIVE_TABLE = "give.table";
     static final String PATH_RECORD_TABLE = "record.table";
     static final String PATH_USER_TABLE = "user.table";
 
@@ -21,20 +21,20 @@ public final class DatabaseContract {
     private static final Uri BASE_URI = Uri.parse(SCHEME + "://" + AUTHORITY);
 
     public static final int LOADER_ID_SEARCH = 1;
-    public static final int LOADER_ID_GIVING = 2;
+    public static final int LOADER_ID_GIVE = 2;
     public static final int LOADER_ID_RECORD = 3;
     public static final int LOADER_ID_USER = 4;
 
     public static final class CompanyEntry implements BaseColumns {
 
         static final String TABLE_NAME_SEARCH = "search";
-        static final String TABLE_NAME_GIVING = "giving";
+        static final String TABLE_NAME_GIVE = "give";
         static final String TABLE_NAME_RECORD = "record";
         
         public static final Uri CONTENT_URI_SEARCH =
                 BASE_URI.buildUpon().appendPath(PATH_SEARCH_TABLE).build();
-        public static final Uri CONTENT_URI_GIVING =
-                BASE_URI.buildUpon().appendPath(PATH_GIVING_TABLE).build();
+        public static final Uri CONTENT_URI_GIVE =
+                BASE_URI.buildUpon().appendPath(PATH_GIVE_TABLE).build();
         public static final Uri CONTENT_URI_RECORD =
                 BASE_URI.buildUpon().appendPath(PATH_RECORD_TABLE).build();
 
@@ -102,7 +102,7 @@ public final class DatabaseContract {
     public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVING: return CompanyEntry.CONTENT_URI_GIVING;
+            case CompanyEntry.TABLE_NAME_GIVE: return CompanyEntry.CONTENT_URI_GIVE;
             case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
             case CompanyEntry.TABLE_NAME_SEARCH: return CompanyEntry.CONTENT_URI_SEARCH;
             case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
@@ -113,7 +113,7 @@ public final class DatabaseContract {
     public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
-            case CompanyEntry.TABLE_NAME_GIVING: return UserEntry.COLUMN_GIVE_STAMP;
+            case CompanyEntry.TABLE_NAME_GIVE: return UserEntry.COLUMN_GIVE_STAMP;
             case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
             case CompanyEntry.TABLE_NAME_SEARCH: return "";
             case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
@@ -125,7 +125,7 @@ public final class DatabaseContract {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
             case CompanyEntry.TABLE_NAME_SEARCH: return 0;
-            case CompanyEntry.TABLE_NAME_GIVING: return user.getGiveStamp();
+            case CompanyEntry.TABLE_NAME_GIVE: return user.getGiveStamp();
             case CompanyEntry.TABLE_NAME_RECORD: return user.getRecordStamp();
             case UserEntry.TABLE_NAME_USER: return user.getUserStamp();
             default: throw new IllegalArgumentException("Argument must implement Entry interface");
@@ -136,7 +136,7 @@ public final class DatabaseContract {
         String name = entryType.getSimpleName().toLowerCase();
         switch (name) {
             case CompanyEntry.TABLE_NAME_SEARCH: break;
-            case CompanyEntry.TABLE_NAME_GIVING: user.setGiveStamp(time); break;
+            case CompanyEntry.TABLE_NAME_GIVE: user.setGiveStamp(time); break;
             case CompanyEntry.TABLE_NAME_RECORD: user.setRecordStamp(time); break;
             case UserEntry.TABLE_NAME_USER: user.setUserStamp(time); break;
             default: throw new IllegalArgumentException("Argument must implement Entry interface");

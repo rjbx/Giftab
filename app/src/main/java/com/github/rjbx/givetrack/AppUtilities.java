@@ -40,7 +40,7 @@ public class AppUtilities {
     public static String getPreferenceFragmentName(String action) {
         switch (action) {
             case MainActivity.ACTION_MAIN_INTENT:
-                return ConfigActivity.GivingPreferenceFragment.class.getName();
+                return ConfigActivity.GivePreferenceFragment.class.getName();
             case SearchActivity.ACTION_SEARCH_INTENT:
                 return ConfigActivity.SearchPreferenceFragment.class.getName();
             case RecordActivity.ACTION_RECORD_INTENT:

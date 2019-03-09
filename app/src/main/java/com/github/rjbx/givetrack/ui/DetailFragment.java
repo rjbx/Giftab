@@ -33,7 +33,7 @@ import butterknife.OnClick;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
-import com.github.rjbx.givetrack.data.entry.Giving;
+import com.github.rjbx.givetrack.data.entry.Give;
 import com.github.rjbx.givetrack.data.entry.Search;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -128,7 +128,7 @@ public class DetailFragment extends Fragment {
 
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
-            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_GIVING.buildUpon()
+            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_GIVE.buildUpon()
                     .appendPath(sCompany.getEin()).build();
             new StatusAsyncTask(this).execute(collectionUri);
         }
@@ -165,7 +165,7 @@ public class DetailFragment extends Fragment {
     @Override public void onStop() {
         if (sInitialState != sCurrentState) {
             if (sCurrentState) DatabaseService.startActionGiveSearch(getContext(), sCompany);
-            else DatabaseService.startActionRemoveGiving(mParentActivity, Giving.fromSuper(sCompany));
+            else DatabaseService.startActionRemoveGive(mParentActivity, Give.fromSuper(sCompany));
         }
         mUnbinder.unbind();
         super.onStop();

@@ -55,10 +55,10 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
-        final String SQL_CREATE_GIVING_TABLE =
+        final String SQL_CREATE_GIVE_TABLE =
 
                 "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_GIVING             + " ("                              +
+                        CompanyEntry.TABLE_NAME_GIVE             + " ("                              +
 
                         CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
                         CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
@@ -150,7 +150,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         ") ON CONFLICT REPLACE" + ");";
 
         db.execSQL(SQL_CREATE_SEARCH_TABLE);
-        db.execSQL(SQL_CREATE_GIVING_TABLE);
+        db.execSQL(SQL_CREATE_GIVE_TABLE);
         db.execSQL(SQL_CREATE_RECORD_TABLE);
         db.execSQL(SQL_CREATE_USER_TABLE);
     }
@@ -161,7 +161,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
     @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_SEARCH);
-        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_GIVING);
+        db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_GIVE);
         db.execSQL("DROP TABLE IF EXISTS " + CompanyEntry.TABLE_NAME_RECORD);
         db.execSQL("DROP TABLE IF EXISTS " + UserEntry.TABLE_NAME_USER);
         onCreate(db);
