@@ -126,22 +126,22 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_THEME + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SPAWN_DIALOG + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SPAWN_FOCUS + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SPAWN_FILTER + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SPAWN_COMPANY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_TERM + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_CITY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_STATE + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_ZIP + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_MINRATING + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_PAGES + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_ROWS + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_DIALOG + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_FOCUS + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_FILTER + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_COMPANY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_TERM + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_CITY + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_STATE + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_ZIP + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_MINRATING + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_PAGES + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_ROWS + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GIVE_RESET + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_SPAWN_SORT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_SPAWN_ORDER + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_RECORD_SORT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_RECORD_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_SORT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_JOURNAL_SORT + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_JOURNAL_ORDER + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_TARGET_STAMP + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_RECORD_STAMP + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_USER_STAMP + " INTEGER NOT NULL, "             +
