@@ -100,9 +100,8 @@ public class HomeActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
-
         DatabaseService.startActionFetchUser(HomeActivity.this);
-        DatabaseService.startActionFetchGive(HomeActivity.this);
+        DatabaseService.startActionFetchTarget(HomeActivity.this);
         DatabaseService.startActionFetchRecord(HomeActivity.this);
 
         if (savedInstanceState != null) {
@@ -210,7 +209,7 @@ public class HomeActivity extends AppCompatActivity implements
                         mTargetArray[i++] = target;
                     } while (data.moveToNext());
                 }
-//                DatabaseService.startActionFetchGive(this);
+//                DatabaseService.startActionFetchTarget(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mRecordArray = new Record[data.getCount()];
@@ -488,7 +487,7 @@ public class HomeActivity extends AppCompatActivity implements
 //            for (Targetgive: valuesArray) {
 //               isCurrent = eins.contains(give.getEin());
 //            }
-//            if (!isCurrent) DatabaseService.startActionFetchGive(mActivity.get());
+//            if (!isCurrent) DatabaseService.startActionFetchTarget(mActivity.get());
 //            return isCurrent;
 //        }
 //

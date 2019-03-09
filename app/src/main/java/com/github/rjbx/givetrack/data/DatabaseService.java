@@ -89,15 +89,15 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action FetchTargetwith the given parameters.
+     * Starts this service to perform action FetchTarget with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
      * @see IntentService
      */
-    public static void startActionFetchGive(Context context) {
+    public static void startActionFetchTarget(Context context) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_FETCH_SPAWN);
+        intent.setAction(ACTION_FETCH_TARGET);
         context.startService(intent);
     }
 
