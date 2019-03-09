@@ -5,7 +5,7 @@
     <string name="app_name">GiveGlance</string>
 
     <!-- Errors -->
-    <string name="removal_error_message">An unexpected error occurred; could not remove %s from your spawn results.</string>
+    <string name="removal_error_message">An unexpected error occurred; could not remove %s from your search results.</string>
     <string name="network_error_message">There is a problem with the network. Please check your connection and try again.</string>
     <string name="provider_error_message">"Unable to establish a connection with %s. Please try again later.</string>
     <string name="create_error_message">%s: Failed to create file from path</string>
@@ -55,7 +55,7 @@
     <!-- Screens -->
     <string name="title_activity_main">Main Activity</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="title_spawn_results">Spawn Results</string>
+    <string name="title_spawn_results">Search results</string>
     <string name="title_donor_records">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_settings">Settings</string>
@@ -112,8 +112,8 @@
     <string name="snippet_all_charities">all charities</string>
     <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
     <string name="message_record_refresh">Your records have been updated.</string>
-    <string name="message_spawn_refresh">Your spawn results have been refreshed.</string>
-    <string name="message_generated_remove">%s has been removed from your spawn results. </string>
+    <string name="message_spawn_refresh">Your search results have been refreshed.</string>
+    <string name="message_generated_remove">%s has been removed from your search results. </string>
     <string name="message_collected_add">"%s has been added to your collection"</string>
     <string name="message_collected_remove">"%s has been removed from your collection"</string>
     <string name="indicator_donation_frequency">Number of donations: %s</string>
@@ -130,7 +130,7 @@
     <string name="chart_title_activity">Recent Activity</string>
     <string name="chart_title_usage">High Comparison</string>
     <string name="chart_title_percentage">Your Charities</string>
-    <string name="charts_title">%sly Give</string>
+    <string name="charts_title">%sly Giving</string>
     <string name="symbol_increment_button">+</string>
     <string name="symbol_decrement_button">—</string>
 
@@ -179,7 +179,7 @@
     <string name="pref_payments_label">Process Donations</string>
 
     <!-- General settings -->
-    <string name="pref_header_user">User Attributes</string>
+    <string name="pref_header_user">User</string>
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
     <string name="pref_title_display_name">Display name</string>
@@ -197,7 +197,7 @@
     </string-array>
 
     <!-- Spawn settings -->
-    <string name="pref_header_spawn">Spawn Filters</string>
+    <string name="pref_header_spawn">Index</string>
     <string-array name="list_preference_minrating">
         <item>No Preference</item>
         <item>★</item>
@@ -369,19 +369,19 @@
     <string-array name="multi_select_list_preference_default_value" />
 
 
-    <string name="pref_header_give">Target Tuners</string>
+    <string name="pref_header_give">Home</string>
 
-    <string name="pref_header_record">Record Sorters</string>
+    <string name="pref_header_record">Journal</string>
 
     <!-- Notification settings -->
-    <string name="pref_header_notifications">Message Notifications</string>
+    <string name="pref_header_notifications">Notifications</string>
     <string name="pref_title_new_message_notifications">New message notifications</string>
     <string name="pref_title_ringtone">Ringtone</string>
     <string name="pref_ringtone_silent">Silent</string>
     <string name="pref_title_vibrate">Vibrate</string>
 
     <!-- Advanced settings -->
-    <string name="pref_header_advanced">Advanced Settings</string>
+    <string name="pref_header_advanced">Advanced</string>
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>

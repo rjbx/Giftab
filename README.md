@@ -1,6 +1,6 @@
 # GiveGlance
 
-**An app that visualizes a history of give.**
+**An app that visualizes a history of giving.**
 
 Users can record and reference their donations to specific charities.
 
