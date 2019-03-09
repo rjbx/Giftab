@@ -433,7 +433,7 @@ public final class DatabaseAccessor {
 
         long localTableStamp = DatabaseContract.getTableTime(entryType, localUser);
         long remoteTableStamp = DatabaseContract.getTableTime(entryType, remoteUser);
-        int giveLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
+        long giveLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
         if (giveLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
         else if (giveLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
