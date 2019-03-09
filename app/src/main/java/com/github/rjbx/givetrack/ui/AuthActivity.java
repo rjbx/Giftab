@@ -53,6 +53,7 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
+    private boolean mValidated = false;
     private boolean mPendingResult;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
@@ -95,11 +96,15 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
 
                 User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                for (int i = 0; i < mUsers.size(); i++)
-                    mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-                mUsers.add(activeUser);
+                if (mUsers.contains(activeUser)) {
+                    int activeIndex = mUsers.indexOf(activeUser);
+                    mUsers.get(activeIndex).setUserActive(true);
+                } else {
+                    for (int i = 0; i < mUsers.size(); i++)
+                        mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                    mUsers.add(activeUser);
+                }
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
-
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
             } else {
@@ -122,15 +127,19 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (mPendingResult) return;
-        mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
-        data.close();
-        handleAction(getIntent().getAction());
+        if (!mValidated) {
+            DatabaseService.startActionFetchUser(this);
+            mValidated = true;
+        } else {
+            mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
+            data.close();
+            handleAction(getIntent().getAction());
+        }
     }
 
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mUsers = null;
     }
-
 
     private void handleAction(String action) {
 
@@ -175,7 +184,6 @@ public class AuthActivity extends AppCompatActivity implements
                     break;
                 case Intent.ACTION_MAIN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
-                        DatabaseService.startActionFetchUser(this);
                         List<AuthUI.IdpConfig> providers = new ArrayList<>();
                         providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
