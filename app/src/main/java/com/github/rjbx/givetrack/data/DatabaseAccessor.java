@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,11 +22,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
-import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -52,7 +51,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-// TODO:  1 Fully implement validation
+// TODO:  Pull UID from FirebaseUser or add parameters to all accessor entry update and service handler methods
 public final class DatabaseAccessor {
 
     static void fetchSearch(Context context) {
@@ -117,7 +116,6 @@ public final class DatabaseAccessor {
 
     static List<Search> getSearch(Context context) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
         
         Uri contentUri = CompanyEntry.CONTENT_URI_SEARCH;
         Cursor cursor = local.query(
@@ -130,7 +128,6 @@ public final class DatabaseAccessor {
 
     static void addSearch(Context context, Search... entries) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Search.class, stamp, entries);
@@ -138,21 +135,20 @@ public final class DatabaseAccessor {
 
     static void removeSearch(Context context, @Nullable Search... search) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), Search.class);
 
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Search.class, stamp, search);
-     }
+    }
 
-//    static void fetchGiving(Context context) {
-//        Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
-//        context.getContentResolver().delete(contentUri, null, null);
-//        pullRemoteToLocalEntries(context.getContentResolver(), Giving.class);
-//    }
+    static void fetchGiving(Context context) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+
+        validateEntries(local, remote, Giving.class);
+    }
 
     static List<Giving> getGiving(Context context) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
         
         Uri contentUri = CompanyEntry.CONTENT_URI_GIVING;
         Cursor cursor = local.query(
@@ -166,7 +162,6 @@ public final class DatabaseAccessor {
     static void addGiving(Context context, Giving... entries) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, remote, Giving.class);
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Giving.class, stamp, entries);
@@ -176,22 +171,21 @@ public final class DatabaseAccessor {
     static void removeGiving(Context context, Giving... giving) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, FirebaseDatabase.getInstance(), Giving.class);
 
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Giving.class, stamp, giving);
         removeEntriesFromRemote(remote, Giving.class, stamp, giving);
     }
 
-//    static void fetchRecord(Context context) {
-//        Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
-//        context.getContentResolver().delete(contentUri, null, null);
-//        pullRemoteToLocalEntries(context.getContentResolver(), Record.class);
-//    }
+    static void fetchRecord(Context context) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+
+        validateEntries(local, remote, Record.class);
+    }
 
     static List<Record> getRecord(Context context) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         Cursor cursor = local.query(
@@ -206,7 +200,6 @@ public final class DatabaseAccessor {
     static void addRecord(Context context, Record... entries) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, remote, Record.class);
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Record.class, stamp, entries);
@@ -216,22 +209,21 @@ public final class DatabaseAccessor {
     static void removeRecord(Context context, @Nullable Record... record) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, FirebaseDatabase.getInstance(), Record.class);
 
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Record.class, stamp, record);
         removeEntriesFromRemote(remote, Record.class, stamp,  record);
     }
 
-//    static void fetchUser(Context context) {
-//        Uri contentUri = UserEntry.CONTENT_URI_USER;
-//        context.getContentResolver().delete(contentUri, null, null);
-//        pullRemoteToLocalEntries(context.getContentResolver(), User.class);
-//    }
+    static void fetchUser(Context context) {
+        ContentResolver local = context.getContentResolver();
+        FirebaseDatabase remote = FirebaseDatabase.getInstance();
+
+        validateEntries(local, remote, User.class);
+    }
 
     static List<User> getUser(Context context, @Nullable String id) {
         ContentResolver local = context.getContentResolver();
-        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
@@ -245,7 +237,6 @@ public final class DatabaseAccessor {
     static void addUser(Context context, User... entries) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, remote, User.class);
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, User.class, stamp, entries);
@@ -255,7 +246,6 @@ public final class DatabaseAccessor {
     static void removeUser(Context context, @Nullable User... user) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
-        validateEntries(local, FirebaseDatabase.getInstance(), User.class);
 
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, User.class, stamp, user);
@@ -374,7 +364,7 @@ public final class DatabaseAccessor {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 while (iterator.hasNext()) {
                     User u = iterator.next().getValue(User.class);
-                    if (u != null && u.getUserActive()) taskSource.setResult(u);
+                    if (u != null && u.getUserActive()) taskSource.trySetResult(u);
                 }
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -415,6 +405,7 @@ public final class DatabaseAccessor {
         if (cursor == null) return;
         List<T> entryList = getEntryListFromCursor(cursor, entryType);
         cursor.close();
+        removeEntriesFromRemote(remote, entryType, stamp);
         addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
@@ -427,9 +418,8 @@ public final class DatabaseAccessor {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 List<T> entryList = new ArrayList<>();
                 int i = 0;
-                while (iterator.hasNext()) {
-                    entryList.add(iterator.next().getValue(entryType));
-                }
+                while (iterator.hasNext()) entryList.add(iterator.next().getValue(entryType));
+                removeEntriesFromLocal(local, entryType, stamp);
                 addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}

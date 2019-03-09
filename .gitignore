@@ -3,6 +3,7 @@
 # Configuration
 *.jks
 google-services.json
+givetrack-schema.json
 
 # Library
 *.class

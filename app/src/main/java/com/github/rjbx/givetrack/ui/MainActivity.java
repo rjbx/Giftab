@@ -419,6 +419,11 @@ public class MainActivity extends AppCompatActivity implements
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
                 argsGiving.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
                 argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+
+                DatabaseService.startActionFetchUser(MainActivity.this);
+                DatabaseService.startActionFetchGiving(MainActivity.this);
+                DatabaseService.startActionFetchRecord(MainActivity.this);
+
                 switch (position) {
                     case 0: return GivingFragment.newInstance(argsGiving);
                     case 1: return GlanceFragment.newInstance(argsRecord);

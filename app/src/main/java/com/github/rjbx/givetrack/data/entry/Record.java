@@ -102,7 +102,7 @@ public class Record extends Search implements Company, Parcelable, Cloneable {
     public long getTime() { return time; }
     public void setTime(long time) { this.time = time; }
     @Override public String getId() { return super.getId(); }
-    @Override public Record getObject() { return this; }
+    @Exclude @Override public Record getObject() { return this; }
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();

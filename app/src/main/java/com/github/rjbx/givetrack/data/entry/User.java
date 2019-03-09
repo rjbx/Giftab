@@ -15,38 +15,39 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 /**
  * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
  */
-@IgnoreExtraProperties public class User implements Entry, Parcelable, Cloneable {
+@IgnoreExtraProperties
+public class User implements Entry, Parcelable, Cloneable {
 
-    private String uid;
-    private String userEmail;
-    private boolean userActive;
-    private String userBirthdate;
-    private String userGender;
+    private long giveAnchor;
     private String giveImpact;
     private String giveMagnitude;
-    private long giveAnchor;
+    private boolean giveReset;
+    private long giveStamp;
     private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
     private int glanceTheme;
-    private boolean searchDialog;
-    private boolean searchFocus;
-    private boolean searchFilter;
-    private String searchCompany;
-    private String searchTerm;
+    private String recordOrder;
+    private String recordSort;
+    private long recordStamp;
     private String searchCity;
-    private String searchState;
-    private String searchZip;
+    private String searchCompany;
+    private boolean searchDialog;
+    private boolean searchFilter;
+    private boolean searchFocus;
     private String searchMinrating;
+    private String searchOrder;
     private String searchPages;
     private String searchRows;
-    private boolean giveReset;
     private String searchSort;
-    private String searchOrder;
-    private String recordSort;
-    private String recordOrder;
-    private long giveStamp;
-    private long recordStamp;
+    private String searchState;
+    private String searchTerm;
+    private String searchZip;
+    private String uid;
+    private boolean userActive;
+    private String userBirthdate;
+    private String userEmail;
+    private String userGender;
     private long userStamp;
 
     @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
@@ -123,7 +124,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         recordStamp = source.readLong();
         userStamp = source.readLong();
     }
-    
+
     public User(User user) {
         this.uid = user.uid;
         this.userEmail = user.userEmail;
@@ -294,9 +295,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
     public long getUserStamp() { return userStamp; }
     public void setUserStamp(long userStamp) { this.userStamp = userStamp; }
     @Override public String getId() { return uid; }
-    public User getObject() { return this; }
+    @Exclude @Override public User getObject() { return this; }
 
-    public Map<String, Object> toParameterMap() {
+    @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = new HashMap<>();
         map.put(COLUMN_UID, uid);
         map.put(COLUMN_USER_EMAIL, userEmail);
@@ -332,7 +333,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
         return map;
     }
 
-    public void fromParameterMap(Map<String, Object> map) {
+    @Override public void fromParameterMap(Map<String, Object> map) {
         uid = (String) map.get(COLUMN_UID);
         userEmail = (String) map.get(COLUMN_USER_EMAIL);
         userActive = (int) map.get(COLUMN_USER_ACTIVE) == 1;
@@ -443,7 +444,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
     }
-    
+
     public static User getDefault() {
         User user = new User();
         user.uid = "";

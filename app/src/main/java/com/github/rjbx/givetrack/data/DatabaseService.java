@@ -38,6 +38,7 @@ public class DatabaseService extends IntentService {
 
     private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
+    private static final Executor MAIN_THREAD = AppExecutors.getInstance().getMainThread();
 
     private static final String ACTION_FETCH_SEARCH = "com.github.rjbx.givetrack.data.action.FETCH_SEARCH";
     private static final String ACTION_FETCH_GIVING = "com.github.rjbx.givetrack.data.action.FETCH_GIVING";
@@ -86,45 +87,45 @@ public class DatabaseService extends IntentService {
 //        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
-//
-//    /**
-//     * Starts this service to perform action FetchGiving with the given parameters.
-//     * If the service is already performing a task this action will be queued.
-//     *
-//     * @see IntentService
-//     */
-//    public static void startActionFetchGiving(Context context) {
-//        if (context == null) return;
-//        Intent intent = new Intent(context, DatabaseService.class);
-//        intent.setAction(ACTION_FETCH_GIVING);
-//        context.startService(intent);
-//    }
-//
-//    /**
-//     * Starts this service to perform action FetchRecord with the given parameters.
-//     * If the service is already performing a task this action will be queued.
-//     *
-//     * @see IntentService
-//     */
-//    public static void startActionFetchRecord(Context context) {
-//        if (context == null) return;
-//        Intent intent = new Intent(context, DatabaseService.class);
-//        intent.setAction(ACTION_FETCH_RECORD);
-//        context.startService(intent);
-//    }
-//
-//    /**
-//     * Starts this service to perform action FetchUser with the given parameters.
-//     * If the service is already performing a task this action will be queued.
-//     *
-//     * @see IntentService
-//     */
-//    public static void startActionFetchUser(Context context) {
-//        if (context == null) return;
-//        Intent intent = new Intent(context, DatabaseService.class);
-//        intent.setAction(ACTION_FETCH_USER);
-//        context.startService(intent);
-//    }
+
+    /**
+     * Starts this service to perform action FetchGiving with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchGiving(Context context) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_FETCH_GIVING);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action FetchRecord with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchRecord(Context context) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_FETCH_RECORD);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action FetchUser with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionFetchUser(Context context) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_FETCH_USER);
+        context.startService(intent);
+    }
 
     /**
      * Starts this service to perform action GiveSearch with the given parameters.
@@ -358,12 +359,15 @@ public class DatabaseService extends IntentService {
 //                final HashMap fetchSearchMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
                 handleActionFetchSearch();
                 break;
-//            case ACTION_FETCH_GIVING:
-//                handleActionFetchGiving();
-//                break;
-//            case ACTION_FETCH_RECORD:
-//                handleActionFetchRecord();
-//                break;
+            case ACTION_FETCH_GIVING:
+                handleActionFetchGiving();
+                break;
+            case ACTION_FETCH_RECORD:
+                handleActionFetchRecord();
+                break;
+            case ACTION_FETCH_USER:
+                handleActionFetchUser();
+                break;
             case ACTION_GIVE_SEARCH:
                 handleActionGiveSearch(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
@@ -435,23 +439,23 @@ public class DatabaseService extends IntentService {
         NETWORK_IO.execute(() -> DatabaseAccessor.fetchSearch(this));
     }
 
-//    /**
-//     * Handles action FetchGiving in the provided background thread.
-//     */
-//    private void handleActionFetchGiving() {
-//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
-//    }
-//
-//    /**
-//     * Handles action FetchRecord in the provided background thread.
-//     */
-//    private void handleActionFetchRecord() {
-//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
-//    }
-//
-//    private void handleActionFetchUser() {
-//        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
-//    }
+    /**
+     * Handles action FetchGiving in the provided background thread.
+     */
+    private void handleActionFetchGiving() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchGiving(this));
+    }
+
+    /**
+     * Handles action FetchRecord in the provided background thread.
+     */
+    private void handleActionFetchRecord() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
+    }
+
+    private void handleActionFetchUser() {
+        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
+    }
 
     /**
      * Handles action GiveSearch in the provided background thread with the provided parameters.

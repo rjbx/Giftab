@@ -175,7 +175,7 @@ public class AuthActivity extends AppCompatActivity implements
                     break;
                 case Intent.ACTION_MAIN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
-
+                        DatabaseService.startActionFetchUser(this);
                         List<AuthUI.IdpConfig> providers = new ArrayList<>();
                         providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
