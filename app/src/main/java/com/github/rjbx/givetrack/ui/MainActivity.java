@@ -100,6 +100,11 @@ public class MainActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
+
+        DatabaseService.startActionFetchUser(MainActivity.this);
+        DatabaseService.startActionFetchGiving(MainActivity.this);
+        DatabaseService.startActionFetchRecord(MainActivity.this);
+
         if (savedInstanceState != null) {
             mGivingArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVING_ARRAY), Giving.class);
             mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
@@ -419,10 +424,6 @@ public class MainActivity extends AppCompatActivity implements
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
                 argsGiving.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
                 argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
-
-                DatabaseService.startActionFetchUser(MainActivity.this);
-                DatabaseService.startActionFetchGiving(MainActivity.this);
-                DatabaseService.startActionFetchRecord(MainActivity.this);
 
                 switch (position) {
                     case 0: return GivingFragment.newInstance(argsGiving);

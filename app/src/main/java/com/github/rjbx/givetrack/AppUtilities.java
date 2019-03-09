@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
-import com.github.rjbx.givetrack.data.entry.Company;
-import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.ui.ConfigActivity;
 import com.github.rjbx.givetrack.ui.MainActivity;
 import com.github.rjbx.givetrack.ui.RecordActivity;
