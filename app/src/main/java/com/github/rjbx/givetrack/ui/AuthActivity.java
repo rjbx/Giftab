@@ -117,11 +117,10 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (mPendingResult) return;
+        mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
+        data.close();
         if (!mValidated) handleAction(getIntent().getAction());
         else {
-            mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
-            data.close();
-
             User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
             if (mUsers.contains(activeUser)) {
                 int activeIndex = mUsers.indexOf(activeUser);
