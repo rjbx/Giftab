@@ -437,7 +437,7 @@ public final class DatabaseAccessor {
 
         if (giveLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
         else if (giveLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
-        else return;
+        else local.notifyChange(DatabaseContract.getContentUri(entryType), null);
     }
 
     /**
