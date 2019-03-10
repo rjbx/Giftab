@@ -100,10 +100,6 @@ public class HomeActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
         setSupportActionBar(mToolbar);
 
-        DatabaseService.startActionFetchUser(HomeActivity.this);
-        DatabaseService.startActionFetchTarget(HomeActivity.this);
-        DatabaseService.startActionFetchRecord(HomeActivity.this);
-
         if (savedInstanceState != null) {
             mTargetArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVE_ARRAY), Target.class);
             mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
@@ -200,7 +196,11 @@ public class HomeActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
-                mTargetArray = new Target[data.getCount()];
+                if (mTargetArray == null) {
+                    mTargetArray = new Target[data.getCount()];
+                    DatabaseService.startActionFetchTarget(this);
+                    return;
+                }
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
@@ -209,10 +209,13 @@ public class HomeActivity extends AppCompatActivity implements
                         mTargetArray[i++] = target;
                     } while (data.moveToNext());
                 }
-//                DatabaseService.startActionFetchTarget(this);
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
-                mRecordArray = new Record[data.getCount()];
+                if (mRecordArray == null) {
+                    mRecordArray = new Record[data.getCount()];
+                    DatabaseService.startActionFetchRecord(this);
+                    return;
+                }
                 if (data.moveToFirst()) {
                     int i = 0;
                     do {
