@@ -423,7 +423,14 @@ public final class DatabaseAccessor {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
                 List<T> entryList = new ArrayList<>();
                 int i = 0;
-                while (iterator.hasNext()) entryList.add(iterator.next().getValue(entryType));
+                while (iterator.hasNext()) {
+                    T entry = iterator.next().getValue(entryType);
+                    if (entry instanceof User) {
+                        ((User) entry).setRecordStamp(0);
+                        ((User) entry).setTargetStamp(0);
+                    }
+                    entryList.add(entry);
+                }
                 removeEntriesFromLocal(local, entryType, stamp);
                 addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
             }
