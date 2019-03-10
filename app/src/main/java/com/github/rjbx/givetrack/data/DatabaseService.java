@@ -436,25 +436,25 @@ public class DatabaseService extends IntentService {
      * Handles action FetchSpawn in the provided background thread with the provided parameters.
      */
     private void handleActionFetchSpawn() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchSpawn(this));
+        DatabaseAccessor.fetchSpawn(this);
     }
 
     /**
      * Handles action FetchTargetin the provided background thread.
      */
     private void handleActionFetchTarget() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchTarget(this));
+        DatabaseAccessor.fetchTarget(this);
     }
 
     /**
      * Handles action FetchRecord in the provided background thread.
      */
     private void handleActionFetchRecord() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchRecord(this));
+        DatabaseAccessor.fetchRecord(this);
     }
 
     private void handleActionFetchUser() {
-        NETWORK_IO.execute(() -> DatabaseAccessor.fetchUser(this));
+        DatabaseAccessor.fetchUser(this);
     }
 
     /**
@@ -462,38 +462,35 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionGiveSpawn(Spawn spawn) {
 
-        NETWORK_IO.execute(() -> {
+        float impact = 0f;
+        int frequency = 0;
 
-            float impact = 0f;
-            int frequency = 0;
-
-            List<Record> records = DatabaseAccessor.getRecord(this);
-            for (Record record : records) {
-                if (record.getEin().equals(spawn.getEin())) {
-                    impact += Float.parseFloat(record.getImpact());
-                    frequency++;
-                }
+        List<Record> records = DatabaseAccessor.getRecord(this);
+        for (Record record : records) {
+            if (record.getEin().equals(spawn.getEin())) {
+                impact += Float.parseFloat(record.getImpact());
+                frequency++;
             }
+        }
 
-            List<Target> targets = DatabaseAccessor.getTarget(this);
-            int size = targets.size();
-            double percent = size == 1 ? size : 0d;
-            Target target = Target.fromSuper(spawn);
-            target.setFrequency(frequency);
-            target.setPercent(percent);
-            target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+        List<Target> targets = DatabaseAccessor.getTarget(this);
+        int size = targets.size();
+        double percent = size == 1 ? size : 0d;
+        Target target = Target.fromSuper(spawn);
+        target.setFrequency(frequency);
+        target.setPercent(percent);
+        target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
-            String phoneNumber = urlToPhoneNumber(target);
-            target.setPhone(phoneNumber);
+        String phoneNumber = urlToPhoneNumber(target);
+        target.setPhone(phoneNumber);
 
-            String emailAddress = urlToEmailAddress(target);
-            target.setEmail(emailAddress);
+        String emailAddress = urlToEmailAddress(target);
+        target.setEmail(emailAddress);
 
-            String socialHandle = urlToSocialHandle(target);
-            target.setSocial(socialHandle);
+        String socialHandle = urlToSocialHandle(target);
+        target.setSocial(socialHandle);
 
-            DatabaseAccessor.addTarget(this, target);
-        });
+        DatabaseAccessor.addTarget(this, target);
     }
 
     private void handleActionRecordTarget(Target... target) {
@@ -512,14 +509,14 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveSpawn in the provided background thread with the provided parameters.
      */
     private void handleActionRemoveSpawn(Spawn... spawns) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawns));
+        DatabaseAccessor.removeSpawn(this, spawns);
     }
 
     /**
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
     private void handleActionRemoveTarget(Target... targets) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
+        DatabaseAccessor.removeTarget(this, targets);
     }
 
     /**
@@ -527,59 +524,54 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveRecord(Record... records) {
 
-        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeRecord(this, records);
+        DatabaseAccessor.removeRecord(this, records);
 
-            List<Target> targets = DatabaseAccessor.getTarget(this);
-            for (Target target : targets) {
-                for (Record record : records) {
-                    if (record.getEin().equals(target.getEin())) {
-                        target.setFrequency(target.getFrequency() - 1);
-                        float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
-                        target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                        DatabaseAccessor.addTarget(this, target);
-                        break;
-                    }
+        List<Target> targets = DatabaseAccessor.getTarget(this);
+        for (Target target : targets) {
+            for (Record record : records) {
+                if (record.getEin().equals(target.getEin())) {
+                    target.setFrequency(target.getFrequency() - 1);
+                    float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
+                    target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+                    DatabaseAccessor.addTarget(this, target);
+                    break;
                 }
             }
-        });
+        }
     }
 
     private void handleActionRemoveUser(User... users) {
 
-        DISK_IO.execute(() -> {
+        List<Spawn> spawns = DatabaseAccessor.getSpawn(this);
+        List<Target> targets = DatabaseAccessor.getTarget(this);
+        List<Record> records = DatabaseAccessor.getRecord(this);
 
-            List<Spawn> spawns = DatabaseAccessor.getSpawn(this);
-            List<Target> targets = DatabaseAccessor.getTarget(this);
-            List<Record> records = DatabaseAccessor.getRecord(this);
-
-            for (User user : users) {
-                for (Spawn spawn : spawns)
-                    if (!spawn.getUid().equals(user.getUid()))
-                        DatabaseAccessor.removeSpawn(this, spawn);
-                for (Target target : targets)
-                    if (!target.getUid().equals(user.getUid()))
-                        DatabaseAccessor.removeTarget(this, target);
-                for (Record record : records)
-                    if (!record.getUid().equals(user.getUid()))
-                        DatabaseAccessor.removeRecord(this, record);
-            }
-            DatabaseAccessor.removeUser(this, users);
-        });
+        for (User user : users) {
+            for (Spawn spawn : spawns)
+                if (!spawn.getUid().equals(user.getUid()))
+                    DatabaseAccessor.removeSpawn(this, spawn);
+            for (Target target : targets)
+                if (!target.getUid().equals(user.getUid()))
+                    DatabaseAccessor.removeTarget(this, target);
+            for (Record record : records)
+                if (!record.getUid().equals(user.getUid()))
+                    DatabaseAccessor.removeRecord(this, record);
+        }
+        DatabaseAccessor.removeUser(this, users);
     }
 
     /**
      * Handles action ResetSpawn in the provided background thread with the provided parameters.
      */
     private void handleActionResetSpawn() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this));
+        DatabaseAccessor.removeSpawn(this);
     }
 
     /**
      * Handles action ResetTargetin the provided background thread with the provided parameters.
      */
     private void handleActionResetTarget() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
+        DatabaseAccessor.removeTarget(this);
     }
 
     /**
@@ -587,54 +579,46 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionResetRecord() {
 
-        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeRecord(this);
-            List<Target> targets = DatabaseAccessor.getTarget(this);
-            for (Target target : targets) {
-                target.setImpact("0");
-                target.setFrequency(0);
-            }
-            DatabaseAccessor.addTarget(this, targets.toArray(new Target[targets.size()]));
-        });
+        DatabaseAccessor.removeRecord(this);
+        List<Target> targets = DatabaseAccessor.getTarget(this);
+        for (Target target : targets) {
+            target.setImpact("0");
+            target.setFrequency(0);
+        }
+        DatabaseAccessor.addTarget(this, targets.toArray(new Target[targets.size()]));
     }
 
     private void handleActionResetUser() {
-        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSpawn(this);
-            DatabaseAccessor.removeTarget(this);
-            DatabaseAccessor.removeRecord(this);
-            DatabaseAccessor.removeUser(this);
-        });
+        DatabaseAccessor.removeSpawn(this);
+        DatabaseAccessor.removeTarget(this);
+        DatabaseAccessor.removeRecord(this);
+        DatabaseAccessor.removeUser(this);
     }
 
     /**
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
+        DatabaseAccessor.addTarget(this, targets);
     }
 
     private void handleActionUpdateRecord(Record... records) {
-        DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records));
+        DatabaseAccessor.addRecord(this, records);
     }
 
     private void handleActionUpdateUser(User... user) {
-        DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
+        DatabaseAccessor.addUser(this, user);
     }
 
     /**
      * Handles action ResetData in the provided background thread.
      */
     private void handleActionResetData() {
-
-        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSpawn(this);
-            DatabaseAccessor.removeTarget(this);
-            DatabaseAccessor.removeRecord(this);
-            DatabaseAccessor.removeUser(this);
-        });
+        DatabaseAccessor.removeSpawn(this);
+        DatabaseAccessor.removeTarget(this);
+        DatabaseAccessor.removeRecord(this);
+        DatabaseAccessor.removeUser(this);
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-
     }
 
 //          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
