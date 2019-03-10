@@ -70,8 +70,6 @@ public class AuthActivity extends AppCompatActivity implements
         if (BuildConfig.DEBUG) Timber.plant(new Timber.DebugTree());
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
     /**
@@ -82,6 +80,12 @@ public class AuthActivity extends AppCompatActivity implements
     @Override protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
         super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
     @Override public void onBackPressed() { finish(); }
@@ -118,7 +122,6 @@ public class AuthActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
-        data.close();
         if (!mValidated) handleAction(getIntent().getAction());
         else {
             User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
