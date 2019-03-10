@@ -343,6 +343,8 @@ public final class DatabaseAccessor {
     static User getActiveUserFromLocal(ContentResolver local) {
         User u = User.getDefault();
         u.setUserStamp(-1);
+        u.setTargetStamp(-1);
+        u.setRecordStamp(-1);
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
         if (data == null) return u;
         if (data.moveToFirst()) {
@@ -374,10 +376,12 @@ public final class DatabaseAccessor {
         try { Tasks.await(task); }
         catch (ExecutionException|InterruptedException e) { task = Tasks.forException(e); }
 
-        User user = User.getDefault();
-        user.setUserStamp(-1);
-        if (task.isSuccessful()) user = task.getResult();
-        return user;
+        User u = User.getDefault();
+        u.setUserStamp(-1);
+        u.setTargetStamp(-1);
+        u.setRecordStamp(-1);
+        if (task.isSuccessful()) u = task.getResult();
+        return u;
     }
 
     static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
