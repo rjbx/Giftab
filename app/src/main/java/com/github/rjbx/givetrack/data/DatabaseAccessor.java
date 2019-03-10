@@ -342,6 +342,7 @@ public final class DatabaseAccessor {
 
     static User getActiveUserFromLocal(ContentResolver local) {
         User u = User.getDefault();
+        u.setUserStamp(-1);
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
         if (data == null) return u;
         if (data.moveToFirst()) {
@@ -374,6 +375,7 @@ public final class DatabaseAccessor {
         catch (ExecutionException|InterruptedException e) { task = Tasks.forException(e); }
 
         User user = User.getDefault();
+        user.setUserStamp(-1);
         if (task.isSuccessful()) user = task.getResult();
         return user;
     }
