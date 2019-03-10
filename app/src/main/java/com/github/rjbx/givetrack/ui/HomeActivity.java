@@ -214,11 +214,11 @@ public class HomeActivity extends AppCompatActivity implements
                     }
                 } break;
             case DatabaseContract.LOADER_ID_RECORD:
-                mRecordLock = false;
                 if (mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseService.startActionFetchRecord(this);
                 } else {
+                    mRecordLock = false;
                     if (data.moveToFirst()) {
                         int i = 0;
                         do {
