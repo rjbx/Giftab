@@ -199,32 +199,28 @@ public class HomeActivity extends AppCompatActivity implements
                 if (mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
                     DatabaseService.startActionFetchTarget(this);
-                    return;
-                }
-                if (data.moveToFirst()) {
+                } else if (data.moveToFirst()) {
                     int i = 0;
                     do {
+                        mTargetArray = new Target[data.getCount()];
                         Target target = new Target();
                         DatabaseAccessor.cursorRowToEntry(data, target);
                         mTargetArray[i++] = target;
                     } while (data.moveToNext());
-                }
-                break;
+                } break;
             case DatabaseContract.LOADER_ID_RECORD:
                 if (mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseService.startActionFetchRecord(this);
-                    return;
-                }
-                if (data.moveToFirst()) {
+                } else if (data.moveToFirst()) {
                     int i = 0;
                     do {
+                        mRecordArray = new Record[data.getCount()];
                         Record record = new Record();
                         DatabaseAccessor.cursorRowToEntry(data, record);
                         mRecordArray[i++] = record;
                     } while (data.moveToNext());
-                }
-                break;
+                } break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
                     do {
