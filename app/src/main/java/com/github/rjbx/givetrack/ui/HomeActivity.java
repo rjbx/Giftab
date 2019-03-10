@@ -81,7 +81,9 @@ public class HomeActivity extends AppCompatActivity implements
     private Target[] mTargetArray;
     private Record[] mRecordArray;
     private User mUser;
-    private boolean mLock = true;
+    private boolean mUserLock = true;
+    private boolean mTargetLock = true;
+    private boolean mRecordLock = true;
     private long mAnchorTime;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
@@ -199,27 +201,33 @@ public class HomeActivity extends AppCompatActivity implements
                 if (mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
                     DatabaseService.startActionFetchTarget(this);
-                } else if (data.moveToFirst()) {
-                    int i = 0;
-                    do {
-                        mTargetArray = new Target[data.getCount()];
-                        Target target = new Target();
-                        DatabaseAccessor.cursorRowToEntry(data, target);
-                        mTargetArray[i++] = target;
-                    } while (data.moveToNext());
+                } else {
+                    mTargetLock = false;
+                    if (data.moveToFirst()) {
+                        int i = 0;
+                        do {
+                            mTargetArray = new Target[data.getCount()];
+                            Target target = new Target();
+                            DatabaseAccessor.cursorRowToEntry(data, target);
+                            mTargetArray[i++] = target;
+                        } while (data.moveToNext());
+                    }
                 } break;
             case DatabaseContract.LOADER_ID_RECORD:
+                mRecordLock = false;
                 if (mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseService.startActionFetchRecord(this);
-                } else if (data.moveToFirst()) {
-                    int i = 0;
-                    do {
-                        mRecordArray = new Record[data.getCount()];
-                        Record record = new Record();
-                        DatabaseAccessor.cursorRowToEntry(data, record);
-                        mRecordArray[i++] = record;
-                    } while (data.moveToNext());
+                } else {
+                    if (data.moveToFirst()) {
+                        int i = 0;
+                        do {
+                            mRecordArray = new Record[data.getCount()];
+                            Record record = new Record();
+                            DatabaseAccessor.cursorRowToEntry(data, record);
+                            mRecordArray[i++] = record;
+                        } while (data.moveToNext());
+                    }
                 } break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
@@ -227,7 +235,6 @@ public class HomeActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
-                            mLock = false;
                             mUser = user;
                             if (mUser.getGiveTiming() == 0) {
                                 long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
@@ -244,7 +251,7 @@ public class HomeActivity extends AppCompatActivity implements
                 }
                 break;
         }
-        if (!mLock && mTargetArray != null && mRecordArray != null && mUser != null) {
+        if (!mUserLock && !mTargetLock && !mRecordLock) {
             Intent intent = getIntent();
             if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
@@ -413,7 +420,9 @@ public class HomeActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
-            mLock = true;
+            mUserLock = true;
+            mTargetLock = true;
+            mRecordLock = true;
             if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
                 Bundle argsTarget= new Bundle();
