@@ -15,7 +15,7 @@ import java.util.Map;
 public class Target extends Spawn implements Company, Rateraid.RatedObject<Target>, Parcelable, Cloneable {
 
     private int frequency;
-    private String percent;
+    private String share;
     
     @Exclude public static final Parcelable.Creator<Target> CREATOR = new Parcelable.Creator<Target>() {
         @Override public Target createFromParcel(Parcel source) {
@@ -29,7 +29,7 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
     @Override public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(frequency);
-        dest.writeString(percent);
+        dest.writeString(share);
     }
 
     @Override public int describeContents() {
@@ -39,13 +39,13 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
     public Target(Parcel source) {
         super(source);
         frequency = source.readInt();
-        percent = source.readString();
+        share = source.readString();
     }
 
-    public Target(Spawn spawn, int frequency, String percent) {
+    public Target(Spawn spawn, int frequency, String share) {
         super(spawn);
         this.frequency = frequency;
-        this.percent = percent;
+        this.share = share;
     }
 
     /**
@@ -74,7 +74,7 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
             String impact,
             int type,
             int frequency,
-            String percent) {
+            String share) {
         super(
                 uid,
                 ein,
@@ -94,41 +94,42 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
                 type
         );
         this.frequency = frequency;
-        this.percent = percent;
+        this.share = share;
     }
 
     public int getFrequency() { return frequency; }
     public void setFrequency(int frequency) { this.frequency = frequency; }
-    public void setPercent(String percent) { this.percent = String.valueOf(percent); }
-    @Override public double getPercent() { return Double.parseDouble(percent); }
-    @Override public void setPercent(double percent) { this.percent = String.valueOf(percent); }
+    public void setShare(String share) { this.share = share; }
+    public String getShare() { return share; }
+    @Exclude @Override public double getPercent() { return Double.parseDouble(share); }
+    @Exclude @Override public void setPercent(double percent) { this.share = String.valueOf(percent); }
     @Override public String getId() { return super.getId(); }
     @Exclude @Override public Target getObject() { return this; }
 
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY, frequency);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, percent);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_SHARE, share);
         return map;
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
         frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        percent = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
+        share = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SHARE);
     }
 
     @Override public ContentValues toContentValues() {
         ContentValues values = super.toContentValues();
         values.put(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY, frequency);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, percent);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_SHARE, share);
         return values;
     }
 
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        percent = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT);
+        share = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_SHARE);
     }
 
     public Spawn getSuper() { return super.clone(); }
@@ -140,7 +141,7 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
 
     @Override public Target clone() {
         super.clone();
-        return new Target(getSuper(), this.frequency, this.percent);
+        return new Target(getSuper(), this.frequency, this.share);
     }
 
     public static Target getDefault() {
@@ -161,7 +162,7 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
         target.setImpact("");
         target.setType(0);
         target.setFrequency(0);
-        target.setPercent("");
+        target.setShare("");
         return target;
     }
 }
