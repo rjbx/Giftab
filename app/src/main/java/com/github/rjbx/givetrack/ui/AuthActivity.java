@@ -53,8 +53,9 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
-    private boolean mValidated = false;
-    private boolean mPendingResult;
+    private boolean mPendingAction = true;
+    private boolean mPendingValidation = false;
+    private boolean mPendingResult = false;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     @BindView(R.id.auth_progress) ProgressBar mProgressbar;
@@ -94,9 +95,18 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
+
+                User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+                if (mUsers.contains(activeUser)) {
+                    int activeIndex = mUsers.indexOf(activeUser);
+                    mUsers.get(activeIndex).setUserActive(true);
+                } else {
+                    for (int i = 0; i < mUsers.size(); i++)
+                        mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
+                    mUsers.add(activeUser);
+                }
                 mPendingResult = false;
-                DatabaseService.startActionFetchUser(this);
-                mValidated = true;
+                mPendingValidation = true;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
@@ -116,20 +126,13 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        if (mPendingResult) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
-        if (!mValidated) handleAction(getIntent().getAction());
-        else if (mUsers.size() > 0){
-            User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-            if (mUsers.contains(activeUser)) {
-                int activeIndex = mUsers.indexOf(activeUser);
-                mUsers.get(activeIndex).setUserActive(true);
-            } else {
-                for (int i = 0; i < mUsers.size(); i++)
-                    mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-                mUsers.add(activeUser);
-            }
-
+        if (mPendingResult) return;
+        if (mPendingAction) handleAction(getIntent().getAction());
+        if (mPendingValidation) {
+            DatabaseService.startActionFetchUser(this);
+            mPendingValidation = false;
+        } else {
             DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
             finish();
@@ -196,6 +199,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 .setAvailableProviders(providers)
                                 .build();
                         startActivityForResult(signIn, REQUEST_SIGN_IN);
+                        mPendingAction = false;
                         mPendingResult = true;
                     } else {
                         finish();
