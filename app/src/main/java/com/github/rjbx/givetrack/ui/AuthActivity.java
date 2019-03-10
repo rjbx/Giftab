@@ -103,6 +103,7 @@ public class AuthActivity extends AppCompatActivity implements
                         mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                     mUsers.add(activeUser);
                 }
+                DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
                 mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -129,7 +130,6 @@ public class AuthActivity extends AppCompatActivity implements
             case 1: return;
             case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
             case 3:
-                DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
         }
