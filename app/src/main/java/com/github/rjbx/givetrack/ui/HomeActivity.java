@@ -235,6 +235,7 @@ public class HomeActivity extends AppCompatActivity implements
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
+                            mUserLock = false;
                             mUser = user;
                             if (mUser.getGiveTiming() == 0) {
                                 long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
