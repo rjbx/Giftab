@@ -10,12 +10,12 @@
         android:summaryOff="Don't process donations when adding money to charities"/>
 
     <Preference
-        android:key="@string/pref_recalibrate_key"
+        android:key="@string/pref_giveReset_key"
         android:title="@string/pref_recalibrate_label"
         android:summary="Allocate the same percentage of donations to each charity"/>
 
     <Preference
-        android:key="@string/pref_magnitude_key"
+        android:key="@string/pref_giveMagnitude_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_magnitude_label"/>

@@ -104,7 +104,7 @@ public final class DatabaseAccessor {
         // Retrieve data
         String response = requestResponseFromUrl(url, null);
         if (response == null) return;
-        Spawn[] parsedResponse = parseSpawnes(response, user.getUid(), single);
+        Spawn[] parsedResponse = parseSpawns(response, user.getUid(), single);
 
         // Store data
         long stamp = System.currentTimeMillis();
@@ -433,10 +433,10 @@ public final class DatabaseAccessor {
 
         long localTableStamp = DatabaseContract.getTableTime(entryType, localUser);
         long remoteTableStamp = DatabaseContract.getTableTime(entryType, remoteUser);
-        int giveLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
+        int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
-        if (giveLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
-        else if (giveLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
+        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
         else local.notifyChange(DatabaseContract.getContentUri(entryType), null);
     }
 
@@ -524,7 +524,7 @@ public final class DatabaseAccessor {
      * This method parses JSON String of data API response and returns array of {@link Spawn}.
      * @throws JSONException if JSON data cannot be properly parsed.
      */
-    private static Spawn[] parseSpawnes(@NonNull String jsonResponse, String uid, boolean single) {
+    private static Spawn[] parseSpawns(@NonNull String jsonResponse, String uid, boolean single) {
 
         Spawn[] spawns = null;
         try {

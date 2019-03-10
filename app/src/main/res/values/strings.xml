@@ -135,25 +135,25 @@
     <string name="symbol_decrement_button">—</string>
 
     <!-- SharedPreferences -->
-    <string name="pref_term_key" translatable="false">term</string>
-    <string name="pref_city_key" translatable="false">city</string>
-    <string name="pref_state_key" translatable="false">state</string>
-    <string name="pref_zip_key" translatable="false">zip</string>
-    <string name="pref_pages_key" translatable="false">pages</string>
-    <string name="pref_size_key" translatable="false">rows</string>
-    <string name="pref_minrating_key" translatable="false">minrating</string>
-    <string name="pref_filter_key" translatable="false">fundraising</string>
-    <string name="pref_spawnSort_key" translatable="false">indexSort</string>
-    <string name="pref_spawnOrder_key" translatable="false">indexOrder</string>
-    <string name="pref_recordSort_key" translatable="false">journalSort</string>
-    <string name="pref_recordOrder_key" translatable="false">journalOrder</string>
-    <string name="pref_focus_key" translatable="false">focus</string>
-    <string name="pref_gender_key" translatable="false">gender</string>
-    <string name="pref_birthdate_key" translatable="false">birthdate</string>
+    <string name="pref_indexTerm_key" translatable="false">indexTerm</string>
+    <string name="pref_indexCity_key" translatable="false">indexCity</string>
+    <string name="pref_indexState_key" translatable="false">indexState</string>
+    <string name="pref_indexZip_key" translatable="false">indexZip</string>
+    <string name="pref_indexPages_key" translatable="false">indexPages</string>
+    <string name="pref_indexSize_key" translatable="false">indexRows</string>
+    <string name="pref_indexMinrating_key" translatable="false">indexMinrating</string>
+    <string name="pref_indexFilter_key" translatable="false">indexFundraising</string>
+    <string name="pref_indexSort_key" translatable="false">indexSort</string>
+    <string name="pref_indexOrder_key" translatable="false">indexOrder</string>
+    <string name="pref_journalSort_key" translatable="false">journalSort</string>
+    <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
+    <string name="pref_indexFocus_key" translatable="false">indexFcus</string>
+    <string name="pref_userGender_key" translatable="false">userGender</string>
+    <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
-    <string name="pref_recalibrate_key" translatable="false">ratingReset</string>
-    <string name="pref_magnitude_key" translatable="false">magnitude</string>
-    <string name="pref_company_key" translatable="false">company</string>
+    <string name="pref_giveReset_key" translatable="false">giveReset</string>
+    <string name="pref_giveMagnitude_key" translatable="false">giveMagnitude</string>
+    <string name="pref_indexCompany_key" translatable="false">indexCompany</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
     <string name="pref_show_key" translatable="false">showAll</string>
     <string name="pref_payments_key" translatable="false">payments</string>

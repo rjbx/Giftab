@@ -135,6 +135,7 @@ public class ConfigActivity
     private void setupActionBar() {
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
+            actionBar.setTitle("Settings");
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
         }
@@ -253,10 +254,10 @@ public class ConfigActivity
         public void onResume() {
             super.onResume();
             handlePreferenceChange(findPreference("example_text"), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_gender_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference("example_list"), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_birthdate_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
         }
 
         /**
@@ -266,8 +267,8 @@ public class ConfigActivity
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mCalendar.set(year, month, dayOfMonth);
             String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_birthdate_key), birthdate).apply();
-            handlePreferenceChange(findPreference(getString(R.string.pref_birthdate_key)), this);
+            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
+            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
         }
 
         /**
@@ -283,7 +284,7 @@ public class ConfigActivity
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            if (getString(R.string.pref_birthdate_key).equals(preference.getKey())) {
+            if (getString(R.string.pref_userBirthdate_key).equals(preference.getKey())) {
                 mCalendar = Calendar.getInstance();
                 String birthdate = mUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
@@ -323,34 +324,34 @@ public class ConfigActivity
         @Override
         public void onResume() {
             super.onResume();
-            ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_state_key));
+            ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_indexState_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
 
-            ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_minrating_key));
+            ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_indexMinrating_key));
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_spawnSort_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_indexSort_key));
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_spawnOrder_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexOrder_key));
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
-            handlePreferenceChange(findPreference(getString(R.string.pref_filter_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_term_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_city_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_state_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_zip_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_minrating_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_pages_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_size_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_spawnSort_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_spawnOrder_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_company_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_focus_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexFilter_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexTerm_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexCity_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexState_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexPages_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexSize_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_indexFocus_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
@@ -360,7 +361,7 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_focus_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
                 if ((boolean) newValue) {
                     preference.setEnabled(true);
                 } else preference.setEnabled(false);
@@ -439,9 +440,9 @@ public class ConfigActivity
         @Override
         public void onResume() {
             super.onResume();
-            handlePreferenceChange(findPreference(getString(R.string.pref_magnitude_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_magnitude_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_recalibrate_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_giveReset_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -459,7 +460,7 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_magnitude_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
                 String magnitudeStr = mUser.getGiveMagnitude();
                 mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
@@ -477,7 +478,7 @@ public class ConfigActivity
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
                 mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
                 return true;
-            } else if (getString(R.string.pref_recalibrate_key).equals(preferenceKey)) {
+            } else if (getString(R.string.pref_giveReset_key).equals(preferenceKey)) {
                 mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
                 mRecalibrateDialog.setMessage(getActivity().getString(R.string.dialog_message_recalibrate));
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
@@ -527,8 +528,8 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         mUser.setGiveMagnitude(percentIntToDecimalString(mSeekProgress));
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_magnitude_key), mUser.getGiveMagnitude()).apply();
-                        Preference magnitudePreference = findPreference(getString(R.string.pref_magnitude_key));
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_giveMagnitude_key), mUser.getGiveMagnitude()).apply();
+                        Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
                         handlePreferenceChange(magnitudePreference, this);
                         break;
                     default:
@@ -590,18 +591,18 @@ public class ConfigActivity
         @Override
         public void onResume() {
             super.onResume();
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_recordSort_key));
+            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_journalSort_key));
             if (sortPref.getValue() == null) {
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
             }
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_recordOrder_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_journalOrder_key));
             if (orderPref.getValue() == null) {
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
             }
 
-            handlePreferenceChange(findPreference(getString(R.string.pref_recordSort_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_recordOrder_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_journalSort_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_journalOrder_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
