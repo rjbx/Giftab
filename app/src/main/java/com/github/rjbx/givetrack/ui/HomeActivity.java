@@ -205,8 +205,8 @@ public class HomeActivity extends AppCompatActivity implements
                     mTargetLock = false;
                     if (data.moveToFirst()) {
                         int i = 0;
+                        mTargetArray = new Target[data.getCount()];
                         do {
-                            mTargetArray = new Target[data.getCount()];
                             Target target = new Target();
                             DatabaseAccessor.cursorRowToEntry(data, target);
                             mTargetArray[i++] = target;
@@ -221,8 +221,8 @@ public class HomeActivity extends AppCompatActivity implements
                     mRecordLock = false;
                     if (data.moveToFirst()) {
                         int i = 0;
+                        mRecordArray = new Record[data.getCount()];
                         do {
-                            mRecordArray = new Record[data.getCount()];
                             Record record = new Record();
                             DatabaseAccessor.cursorRowToEntry(data, record);
                             mRecordArray[i++] = record;
