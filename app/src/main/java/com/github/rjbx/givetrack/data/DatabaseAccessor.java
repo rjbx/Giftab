@@ -414,10 +414,11 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
-    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
+    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
+        if (entryType == Record.class || entryType == Target.class) pathReference = pathReference.child(uid);
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
@@ -451,7 +452,7 @@ public final class DatabaseAccessor {
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
         if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
-        else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp);
+        else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else local.notifyChange(DatabaseContract.getContentUri(entryType), null);
     }
 
