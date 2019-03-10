@@ -270,7 +270,7 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
+    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         String uid = entries[0].getUid();
 
