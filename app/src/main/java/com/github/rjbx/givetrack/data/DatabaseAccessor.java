@@ -425,7 +425,9 @@ public final class DatabaseAccessor {
         });
     }
 
-// TODO: 1a Consider adding entry parameter to all fetch methods to prevent additional cursor query
+    // TODO Decide:
+    // a. Handle local User updates with company stamp reset for future company validation
+    // b. Revert to remote database schema with company stamps nested inside company items
     static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(local);
