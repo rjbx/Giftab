@@ -53,9 +53,7 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
-    private boolean mPendingAction = true;
-    private boolean mPendingValidation = false;
-    private boolean mPendingResult = false;
+    private int mProcessStage = 0;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
     @BindView(R.id.auth_progress) ProgressBar mProgressbar;
@@ -105,8 +103,7 @@ public class AuthActivity extends AppCompatActivity implements
                         mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
                     mUsers.add(activeUser);
                 }
-                mPendingResult = false;
-                mPendingValidation = true;
+                mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
@@ -127,15 +124,14 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
-        if (mPendingResult) return;
-        if (mPendingAction) handleAction(getIntent().getAction());
-        if (mPendingValidation) {
-            DatabaseService.startActionFetchUser(this);
-            mPendingValidation = false;
-        } else {
-            DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
-            startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-            finish();
+        switch (mProcessStage) {
+            case 0: handleAction(getIntent().getAction()); break;
+            case 1: return;
+            case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
+            case 3:
+                DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
+                startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
+                finish();
         }
     }
 
@@ -199,8 +195,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 .setAvailableProviders(providers)
                                 .build();
                         startActivityForResult(signIn, REQUEST_SIGN_IN);
-                        mPendingAction = false;
-                        mPendingResult = true;
+                        mProcessStage++;
                     } else {
                         finish();
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
