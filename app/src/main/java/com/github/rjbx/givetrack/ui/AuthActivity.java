@@ -93,16 +93,14 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
-
+                boolean isPersisted = false;
                 User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                if (mUsers.contains(activeUser)) {
-                    int activeIndex = mUsers.indexOf(activeUser);
-                    mUsers.get(activeIndex).setUserActive(true);
-                } else {
-                    for (int i = 0; i < mUsers.size(); i++)
-                        mUsers.get(i).setUserActive(mUsers.get(i).getUid().equals(activeUser.getUid()));
-                    mUsers.add(activeUser);
-                }
+                activeUser.setUserActive(true);
+                for (int i = 0; i < mUsers.size(); i++) {
+                    boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
+                    mUsers.get(i).setUserActive(isActive);
+                    if (isActive) isPersisted = true;
+                } if (!isPersisted) mUsers.add(activeUser);
                 DatabaseService.startActionUpdateUser(AuthActivity.this, mUsers.toArray(new User[mUsers.size()]));
                 mProcessStage++;
             } else {
