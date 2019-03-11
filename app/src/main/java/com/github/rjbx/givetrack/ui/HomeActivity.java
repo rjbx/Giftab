@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.transition.Fade;
 import androidx.transition.Slide;
 import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
@@ -34,6 +35,7 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import butterknife.ButterKnife;
@@ -376,6 +378,7 @@ public class HomeActivity extends AppCompatActivity implements
         private Unbinder mUnbinder;
         @BindView(R.id.placeholder_container) FrameLayout mPlaceholderContainer;
         @Nullable @BindView(R.id.launch_progress) ProgressBar mLaunchProgress;
+        @Nullable @BindView(R.id.launch_icon) ImageView mLaunchIcon;
 
         /**
          * Provides default constructor required for the {@link FragmentManager}
@@ -389,7 +392,7 @@ public class HomeActivity extends AppCompatActivity implements
         static PlaceholderFragment newInstance(@Nullable Bundle args) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             if (args != null) fragment.setArguments(args);
-            fragment.setExitTransition(new Slide(Gravity.BOTTOM));
+            fragment.setExitTransition(new Fade(Fade.OUT));
             return fragment;
         }
 
@@ -415,11 +418,13 @@ public class HomeActivity extends AppCompatActivity implements
             String launchAction = getArguments().getString(ARGS_ACTION_ATTRIBUTES);
             if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN))
                 if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.VISIBLE);
+                if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.VISIBLE);
         }
 
         @Override
         public void onPause() {
             if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.GONE);
+            if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.GONE);
             super.onPause();
         }
 
@@ -455,10 +460,14 @@ public class HomeActivity extends AppCompatActivity implements
 
             boolean launch = mTargetLock;
             Bundle argsPlaceholder = new Bundle();
-            argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
-            argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
-            if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
+            if (mTargetArray == null) {
+                argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
+                argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
+                return PlaceholderFragment.newInstance(argsPlaceholder);
+            }
             else {
+                argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, false);
+                if (mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
                 Bundle argsTarget= new Bundle();
                 Bundle argsRecord = new Bundle();
                 argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);

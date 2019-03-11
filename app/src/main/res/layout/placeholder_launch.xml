@@ -12,10 +12,12 @@
         android:padding="72dp">
 
         <ImageView
+            android:id="@+id/launch_icon"
             android:layout_width="170dp"
             android:layout_height="170dp"
             android:padding="24dp"
             android:src="@mipmap/ic_launcher_round"
+            android:visibility="gone"
             android:layout_gravity="center"/>
 
         <ProgressBar
