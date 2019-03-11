@@ -422,8 +422,6 @@ public class HomeActivity extends AppCompatActivity implements
         @Override public Fragment getItem(int position) {
 
             mUserLock = true;
-            mTargetLock = true;
-            mRecordLock = true;
             if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(null);
             else {
                 Bundle argsTarget= new Bundle();
