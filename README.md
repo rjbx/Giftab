@@ -1,4 +1,4 @@
-# GiveGlance
+# Giveu
 
 **An app that visualizes a history of giving.**
 
