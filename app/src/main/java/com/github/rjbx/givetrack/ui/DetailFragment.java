@@ -31,14 +31,17 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * Provides the logic and views for a single Charity detail screen.
@@ -129,9 +132,7 @@ public class DetailFragment extends Fragment {
 
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
-            Uri collectionUri = DatabaseContract.CompanyEntry.CONTENT_URI_TARGET.buildUpon()
-                    .appendPath(sCompany.getEin()).build();
-            new StatusAsyncTask(this).execute(collectionUri);
+            new StatusAsyncTask(this).execute(sCompany);
         }
 
         mWebview = new WebView(inflater.getContext().getApplicationContext());
@@ -269,7 +270,7 @@ public class DetailFragment extends Fragment {
     /**
      * Confirms whether item exists in collection table and updates status accordingly.
      */
-    private static class StatusAsyncTask extends AsyncTask<Uri, Void, Boolean> {
+    private static class StatusAsyncTask extends AsyncTask<Company, Void, Boolean> {
 
         private WeakReference<DetailFragment> mFragment;
 
@@ -284,14 +285,26 @@ public class DetailFragment extends Fragment {
         /**
          * Retrieves the item collection status.
          */
-        @Override protected Boolean doInBackground(Uri[] uri) {
+        @Override protected Boolean doInBackground(Company[] company) {
             Context context = mFragment.get().getContext();
             if (context == null) return null;
-            Cursor collectionCursor = context.getContentResolver()
-                    .query(uri[0], null, null, null, null);
-            if (collectionCursor == null) return null;
-            boolean isSaved = collectionCursor.getCount() == 1;
-            collectionCursor.close();
+            Cursor cursor = context.getContentResolver()
+                    .query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
+                            null,
+                            DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ",
+                            new String[] { company[0].getEin() },
+                            null);
+            if (cursor == null) return null;
+            List<Target> targets = DatabaseAccessor.getEntryListFromCursor(cursor, Target.class);
+            boolean isSaved = false;
+            String uid = company[0].getUid();
+            for (Target target : targets) {
+                if (target.getUid().equals(uid)) {
+                    isSaved = true;
+                    break;
+                }
+            }
+            cursor.close();
             return isSaved;
         }
 
