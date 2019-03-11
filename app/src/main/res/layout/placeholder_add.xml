@@ -1,32 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorChalk">
+    android:background="@color/colorChalk"
+    android:paddingBottom="48dp">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/placeholder_button"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@color/colorNeutral"/>
 
     <TextView
-        android:id="@+id/placeholder_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_paragraph_title"/>
-
-    <Button
-        android:id="@+id/placeholder_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:padding="@dimen/button_padding"
+        android:layout_width="140dp"
+        android:layout_height="100dp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:textSize="@dimen/text_size_symbol"
         android:text="@string/symbol_increment_button"
-        android:backgroundTint="@color/colorConversion"
-        android:textColor="#fff"/>
+        android:textColor="#fff"
+        android:elevation="10dp"/>
 
-</LinearLayout>
+</FrameLayout>
