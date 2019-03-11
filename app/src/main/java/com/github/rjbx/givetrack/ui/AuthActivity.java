@@ -125,9 +125,8 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
         switch (mProcessStage) {
             case 0: handleAction(getIntent().getAction()); break;
-            case 1: return;
             case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
-            case 3:
+            case 4:
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
         }
