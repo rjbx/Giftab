@@ -55,6 +55,7 @@ public class DetailFragment extends Fragment {
     private static boolean sInitialState;
     private static boolean sCurrentState;
     private static int sScrollState = 0;
+    private boolean mEnabled = true;
     private AppCompatActivity mParentActivity;
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebview;
@@ -163,10 +164,10 @@ public class DetailFragment extends Fragment {
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
     @Override public void onStop() {
-        if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
-            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
-        }
+//        if (sInitialState != sCurrentState) {
+//            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
+//            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
+//        }
         mUnbinder.unbind();
         super.onStop();
     }
@@ -229,9 +230,16 @@ public class DetailFragment extends Fragment {
      * Defines behavior onClick of item collection status toggle Button.
      */
     @OnClick(R.id.detail_fab) void toggleSaved() {
+        if (!mEnabled) return;
         sCurrentState = !sCurrentState;
-        drawActionButton();
-        drawSnackbar();
+        mFab.setVisibility(View.GONE);
+//        drawActionButton();
+//        drawSnackbar();
+        if (sInitialState != sCurrentState) {
+            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
+            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
+            mEnabled = false;
+        }
     }
 
     /**

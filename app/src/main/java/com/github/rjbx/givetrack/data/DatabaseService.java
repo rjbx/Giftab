@@ -465,6 +465,8 @@ public class DatabaseService extends IntentService {
         float impact = 0f;
         int frequency = 0;
 
+        DatabaseAccessor.addSpawn(this, spawn);
+
         List<Record> records = DatabaseAccessor.getRecord(this);
         for (Record record : records) {
             if (record.getEin().equals(spawn.getEin())) {

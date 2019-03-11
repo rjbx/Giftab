@@ -179,8 +179,10 @@ public class IndexActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
                     do {
+
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
+                        if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) showDualPane((Bundle) mAdapter.mLastClicked.getTag());
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
@@ -316,7 +318,7 @@ public class IndexActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private Spawn[] mValuesArray;
-        private View mLastClicked;
+        View mLastClicked;
 
         public ListAdapter() {
             super();
