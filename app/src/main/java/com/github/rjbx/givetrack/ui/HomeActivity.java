@@ -453,15 +453,14 @@ public class HomeActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
-            boolean launch = mTargetLock;
             Bundle argsPlaceholder = new Bundle();
-            if (mTargetArray == null) {
-                argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
+            if (mTargetArray == null || mRecordArray == null) {
+                argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, true);
                 argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
                 return PlaceholderFragment.newInstance(argsPlaceholder);
             } else {
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, false);
-                if (mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
+                if (mTargetArray.length == 0 && position == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
                 Bundle argsTarget= new Bundle();
                 Bundle argsRecord = new Bundle();
                 argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);
@@ -472,7 +471,9 @@ public class HomeActivity extends AppCompatActivity implements
                 switch (position) {
                     case 0: return GiveFragment.newInstance(argsTarget);
                     case 1: return GlanceFragment.newInstance(argsRecord);
-                    default: return PlaceholderFragment.newInstance(argsPlaceholder);
+                    default:
+                        argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, true);
+                        return PlaceholderFragment.newInstance(argsPlaceholder);
                 }
             }
         }
