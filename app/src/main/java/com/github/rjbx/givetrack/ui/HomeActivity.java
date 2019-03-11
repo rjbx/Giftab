@@ -416,9 +416,10 @@ public class HomeActivity extends AppCompatActivity implements
         public void onResume() {
             super.onResume();
             String launchAction = getArguments().getString(ARGS_ACTION_ATTRIBUTES);
-            if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN))
+            if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN)) {
                 if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.VISIBLE);
                 if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
