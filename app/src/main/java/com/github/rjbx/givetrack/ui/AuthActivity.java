@@ -127,7 +127,9 @@ public class AuthActivity extends AppCompatActivity implements
         switch (mProcessStage) {
             case 0: handleAction(getIntent().getAction()); break;
             case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
-            case 3:
+            case 3: mProcessStage++;
+            case 4:
+                mProcessStage++;
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
         }
