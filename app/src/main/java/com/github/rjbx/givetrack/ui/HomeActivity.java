@@ -212,9 +212,9 @@ public class HomeActivity extends AppCompatActivity implements
                     DatabaseService.startActionFetchTarget(this);
                 } else {
                     mTargetLock = false;
+                    mTargetArray = new Target[data.getCount()];
                     if (data.moveToFirst()) {
                         int i = 0;
-                        mTargetArray = new Target[data.getCount()];
                         do {
                             Target target = new Target();
                             DatabaseAccessor.cursorRowToEntry(data, target);
@@ -228,9 +228,9 @@ public class HomeActivity extends AppCompatActivity implements
                     DatabaseService.startActionFetchRecord(this);
                 } else {
                     mRecordLock = false;
+                    mRecordArray = new Record[data.getCount()];
                     if (data.moveToFirst()) {
                         int i = 0;
-                        mRecordArray = new Record[data.getCount()];
                         do {
                             Record record = new Record();
                             DatabaseAccessor.cursorRowToEntry(data, record);
