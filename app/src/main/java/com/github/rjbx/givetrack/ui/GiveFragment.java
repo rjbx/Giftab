@@ -139,7 +139,7 @@ public class GiveFragment extends Fragment implements
                 }
                 sValuesArray = valuesArray;
             }
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            sUser = args.getParcelable(HomeActivity.ARGS_ACTION_ATTRIBUTES);
         }
 
         mAmountTotal = Float.parseFloat(sUser.getGiveImpact());

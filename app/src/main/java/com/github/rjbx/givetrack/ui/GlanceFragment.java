@@ -137,7 +137,7 @@ public class GlanceFragment extends Fragment implements
         Bundle args = getArguments();
         if (args != null)
             sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            sUser = args.getParcelable(HomeActivity.ARGS_ACTION_ATTRIBUTES);
         Date date = new Date(sUser.getGlanceAnchor());
         DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
         String formattedDate = DATE_FORMATTER.format(date);

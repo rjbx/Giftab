@@ -79,17 +79,18 @@ public class HomeActivity extends AppCompatActivity implements
     public static final String ARGS_TARGET_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
     public static final String ARGS_USER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.USER_ATTRIBUTES";
+    public static final String ARGS_ACTION_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ACTION_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_GIVE_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
+    private boolean mUserLock = true;
+    private boolean mTargetLock = true;
+    private boolean mRecordLock = true;
     private SectionsPagerAdapter mPagerAdapter;
     private Target[] mTargetArray;
     private Record[] mRecordArray;
     private User mUser;
-    private boolean mUserLock = true;
-    private boolean mTargetLock = true;
-    private boolean mRecordLock = true;
     private long mAnchorTime;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
@@ -392,26 +393,34 @@ public class HomeActivity extends AppCompatActivity implements
             return fragment;
         }
 
-        @Override
-        public void onPause() {
-            if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.GONE);
-            super.onPause();
-        }
-
         /**
          * Generates a Layout for the Fragment.
          */
         @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
             mUnbinder = ButterKnife.bind(this, rootView);
-            Bundle bundle = getArguments();
-            boolean launchScreen = bundle.getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
+            boolean launchScreen = getArguments().getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
             if (launchScreen) {
                 View launchView = rootView.findViewById(R.id.launch_placeholder);
                 mPlaceholderContainer.removeAllViews();
                 mPlaceholderContainer.addView(launchView);
+
             }
             return rootView;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            String launchAction = getArguments().getString(ARGS_ACTION_ATTRIBUTES);
+            if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN))
+                if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        public void onPause() {
+            if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.GONE);
+            super.onPause();
         }
 
         /**
@@ -444,17 +453,18 @@ public class HomeActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
-            boolean launch = mUserLock && mTargetLock && mRecordLock;
+            boolean launch = mTargetLock;
             Bundle argsPlaceholder = new Bundle();
             argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
+            argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
             if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
             else {
                 Bundle argsTarget= new Bundle();
                 Bundle argsRecord = new Bundle();
                 argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
-                argsTarget.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
-                argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+                argsTarget.putParcelable(ARGS_ACTION_ATTRIBUTES, mUser);
+                argsRecord.putParcelable(ARGS_ACTION_ATTRIBUTES, mUser);
 
                 switch (position) {
                     case 0: return GiveFragment.newInstance(argsTarget);
