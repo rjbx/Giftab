@@ -376,7 +376,6 @@ public class HomeActivity extends AppCompatActivity implements
     public static class PlaceholderFragment extends Fragment {
 
         private Unbinder mUnbinder;
-        @BindView(R.id.placeholder_container) FrameLayout mPlaceholderContainer;
         @Nullable @BindView(R.id.launch_progress) ProgressBar mLaunchProgress;
         @Nullable @BindView(R.id.launch_icon) ImageView mLaunchIcon;
 
@@ -400,15 +399,10 @@ public class HomeActivity extends AppCompatActivity implements
          * Generates a Layout for the Fragment.
          */
         @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
-            mUnbinder = ButterKnife.bind(this, rootView);
             boolean launchScreen = getArguments().getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
-            if (launchScreen) {
-                View launchView = rootView.findViewById(R.id.launch_placeholder);
-                mPlaceholderContainer.removeAllViews();
-                mPlaceholderContainer.addView(launchView);
-
-            }
+            int rootResource = launchScreen ? R.layout.placeholder_launch : R.layout.placeholder_add;
+            View rootView = inflater.inflate(rootResource, container, false);
+            mUnbinder = ButterKnife.bind(this, rootView);
             return rootView;
         }
 
@@ -465,8 +459,7 @@ public class HomeActivity extends AppCompatActivity implements
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
                 argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
                 return PlaceholderFragment.newInstance(argsPlaceholder);
-            }
-            else {
+            } else {
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, false);
                 if (mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
                 Bundle argsTarget= new Bundle();

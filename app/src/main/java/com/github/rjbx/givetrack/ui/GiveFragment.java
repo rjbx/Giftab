@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.transition.Slide;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.BindView;
@@ -111,6 +113,7 @@ public class GiveFragment extends Fragment implements
     public static GiveFragment newInstance(@Nullable Bundle args) {
         GiveFragment fragment = new GiveFragment();
         if (args != null) fragment.setArguments(args);
+        fragment.setEnterTransition(new Slide(Gravity.TOP));
         return fragment;
     }
 
