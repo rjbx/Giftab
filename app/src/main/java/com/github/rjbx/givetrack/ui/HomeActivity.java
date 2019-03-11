@@ -207,7 +207,7 @@ public class HomeActivity extends AppCompatActivity implements
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
-                if (mTargetArray == null) {
+                if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
                     DatabaseService.startActionFetchTarget(this);
                 } else {
@@ -223,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements
                     }
                 } break;
             case DatabaseContract.LOADER_ID_RECORD:
-                if (mRecordArray == null) {
+                if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseService.startActionFetchRecord(this);
                 } else {
@@ -458,10 +458,11 @@ public class HomeActivity extends AppCompatActivity implements
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, true);
                 argsPlaceholder.putString(ARGS_ACTION_ATTRIBUTES, getIntent().getAction());
                 return PlaceholderFragment.newInstance(argsPlaceholder);
-            } else {
+            } else if (mTargetArray.length == 0) {
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, false);
-                if (mTargetArray.length == 0 && position == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
-                Bundle argsTarget= new Bundle();
+                return PlaceholderFragment.newInstance(argsPlaceholder);
+            } else {
+                Bundle argsTarget = new Bundle();
                 Bundle argsRecord = new Bundle();
                 argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
@@ -471,9 +472,7 @@ public class HomeActivity extends AppCompatActivity implements
                 switch (position) {
                     case 0: return GiveFragment.newInstance(argsTarget);
                     case 1: return GlanceFragment.newInstance(argsRecord);
-                    default:
-                        argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, true);
-                        return PlaceholderFragment.newInstance(argsPlaceholder);
+                    default: return PlaceholderFragment.newInstance(argsPlaceholder);
                 }
             }
         }
