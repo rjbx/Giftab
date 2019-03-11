@@ -122,12 +122,12 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
         switch (mProcessStage) {
             case 0: handleAction(getIntent().getAction()); break;
             case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
-            case 3: mProcessStage++; break;
-            case 4:
+            case 3:
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                 finish();
         }

@@ -339,6 +339,6 @@ public class DatabaseProvider extends ContentProvider {
      */
     private void notifyDataSetChange(Uri uri, int rowsChanged) {
         Context context = getContext();
-        if (context != null && rowsChanged > 0) context.getContentResolver().notifyChange(uri, null);
+        /*if (context != null && rowsChanged > 0) */context.getContentResolver().notifyChange(uri, null);
     }
 }
