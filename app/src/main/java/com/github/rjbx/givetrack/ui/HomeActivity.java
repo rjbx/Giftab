@@ -34,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import butterknife.ButterKnife;
 import butterknife.Optional;
@@ -372,8 +373,8 @@ public class HomeActivity extends AppCompatActivity implements
     public static class PlaceholderFragment extends Fragment {
 
         private Unbinder mUnbinder;
-        @BindView(R.id.placeholder_container)
-        FrameLayout mPlaceholderContainer;
+        @BindView(R.id.placeholder_container) FrameLayout mPlaceholderContainer;
+        @Nullable @BindView(R.id.launch_progress) ProgressBar mLaunchProgress;
 
         /**
          * Provides default constructor required for the {@link FragmentManager}
@@ -387,8 +388,14 @@ public class HomeActivity extends AppCompatActivity implements
         static PlaceholderFragment newInstance(@Nullable Bundle args) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             if (args != null) fragment.setArguments(args);
-            fragment.setExitTransition(new Slide(Gravity.TOP));
+            fragment.setExitTransition(new Slide(Gravity.BOTTOM));
             return fragment;
+        }
+
+        @Override
+        public void onPause() {
+            if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.GONE);
+            super.onPause();
         }
 
         /**
