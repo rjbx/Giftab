@@ -70,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
 
+    public static final String ARGS_PLACEHOLDER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.PLACEHOLDER_ATTRIBUTES";
     public static final String ARGS_TARGET_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
     public static final String ARGS_RECORD_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.RECORD_ATTRIBUTES";
     public static final String ARGS_USER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.USER_ATTRIBUTES";
@@ -421,8 +422,10 @@ public class HomeActivity extends AppCompatActivity implements
          */
         @Override public Fragment getItem(int position) {
 
-            mUserLock = true;
-            if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(null);
+            boolean launch = mUserLock && mTargetLock && mRecordLock;
+            Bundle argsPlaceholder = new Bundle();
+            argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, launch);
+            if (mTargetArray == null || mTargetArray.length == 0) return PlaceholderFragment.newInstance(argsPlaceholder);
             else {
                 Bundle argsTarget= new Bundle();
                 Bundle argsRecord = new Bundle();
@@ -434,7 +437,7 @@ public class HomeActivity extends AppCompatActivity implements
                 switch (position) {
                     case 0: return GiveFragment.newInstance(argsTarget);
                     case 1: return GlanceFragment.newInstance(argsRecord);
-                    default: return PlaceholderFragment.newInstance(null);
+                    default: return PlaceholderFragment.newInstance(argsPlaceholder);
                 }
             }
         }
