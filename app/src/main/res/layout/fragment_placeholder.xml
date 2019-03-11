@@ -6,29 +6,17 @@
     android:id="@+id/placeholder_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorNeutral"
+    android:background="@color/colorConversionDark"
     android:orientation="vertical"
     tools:context=".ui.HomeActivity">
 
-    <TextView
-        android:id="@+id/placeholder_message"
+    <FrameLayout
+        android:id="@+id/placeholder_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_paragraph_title"/>
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/placeholder_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:padding="@dimen/button_padding"
-        android:layout_gravity="center"
-        android:textSize="@dimen/text_size_symbol"
-        android:text="@string/symbol_increment_button"/>
+        <include layout="@layout/placeholder_launch"/>
+
+    </FrameLayout>
 
 </LinearLayout>

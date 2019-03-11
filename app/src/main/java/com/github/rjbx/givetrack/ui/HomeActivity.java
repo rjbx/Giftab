@@ -31,8 +31,10 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 
 import butterknife.ButterKnife;
+import butterknife.Optional;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -368,6 +370,8 @@ public class HomeActivity extends AppCompatActivity implements
     public static class PlaceholderFragment extends Fragment {
 
         private Unbinder mUnbinder;
+        @BindView(R.id.placeholder_container)
+        FrameLayout mPlaceholderContainer;
 
         /**
          * Provides default constructor required for the {@link FragmentManager}
@@ -390,6 +394,13 @@ public class HomeActivity extends AppCompatActivity implements
         @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
             mUnbinder = ButterKnife.bind(this, rootView);
+            Bundle bundle = getArguments();
+            boolean launchScreen = bundle.getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
+            if (launchScreen) {
+                View launchView = rootView.findViewById(R.id.launch_placeholder);
+                mPlaceholderContainer.removeAllViews();
+                mPlaceholderContainer.addView(launchView);
+            }
             return rootView;
         }
 
@@ -404,6 +415,7 @@ public class HomeActivity extends AppCompatActivity implements
         /**
          * Defines behavior on click of launch spawn button.
          */
+        @Optional
         @OnClick(R.id.placeholder_button) void launchSpawn()  { startActivity(new Intent(getActivity(), IndexActivity.class)); }
     }
 
