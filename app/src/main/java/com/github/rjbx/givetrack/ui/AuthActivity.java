@@ -95,7 +95,6 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 boolean isPersisted = false;
                 User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                activeUser.setUserActive(true);
                 for (int i = 0; i < mUsers.size(); i++) {
                     boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
                     mUsers.get(i).setUserActive(isActive);
@@ -114,7 +113,7 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
-    @NonNull @Override public Loader onCreateLoader(int id, @Nullable Bundle args) {
+    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
