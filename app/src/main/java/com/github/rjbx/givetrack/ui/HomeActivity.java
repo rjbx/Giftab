@@ -22,9 +22,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.transition.Slide;
 import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
 
+import android.view.Gravity;
 import android.widget.DatePicker;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -385,6 +387,7 @@ public class HomeActivity extends AppCompatActivity implements
         static PlaceholderFragment newInstance(@Nullable Bundle args) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             if (args != null) fragment.setArguments(args);
+            fragment.setExitTransition(new Slide(Gravity.TOP));
             return fragment;
         }
 
