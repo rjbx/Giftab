@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp"
+            android:padding="48dp"
             android:adjustViewBounds="true"
             android:src="@mipmap/ic_launcher_round"
             android:layout_gravity="center"/>
@@ -23,8 +23,9 @@
             android:id="@+id/launch_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:padding="24dp"
             android:layout_gravity="center"
-            android:visibility="gone"/>
+            style="@style/AppTheme.ProgressBar.Thin"/>
 
     </FrameLayout>
 

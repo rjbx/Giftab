@@ -463,8 +463,8 @@ public class HomeActivity extends AppCompatActivity implements
                 Bundle argsRecord = new Bundle();
                 argsTarget.putParcelableArray(ARGS_TARGET_ATTRIBUTES, mTargetArray);
                 argsRecord.putParcelableArray(ARGS_RECORD_ATTRIBUTES, mRecordArray);
-                argsTarget.putParcelable(ARGS_ACTION_ATTRIBUTES, mUser);
-                argsRecord.putParcelable(ARGS_ACTION_ATTRIBUTES, mUser);
+                argsTarget.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
+                argsRecord.putParcelable(ARGS_USER_ATTRIBUTES, mUser);
 
                 switch (position) {
                     case 0: return GiveFragment.newInstance(argsTarget);
