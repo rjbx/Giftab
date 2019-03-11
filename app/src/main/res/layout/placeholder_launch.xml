@@ -12,20 +12,18 @@
         android:padding="72dp">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="48dp"
-            android:adjustViewBounds="true"
+            android:layout_width="170dp"
+            android:layout_height="170dp"
+            android:padding="24dp"
             android:src="@mipmap/ic_launcher_round"
             android:layout_gravity="center"/>
 
         <ProgressBar
             android:id="@+id/launch_progress"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="24dp"
-            android:layout_gravity="center"
-            style="@style/AppTheme.ProgressBar.Thin"/>
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
 
     </FrameLayout>
 
