@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -208,11 +209,11 @@ public class GlanceFragment extends Fragment implements
                     mChartDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    TextView dialogTextView = mChartDialog.findViewById(android.R.id.message);
-                    if (dialogTextView != null) {
-                        String message = dialogTextView.getText().toString();
+                    Window window = mChartDialog.getWindow();
+                    if (window != null) {
+                        String message = (String) window.getDecorView().getTag();
                         shareDialogText(message);
-                    } break;
+                    }
                 default:
             }
         }
@@ -689,15 +690,18 @@ public class GlanceFragment extends Fragment implements
         scrollView.addView(linearLayout);
         mChartDialog.setView(scrollView);
         mChartDialog.show();
-        mChartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        Window window = mChartDialog.getWindow();
+        if (window == null) return;
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        window.getDecorView().setTag(String.format("%s", stats));
     }
 
     private void shareDialogText(String message) {
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
-                .setText(String.format("My giving trends: %s\n\n#%s App",
+                .setText(String.format("My giving trends: %s#%s App",
                         message,
                         getString(R.string.app_name)))
                 .getIntent();
