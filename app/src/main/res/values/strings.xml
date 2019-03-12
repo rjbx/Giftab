@@ -53,15 +53,15 @@
     <string name="description_increment_percentage_text">Press this button to increase the percentage of your total donation amount to be allocated to this charity on each converted smile or stride</string>
 
     <!-- Screens -->
-    <string name="title_activity_main">Main Activity</string>
+    <string name="title_activity_home">Home Activity</string>
     <string name="title_activity_login">Sign in</string>
-    <string name="title_spawn_results">Search results</string>
-    <string name="title_donor_records">Past Activity</string>
+    <string name="title_activity_index">Search Results</string>
+    <string name="title_activity_journal">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_config">Settings</string>
 
     <!-- Main -->
-    <string name="nav_header_title">GiveGlance</string>
+    <string name="nav_header_title">Giveu</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">Menu</string>
@@ -69,8 +69,8 @@
     <string name="nav_menu_interact">Interact</string>
     <string name="nav_menu_manage">Manage</string>
     <string name="nav_menu_learn">Learn</string>
-    <string name="nav_item_spawn">Spawn</string>
-    <string name="nav_item_history">History</string>
+    <string name="nav_item_index">Index</string>
+    <string name="nav_item_journal">Journal</string>
     <string name="nav_item_settings">Settings</string>
     <string name="nav_item_logout">Logout</string>
     <string name="nav_item_cn">About Charity Navigator API</string>
@@ -106,7 +106,7 @@
     <!-- Charity -->
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
     <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
-    <string name="dialog_filter_setup">To set up your spawn filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
+    <string name="dialog_filter_setup">To set up your search filters, press \'Settings\' from the drop down menu, or press \'Get Started\'.</string>
     <string name="dialog_removal_charity">Remove %s from your collection?</string>
     <string name="dialog_removal_record">Remove %s from your records?</string>
     <string name="snippet_all_charities">all charities</string>
@@ -167,7 +167,7 @@
     <string name="pref_fundraising_label">Advisory Filter</string>
     <string name="pref_sort_label">Sort</string>
     <string name="pref_order_label">Order</string>
-    <string name="pref_focused_label">Focused Spawn</string>
+    <string name="pref_focused_label">Focused Search</string>
     <string name="pref_ein_label">Employer Identification Number</string>
     <string name="pref_gender_label">Gender</string>
     <string name="pref_birthdate_label">Birthdate</string>
@@ -197,7 +197,7 @@
     </string-array>
 
     <!-- Spawn settings -->
-    <string name="pref_header_spawn">Index</string>
+    <string name="pref_header_index">Index</string>
     <string-array name="list_preference_minrating">
         <item>No Preference</item>
         <item>★</item>
@@ -330,39 +330,39 @@
         <item>1</item>
         <item>0</item>
     </string-array>
-    <string-array name="list_preference_sortSpawn">
+    <string-array name="list_preference_sortIndex">
         <item>By rating</item>
         <item>By relevance</item>
         <item>By name</item>
     </string-array>
-    <string-array name="list_preference_sortSpawn_values">
+    <string-array name="list_preference_sortIndex_values">
         <item>RATING</item>
         <item>RELEVANCE</item>
         <item>NAME</item>
     </string-array>
-    <string-array name="list_preference_sortRecord">
+    <string-array name="list_preference_sortJournal">
         <item>By date</item>
         <item>By amount</item>
         <item>By name</item>
     </string-array>
-    <string-array name="list_preference_sortRecord_values">
+    <string-array name="list_preference_sortJournal_values">
         <item>time</item>
         <item>impact</item>
         <item>name</item>
     </string-array>
-    <string-array name="list_preference_orderSpawn">
+    <string-array name="list_preference_orderIndex">
         <item>Descending</item>
         <item>Ascending</item>
     </string-array>
-    <string-array name="list_preference_orderSpawn_values">
+    <string-array name="list_preference_orderIndex_values">
         <item>DESC</item>
         <item>ASC</item>
     </string-array>
-    <string-array name="list_preference_orderRecord">
+    <string-array name="list_preference_orderJournal">
         <item>Descending</item>
         <item>Ascending</item>
     </string-array>
-    <string-array name="list_preference_orderRecord_values">
+    <string-array name="list_preference_orderJournal_values">
         <item>DESC</item>
         <item>ASC</item>
     </string-array>

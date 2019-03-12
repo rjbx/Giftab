@@ -14,12 +14,12 @@
                 <item
                     android:id="@+id/nav_spawn"
                     android:icon="@drawable/menu_search"
-                    android:title="@string/nav_item_spawn" />
+                    android:title="@string/nav_item_index" />
 
                 <item
                     android:id="@+id/nav_record"
                     android:icon="@drawable/history"
-                    android:title="@string/nav_item_history" />
+                    android:title="@string/nav_item_journal" />
             </menu>
 
         </item>

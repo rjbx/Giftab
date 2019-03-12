@@ -3,16 +3,16 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:entries="@array/list_preference_sortRecord"
-        android:entryValues="@array/list_preference_sortRecord_values"
+        android:entries="@array/list_preference_sortJournal"
+        android:entryValues="@array/list_preference_sortJournal_values"
         android:key="@string/pref_journalSort_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_sort_label"/>
 
     <ListPreference
-        android:entries="@array/list_preference_orderRecord"
-        android:entryValues="@array/list_preference_orderRecord_values"
+        android:entries="@array/list_preference_orderJournal"
+        android:entryValues="@array/list_preference_orderJournal_values"
         android:key="@string/pref_journalOrder_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
