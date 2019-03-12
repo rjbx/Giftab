@@ -346,9 +346,9 @@
         <item>By name</item>
     </string-array>
     <string-array name="list_preference_sortRecord_values">
-        <item>donationTime</item>
-        <item>donationTotal</item>
-        <item>charityName</item>
+        <item>frequency</item>
+        <item>impact</item>
+        <item>name</item>
     </string-array>
     <string-array name="list_preference_orderSpawn">
         <item>Descending</item>
