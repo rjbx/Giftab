@@ -147,7 +147,7 @@
     <string name="pref_indexOrder_key" translatable="false">indexOrder</string>
     <string name="pref_journalSort_key" translatable="false">journalSort</string>
     <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
-    <string name="pref_indexFocus_key" translatable="false">indexFcus</string>
+    <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
     <string name="pref_userGender_key" translatable="false">userGender</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>

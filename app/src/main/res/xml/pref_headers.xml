@@ -6,10 +6,10 @@
         android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$UserPreferenceFragment"
         android:icon="@drawable/menu_user"
         android:title="@string/pref_header_user" />
-    <header
-        android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$NotificationPreferenceFragment"
-        android:icon="@drawable/menu_info"
-        android:title="@string/pref_header_notifications" />
+    <!--<header-->
+        <!--android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$NotificationPreferenceFragment"-->
+        <!--android:icon="@drawable/menu_info"-->
+        <!--android:title="@string/pref_header_notifications" />-->
 
     <header
         android:fragment="com.github.rjbx.givetrack.ui.ConfigActivity$HomePreferenceFragment"

@@ -48,12 +48,10 @@ import androidx.annotation.Nullable;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Fully implement clear Spawn
 // TODO: Add change email option to UserPreferenceFragment
 // TODO: Add anchor reset option for HomePreferenceFragment
-// TODO: Add show all option for all PreferenceFragments
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
-// TODO: Remove unused options
+// TODO: Fully implement removed options
 /**
  * Presents a set of application settings.
  */
@@ -204,7 +202,7 @@ public class ConfigActivity
         listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
     }
 
-    private static void handleActionClick(Preference preference, Preference.OnPreferenceClickListener listener) {
+    private static void handlePreferenceClick(Preference preference, Preference.OnPreferenceClickListener listener) {
         preference.setOnPreferenceClickListener(listener);
     }
 
@@ -255,11 +253,12 @@ public class ConfigActivity
         @Override
         public void onResume() {
             super.onResume();
-            handlePreferenceChange(findPreference("example_text"), this);
+//            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
-            handlePreferenceChange(findPreference("example_list"), this);
+//            handlePreferenceChange(findPreference("example_list"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -286,7 +285,8 @@ public class ConfigActivity
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            if (getString(R.string.pref_userBirthdate_key).equals(preference.getKey())) {
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
                 mCalendar = Calendar.getInstance();
                 String birthdate = mUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
@@ -298,6 +298,11 @@ public class ConfigActivity
                         mCalendar.get(Calendar.MONTH),
                         mCalendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
+                return true;
+            } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
+                String action = getActivity().getIntent().getAction();
+                Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
+                startActivity(intent);
                 return true;
             } return false;
         }
@@ -353,9 +358,9 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_indexFocus_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_indexFocus_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -453,10 +458,10 @@ public class ConfigActivity
         public void onResume() {
             super.onResume();
             handlePreferenceChange(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_giveReset_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_giveReset_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -615,8 +620,8 @@ public class ConfigActivity
 
             handlePreferenceChange(findPreference(getString(R.string.pref_journalSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_journalOrder_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
-            handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
         /**
@@ -703,6 +708,7 @@ public class ConfigActivity
 
     public static class AdvancedPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
+            Preference.OnPreferenceClickListener,
             DialogInterface.OnClickListener {
 
         AlertDialog mDeleteDialog;
@@ -715,7 +721,8 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
-            handlePreferenceChange(findPreference("sync_frequency"), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+//            handlePreferenceChange(findPreference("sync_frequency"), this);
 
             Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
             deletePreference.setOnPreferenceClickListener(clickedPreference -> {
@@ -738,6 +745,16 @@ public class ConfigActivity
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
+        }
+
+        @Override
+        public boolean onPreferenceClick(Preference preference) {
+            if (getString(R.string.pref_show_key).equals(preference.getKey())) {
+                String action = getActivity().getIntent().getAction();
+                Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
+                startActivity(intent);
+                return true;
+            } return false;
         }
 
         /**
