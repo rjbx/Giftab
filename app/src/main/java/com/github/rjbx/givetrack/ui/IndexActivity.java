@@ -182,7 +182,11 @@ public class IndexActivity extends AppCompatActivity implements
 
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
-                        if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) showDualPane((Bundle) mAdapter.mLastClicked.getTag());
+                        if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);
+                            showDualPane(bundle);
+                        }
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
@@ -318,7 +322,7 @@ public class IndexActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private Spawn[] mValuesArray;
-        View mLastClicked;
+        int mLastPosition;
 
         public ListAdapter() {
             super();
@@ -358,10 +362,7 @@ public class IndexActivity extends AppCompatActivity implements
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
                     .into(holder.mLogoView);
 
-            Bundle arguments = new Bundle();
-            arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
-
-            holder.itemView.setTag(arguments);
+            holder.itemView.setTag(position);
         }
 
         /**
@@ -401,10 +402,14 @@ public class IndexActivity extends AppCompatActivity implements
              * Defines behavior on click of spawn item view.
              */
             @OnClick(R.id.spawn_item_view) void togglePane(View v) {
-                if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
+                int position = (int) v.getTag();
+                Spawn values = mValuesArray[position];
+                if (mLastPosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
-                mLastClicked = v;
+                mLastPosition = position;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
                 if (sDualPane) showDualPane((Bundle) v.getTag());
                 else showSinglePane();
             }
