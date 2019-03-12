@@ -340,11 +340,11 @@ public class User implements Entry, Parcelable, Cloneable {
         giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
         giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
         glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
-        glanceSince = (int) map.get(COLUMN_GLANCE_SINCE) == 1;
+        glanceSince = (boolean) map.get(COLUMN_GLANCE_SINCE);
         glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
-        indexDialog = (int) map.get(COLUMN_INDEX_DIALOG) == 1;
-        indexFocus = (int) map.get(COLUMN_INDEX_FOCUS) == 1;
-        indexFilter = (int) map.get(COLUMN_INDEX_FILTER) == 1;
+        indexDialog = (boolean) map.get(COLUMN_INDEX_DIALOG);
+        indexFocus = (boolean) map.get(COLUMN_INDEX_FOCUS);
+        indexFilter = (boolean) map.get(COLUMN_INDEX_FILTER);
         indexCompany = (String) map.get(COLUMN_INDEX_COMPANY);
         indexTerm = (String) map.get(COLUMN_INDEX_TERM);
         indexCity = (String) map.get(COLUMN_INDEX_CITY);
@@ -362,7 +362,7 @@ public class User implements Entry, Parcelable, Cloneable {
         userStamp = (long) map.get(COLUMN_USER_STAMP);
         uid = (String) map.get(COLUMN_UID);
         userEmail = (String) map.get(COLUMN_USER_EMAIL);
-        userActive = (int) map.get(COLUMN_USER_ACTIVE) == 1;
+        userActive = (boolean) map.get(COLUMN_USER_ACTIVE);
         userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
         userGender = (String) map.get(COLUMN_USER_GENDER);
     }
@@ -406,7 +406,7 @@ public class User implements Entry, Parcelable, Cloneable {
     @Override public void fromContentValues(ContentValues values) {
         uid = values.getAsString(COLUMN_UID);
         userEmail = values.getAsString(COLUMN_USER_EMAIL);
-        userActive = values.getAsInteger(COLUMN_USER_ACTIVE) == 1;
+        userActive = values.getAsBoolean(COLUMN_USER_ACTIVE);
         userBirthdate = values.getAsString(COLUMN_USER_BIRTHDATE);
         userGender = values.getAsString(COLUMN_USER_GENDER);
         giveImpact = values.getAsString(COLUMN_GIVE_IMPACT);
@@ -414,11 +414,11 @@ public class User implements Entry, Parcelable, Cloneable {
         giveAnchor = values.getAsLong(COLUMN_GIVE_ANCHOR);
         giveTiming = values.getAsInteger(COLUMN_GIVE_TIMING);
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
-        glanceSince = values.getAsInteger(COLUMN_GLANCE_SINCE) == 1;
+        glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
         glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
-        indexDialog = values.getAsInteger(COLUMN_INDEX_DIALOG) == 1;
-        indexFocus = values.getAsInteger(COLUMN_INDEX_FOCUS) == 1;
-        indexFilter = values.getAsInteger(COLUMN_INDEX_FILTER) == 1;
+        indexDialog = values.getAsBoolean(COLUMN_INDEX_DIALOG);
+        indexFocus = values.getAsBoolean(COLUMN_INDEX_FOCUS);
+        indexFilter = values.getAsBoolean(COLUMN_INDEX_FILTER);
         indexCompany = values.getAsString(COLUMN_INDEX_COMPANY);
         indexTerm = values.getAsString(COLUMN_INDEX_TERM);
         indexCity = values.getAsString(COLUMN_INDEX_CITY);
