@@ -296,14 +296,15 @@ public class IndexActivity extends AppCompatActivity implements
             }
 
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                Bundle bundle = (Bundle) viewHolder.itemView.getTag();
+                int position = (int) viewHolder.itemView.getTag();
+                Spawn values = mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        final Spawn values =  bundle.getParcelable(DetailFragment.ARG_ITEM_COMPANY);
+                        final String company =  values.getId();
                         DatabaseService.startActionRemoveSpawn(getBaseContext(), values);
                         break;
                     case ItemTouchHelper.RIGHT:
-                        final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
+                        final String url = values.getNavigatorUrl();
                         new CustomTabsIntent.Builder()
                                 .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                                 .build()
