@@ -94,7 +94,7 @@ public class GlanceFragment extends Fragment implements
     private String mTotal;
     private String mTracked;
     private String mTimeTracked;
-    private String mTotalTime;
+    private String mTotalTime = "all-time";
     private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
@@ -135,16 +135,19 @@ public class GlanceFragment extends Fragment implements
         mUnbinder = ButterKnife.bind(this, rootView);
 
         Bundle args = getArguments();
-        if (args != null)
+        if (args != null) {
             sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
-        Date date = new Date(sUser.getGlanceAnchor());
-        DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
-        String formattedDate = DATE_FORMATTER.format(date);
-        mTimeTracked = String.format("since %s", formattedDate);
-        mViewTracked = sUser.getGlanceSince();
-        mTotalTime = "all-time";
-
+        }
+        sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+        if (sUser != null) {
+            Date date = new Date(sUser.getGlanceAnchor());
+            DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
+            String formattedDate = DATE_FORMATTER.format(date);
+            mTimeTracked = String.format("since %s", formattedDate);
+            mViewTracked = sUser.getGlanceSince();
+            sThemeIndex = sUser.getGlanceTheme();
+            mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+        }
         return rootView;
     }
 
