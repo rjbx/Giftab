@@ -200,10 +200,10 @@ public class DetailFragment extends Fragment {
     private void drawActionButton() {
         if (getContext() == null || mFab == null) return;
         mFab.setImageResource(sCurrentState ?
-                R.drawable.action_remove: R.drawable.action_download);
+                R.drawable.action_remove: R.drawable.plus);
         mFab.setBackgroundTintList(sCurrentState ?
                 ColorStateList.valueOf(Color.WHITE) :
-                ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorAccent, null)));
+                ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorConversionDark, null)));
         mFab.setContentDescription(sCurrentState ? getContext().getString(R.string.description_collected_remove_button) :
                 mParentActivity.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
