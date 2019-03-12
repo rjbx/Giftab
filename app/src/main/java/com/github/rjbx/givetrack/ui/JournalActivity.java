@@ -188,6 +188,11 @@ public class JournalActivity extends AppCompatActivity implements
                     do {
                         User user = User.getDefault();
                         DatabaseAccessor.cursorRowToEntry(data, user);
+                        if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);
+                            showDualPane(bundle);
+                        }
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
