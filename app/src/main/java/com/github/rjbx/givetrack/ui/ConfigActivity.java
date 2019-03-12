@@ -267,7 +267,7 @@ public class ConfigActivity
         @Override
         public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mCalendar.set(year, month, dayOfMonth);
-            String birthdate = String.format("%s/%s/%s", year, month, dayOfMonth);
+            String birthdate = String.format("%s/%s/%s", month + 1, dayOfMonth, year);
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
             handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
         }
@@ -290,7 +290,7 @@ public class ConfigActivity
                 mCalendar = Calendar.getInstance();
                 String birthdate = mUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
-                mCalendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
+                mCalendar.set(Integer.parseInt(birthdateParams[2]), Integer.parseInt(birthdateParams[0]) - 1, Integer.parseInt(birthdateParams[1]));
                 DatePickerDialog datePicker = new DatePickerDialog(
                         getActivity(),
                         UserPreferenceFragment.this,

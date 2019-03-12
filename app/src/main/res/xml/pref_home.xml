@@ -2,12 +2,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="@string/pref_payments_key"
-        android:title="@string/pref_payments_label"
-        android:summaryOn="Process donations when adding money to charities"
-        android:summaryOff="Don't process donations when adding money to charities"/>
+    <!--<SwitchPreference-->
+        <!--android:defaultValue="false"-->
+        <!--android:key="@string/pref_payments_key"-->
+        <!--android:title="@string/pref_payments_label"-->
+        <!--android:summaryOn="Process donations when adding money to charities"-->
+        <!--android:summaryOff="Don't process donations when adding money to charities"/>-->
 
     <Preference
         android:key="@string/pref_giveReset_key"
