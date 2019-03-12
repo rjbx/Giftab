@@ -599,13 +599,13 @@ public class GiveFragment extends Fragment implements
             for (int i = 0; i < sPercentages.length; i++) {
                 sPercentages[i] = sValuesArray[i].getPercent();
             }
-            boolean adjusted;
+            boolean adjusted = false;
             boolean recalibrate = sUser.getGiveReset();
-            // TODO: Prevent recalibrate method from recalibrating on subsequent iterations
             if (recalibrate) adjusted = Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
-            else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
+            // TODO: Prevent recalibrate method from recalibrating on subsequent iterations
+//            else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) {
-//                syncPercentages();
+                syncPercentages();
                 if (recalibrate) {
                     sUser.setGiveReset(false);
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
