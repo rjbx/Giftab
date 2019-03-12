@@ -92,8 +92,8 @@ public class GlanceFragment extends Fragment implements
     private AlertDialog mTimeDialog;
     private AlertDialog mChartDialog;
     private String mIntervalLabel;
-    private String mTotal;
-    private String mTracked;
+    private String mTotal = "$0.00";
+    private String mTracked = "$0.00";
     private String mTimeTracked;
     private String mTotalTime = "all-time";
     private int mInterval;
@@ -146,7 +146,10 @@ public class GlanceFragment extends Fragment implements
             DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
             String formattedDate = DATE_FORMATTER.format(date);
             mTimeTracked = String.format("since %s", formattedDate);
+
             mViewTracked = sUser.getGlanceSince();
+            toggleAmount(mAmountLabel, mViewTracked);
+
             sThemeIndex = sUser.getGlanceTheme();
             mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
         }
