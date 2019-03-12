@@ -346,7 +346,7 @@
         <item>By name</item>
     </string-array>
     <string-array name="list_preference_sortRecord_values">
-        <item>frequency</item>
+        <item>time</item>
         <item>impact</item>
         <item>name</item>
     </string-array>
