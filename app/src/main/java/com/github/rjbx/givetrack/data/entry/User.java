@@ -473,7 +473,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.giveReset = false;
         user.indexSort = "RATING";
         user.indexOrder = "DESC";
-        user.journalSort = "donationTime";
+        user.journalSort = "time";
         user.journalOrder = "DESC";
         user.targetStamp = 0;
         user.recordStamp = 0;
