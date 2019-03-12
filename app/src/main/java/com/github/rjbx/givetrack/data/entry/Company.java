@@ -1,8 +1,5 @@
 package com.github.rjbx.givetrack.data.entry;
 
-import android.content.ContentValues;
-import java.util.Map;
-
 public interface Company extends Entry {
 
     String getUid();

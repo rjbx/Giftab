@@ -110,7 +110,7 @@ public class GiveFragment extends Fragment implements
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static GiveFragment newInstance(@Nullable Bundle args) {
+    static GiveFragment newInstance(@Nullable Bundle args) {
         GiveFragment fragment = new GiveFragment();
         if (args != null) fragment.setArguments(args);
         fragment.setEnterTransition(new Slide(Gravity.TOP));
@@ -331,11 +331,11 @@ public class GiveFragment extends Fragment implements
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             syncPercentages();
-            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark)));
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
             syncDonations();
-            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark)));
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
     }
@@ -358,12 +358,12 @@ public class GiveFragment extends Fragment implements
      */
     private void syncDonations() {
 
-        for (int i = 0; i < sValuesArray.length; i++) {
-            if (sValuesArray[i].getPercent() == 0d) continue;
-            sValuesArray[i].setFrequency(sValuesArray[i].getFrequency() + 1);
-            double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-            double totalImpact = Float.parseFloat(sValuesArray[i].getImpact()) + transactionImpact;
-            sValuesArray[i].setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
+        for (Target target : sValuesArray) {
+            if (target.getPercent() == 0d) continue;
+            target.setFrequency(target.getFrequency() + 1);
+            double transactionImpact = target.getPercent() * mAmountTotal;
+            double totalImpact = Float.parseFloat(target.getImpact()) + transactionImpact;
+            target.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
         DatabaseService.startActionUpdateTarget(getContext(), sValuesArray);
 
@@ -384,7 +384,7 @@ public class GiveFragment extends Fragment implements
             sUser.setGiveTiming(0);
         }
         DatabaseService.startActionUpdateUser(getContext(), sUser);
-        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[records.size()]));
+        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[0]));
     }
 
     /**
@@ -445,8 +445,8 @@ public class GiveFragment extends Fragment implements
             progressBarVisibility = View.GONE;
         }
 
-        mActionWrapper.setBackgroundColor(getResources().getColor(barWrapperColor));
-        mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(actionBarColor)));
+        mActionWrapper.setBackgroundColor(getResources().getColor(barWrapperColor, null));
+        mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(actionBarColor, null)));
         mActionBar.setImageResource(actionBarIcon);
         mProgress.setVisibility(progressBarVisibility);
     }
@@ -510,8 +510,10 @@ public class GiveFragment extends Fragment implements
          */
         @Override public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
-            if (position == getItemCount() - 1) {
-                holder.mAddButton.setOnClickListener(clickedView -> {
+            Button addButton = holder.mAddButton;
+
+            if (position == getItemCount() - 1 && addButton != null) {
+                addButton.setOnClickListener(clickedView -> {
                     Intent spawnIntent = new Intent(getContext(), IndexActivity.class);
                     startActivity(spawnIntent);
                 });
@@ -554,7 +556,7 @@ public class GiveFragment extends Fragment implements
             holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
             holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
             if (impact > 10)
-                if (Build.VERSION.SDK_INT > 23) holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+                holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
                 else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
 
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
@@ -570,7 +572,7 @@ public class GiveFragment extends Fragment implements
             holder.mAmountView.setText(amountStr);
 
             if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-            else if (sDualPane && mPanePosition == position) {
+            else if (mPanePosition == position) {
                 mLastClicked = holder.mInspectButton;
                 mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
             }
@@ -630,7 +632,6 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
             private AlertDialog mContactDialog;
             private AlertDialog mRemoveDialog;
-            private String mEin;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -667,16 +668,15 @@ public class GiveFragment extends Fragment implements
 
                 Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
-                mEin = values.getEin();
 
                 mRemoveDialog = new AlertDialog.Builder(getContext()).create();
                 mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_charity, name));
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mRemoveDialog.show();
-                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                button.setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 button.setTag(values);
             }
 
@@ -687,9 +687,6 @@ public class GiveFragment extends Fragment implements
 
                 int position = (int) v.getTag();
                 Target values = sValuesArray[position];
-                String name = values.getName();
-                String ein = values.getEin();
-                String navUrl = values.getNavigatorUrl();
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -842,7 +839,7 @@ public class GiveFragment extends Fragment implements
          */
         @Optional @OnClick(R.id.social_button) void launchSocial() {
             new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                     .build()
                     .launchUrl(mContext, Uri.parse(mSocial));
         }
@@ -852,7 +849,7 @@ public class GiveFragment extends Fragment implements
          */
         @Optional @OnClick(R.id.website_button) void launchWebsite() {
             new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                     .build()
                     .launchUrl(mContext, Uri.parse(mWebsite));
         }

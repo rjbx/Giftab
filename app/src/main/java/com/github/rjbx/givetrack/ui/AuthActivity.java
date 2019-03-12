@@ -60,7 +60,6 @@ public class AuthActivity extends AppCompatActivity implements
 
     /**
      * Handles sign in, sign out, and account deletion launch Intent actions.
-     * @param savedInstanceState
      */
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +99,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mUsers.get(i).setUserActive(isActive);
                     if (isActive) isPersisted = true;
                 } if (!isPersisted) mUsers.add(activeUser);
-                DatabaseAccessor.addEntriesToLocal(getContentResolver(), User.class, 0, mUsers.toArray(new User[mUsers.size()]));
+                DatabaseAccessor.addEntriesToLocal(getContentResolver(), User.class, 0, mUsers.toArray(new User[0]));
                 mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -147,19 +146,21 @@ public class AuthActivity extends AppCompatActivity implements
             switch (action) {
                 case ACTION_SIGN_OUT:
                     User deactivatedUser = user;
-                    deactivatedUser.setUserActive(false);
-                    DISK_IO.execute(() -> {
-                    DatabaseService.startActionUpdateUser(this, deactivatedUser);
-                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                        if (firebaseUser == null || firebaseUser.getEmail() == null) return;
-                        firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
-                                .addOnCompleteListener(signedOutTask -> {
-                                                AuthUI.getInstance().signOut(this);
-                                                finish();
-                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                        });
-                    });
+                    if (user != null) {
+                        deactivatedUser.setUserActive(false);
+                        DISK_IO.execute(() -> {
+                            DatabaseService.startActionUpdateUser(this, deactivatedUser);
+                            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                            if (firebaseUser == null || firebaseUser.getEmail() == null) return;
+                            firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
+                                    .addOnCompleteListener(signedOutTask -> {
+                                        AuthUI.getInstance().signOut(this);
+                                        finish();
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                    });
+                        });
+                    }
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseService.startActionResetData(AuthActivity.this);

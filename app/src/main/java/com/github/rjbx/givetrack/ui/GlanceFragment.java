@@ -14,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -115,7 +116,7 @@ public class GlanceFragment extends Fragment implements
     /**
      * Provides the arguments for this Fragment from a static context in order to survive lifecycle changes.
      */
-    public static GlanceFragment newInstance(@Nullable Bundle args) {
+    static GlanceFragment newInstance(@Nullable Bundle args) {
         GlanceFragment fragment = new GlanceFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
@@ -136,9 +137,10 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
-            sValuesArray = AppUtilities.getTypedArrayFromParcelables(args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES), Record.class);
+            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            Parcelable[] parcelables = args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES);
+            if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
         }
-        sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
         if (sUser != null) {
             Date date = new Date(sUser.getGlanceAnchor());
             DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
@@ -146,7 +148,7 @@ public class GlanceFragment extends Fragment implements
             mTimeTracked = String.format("since %s", formattedDate);
             mViewTracked = sUser.getGlanceSince();
             sThemeIndex = sUser.getGlanceTheme();
-            mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+            mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
         }
         return rootView;
     }
@@ -204,9 +206,10 @@ public class GlanceFragment extends Fragment implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     TextView dialogTextView = mChartDialog.findViewById(android.R.id.message);
-                    String message = dialogTextView.getText().toString();
-                    shareDialogText(message);
-                    break;
+                    if (dialogTextView != null) {
+                        String message = dialogTextView.getText().toString();
+                        shareDialogText(message);
+                    } break;
                 default:
             }
         }
@@ -236,7 +239,7 @@ public class GlanceFragment extends Fragment implements
     void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
-        mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex]));
+        mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
         sUser.setGlanceTheme(sThemeIndex);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
     }
@@ -245,7 +248,7 @@ public class GlanceFragment extends Fragment implements
      * Defines behavior on click of toggle amount button.
      */
     @OnClick(R.id.home_amount_label)
-    void toggleTracked(TextView amountLabel) {
+    void toggleTracked() {
         mViewTracked = !mViewTracked;
         sUser.setGlanceSince(mViewTracked);
         DatabaseService.startActionUpdateUser(getContext(), sUser);
@@ -281,13 +284,15 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_config_button)
     void trackAmount() {
-        mTimeDialog = new AlertDialog.Builder(getContext()).create();
+        Context context = getContext();
+        if (context == null) return;
+        mTimeDialog = new AlertDialog.Builder(context).create();
         mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTimeTracked));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
-        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
     }
 
     /**
@@ -340,7 +345,7 @@ public class GlanceFragment extends Fragment implements
         mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
-        int backgroundColor = getResources().getColor(R.color.colorSlate);
+        int backgroundColor = getResources().getColor(R.color.colorSlate, null);
 
         Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 
@@ -357,16 +362,16 @@ public class GlanceFragment extends Fragment implements
         int donationFrequency = sValuesArray.length;
         if (donationFrequency == 0) return;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
-        for (int j = 0; j < sValuesArray.length; j++) {
-            Record record = sValuesArray[j];
-            Long time = record.getTime();
+        for (Record record : sValuesArray) {
+            long time = record.getTime();
             Float amount = Float.parseFloat(record.getImpact());
             String name = record.getName();
 
             recordsTotal += amount;
             if (time >= tracktime) tracked += amount;
 
-            float recordAmount = amount + (recordAggregates.containsKey(name) ? recordAggregates.get(name) : 0f);
+            Float recordAggregate = recordAggregates.get(name);
+            float recordAmount = amount + (recordAggregate != null ? recordAggregate : 0f);
 
             Calendar recordCalendar = Calendar.getInstance();
             recordCalendar.setTimeInMillis(time);
@@ -420,23 +425,23 @@ public class GlanceFragment extends Fragment implements
         String percentMessage = percentageMessageBuilder.toString();
 
         int detailColors[] = {
-                getResources().getColor(R.color.colorPrimary),
-                getResources().getColor(R.color.colorPrimaryDark),
-                getResources().getColor(R.color.colorAttention),
-                getResources().getColor(R.color.colorAttentionDark),
-                getResources().getColor(R.color.colorNeutral),
-                getResources().getColor(R.color.colorNeutralDark),
-                getResources().getColor(R.color.colorAccent),
-                getResources().getColor(R.color.colorAccentDark),
-                getResources().getColor(R.color.colorHeat),
-                getResources().getColor(R.color.colorHeatDark),
-                getResources().getColor(R.color.colorComfort),
-                getResources().getColor(R.color.colorComfortDark)
+                getResources().getColor(R.color.colorPrimary, null),
+                getResources().getColor(R.color.colorPrimaryDark, null),
+                getResources().getColor(R.color.colorAttention, null),
+                getResources().getColor(R.color.colorAttentionDark, null),
+                getResources().getColor(R.color.colorNeutral, null),
+                getResources().getColor(R.color.colorNeutralDark, null),
+                getResources().getColor(R.color.colorAccent, null),
+                getResources().getColor(R.color.colorAccentDark, null),
+                getResources().getColor(R.color.colorHeat, null),
+                getResources().getColor(R.color.colorHeatDark, null),
+                getResources().getColor(R.color.colorComfort, null),
+                getResources().getColor(R.color.colorComfortDark, null)
         };
 
         int overviewColors[] = {
-                getResources().getColor(R.color.colorConversion),
-                getResources().getColor(R.color.colorConversionDark),
+                getResources().getColor(R.color.colorConversion, null),
+                getResources().getColor(R.color.colorConversionDark, null)
         };
 
         PieDataSet percentageSet = new PieDataSet(percentageEntries, "");
@@ -641,9 +646,9 @@ public class GlanceFragment extends Fragment implements
             ((PieChart) chartClone).setEntryLabelTextSize(fontSize * 1.25f);
         } else if (chart instanceof HorizontalBarChart) {
             chartClone = new HorizontalBarChart(mParentActivity);
-            chartClone.setData(((HorizontalBarChart) chart).getData());
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
             chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+            ((HorizontalBarChart) chartClone).setData(((HorizontalBarChart) chart).getData());
             ((HorizontalBarChart) chartClone).setDoubleTapToZoomEnabled(false);
             ((HorizontalBarChart) chartClone).getBarData().setDrawValues(false);
             ((HorizontalBarChart) chartClone).setFitBars(true);
@@ -682,8 +687,8 @@ public class GlanceFragment extends Fragment implements
         mChartDialog.setView(scrollView);
         mChartDialog.show();
         mChartDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
     }
 
     private void shareDialogText(String message) {
@@ -702,7 +707,7 @@ public class GlanceFragment extends Fragment implements
         String mTitle;
         String mStats;
 
-        public OnSelectedChartOnGestureListener(Chart chart) {
+        OnSelectedChartOnGestureListener(Chart chart) {
             mView = chart;
             mTitle = chart.getDescription().getText();
             mStats = (String) chart.getTag();

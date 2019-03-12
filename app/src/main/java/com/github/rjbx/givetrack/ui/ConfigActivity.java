@@ -137,7 +137,7 @@ public class ConfigActivity
         if (actionBar != null) {
             actionBar.setTitle("Settings");
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary, null)));
         }
     }
 
@@ -216,16 +216,18 @@ public class ConfigActivity
         int id = item.getItemId();
         if (id == android.R.id.home) {
             String action = getIntent().getAction();
-            switch (action) {
-                case JournalActivity.ACTION_RECORD_INTENT:
-                    startActivity(new Intent(this, JournalActivity.class));
-                    return true;
-                case IndexActivity.ACTION_SPAWN_INTENT:
-                    startActivity(new Intent(this, IndexActivity.class));
-                    return true;
-                case HomeActivity.ACTION_MAIN_INTENT:
-                    startActivity(new Intent(this, HomeActivity.class));
-                    return true;
+            if (action != null) {
+                switch (action) {
+                    case JournalActivity.ACTION_RECORD_INTENT:
+                        startActivity(new Intent(this, JournalActivity.class));
+                        return true;
+                    case IndexActivity.ACTION_SPAWN_INTENT:
+                        startActivity(new Intent(this, IndexActivity.class));
+                        return true;
+                    case HomeActivity.ACTION_MAIN_INTENT:
+                        startActivity(new Intent(this, HomeActivity.class));
+                        return true;
+                }
             }
         }
         return super.onOptionsItemSelected(item);
@@ -381,8 +383,8 @@ public class ConfigActivity
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
@@ -475,8 +477,8 @@ public class ConfigActivity
                 mMagnitudeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mMagnitudeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mMagnitudeDialog.show();
-                mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+                mMagnitudeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mMagnitudeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 return true;
             } else if (getString(R.string.pref_giveReset_key).equals(preferenceKey)) {
                 mRecalibrateDialog = new AlertDialog.Builder(getActivity()).create();
@@ -484,8 +486,8 @@ public class ConfigActivity
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mRecalibrateDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mRecalibrateDialog.show();
-                mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+                mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
@@ -493,8 +495,8 @@ public class ConfigActivity
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
@@ -627,8 +629,8 @@ public class ConfigActivity
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 return true;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
@@ -712,8 +714,8 @@ public class ConfigActivity
                 mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
                 mDeleteDialog.show();
-                mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-                mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 return false;
             });
         }

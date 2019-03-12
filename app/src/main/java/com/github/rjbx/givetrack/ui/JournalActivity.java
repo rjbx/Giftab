@@ -180,7 +180,7 @@ public class JournalActivity extends AppCompatActivity implements
                 }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
                 Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
-                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                 sb.show();
                 break;
             case DatabaseContract.LOADER_ID_USER:
@@ -278,7 +278,7 @@ public class JournalActivity extends AppCompatActivity implements
                     case ItemTouchHelper.LEFT:
                         String amount = values.getImpact();
                         String name = values.getName();
-                        String formattedDate = DATE_FORMATTER.getDateInstance().format(mDeletedTime);
+                        String formattedDate = DATE_FORMATTER.format(mDeletedTime);
                         mDeletedTime = values.getTime();
                         mRemoveDialog = new AlertDialog.Builder(JournalActivity.this).create();
                         String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
@@ -286,15 +286,15 @@ public class JournalActivity extends AppCompatActivity implements
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), JournalActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), JournalActivity.this);
                         mRemoveDialog.show();
-                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                         Button button = mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
-                        button.setTextColor(getResources().getColor(R.color.colorAttentionDark));
+                        button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                         button.setTag(values);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getNavigatorUrl();
                         new CustomTabsIntent.Builder()
-                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                                 .build()
                                 .launchUrl(JournalActivity.this, Uri.parse(url));
                         getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
@@ -313,7 +313,7 @@ public class JournalActivity extends AppCompatActivity implements
         private Record[] mValuesArray;
         private int mLastPosition;
 
-        public ListAdapter() {
+        ListAdapter() {
             super();
             mLock = true;
         }
@@ -337,15 +337,15 @@ public class JournalActivity extends AppCompatActivity implements
 
             if (isDualPane()) {
                 if (position != mLastPosition) {
-                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                 } else {
-                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention));
+                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
                 }
                 holder.mEntityView.setVisibility(View.GONE);
             }
             else {
                 holder.mEntityView.setVisibility(View.VISIBLE);
-                holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
             }
 
             Record values = mValuesArray[position];
@@ -404,7 +404,6 @@ public class JournalActivity extends AppCompatActivity implements
             private AlertDialog mContactDialog;
             private AlertDialog mDateDialog;
             private long mTime;
-            private long mOldTime;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -435,9 +434,6 @@ public class JournalActivity extends AppCompatActivity implements
             @OnClick(R.id.record_time_text) void editTime(View v) {
                 if (isDualPane()) togglePane(v);
                 else {
-                    Record values = ListAdapter.this.mValuesArray[(int) v.getTag()];
-                    mOldTime = values.getTime();
-
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(mUser.getGiveAnchor());
@@ -492,7 +488,6 @@ public class JournalActivity extends AppCompatActivity implements
              */
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Record record = mValuesArray[(int) v.getTag()];
-                long time = record.getTime();
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
                         float amountTotal;
@@ -533,9 +528,9 @@ public class JournalActivity extends AppCompatActivity implements
                 mDateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.dialog_option_cancel), this);
                 mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
                 mDateDialog.show();
-                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setTextColor(getResources().getColor(R.color.colorConversionDark));
+                button.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 button.setTag(position);
             }
 
@@ -666,7 +661,7 @@ public class JournalActivity extends AppCompatActivity implements
          */
         @Optional @OnClick(R.id.website_button) void launchWebsite() {
             new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                     .build()
                     .launchUrl(mContext, Uri.parse(mWebsite));
         }

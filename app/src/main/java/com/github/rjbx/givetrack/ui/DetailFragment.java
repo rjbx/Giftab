@@ -49,7 +49,6 @@ import java.util.List;
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
-    static final String ARG_ITEM_EIN = "com.github.rjbx.givetrack.ui.arg.ITEM_EIN";
     static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
@@ -190,7 +189,7 @@ public class DetailFragment extends Fragment {
     private void drawSnackbar() {
         String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sCompany.getName());
         Snackbar sb = Snackbar.make(mFab, message, Snackbar.LENGTH_LONG);
-        sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
         sb.show();
     }
 
@@ -204,7 +203,7 @@ public class DetailFragment extends Fragment {
                 R.drawable.action_remove: R.drawable.action_download);
         mFab.setBackgroundTintList(sCurrentState ?
                 ColorStateList.valueOf(Color.WHITE) :
-                ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorAccent)));
+                ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorAccent, null)));
         mFab.setContentDescription(sCurrentState ? getContext().getString(R.string.description_collected_remove_button) :
                 mParentActivity.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
@@ -221,7 +220,7 @@ public class DetailFragment extends Fragment {
     @OnClick(R.id.browser_open_button) void openBrowser() {
         new CustomTabsIntent.Builder()
                 .setToolbarColor(getResources()
-                        .getColor(R.color.colorPrimaryDark))
+                        .getColor(R.color.colorPrimaryDark, null))
                 .build()
                 .launchUrl(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
         mParentActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);

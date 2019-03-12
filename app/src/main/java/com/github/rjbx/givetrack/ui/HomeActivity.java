@@ -23,18 +23,16 @@ import androidx.annotation.NonNull;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.transition.Fade;
-import androidx.transition.Slide;
 import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
 
-import android.view.Gravity;
+import android.os.Parcelable;
 import android.widget.DatePicker;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -84,7 +82,7 @@ public class HomeActivity extends AppCompatActivity implements
     public static final String ARGS_ACTION_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ACTION_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
-    private static final String STATE_GIVE_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
+    private static final String STATE_TARGET_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private boolean mUserLock = true;
     private boolean mTargetLock = true;
@@ -112,9 +110,11 @@ public class HomeActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null) {
-            mTargetArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_GIVE_ARRAY), Target.class);
-            mRecordArray = AppUtilities.getTypedArrayFromParcelables(savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY), Record.class);
             mUser = savedInstanceState.getParcelable(STATE_ACTIVE_USER);
+            Parcelable[] pTargets = savedInstanceState.getParcelableArray(STATE_TARGET_ARRAY);
+            Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
+            if (pTargets != null) mTargetArray = AppUtilities.getTypedArrayFromParcelables(pTargets, Target.class);
+            if (pRecords != null) mRecordArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -184,8 +184,8 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArray(STATE_GIVE_ARRAY, mTargetArray);
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArray(STATE_TARGET_ARRAY, mTargetArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
         outState.putParcelable(STATE_ACTIVE_USER, mUser);
         super.onSaveInstanceState(outState);
@@ -314,8 +314,8 @@ public class HomeActivity extends AppCompatActivity implements
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
     }
 
     /**
@@ -337,8 +337,8 @@ public class HomeActivity extends AppCompatActivity implements
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                         mCurrentDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
                         mCurrentDialog.show();
-                        mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark));
-                        mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                     } else mUser.setGiveTiming(0);
                     DatabaseService.startActionUpdateUser(this, mUser);
                     break;
@@ -364,7 +364,7 @@ public class HomeActivity extends AppCompatActivity implements
      */
     private void launchCustomTabs(String url) {
         new CustomTabsIntent.Builder()
-                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                 .build()
                 .launchUrl(this, Uri.parse(url));
         getIntent().setAction(ACTION_CUSTOM_TABS);
@@ -399,7 +399,9 @@ public class HomeActivity extends AppCompatActivity implements
          * Generates a Layout for the Fragment.
          */
         @Nullable @Override public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            boolean launchScreen = getArguments().getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
+            Bundle arguments = getArguments();
+            boolean launchScreen = true;
+            if (arguments != null) launchScreen = getArguments().getBoolean(ARGS_PLACEHOLDER_ATTRIBUTES);
             int rootResource = launchScreen ? R.layout.placeholder_launch : R.layout.placeholder_add;
             View rootView = inflater.inflate(rootResource, container, false);
             mUnbinder = ButterKnife.bind(this, rootView);
@@ -409,7 +411,9 @@ public class HomeActivity extends AppCompatActivity implements
         @Override
         public void onResume() {
             super.onResume();
-            String launchAction = getArguments().getString(ARGS_ACTION_ATTRIBUTES);
+            Bundle arguments = getArguments();
+            if (arguments == null) return;
+            String launchAction = arguments.getString(ARGS_ACTION_ATTRIBUTES);
             if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN)) {
                 if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.VISIBLE);
                 if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.VISIBLE);
@@ -451,7 +455,7 @@ public class HomeActivity extends AppCompatActivity implements
         /**
          * Instantiates the Fragment for a given section.
          */
-        @Override public Fragment getItem(int position) {
+        @Override public @NonNull Fragment getItem(int position) {
 
             Bundle argsPlaceholder = new Bundle();
             if (mTargetArray == null || mRecordArray == null) {

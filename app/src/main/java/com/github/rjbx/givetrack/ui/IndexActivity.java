@@ -173,7 +173,7 @@ public class IndexActivity extends AppCompatActivity implements
                 }
                 if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh);
                 Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
-                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                 sb.show();
                 break;
             case DatabaseContract.LOADER_ID_USER:
@@ -276,8 +276,8 @@ public class IndexActivity extends AppCompatActivity implements
         mSpawnDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
         mSpawnDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         mSpawnDialog.show();
-        mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
     }
 
     // TODO: Handled by accessor fetch; factor out
@@ -305,7 +305,7 @@ public class IndexActivity extends AppCompatActivity implements
                     case ItemTouchHelper.RIGHT:
                         final String url = bundle.getString(DetailFragment.ARG_ITEM_URL);
                         new CustomTabsIntent.Builder()
-                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark))
+                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
                                 .build()
                                 .launchUrl(IndexActivity.this, Uri.parse(url));
                         getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
@@ -324,7 +324,7 @@ public class IndexActivity extends AppCompatActivity implements
         private Spawn[] mValuesArray;
         int mLastPosition;
 
-        public ListAdapter() {
+        ListAdapter() {
             super();
             mLock = true;
         }
@@ -353,7 +353,6 @@ public class IndexActivity extends AppCompatActivity implements
             String state = values.getLocationState();
             String zip = values.getLocationZip();
             String homepage = values.getHomepageUrl();
-            String url = values.getNavigatorUrl();
 
             holder.mNameView.setText(name);
             holder.mIdView.setText(String.format("EIN: %s", ein));

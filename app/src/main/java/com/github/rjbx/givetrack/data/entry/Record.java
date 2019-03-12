@@ -133,8 +133,7 @@ public class Record extends Spawn implements Company, Parcelable, Cloneable {
     public Spawn getSuper() { return super.clone(); }
 
     public static Record fromSuper(Spawn spawn) {
-        Record record = new Record(spawn, "", 0);
-        return record;
+        return new Record(spawn, "", 0);
     }
 
     @Override public Record clone() {

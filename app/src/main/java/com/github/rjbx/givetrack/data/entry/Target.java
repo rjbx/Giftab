@@ -135,8 +135,7 @@ public class Target extends Spawn implements Company, Rateraid.RatedObject<Targe
     public Spawn getSuper() { return super.clone(); }
 
     public static Target fromSuper(Spawn spawn) {
-        Target target = new Target(spawn, 0, "0");
-        return target;
+        return new Target(spawn, 0, "0");
     }
 
     @Override public Target clone() {
