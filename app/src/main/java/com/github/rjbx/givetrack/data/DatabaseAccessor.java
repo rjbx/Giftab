@@ -411,6 +411,7 @@ public final class DatabaseAccessor {
         List<T> entryList = getEntryListFromCursor(cursor, entryType);
         cursor.close();
         removeEntriesFromRemote(remote, entryType, stamp);
+        if (entryList.isEmpty()) return;
         addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
@@ -433,6 +434,7 @@ public final class DatabaseAccessor {
                     entryList.add(entry);
                 }
                 removeEntriesFromLocal(local, entryType, stamp);
+                if (entryList.isEmpty()) return;
                 addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
