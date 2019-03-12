@@ -405,7 +405,7 @@ public class GlanceFragment extends Fragment implements
             if (i < 8) donationAmount += a;
         }
 
-        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n\n", mIntervalLabel));
+        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n", mIntervalLabel));
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
@@ -418,7 +418,7 @@ public class GlanceFragment extends Fragment implements
             String name = entry.getKey();
             float value = entry.getValue();
             float percent = value / recordsTotal;
-            percentageMessageBuilder.append(String.format(Locale.getDefault(), "%s %s %s\n\n", PERCENT_FORMATTER.format(percent), name, CURRENCY_FORMATTER.format(value)));
+            percentageMessageBuilder.append(String.format(Locale.getDefault(), "\n%s %s %s\n", PERCENT_FORMATTER.format(percent), name, CURRENCY_FORMATTER.format(value)));
             if (percent < .20f) name = "";
             if (name.length() > 20) {
                 name = name.substring(0, 20);
@@ -488,7 +488,7 @@ public class GlanceFragment extends Fragment implements
         String donationLabel = "Average Donation";
         float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
-        String averageMessage = String.format(" %sly\n\n%s %s\n%s %s", mIntervalLabel, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
+        String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalLabel, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(perInterval, intervalLabel));
@@ -519,7 +519,7 @@ public class GlanceFragment extends Fragment implements
 
         String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
         String currentLabel = getFormattedValue(1, null);
-        String usageMessage = String.format(" %sly\n\n%s %s\n%s %s", mIntervalLabel, highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
+        String usageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalLabel, highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
 
         List<PieEntry> usageEntries = new ArrayList<>();
         usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
@@ -552,7 +552,7 @@ public class GlanceFragment extends Fragment implements
         String oldLabel = String.format("Over 7 %ss", mIntervalLabel);
         float percentRecent = donationAmount / recordsTotal;
         float percentOld = 1f - percentRecent;
-        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s\n", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
         if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
@@ -701,7 +701,7 @@ public class GlanceFragment extends Fragment implements
     private void shareDialogText(String message) {
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
-                .setText(String.format("My giving trends: %s#%s App",
+                .setText(String.format("My giving trends: %s\n#%s App",
                         message,
                         getString(R.string.app_name)))
                 .getIntent();
