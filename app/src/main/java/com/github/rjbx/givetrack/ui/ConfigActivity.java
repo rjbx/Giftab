@@ -354,6 +354,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_indexFocus_key)), this);
+            handleActionClick(findPreference(getString(R.string.pref_clear_key)), this);
             handleActionClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
@@ -363,7 +364,16 @@ public class ConfigActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+                mClearDialog = new AlertDialog.Builder(getActivity()).create();
+                mClearDialog.setMessage(getString(R.string.dialog_removal_record, getString(R.string.snippet_all_charities)));
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mClearDialog.show();
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+                return true;
+            } else if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
                 if ((boolean) newValue) {
                     preference.setEnabled(true);
                 } else preference.setEnabled(false);
