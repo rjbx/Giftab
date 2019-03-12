@@ -408,9 +408,9 @@ public class IndexActivity extends AppCompatActivity implements
                 else sDualPane = true;
 
                 mLastPosition = position;
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
-                if (sDualPane) showDualPane((Bundle) v.getTag());
+                Bundle arguments = new Bundle();
+                arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
+                if (sDualPane) showDualPane(arguments);
                 else showSinglePane();
             }
         }
