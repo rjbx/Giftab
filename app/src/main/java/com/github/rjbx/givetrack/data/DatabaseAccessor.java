@@ -120,7 +120,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
 
-        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        String selection = CompanyEntry.COLUMN_UID + " = ? ";
         List<String> selectionArgList = new ArrayList<>();
         selectionArgList.add(activeUser.getUid());
 
@@ -167,7 +167,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
 
-        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        String selection = CompanyEntry.COLUMN_UID + " = ? ";
         List<String> selectionArgList = new ArrayList<>();
         selectionArgList.add(activeUser.getUid());
 
@@ -218,7 +218,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
 
-        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        String selection = CompanyEntry.COLUMN_UID + " = ? ";
         List<String> selectionArgList = new ArrayList<>();
         selectionArgList.add(activeUser.getUid());
 
