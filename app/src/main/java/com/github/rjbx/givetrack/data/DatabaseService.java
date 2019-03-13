@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
@@ -16,6 +17,7 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,6 +26,8 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -638,6 +642,8 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateTarget(Target... targets) {
+        if (targets.length == 1) targets[0].setPercent(0d); // TODO Implement in Rateraid
+        else Rateraid.recalibrateRatings(Arrays.asList(targets), false, Calibrater.STANDARD_PRECISION);
         DatabaseAccessor.addTarget(this, targets);
     }
 
