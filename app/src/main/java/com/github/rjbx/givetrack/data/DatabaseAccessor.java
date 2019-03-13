@@ -113,13 +113,18 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Spawn.class, stamp, parsedResponse);
     }
 
-    static List<Spawn> getSpawn(Context context) {
+    static List<Spawn> getSpawn(Context context, @Nullable String... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
+
+        StringBuilder formattedWhere = new StringBuilder();
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
+                contentUri, null, formattedWhere.toString(), null, null
         );
         List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
         cursor.close();
@@ -152,8 +157,13 @@ public final class DatabaseAccessor {
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
+
+        StringBuilder formattedWhere = new StringBuilder();
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
+                contentUri, null, formattedWhere.toString(), null, null
         );
         List<Target> entries = getEntryListFromCursor(cursor, Target.class);
         cursor.close();
@@ -185,13 +195,18 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Record.class);
     }
 
-    static List<Record> getRecord(Context context) {
+    static List<Record> getRecord(Context context, @Nullable String... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
+
+        StringBuilder formattedWhere = new StringBuilder();
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
+                contentUri, null, formattedWhere.toString(), null, null
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
 
