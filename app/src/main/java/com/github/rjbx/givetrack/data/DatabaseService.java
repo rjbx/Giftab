@@ -495,6 +495,18 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addTarget(this, target);
     }
 
+    private void handleActionTargetRecord(Record... records) {
+
+        List<Target> targetList = DatabaseAccessor.getTarget(this);
+        for (Record record : records) {
+            for (Target target : targetList) {
+                if (target.getEin().equals(record.getEin())) {
+
+                }
+            }
+        }
+    }
+
     private void handleActionRecordTarget(Target... target) {
 
         Record[] record = new Record[target.length];
