@@ -173,7 +173,7 @@ public final class DatabaseAccessor {
 
         if (where != null) {
             for (Pair<String, String> p : where) {
-                selection = selection.concat(", " + p.first);
+                selection = selection.concat("AND " + p.first);
                 selectionArgList.add(p.second);
             }
         }
