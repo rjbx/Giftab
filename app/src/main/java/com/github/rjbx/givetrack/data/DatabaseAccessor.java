@@ -120,7 +120,7 @@ public final class DatabaseAccessor {
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
 
         StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
         if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
 
         Cursor cursor = local.query(
@@ -159,7 +159,7 @@ public final class DatabaseAccessor {
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
 
         StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
         if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
 
         Cursor cursor = local.query(
@@ -202,7 +202,7 @@ public final class DatabaseAccessor {
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
 
         StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(activeUser.getUid());
+        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
         if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
 
         Cursor cursor = local.query(
