@@ -208,14 +208,19 @@ public final class DatabaseAccessor {
         // TODO Update recalibration with Rateraid
         List<Target> targetList = getTarget(context);
         int[] removalIndeces = new int[targetList.size()];
-        for (Target t1 : target) for (Target t2 : targetList) if (t2.getId().equals(t1.getId())) removalIndeces[targetList.indexOf(t2)] = 1;
+        for (Target t1 : target) for (Target t2 : targetList)
+            if (t2.getId().equals(t1.getId()))
+                removalIndeces[targetList.indexOf(t2)] = 1;
         for (int i = 0; i < removalIndeces.length; i++) {
             if (removalIndeces[i] == 1) targetList.remove(i);
         }
 
-        Iterator<Target> iterator = targetList.iterator();
-        if (iterator.hasNext()) iterator.next().setPercent(1d / targetList.size());
-        target = targetList.toArray(new Target[0]);
+        if (!targetList.isEmpty()) {
+            Iterator<Target> iterator = targetList.iterator();
+            do iterator.next().setPercent(1d / targetList.size());
+            while (iterator.hasNext());
+            target = targetList.toArray(new Target[0]);
+        }
 
         removeEntriesFromLocal(local, Target.class, stamp, target);
         removeEntriesFromRemote(remote, Target.class, stamp, target);
