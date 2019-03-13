@@ -147,7 +147,7 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Target.class);
     }
 
-    static List<Target> getTarget(Context context) {
+    static List<Target> getTarget(Context context, @Nullable String... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
