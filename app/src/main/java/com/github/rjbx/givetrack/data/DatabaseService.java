@@ -642,7 +642,7 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        if (targets.length == 1) targets[0].setPercent(0d); // TODO Implement in Rateraid
+        if (targets.length == 1) targets[0].setPercent(1d); // TODO Implement in Rateraid
         else Rateraid.recalibrateRatings(Arrays.asList(targets), false, Calibrater.STANDARD_PRECISION);
         DatabaseAccessor.addTarget(this, targets);
     }
