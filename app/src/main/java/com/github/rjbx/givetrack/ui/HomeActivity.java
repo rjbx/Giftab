@@ -246,7 +246,6 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            mUser.setGiveAnchor(mAnchorTime);
                             Calendar anchorCalendar = Calendar.getInstance();
                             Calendar currentCalendar = Calendar.getInstance();
                             anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
