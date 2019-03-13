@@ -223,8 +223,7 @@ public final class DatabaseAccessor {
         }
 
         addEntriesToLocal(local, Target.class, stamp, true, target);
-        removeEntriesFromRemote(remote, Target.class, stamp);
-        addEntriesToRemote(remote, Target.class, stamp, false, target);
+        addEntriesToRemote(remote, Target.class, stamp, true, target);
     }
 
     static void fetchRecord(Context context) {
