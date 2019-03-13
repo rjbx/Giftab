@@ -334,6 +334,7 @@ public class HomeActivity extends AppCompatActivity implements
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
+                    mUser.setGiveAnchor(mAnchorTime);
                     if (!mAnchorToday) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
