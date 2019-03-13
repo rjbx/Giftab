@@ -222,9 +222,8 @@ public final class DatabaseAccessor {
             target = targetList.toArray(new Target[0]);
         }
 
-        removeEntriesFromLocal(local, Target.class, stamp);
-        removeEntriesFromRemote(remote, Target.class, stamp);
         addEntriesToLocal(local, Target.class, stamp, target);
+        removeEntriesFromRemote(remote, Target.class, stamp);
         addEntriesToRemote(remote, Target.class, stamp, target);
     }
 
@@ -339,11 +338,17 @@ public final class DatabaseAccessor {
 
     public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
-        String uid = entries[0].getUid();
+        Uri contentUri = DatabaseContract.getContentUri(entryType);
+        String uid;
+
+        if (entries.length == 0) {
+            uid = getActiveUserFromLocal(local).getUid();
+            local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
+        } else uid = entries[0].getUid();
 
         ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < values.length; i++) {values[i] = entries[i].toContentValues(); }
-        local.bulkInsert(DatabaseContract.getContentUri(entryType), values);
+        for (int i = 0; i < values.length; i++) { values[i] = entries[i].toContentValues(); }
+        local.bulkInsert(contentUri, values);
 
         updateLocalTableTime(local, entryType, stamp, uid);
     }
@@ -352,7 +357,6 @@ public final class DatabaseAccessor {
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
     static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
-
 
         if (entryType.equals(Spawn.class)) return;
 
