@@ -586,8 +586,11 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveTarget(String ein) {
         List<Target> targetList = getTarget(this);
-        for (Target t : targetList) if (t.getEin().equals(ein)) targetList.remove(t);
-        Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
+        int length = targetList.size() - 1;
+        for (Target t : targetList)
+            if (t.getEin().equals(ein)) targetList.remove(t);
+            else t.setPercent(1d / length); // TODO Resolve Rateraid single element recalibration and RatedObject casting
+//        Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
         DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
     }
 
