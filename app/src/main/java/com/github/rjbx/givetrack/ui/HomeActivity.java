@@ -129,17 +129,6 @@ public class HomeActivity extends AppCompatActivity implements
 
         mNavigation.setNavigationItemSelectedListener(this);
 
-        mUser.setGiveAnchor(mAnchorTime);
-        Calendar anchorCalendar = Calendar.getInstance();
-        Calendar currentCalendar = Calendar.getInstance();
-        anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
-        currentCalendar.setTimeInMillis(System.currentTimeMillis());
-        mAnchorToday =
-                anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
-                        anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
-                        anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
-
-
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser == null) return;
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
@@ -257,6 +246,15 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
+                            mUser.setGiveAnchor(mAnchorTime);
+                            Calendar anchorCalendar = Calendar.getInstance();
+                            Calendar currentCalendar = Calendar.getInstance();
+                            anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
+                            currentCalendar.setTimeInMillis(System.currentTimeMillis());
+                            mAnchorToday =
+                                    anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                                            anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
+                                            anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
                             if (mUser.getGiveTiming() == 0 && mAnchorToday) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
