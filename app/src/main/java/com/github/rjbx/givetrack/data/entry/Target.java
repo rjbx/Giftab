@@ -11,6 +11,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+// TODO Convert ID to EIN
 @IgnoreExtraProperties
 public class Target extends Spawn implements Company, Rateraid.RatedObject<Target>, Parcelable, Cloneable {
 

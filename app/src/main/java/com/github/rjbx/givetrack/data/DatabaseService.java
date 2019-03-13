@@ -9,16 +9,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
-import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.rateraid.Rateraid;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,8 +24,6 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -199,12 +194,26 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveTarget(Context context, Company... company) {
+    public static void startActionRemoveTarget(Context context, Target... targets) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_TARGET);
-        if (company.length > 1) intent.putExtra(EXTRA_LIST_VALUES, company);
-        else intent.putExtra(EXTRA_ITEM_VALUES, company[0]);
+        if (targets.length > 1) intent.putExtra(EXTRA_LIST_VALUES, targets);
+        else intent.putExtra(EXTRA_ITEM_VALUES, targets[0]);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action RemoveTarget with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRemoveTarget(Context context, String ein) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_REMOVE_TARGET);
+        intent.putExtra(EXTRA_ITEM_ID, ein);
         context.startService(intent);
     }
 
@@ -409,7 +418,8 @@ public class DatabaseService extends IntentService {
             case ACTION_REMOVE_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionRemoveTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
-                else handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                else if (intent.hasExtra(EXTRA_ITEM_VALUES)) handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                else handleActionRemoveTarget(intent.getStringExtra(EXTRA_ITEM_ID));
                 break;
             case ACTION_REMOVE_RECORD:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -557,23 +567,21 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.removeSpawn(this, spawns);
     }
 
-    // TODO Revert Target and Spawn ID to EIN
     /**
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveTarget(Company... companies) {
-        if (companies.length != 0 ) {
-            if (companies[0] instanceof Target) {
-                DatabaseAccessor.removeTarget(this, (Target[]) companies);
-            } else {
-                List<Target> targets = getTarget(this);
-                for (Company company : companies) {
-                    for (Target target : targets)
-                        if (target.getEin().equals(company.getEin()))
-                            DatabaseAccessor.removeTarget(this, target);
+    private void handleActionRemoveTarget(Target... target) {
+        DatabaseAccessor.removeTarget(this, target);
+    }
 
-                }
-            }
+
+    /**
+     * Handles action RemoveTargetin the provided background thread with the provided parameters.
+     */
+    private void handleActionRemoveTarget(String ein) {
+        List<Target> targetList = getTarget(this);
+        for (Target t : targetList) {
+            if (t.getEin().equals(ein)) DatabaseAccessor.removeTarget(this, t);
         }
     }
 
