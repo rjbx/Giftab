@@ -238,7 +238,7 @@ public class DetailFragment extends Fragment {
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
-            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
+            else DatabaseService.startActionRemoveTarget(mParentActivity, sCompany.getEin());
             mEnabled = false;
         }
     }
