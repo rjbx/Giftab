@@ -255,7 +255,7 @@ public class HomeActivity extends AppCompatActivity implements
                                     anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
                                             anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
                                             anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
-                            if (mUser.getGiveTiming() == 0 && mAnchorToday) {
+                            if (mUser.getGiveTiming() == 0 && !mAnchorToday) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
                             }
