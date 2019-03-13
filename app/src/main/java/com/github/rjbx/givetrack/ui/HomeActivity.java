@@ -52,7 +52,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -82,7 +81,7 @@ public class HomeActivity extends AppCompatActivity implements
     public static final String ARGS_ACTION_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.ACTION_ATTRIBUTES";
 
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
-    private static final String STATE_TARGET_ARRAY = "com.github.rjbx.givetrack.ui.state.GIVE_ARRAY";
+    private static final String STATE_TARGET_ARRAY = "com.github.rjbx.givetrack.ui.state.TARGET_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private boolean mUserLock = true;
     private boolean mTargetLock = true;
@@ -92,6 +91,7 @@ public class HomeActivity extends AppCompatActivity implements
     private Record[] mRecordArray;
     private User mUser;
     private long mAnchorTime;
+    private boolean mAnchorToday;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
@@ -128,6 +128,17 @@ public class HomeActivity extends AppCompatActivity implements
         toggle.syncState();
 
         mNavigation.setNavigationItemSelectedListener(this);
+
+        mUser.setGiveAnchor(mAnchorTime);
+        Calendar anchorCalendar = Calendar.getInstance();
+        Calendar currentCalendar = Calendar.getInstance();
+        anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
+        currentCalendar.setTimeInMillis(System.currentTimeMillis());
+        mAnchorToday =
+                anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                        anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
+                        anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
+
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser == null) return;
@@ -246,13 +257,9 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            if (mUser.getGiveTiming() == 0) {
-//                                long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
-//                                long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-//                                if (days != 0) {
+                            if (mUser.getGiveTiming() == 0 && mAnchorToday) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
-//                                }
                             }
                             if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
                             if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
@@ -329,16 +336,7 @@ public class HomeActivity extends AppCompatActivity implements
                     dialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    mUser.setGiveAnchor(mAnchorTime);
-                    Calendar anchorCalendar = Calendar.getInstance();
-                    Calendar currentCalendar = Calendar.getInstance();
-                    anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
-                    currentCalendar.setTimeInMillis(System.currentTimeMillis());
-                    boolean sameDay = 
-                            anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
-                                    anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
-                                    anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
-                    if (!sameDay) {
+                    if (!mAnchorToday) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);

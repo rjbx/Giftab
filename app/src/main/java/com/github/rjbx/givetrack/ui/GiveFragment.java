@@ -605,7 +605,7 @@ public class GiveFragment extends Fragment implements
             // TODO: Prevent recalibrate method from recalibrating on subsequent iterations
 //            else adjusted = Calibrater.recalibrateRatings(sPercentages, false, Calibrater.STANDARD_PRECISION);
             if (adjusted) {
-                syncPercentages();
+//                syncPercentages();
                 if (recalibrate) {
                     sUser.setGiveReset(false);
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
