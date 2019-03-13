@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
@@ -16,6 +17,7 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,6 +26,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -571,6 +574,9 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
     private void handleActionRemoveTarget(Target... target) {
+        List<Target> targetList = getTarget(this);
+        for (Target t : target) targetList.remove(t);
+        Rateraid.recalibrateRatings(Arrays.asList(target), false, Calibrater.STANDARD_PRECISION);
         DatabaseAccessor.removeTarget(this, target);
     }
 
@@ -580,9 +586,9 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveTarget(String ein) {
         List<Target> targetList = getTarget(this);
-        for (Target t : targetList) {
-            if (t.getEin().equals(ein)) DatabaseAccessor.removeTarget(this, t);
-        }
+        for (Target t : targetList) if (t.getEin().equals(ein)) targetList.remove(t);
+        Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
+        DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
     }
 
     /**
