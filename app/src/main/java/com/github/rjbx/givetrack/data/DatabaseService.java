@@ -13,6 +13,7 @@ import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -34,6 +35,7 @@ import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.getRecord;
+import static com.github.rjbx.givetrack.data.DatabaseAccessor.getTarget;
 
 // TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
 /**
@@ -197,12 +199,12 @@ public class DatabaseService extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionRemoveTarget(Context context, Target... target) {
+    public static void startActionRemoveTarget(Context context, Company... company) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_REMOVE_TARGET);
-        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
-        else intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
+        if (company.length > 1) intent.putExtra(EXTRA_LIST_VALUES, company);
+        else intent.putExtra(EXTRA_ITEM_VALUES, company[0]);
         context.startService(intent);
     }
 
@@ -555,11 +557,24 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.removeSpawn(this, spawns);
     }
 
+    // TODO Revert Target and Spawn ID to EIN
     /**
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
-    private void handleActionRemoveTarget(Target... targets) {
-        DatabaseAccessor.removeTarget(this, targets);
+    private void handleActionRemoveTarget(Company... companies) {
+        if (companies.length != 0 ) {
+            if (companies[0] instanceof Target) {
+                DatabaseAccessor.removeTarget(this, (Target[]) companies);
+            } else {
+                List<Target> targets = getTarget(this);
+                for (Company company : companies) {
+                    for (Target target : targets)
+                        if (target.getEin().equals(company.getEin()))
+                            DatabaseAccessor.removeTarget(this, target);
+
+                }
+            }
+        }
     }
 
     /**

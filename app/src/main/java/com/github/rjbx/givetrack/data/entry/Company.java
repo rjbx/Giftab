@@ -1,6 +1,8 @@
 package com.github.rjbx.givetrack.data.entry;
 
-public interface Company extends Entry {
+import android.os.Parcelable;
+
+public interface Company extends Entry, Parcelable, Cloneable {
 
     String getUid();
     void setUid(String uid);
