@@ -48,6 +48,7 @@ import org.json.JSONObject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import timber.log.Timber;
 
 // TODO:  Pull UID from FirebaseUser or add parameters to all accessor entry update and service handler methods
@@ -113,18 +114,26 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Spawn.class, stamp, parsedResponse);
     }
 
-    static List<Spawn> getSpawn(Context context, @Nullable String... where) {
+    static List<Spawn> getSpawn(Context context, @Nullable Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
 
-        StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
-        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        List<String> selectionArgList = new ArrayList<>();
+        selectionArgList.add(activeUser.getUid());
+
+        if (where != null) {
+            for (Pair<String, String> p : where) {
+                selection.concat(", " + p.first);
+                selectionArgList.add(p.second);
+            }
+        }
+        String[] selectionArgs = selectionArgList.toArray(new String[0]);
 
         Cursor cursor = local.query(
-                contentUri, null, formattedWhere.toString(), null, null
+                contentUri, null, selection, selectionArgs, null
         );
         List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
         cursor.close();
@@ -152,18 +161,26 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Target.class);
     }
 
-    static List<Target> getTarget(Context context, @Nullable String... where) {
+    static List<Target> getTarget(Context context, @Nullable Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
 
-        StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
-        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        List<String> selectionArgList = new ArrayList<>();
+        selectionArgList.add(activeUser.getUid());
+
+        if (where != null) {
+            for (Pair<String, String> p : where) {
+                selection.concat(", " + p.first);
+                selectionArgList.add(p.second);
+            }
+        }
+        String[] selectionArgs = selectionArgList.toArray(new String[0]);
 
         Cursor cursor = local.query(
-                contentUri, null, formattedWhere.toString(), null, null
+                contentUri, null, selection, selectionArgs, null
         );
         List<Target> entries = getEntryListFromCursor(cursor, Target.class);
         cursor.close();
@@ -195,18 +212,26 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Record.class);
     }
 
-    static List<Record> getRecord(Context context, @Nullable String... where) {
+    static List<Record> getRecord(Context context, @Nullable Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
 
-        StringBuilder formattedWhere = new StringBuilder();
-        formattedWhere.append(CompanyEntry.COLUMN_UID).append(" = ? ").append(activeUser.getUid());
-        if (where != null) for (String s : where) formattedWhere.append(s).append(" AND ");
+        String selection = CompanyEntry.COLUMN_UID + " ? ";
+        List<String> selectionArgList = new ArrayList<>();
+        selectionArgList.add(activeUser.getUid());
+
+        if (where != null) {
+            for (Pair<String, String> p : where) {
+                selection.concat(", " + p.first);
+                selectionArgList.add(p.second);
+            }
+        }
+        String[] selectionArgs = selectionArgList.toArray(new String[0]);
 
         Cursor cursor = local.query(
-                contentUri, null, formattedWhere.toString(), null, null
+                contentUri, null, selection, selectionArgs, null
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
 

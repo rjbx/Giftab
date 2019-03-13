@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
@@ -564,7 +565,7 @@ public class DatabaseService extends IntentService {
 
     private void handleActionUntargetCompany(String uid) {
 
-        String where = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? " + uid;
+        Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
         List<Target> targetList = DatabaseAccessor.getTarget(this, where);
         DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
     }
