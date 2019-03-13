@@ -9,15 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import timber.log.Timber;
 
-import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.AppWidget;
+import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.rateraid.Rateraid;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,14 +25,11 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
-import static com.github.rjbx.givetrack.data.DatabaseAccessor.getRecord;
-import static com.github.rjbx.givetrack.data.DatabaseAccessor.getTarget;
 
 // TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
 /**
@@ -58,6 +54,7 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_RESET_RECORD = "com.github.rjbx.givetrack.data.action.RESET_RECORD";
     private static final String ACTION_RESET_USER = "com.github.rjbx.givetrack.data.action.RESET_USER";
     private static final String ACTION_TARGET_SPAWN = "com.github.rjbx.givetrack.data.action.GIVE_SPAWN";
+    private static final String ACTION_UNTARGET_COMPANY = "com.github.rjbx.givetrack.data.action.UNTARGET_COMPANY";
     private static final String ACTION_RECORD_TARGET = "com.github.rjbx.givetrack.data.action.RECORD_TARGET";
     private static final String ACTION_TARGET_RECORD = "com.github.rjbx.givetrack.data.action.TARGET_RECORD";
     private static final String ACTION_UPDATE_TARGET = "com.github.rjbx.givetrack.data.action.UPDATE_TARGET";
@@ -158,6 +155,20 @@ public class DatabaseService extends IntentService {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_TARGET_RECORD);
         intent.putExtra(EXTRA_ITEM_VALUES, record);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action UntargetCompany with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionUntargetCompany(Context context, Company company) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_UNTARGET_COMPANY);
+        intent.putExtra(EXTRA_ITEM_VALUES, company.getEin());
         context.startService(intent);
     }
 
@@ -408,6 +419,9 @@ public class DatabaseService extends IntentService {
             case ACTION_TARGET_RECORD:
                 handleActionTargetRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
+            case ACTION_UNTARGET_COMPANY:
+                handleActionUntargetCompany(intent.getStringExtra(EXTRA_ITEM_VALUES));
+                break;
             case ACTION_RECORD_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionRecordTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
@@ -537,7 +551,7 @@ public class DatabaseService extends IntentService {
 
         double impact = 0d;
         String ein = record.getEin();
-        List<Record> recordList = getRecord(this);
+        List<Record> recordList = DatabaseAccessor.getRecord(this);
 
         for (Record r : recordList)
             if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
@@ -563,6 +577,13 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addRecord(this, record);
     }
 
+    private void handleActionUntargetCompany(String uid) {
+
+        String where = DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? " + uid;
+        List<Target> targetList = DatabaseAccessor.getTarget(this, where);
+        DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
+    }
+
     /**
      * Handles action RemoveSpawn in the provided background thread with the provided parameters.
      */
@@ -574,7 +595,7 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
     private void handleActionRemoveTarget(Target... target) {
-        // TODO: Write once ID has been converted to EIN
+        DatabaseAccessor.removeTarget(this, target);
     }
 
 
