@@ -218,20 +218,6 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action RemoveTarget with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionRemoveTarget(Context context, String ein) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_REMOVE_TARGET);
-        intent.putExtra(EXTRA_ITEM_ID, ein);
-        context.startService(intent);
-    }
-
-    /**
      * Starts this service to perform action RemoveRecord with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -435,8 +421,7 @@ public class DatabaseService extends IntentService {
             case ACTION_REMOVE_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionRemoveTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
-                else if (intent.hasExtra(EXTRA_ITEM_VALUES)) handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                else handleActionRemoveTarget(intent.getStringExtra(EXTRA_ITEM_ID));
+                else handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_REMOVE_RECORD:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
@@ -596,14 +581,6 @@ public class DatabaseService extends IntentService {
      */
     private void handleActionRemoveTarget(Target... target) {
         DatabaseAccessor.removeTarget(this, target);
-    }
-
-
-    /**
-     * Handles action RemoveTargetin the provided background thread with the provided parameters.
-     */
-    private void handleActionRemoveTarget(String ein) {
-
     }
 
     /**
