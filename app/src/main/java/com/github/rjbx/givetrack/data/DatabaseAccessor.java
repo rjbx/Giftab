@@ -222,8 +222,10 @@ public final class DatabaseAccessor {
             target = targetList.toArray(new Target[0]);
         }
 
-        removeEntriesFromLocal(local, Target.class, stamp, target);
-        removeEntriesFromRemote(remote, Target.class, stamp, target);
+        removeEntriesFromLocal(local, Target.class, stamp);
+        removeEntriesFromRemote(remote, Target.class, stamp);
+        addEntriesToLocal(local, Target.class, stamp, target);
+        addEntriesToRemote(remote, Target.class, stamp, target);
     }
 
     static void fetchRecord(Context context) {
@@ -366,23 +368,20 @@ public final class DatabaseAccessor {
 
         updateRemoteTableTime(remote, entryType, stamp, uid);
     }
-
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
-
         String uid;
-        uid = getActiveUserFromLocal(local).getUid();
-        local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
-
-        if (entries != null && entries.length > 0) {
-            ContentValues[] values = new ContentValues[entries.length];
-            for (int i = 0; i < entries.length; i++) {
-                values[i] = entries[i].toContentValues();
-            } local.bulkInsert(contentUri, values);
-        }
-
-        updateLocalTableTime(local, entryType, stamp, uid);
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromLocal(local).getUid();
+            local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
+        } else {
+            uid = entries[0].getUid();
+            for (Entry entry : entries) {
+                Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+                local.delete(rowUri, null, null);
+            }
+        } updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
@@ -392,18 +391,19 @@ public final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         String uid;
-
-        User user = getActiveUserFromRemote(remote);
-        uid = user.getUid();
-        DatabaseReference childReference = entryReference.child(uid);
-        childReference.removeValue();
-
-        for (T entry: entries) {
-            if (entry instanceof Company) childReference = childReference.child(entry.getId());
-            childReference.updateChildren(entry.toParameterMap());
-        }
-
-        updateRemoteTableTime(remote, entryType, stamp, uid);
+        if (entries == null || entries.length == 0) {
+            User user = getActiveUserFromRemote(remote);
+            uid = user.getUid();
+            DatabaseReference childReference = entryReference.child(uid);
+            childReference.removeValue();
+        } else {
+            uid = entries[0].getUid();
+            for (T entry : entries) {
+                DatabaseReference childReference = entryReference.child(uid);
+                if (entry instanceof Company) childReference = childReference.child(entry.getId());
+                childReference.removeValue();
+            }
+        } updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     static User getActiveUserFromLocal(ContentResolver local) {
