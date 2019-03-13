@@ -114,7 +114,7 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Spawn.class, stamp);
         addEntriesToLocal(local, Spawn.class, stamp, false, parsedResponse);
-        addEntriesToRemote(remote, Spawn.class, stamp, parsedResponse);
+        addEntriesToRemote(remote, Spawn.class, stamp, false, parsedResponse);
     }
 
     static List<Spawn> getSpawn(Context context, @Nullable Pair<String, String>... where) {
@@ -196,7 +196,7 @@ public final class DatabaseAccessor {
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Target.class, stamp, false, entries);
-        addEntriesToRemote(remote, Target.class, stamp, entries);
+        addEntriesToRemote(remote, Target.class, stamp, false, entries);
     }
 
     static void removeTarget(Context context, Target... target) {
@@ -224,7 +224,7 @@ public final class DatabaseAccessor {
 
         addEntriesToLocal(local, Target.class, stamp, true, target);
         removeEntriesFromRemote(remote, Target.class, stamp);
-        addEntriesToRemote(remote, Target.class, stamp, target);
+        addEntriesToRemote(remote, Target.class, stamp, false, target);
     }
 
     static void fetchRecord(Context context) {
@@ -267,7 +267,7 @@ public final class DatabaseAccessor {
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Record.class, stamp, false, entries);
-        addEntriesToRemote(remote, Record.class, stamp, entries);
+        addEntriesToRemote(remote, Record.class, stamp, false, entries);
     }
 
     static void removeRecord(Context context, @Nullable Record... record) {
@@ -305,7 +305,7 @@ public final class DatabaseAccessor {
 
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, User.class, stamp, false, entries);
-        addEntriesToRemote(remote, User.class, stamp, entries);
+        addEntriesToRemote(remote, User.class, stamp, false, entries);
     }
 
     static void removeUser(Context context, @Nullable User... user) {
@@ -340,9 +340,8 @@ public final class DatabaseAccessor {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
 
-        String uid;
-        if (entries == null || entries.length == 0) uid = getActiveUserFromLocal(local).getUid();
-        else uid = entries[0].getUid();
+        String uid =  entries == null || entries.length == 0 ?
+                getActiveUserFromLocal(local).getUid() : entries[0].getUid();
 
         if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
@@ -356,22 +355,28 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
+    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
         if (entryType.equals(Spawn.class)) return;
 
-        String uid = entries[0].getUid();
-
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
+
+        String uid = entries == null || entries.length == 0 ?
+                getActiveUserFromRemote(remote).getUid() : entries[0].getUid();
+
+        DatabaseReference childReference = entryReference.child(uid);
+
+        if (reset) childReference.removeValue();
+
         for (T entry: entries) {
-            DatabaseReference childReference = entryReference.child(uid);
             if (entry instanceof Company) childReference = childReference.child(entry.getId());
             childReference.updateChildren(entry.toParameterMap());
         }
 
         updateRemoteTableTime(remote, entryType, stamp, uid);
     }
+
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
@@ -482,7 +487,7 @@ public final class DatabaseAccessor {
         cursor.close();
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
-        addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
+        addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
     static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
