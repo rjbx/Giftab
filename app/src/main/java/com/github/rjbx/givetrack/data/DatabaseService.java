@@ -32,7 +32,7 @@ import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
 
-// TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
+// TODO: Modify handler signatures to accept only the required data
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */

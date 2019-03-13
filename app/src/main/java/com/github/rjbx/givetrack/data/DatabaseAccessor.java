@@ -17,7 +17,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
-import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -34,7 +32,6 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.rateraid.Rateraid;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -54,7 +51,7 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import timber.log.Timber;
 
-// TODO:  Pull UID from FirebaseUser or add parameters to all accessor entry update and service handler methods
+// TODO 1: Feed myself breakfast and rest/recover
 public final class DatabaseAccessor {
 
     static void fetchSpawn(Context context) {
