@@ -202,6 +202,7 @@ public class GlanceFragment extends Fragment implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sUser.setGlanceAnchor(mAnchorDate);
+                    if (sUser.getGiveTiming() == 0) sUser.setGiveAnchor(System.currentTimeMillis());
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
                     break;
                 default:
@@ -310,7 +311,7 @@ public class GlanceFragment extends Fragment implements
         Context context = getContext();
         if (context == null) return;
         mTimeDialog = new AlertDialog.Builder(context).create();
-        mTimeDialog.setMessage(String.format("Your tracked data %s will be lost. Do you want to start tracking from today instead?", mTimeTracked));
+        mTimeDialog.setMessage(String.format("Do you want to display your total contributions %s?", mTimeTracked));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
