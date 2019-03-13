@@ -372,7 +372,7 @@ public class GlanceFragment extends Fragment implements
             String name = record.getName();
 
             recordsTotal += amount;
-            if (time >= tracktime) tracked += amount;
+            if (time <= tracktime) tracked += amount;
 
             Float recordAggregate = recordAggregates.get(name);
             float recordAmount = amount + (recordAggregate != null ? recordAggregate : 0f);
