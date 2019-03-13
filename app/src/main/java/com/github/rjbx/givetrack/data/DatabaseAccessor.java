@@ -207,7 +207,8 @@ public final class DatabaseAccessor {
 
         // TODO Update recalibration with Rateraid
         List<Target> targetList = getTarget(context);
-        for (Target t : target) targetList.remove(t);
+        for (Target t1 : target) for (Target t2 : targetList) if (t2.getId().equals(t1.getId())) targetList.remove(t1);
+
         Iterator<Target> iterator = targetList.iterator();
         if (iterator.hasNext()) iterator.next().setPercent(1d / targetList.size());
         target = targetList.toArray(new Target[0]);
