@@ -574,10 +574,7 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
     private void handleActionRemoveTarget(Target... target) {
-        List<Target> targetList = getTarget(this);
-        for (Target t : target) targetList.remove(t);
-        Rateraid.recalibrateRatings(Arrays.asList(target), false, Calibrater.STANDARD_PRECISION);
-        DatabaseAccessor.removeTarget(this, target);
+        // TODO: Write once ID has been converted to EIN
     }
 
 
@@ -585,13 +582,7 @@ public class DatabaseService extends IntentService {
      * Handles action RemoveTargetin the provided background thread with the provided parameters.
      */
     private void handleActionRemoveTarget(String ein) {
-        List<Target> targetList = getTarget(this);
-        int length = targetList.size() - 1;
-        for (Target t : targetList)
-            if (t.getEin().equals(ein)) targetList.remove(t);
-            else t.setPercent(1d / length); // TODO Resolve Rateraid single element recalibration and RatedObject casting
-//        Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
-        DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
+
     }
 
     /**
