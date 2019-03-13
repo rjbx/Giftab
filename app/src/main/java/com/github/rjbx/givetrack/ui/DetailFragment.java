@@ -198,13 +198,14 @@ public class DetailFragment extends Fragment {
      * Generates toggle Button based on item collection status.
      */
     private void drawActionButton() {
-        if (getContext() == null || mFab == null) return;
+        Context context = getContext();
+        if (context == null || mFab == null) return;
         mFab.setImageResource(sCurrentState ?
-                R.drawable.action_remove: R.drawable.plus);
+                R.drawable.minus: R.drawable.plus);
         mFab.setBackgroundTintList(sCurrentState ?
-                ColorStateList.valueOf(Color.WHITE) :
-                ColorStateList.valueOf(getContext().getResources().getColor(R.color.colorConversionDark, null)));
-        mFab.setContentDescription(sCurrentState ? getContext().getString(R.string.description_collected_remove_button) :
+                ColorStateList.valueOf(context.getResources().getColor(R.color.colorAttentionDark, null)) :
+                ColorStateList.valueOf(context.getResources().getColor(R.color.colorConversionDark, null)));
+        mFab.setContentDescription(sCurrentState ? context.getString(R.string.description_collected_remove_button) :
                 mParentActivity.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
     }
