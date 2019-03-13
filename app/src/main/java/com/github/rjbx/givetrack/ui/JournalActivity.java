@@ -500,8 +500,8 @@ public class JournalActivity extends AppCompatActivity implements
                             return false;
                         }
                         record.setImpact(String.valueOf(amountTotal));
-                        DatabaseService.startActionTargetRecord(JournalActivity.this, record);
                         DatabaseService.startActionUpdateRecord(JournalActivity.this, record);
+                        DatabaseService.startActionTargetRecord(JournalActivity.this, record);
                         String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
                         mAmountView.setText(formattedAmount);
                         mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
