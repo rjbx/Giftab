@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.ui;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -72,6 +74,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
  */
 public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
+        DatePickerDialog.OnDateSetListener,
         IAxisValueFormatter {
 
     private static final int[] COLORS = new int[]{
@@ -97,6 +100,7 @@ public class GlanceFragment extends Fragment implements
     private String mTracked = "$0.00";
     private String mTimeTracked;
     private String mTotalTime = "all-time";
+    private long mAnchorDate;
     private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
@@ -197,9 +201,8 @@ public class GlanceFragment extends Fragment implements
                     mTimeDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    sUser.setGlanceAnchor(System.currentTimeMillis());
+                    sUser.setGlanceAnchor(mAnchorDate);
                     DatabaseService.startActionUpdateUser(getContext(), sUser);
-                    mAmountView.setText("0");
                     break;
                 default:
             }
@@ -288,6 +291,22 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_config_button)
     void trackAmount() {
+        Calendar calendar = Calendar.getInstance();
+        if (sUser.getGlanceAnchor() != 0) calendar.setTimeInMillis(sUser.getGlanceAnchor());
+        DatePickerDialog datePicker = new DatePickerDialog(
+                getContext(),
+                this,
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+        datePicker.show();
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth);
+        mAnchorDate = calendar.getTimeInMillis();
         Context context = getContext();
         if (context == null) return;
         mTimeDialog = new AlertDialog.Builder(context).create();
@@ -297,6 +316,7 @@ public class GlanceFragment extends Fragment implements
         mTimeDialog.show();
         mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+
     }
 
     /**
