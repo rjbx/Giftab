@@ -210,6 +210,7 @@ public final class DatabaseAccessor {
         for (Target t : target) targetList.remove(t);
         Iterator<Target> iterator = targetList.iterator();
         if (iterator.hasNext()) iterator.next().setPercent(1d / targetList.size());
+        target = targetList.toArray(new Target[0]);
 
         removeEntriesFromLocal(local, Target.class, stamp, target);
         removeEntriesFromRemote(remote, Target.class, stamp, target);
