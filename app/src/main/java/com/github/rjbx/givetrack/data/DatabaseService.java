@@ -500,7 +500,7 @@ public class DatabaseService extends IntentService {
 
         List<Target> targets = DatabaseAccessor.getTarget(this);
         int size = targets.size();
-        double percent = size == 1 ? size : 0d;
+        double percent = size == 0 ? 1d : 0d;
         Target target = Target.fromSuper(spawn);
         target.setFrequency(frequency);
         target.setPercent(percent);
@@ -642,9 +642,7 @@ public class DatabaseService extends IntentService {
      * Handles action UpdatePercent in the provided background thread with the provided parameters.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        if (targets.length == 1) targets[0].setPercent(1d); // TODO Implement in Rateraid
-        else Rateraid.recalibrateRatings(Arrays.asList(targets), false, Calibrater.STANDARD_PRECISION);
-        DatabaseAccessor.addTarget(this, targets);
+       DatabaseAccessor.addTarget(this, targets);
     }
 
     private void handleActionUpdateRecord(Record... records) {
