@@ -515,7 +515,7 @@ public class DatabaseService extends IntentService {
 
         List<Target> targets = DatabaseAccessor.getTarget(this);
         int size = targets.size();
-        double percent = size == 0 ? 1d : 0d;
+        double percent = size == 0 ? 1d : 0d; // TODO Update recalibration with Rateraid
         Target target = Target.fromSuper(spawn);
         target.setFrequency(frequency);
         target.setPercent(percent);

@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutionException;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -32,6 +34,7 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -201,6 +204,13 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
+
+        // TODO Update recalibration with Rateraid
+        List<Target> targetList = getTarget(context);
+        for (Target t : target) targetList.remove(t);
+        Iterator<Target> iterator = targetList.iterator();
+        if (iterator.hasNext()) iterator.next().setPercent(1d / targetList.size());
+
         removeEntriesFromLocal(local, Target.class, stamp, target);
         removeEntriesFromRemote(remote, Target.class, stamp, target);
     }
@@ -349,17 +359,19 @@ public final class DatabaseAccessor {
     static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
+
         String uid;
-        if (entries == null || entries.length == 0) {
-            uid = getActiveUserFromLocal(local).getUid();
-            local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
-        } else {
-            uid = entries[0].getUid();
-            for (Entry entry : entries) {
-                Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
-                local.delete(rowUri, null, null);
-            }
-        } updateLocalTableTime(local, entryType, stamp, uid);
+        uid = getActiveUserFromLocal(local).getUid();
+        local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
+
+        if (entries != null && entries.length > 0) {
+            ContentValues[] values = new ContentValues[entries.length];
+            for (int i = 0; i < entries.length; i++) {
+                values[i] = entries[i].toContentValues();
+            } local.bulkInsert(contentUri, values);
+        }
+
+        updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
@@ -369,19 +381,18 @@ public final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
         String uid;
-        if (entries == null || entries.length == 0) {
-            User user = getActiveUserFromRemote(remote);
-            uid = user.getUid();
-            DatabaseReference childReference = entryReference.child(uid);
-            childReference.removeValue();
-        } else {
-            uid = entries[0].getUid();
-            for (T entry : entries) {
-                DatabaseReference childReference = entryReference.child(uid);
-                if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.removeValue();
-            }
-        } updateRemoteTableTime(remote, entryType, stamp, uid);
+
+        User user = getActiveUserFromRemote(remote);
+        uid = user.getUid();
+        DatabaseReference childReference = entryReference.child(uid);
+        childReference.removeValue();
+
+        for (T entry: entries) {
+            if (entry instanceof Company) childReference = childReference.child(entry.getId());
+            childReference.updateChildren(entry.toParameterMap());
+        }
+
+        updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     static User getActiveUserFromLocal(ContentResolver local) {
