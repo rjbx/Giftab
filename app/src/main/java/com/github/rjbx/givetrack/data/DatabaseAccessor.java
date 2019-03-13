@@ -119,7 +119,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID, new String[] { activeUser.getUid() }, null
+                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
         List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
         cursor.close();
@@ -153,7 +153,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID, new String[] { activeUser.getUid() }, null
+                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
         List<Target> entries = getEntryListFromCursor(cursor, Target.class);
         cursor.close();
@@ -191,7 +191,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID, new String[] { activeUser.getUid() }, null
+                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
 
@@ -230,7 +230,7 @@ public final class DatabaseAccessor {
         User activeUser = getActiveUserFromLocal(local);
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
-                contentUri, null, CompanyEntry.COLUMN_UID, new String[] { activeUser.getUid() }, null
+                contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
         List<User> entries = getEntryListFromCursor(cursor, User.class);
         cursor.close();

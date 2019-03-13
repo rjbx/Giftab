@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
+import static com.github.rjbx.givetrack.data.DatabaseAccessor.getRecord;
 
 // TODO: Extrapolate executors from service thread if possible or consolidate logic into the former or the latter
 /**
@@ -54,6 +55,7 @@ public class DatabaseService extends IntentService {
     private static final String ACTION_RESET_USER = "com.github.rjbx.givetrack.data.action.RESET_USER";
     private static final String ACTION_TARGET_SPAWN = "com.github.rjbx.givetrack.data.action.GIVE_SPAWN";
     private static final String ACTION_RECORD_TARGET = "com.github.rjbx.givetrack.data.action.RECORD_TARGET";
+    private static final String ACTION_TARGET_RECORD = "com.github.rjbx.givetrack.data.action.TARGET_RECORD";
     private static final String ACTION_UPDATE_TARGET = "com.github.rjbx.givetrack.data.action.UPDATE_TARGET";
     private static final String ACTION_UPDATE_CONTACT = "com.github.rjbx.givetrack.data.action.UPDATE_CONTACT";
     private static final String ACTION_UPDATE_RECORD = "com.github.rjbx.givetrack.data.action.UPDATE_RECORD";
@@ -138,6 +140,20 @@ public class DatabaseService extends IntentService {
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_TARGET_SPAWN);
         intent.putExtra(EXTRA_ITEM_VALUES, spawn);
+        context.startService(intent);
+    }
+
+    /**
+     * Starts this service to perform action TargetRecord with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionTargetRecord(Context context, Record record) {
+        if (context == null) return;
+        Intent intent = new Intent(context, DatabaseService.class);
+        intent.setAction(ACTION_TARGET_RECORD);
+        intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
     }
 
@@ -371,6 +387,9 @@ public class DatabaseService extends IntentService {
             case ACTION_TARGET_SPAWN:
                 handleActionGiveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
+            case ACTION_TARGET_RECORD:
+                handleActionTargetRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                break;
             case ACTION_RECORD_TARGET:
                 if (intent.hasExtra(EXTRA_LIST_VALUES))
                     handleActionRecordTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
@@ -495,16 +514,22 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addTarget(this, target);
     }
 
-    private void handleActionTargetRecord(Record... records) {
+    private void handleActionTargetRecord(Record record) {
+
+        double impact = 0d;
+        String ein = record.getEin();
+        List<Record> recordList = getRecord(this);
+
+        for (Record r : recordList)
+            if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
 
         List<Target> targetList = DatabaseAccessor.getTarget(this);
-        for (Record record : records) {
-            for (Target target : targetList) {
-                if (target.getEin().equals(record.getEin())) {
-
-                }
+        for (Target t : targetList)
+            if (t.getEin().equals(ein)) {
+                t.setImpact(String.valueOf(impact));
+                DatabaseAccessor.addTarget(this, t);
+                return;
             }
-        }
     }
 
     private void handleActionRecordTarget(Target... target) {
