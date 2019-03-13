@@ -648,7 +648,7 @@ public class GiveFragment extends Fragment implements
                             Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveTarget(getContext(), target);
+                            DatabaseService.startActionRemoveTarget(getContext(), target.getEin());
                             break;
                         default:
                     }
