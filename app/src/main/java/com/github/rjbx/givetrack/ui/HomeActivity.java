@@ -247,15 +247,16 @@ public class HomeActivity extends AppCompatActivity implements
                             mUserLock = false;
                             mUser = user;
                             if (mUser.getGiveTiming() == 0) {
-                                long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
-                                long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-                                if (days != 0) {
+//                                long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
+//                                long days = TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
+//                                if (days != 0) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseService.startActionUpdateUser(this, mUser);
-                                }
-                                if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-                                if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
-                            } break;
+//                                }
+                            }
+                            if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+                            if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            break;
                         }
                     } while (data.moveToNext());
                 }
@@ -329,9 +330,15 @@ public class HomeActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setGiveAnchor(mAnchorTime);
-                    long difference = System.currentTimeMillis() - mUser.getGiveAnchor();
-                    int daysDifference = (int) TimeUnit.DAYS.convert(difference, TimeUnit.MILLISECONDS);
-                    if (daysDifference != 0) {
+                    Calendar anchorCalendar = Calendar.getInstance();
+                    Calendar currentCalendar = Calendar.getInstance();
+                    anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
+                    currentCalendar.setTimeInMillis(System.currentTimeMillis());
+                    boolean sameDay = 
+                            anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                                    anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
+                                    anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
+                    if (!sameDay) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
