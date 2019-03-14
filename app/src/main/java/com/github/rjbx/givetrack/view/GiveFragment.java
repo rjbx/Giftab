@@ -1,19 +1,17 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,7 +44,7 @@ import timber.log.Timber;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -277,7 +275,7 @@ public class GiveFragment extends Fragment implements
                         return false;
                     }
                     sUser.setGiveImpact(String.valueOf(mAmountTotal));
-                    DatabaseService.startActionUpdateUser(getContext(), sUser);
+                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -300,7 +298,7 @@ public class GiveFragment extends Fragment implements
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             sUser.setGiveImpact(String.valueOf(mAmountTotal));
-            DatabaseService.startActionUpdateUser(getContext(), sUser);
+            DatabaseManager.startActionUpdateUser(getContext(), sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -314,7 +312,7 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         sUser.setGiveImpact(String.valueOf(mAmountTotal));
-        DatabaseService.startActionUpdateUser(getContext(), sUser);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
@@ -346,7 +344,7 @@ public class GiveFragment extends Fragment implements
             sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        DatabaseService.startActionUpdateTarget(getContext(), sValuesArray);
+        DatabaseManager.startActionUpdateTarget(getContext(), sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -362,7 +360,7 @@ public class GiveFragment extends Fragment implements
             double totalImpact = Float.parseFloat(target.getImpact()) + transactionImpact;
             target.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
-        DatabaseService.startActionUpdateTarget(getContext(), sValuesArray);
+        DatabaseManager.startActionUpdateTarget(getContext(), sValuesArray);
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
@@ -380,8 +378,8 @@ public class GiveFragment extends Fragment implements
             sUser.setGiveAnchor(System.currentTimeMillis());
             sUser.setGiveTiming(0);
         }
-        DatabaseService.startActionUpdateUser(getContext(), sUser);
-        DatabaseService.startActionUpdateRecord(getContext(), records.toArray(new Record[0]));
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+        DatabaseManager.startActionUpdateRecord(getContext(), records.toArray(new Record[0]));
     }
 
     /**
@@ -612,7 +610,7 @@ public class GiveFragment extends Fragment implements
                 Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
                 syncPercentages();
                     sUser.setGiveReset(false);
-                    DatabaseService.startActionUpdateUser(getContext(), sUser);
+                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
             }
             notifyDataSetChanged();
         }
@@ -657,7 +655,7 @@ public class GiveFragment extends Fragment implements
                             Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseService.startActionRemoveTarget(getContext(), target);
+                            DatabaseManager.startActionRemoveTarget(getContext(), target);
                             break;
                         default:
                     }
@@ -733,138 +731,10 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
                 mContactDialog = new AlertDialog.Builder(getContext()).create();
-                ContactDialogLayout alertLayout = ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
+                ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
             }
-        }
-    }
-
-    /**
-     * Provides an inflated layout populated with contact method buttons and associated
-     * listeners predefined.
-     */
-    static class ContactDialogLayout extends LinearLayout {
-
-        private Context mContext;
-        private static AlertDialog mAlertDialog;
-        private static String mPhone;
-        private static String mEmail;
-        private static String mSocial;
-        private static String mWebsite;
-        private static String mLocation;
-        @BindView(R.id.phone_button) @Nullable Button mPhoneButton;
-        @BindView(R.id.email_button) @Nullable Button mEmailButton;
-        @BindView(R.id.social_button) @Nullable Button mSocialButton;
-        @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
-        @BindView(R.id.location_button) @Nullable Button mLocationButton;
-
-        /**
-         * Defines visibility and appearance of button according to associated content value.
-         */
-        private ContactDialogLayout(Context context) {
-            super(context);
-            mContext = context;
-            LayoutInflater.from(mContext).inflate(R.layout.dialog_contact, this, true);
-            ButterKnife.bind(this);
-
-            if (mEmailButton != null)
-                if (mEmail.isEmpty()) mEmailButton.setVisibility(View.GONE);
-                else mEmailButton.setText(mEmail.toLowerCase());
-
-            if (mPhoneButton != null)
-                if (mPhone.isEmpty()) mPhoneButton.setVisibility(View.GONE);
-                else mPhoneButton.setText(String.format("+%s", mPhone));
-
-            if (mWebsiteButton != null)
-                if (mWebsite.isEmpty()) mWebsiteButton.setVisibility(View.GONE);
-                else mWebsiteButton.setText(mWebsite.toLowerCase());
-                
-            if (mSocialButton != null)
-                if (mSocial.isEmpty()) mSocialButton.setVisibility(View.GONE);
-                else mSocialButton.setText(mSocial.toLowerCase());
-                
-            if (mLocationButton != null)
-                if (mLocation.isEmpty()) mLocationButton.setVisibility(View.GONE);
-                else mLocationButton.setText(mLocation);
-        }
-
-        /**
-         * Initializes value instance fields and generates an instance of this layout.
-         */
-        public static ContactDialogLayout getInstance(AlertDialog alertDialog, Target values) {
-            mAlertDialog = alertDialog;
-            mPhone = values.getPhone();
-            mEmail = values.getEmail();
-            mSocial = values.getSocial();
-            mWebsite = values.getHomepageUrl();
-            mLocation = valuesToAddress(values);
-            return new ContactDialogLayout(mAlertDialog.getContext());
-        }
-
-        /**
-         * Converts a set of ContentValues to a single formatted String.
-         */
-        private static String valuesToAddress(Target values) {
-            String street = values.getLocationStreet();
-            String detail = values.getLocationDetail();
-            String city = values.getLocationCity();
-            String state = values.getLocationState();
-            String zip = values.getLocationZip();
-            return street + (detail.isEmpty() ? "" : '\n' + detail) + '\n' + city + ", " + state.toUpperCase() + " " + zip;
-        }
-
-        /**
-         * Defines behavior on click of email launch button.
-         */
-        @Optional @OnClick(R.id.email_button) void launchEmail() {
-            Intent mailIntent = new Intent(Intent.ACTION_SENDTO);
-            mailIntent.setData(Uri.parse("mailto:"));
-            mailIntent.putExtra(Intent.EXTRA_EMAIL, mEmail);
-            if (mailIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                mContext.startActivity(mailIntent);
-            }
-        }
-
-        /**
-         * Defines behavior on click of phone launch button.
-         */
-        @Optional @OnClick(R.id.phone_button) void launchPhone() {
-            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-            phoneIntent.setData(Uri.parse("tel:" + mPhone));
-            if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                mContext.startActivity(phoneIntent);
-            }
-        }
-
-        /**
-         * Defines behavior on click of social launch button.
-         */
-        @Optional @OnClick(R.id.social_button) void launchSocial() {
-            new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                    .build()
-                    .launchUrl(mContext, Uri.parse(mSocial));
-        }
-
-        /**
-         * Defines behavior on click of website launch button.
-         */
-        @Optional @OnClick(R.id.website_button) void launchWebsite() {
-            new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                    .build()
-                    .launchUrl(mContext, Uri.parse(mWebsite));
-        }
-
-        /**
-         * Defines behavior on click of map launch button.
-         */
-        @Optional @OnClick(R.id.location_button) void launchMap() {
-            Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            mContext.startActivity(mapIntent);
         }
     }
 }

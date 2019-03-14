@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,8 +27,8 @@ import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.givetrack.data.DatabaseService;
 
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -102,7 +102,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mUsers.get(i).setUserActive(isActive);
                     if (isActive) isPersisted = true;
                 } if (!isPersisted) mUsers.add(activeUser);
-                DatabaseService.startActionUpdateUser(this, mUsers.toArray(new User[0]));
+                DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                 mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -133,7 +133,7 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
         switch (mProcessStage) {
             case 0: handleAction(getIntent().getAction()); break;
-            case 2: DatabaseService.startActionFetchUser(this); mProcessStage++; break;
+            case 2: DatabaseManager.startActionFetchUser(this); mProcessStage++; break;
             case 3: mProcessStage++;
             case 4:
                 mProcessStage++;
@@ -163,7 +163,7 @@ public class AuthActivity extends AppCompatActivity implements
                     if (user != null) {
                         deactivatedUser.setUserActive(false);
                         DISK_IO.execute(() -> {
-                            DatabaseService.startActionUpdateUser(this, deactivatedUser);
+                            DatabaseManager.startActionUpdateUser(this, deactivatedUser);
                             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                             if (firebaseUser == null || firebaseUser.getEmail() == null) return;
                             firebaseUser.reauthenticate(EmailAuthProvider.getCredential(firebaseUser.getEmail(), getString(R.string.message_password_request)))
@@ -177,7 +177,7 @@ public class AuthActivity extends AppCompatActivity implements
                     }
                     break;
                 case ACTION_DELETE_ACCOUNT:
-                    DatabaseService.startActionResetData(AuthActivity.this);
+                    DatabaseManager.startActionResetData(AuthActivity.this);
                     DISK_IO.execute(() -> {
                         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                         if (firebaseUser == null || firebaseUser.getEmail() == null) return;

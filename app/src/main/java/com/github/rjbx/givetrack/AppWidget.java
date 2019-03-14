@@ -14,9 +14,9 @@ import android.widget.RemoteViewsService;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
-import com.github.rjbx.givetrack.ui.JournalActivity;
-import com.github.rjbx.givetrack.ui.HomeActivity;
-import com.github.rjbx.givetrack.ui.IndexActivity;
+import com.github.rjbx.givetrack.view.JournalActivity;
+import com.github.rjbx.givetrack.view.HomeActivity;
+import com.github.rjbx.givetrack.view.IndexActivity;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;

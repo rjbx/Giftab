@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -49,7 +49,7 @@ import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 
@@ -203,7 +203,7 @@ public class GlanceFragment extends Fragment implements
                 case AlertDialog.BUTTON_POSITIVE:
                     sUser.setGlanceAnchor(mAnchorDate);
                     if (sUser.getGiveTiming() == 0) sUser.setGiveAnchor(System.currentTimeMillis());
-                    DatabaseService.startActionUpdateUser(getContext(), sUser);
+                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
                     break;
                 default:
             }
@@ -249,7 +249,7 @@ public class GlanceFragment extends Fragment implements
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
         sUser.setGlanceTheme(sThemeIndex);
-        DatabaseService.startActionUpdateUser(getContext(), sUser);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     /**
@@ -259,7 +259,7 @@ public class GlanceFragment extends Fragment implements
     void toggleTracked() {
         mViewTracked = !mViewTracked;
         sUser.setGlanceSince(mViewTracked);
-        DatabaseService.startActionUpdateUser(getContext(), sUser);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 

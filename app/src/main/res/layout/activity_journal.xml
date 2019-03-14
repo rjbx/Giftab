@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.JournalActivity">
+    tools:context=".view.JournalActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/record_appbar"
@@ -58,7 +58,7 @@
                     android:layout_height="match_parent"
                     android:background="@color/colorNeutral"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:context=".ui.JournalActivity"
+                    tools:context=".view.JournalActivity"
                     tools:listitem="@layout/item_journal"/>
 
             </FrameLayout>

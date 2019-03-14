@@ -5,10 +5,7 @@ import android.content.Intent;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
-import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
@@ -18,23 +15,14 @@ import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
-import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
-
 /**
  * Interfaces with data requests from the UI thread and delegates them to a separate handler thread.
  */
-public class DatabaseService extends IntentService {
+public final class DatabaseManager extends IntentService {
 
     private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
     private static final Executor NETWORK_IO = AppExecutors.getInstance().getNetworkIO();
@@ -70,8 +58,8 @@ public class DatabaseService extends IntentService {
     /**
      * Creates an {@link IntentService} instance.
      */
-    public DatabaseService() {
-        super(DatabaseService.class.getSimpleName());
+    public DatabaseManager() {
+        super(DatabaseManager.class.getSimpleName());
     }
 
     /**
@@ -82,7 +70,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionFetchSpawn(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_SPAWN);
         context.startService(intent);
     }
@@ -95,7 +83,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionFetchTarget(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_TARGET);
         context.startService(intent);
     }
@@ -108,7 +96,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionFetchRecord(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_RECORD);
         context.startService(intent);
     }
@@ -121,7 +109,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionFetchUser(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_USER);
         context.startService(intent);
     }
@@ -134,7 +122,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionGiveSpawn(Context context, Spawn spawn) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_TARGET_SPAWN);
         intent.putExtra(EXTRA_ITEM_VALUES, spawn);
         context.startService(intent);
@@ -148,7 +136,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionTargetRecord(Context context, Record record) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_TARGET_RECORD);
         intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
@@ -162,7 +150,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionUntargetCompany(Context context, Company company) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UNTARGET_COMPANY);
         intent.putExtra(EXTRA_ITEM_VALUES, company.getEin());
         context.startService(intent);
@@ -177,7 +165,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionRecordTarget(Context context, Target... target) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RECORD_TARGET);
         if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
         intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
@@ -192,7 +180,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionRemoveSpawn(Context context, Spawn... spawns) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_REMOVE_SPAWN);
         if (spawns.length > 1) intent.putExtra(EXTRA_LIST_VALUES, spawns);
         else intent.putExtra(EXTRA_ITEM_VALUES, spawns[0]);
@@ -207,7 +195,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionRemoveTarget(Context context, Target... targets) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_REMOVE_TARGET);
         if (targets.length > 1) intent.putExtra(EXTRA_LIST_VALUES, targets);
         else intent.putExtra(EXTRA_ITEM_VALUES, targets[0]);
@@ -222,7 +210,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionRemoveRecord(Context context, Record... record) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_REMOVE_RECORD);
         if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
         else intent.putExtra(EXTRA_ITEM_VALUES, record[0]);
@@ -237,7 +225,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionRemoveUser(Context context, User... user) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_REMOVE_USER);
         if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
         else intent.putExtra(EXTRA_ITEM_VALUES, user[0]);
@@ -252,7 +240,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionResetSpawn(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_SPAWN);
         context.startService(intent);
     }
@@ -265,7 +253,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionResetTarget(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_TARGET);
         context.startService(intent);
     }
@@ -278,7 +266,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionResetRecord(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_RECORD);
         context.startService(intent);
     }
@@ -291,7 +279,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionResetUser(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_USER);
         context.startService(intent);
     }
@@ -304,7 +292,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionUpdateTarget(Context context, Target... target) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UPDATE_TARGET);
         intent.putExtra(EXTRA_ITEM_VALUES, target);
         if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
@@ -321,7 +309,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionUpdateRecord(Context context, Record... record) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UPDATE_RECORD);
         intent.putExtra(EXTRA_ITEM_VALUES, record);
         if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
@@ -338,7 +326,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionUpdateUser(Context context, User... user) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UPDATE_USER);
         intent.putExtra(EXTRA_ITEM_VALUES, user);
         if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
@@ -355,7 +343,7 @@ public class DatabaseService extends IntentService {
      */
     public static void startActionResetData(Context context) {
         if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
+        Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_DATA);
         context.startService(intent);
     }
@@ -504,13 +492,13 @@ public class DatabaseService extends IntentService {
         target.setPercent(percent);
         target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
 
-        String phoneNumber = urlToPhoneNumber(target);
+        String phoneNumber = DataUtilities.urlToPhoneNumber(target);
         target.setPhone(phoneNumber);
 
-        String emailAddress = urlToEmailAddress(target);
+        String emailAddress = DataUtilities.urlToEmailAddress(target);
         target.setEmail(emailAddress);
 
-        String socialHandle = urlToSocialHandle(target);
+        String socialHandle = DataUtilities.urlToSocialHandle(target);
         target.setSocial(socialHandle);
 
         DatabaseAccessor.addTarget(this, target);
@@ -688,129 +676,5 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.removeRecord(this);
         DatabaseAccessor.removeUser(this);
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
-    }
-
-    // TODO Consider moving below methods
-    // TODO Retrieve from Clearbit Enrichment API with Retrofit
-    private String urlToSocialHandle(Target target) {
-        String socialHandle = DEFAULT_VALUE_STR;
-        String url = target.getHomepageUrl();
-        if (url == null || url.isEmpty()) return socialHandle;
-        try {
-            List<String> socialHandles = urlToElementContent(url, "a", "twitter.com/", null, null, " ");
-//            if (socialHandles.isEmpty()) {
-//                String thirdPartyEngineUrl  = String.format(
-//                        "https://site.org/profile/%s-%s",
-//                        give.getEin().substring(0, 2),
-//                        give.getEin().substring(2));
-//                socialHandles = urlToElementContent(thirdPartyEngineUrl, "a", "/twitter.com/", null, null, " ");
-//            }
-//           if (socialHandles.isEmpty())) {
-//                String spawnEngineUrl  = String.format(
-//                        "https://webcache.googleusercontent.com/spawn?q=cache:%s",
-//                        url);
-//                socialHandles = urlToElementContent(spawnEngineUrl, "twitter.com/", null, null, null);
-//            }
-            if (!socialHandles.isEmpty()) {
-                for (String handle : socialHandles) Timber.v("Social: @%s", handle);
-                socialHandle = socialHandles.get(0);
-            }
-        } catch (IOException e) { Timber.e(e); }
-        return socialHandle;
-    }
-
-    private String urlToEmailAddress(Target target) {
-        String emailAddress = DEFAULT_VALUE_STR;
-        String url = target.getHomepageUrl();
-        if (url == null || url.isEmpty()) return DEFAULT_VALUE_STR;
-        try {
-            List<String> emailAddresses = urlToElementContent(url, "a", "mailto:", new String[] { "Donate", "Contact" }, null, " ");
-//            if (emailAddresses.isEmpty()) {
-//                String thirdPartyUrl = "";
-//                if (!url.equals(thirdPartyUrl)) emailAddress = urlToElementContent();
-//            }
-//            if (emailAddress.equals(DEFAULT_VALUE_STR)) {
-//                url.replace("http://", "").replace("https://", "").replace("www.", "");
-//                String spawnEngineUrl  = String.format(
-//                        "https://www.google.com/spawn?q=site%%3A%s+contact+OR+support+\"*%%40%s\"",
-//                        url,
-//                        url);
-//                if (!url.equals(spawnEngineUrl)) emailAddress = (spawnEngineUrl, "mailto:", null, null, " ");
-//            }
-            if (!emailAddresses.isEmpty()) {
-                for (String address : emailAddresses) Timber.v("Email: %s", address);
-                emailAddress = emailAddresses.get(0);
-            }
-        } catch (IOException e) { Timber.e(e); }
-        return emailAddress;
-    }
-
-    private String urlToPhoneNumber(Target target) {
-        String phoneNumber = DEFAULT_VALUE_STR;
-        String url = target.getNavigatorUrl();
-        if (url == null || url.isEmpty()) return phoneNumber;
-        try {
-            List<String> phoneNumbers = urlToElementContent(url, "div[class=cn-appear]", "tel:", null, 15, "[^0-9]");
-            if (!phoneNumbers.isEmpty()) {
-                for (String number : phoneNumbers) Timber.v("Phone: %s", number);
-                phoneNumber = phoneNumbers.get(0);
-            }
-        } catch (IOException e) { Timber.e(e);
-        } return phoneNumber;
-    }
-
-    private List<String> urlToElementContent(@NonNull String url, String cssQuery, String key, @Nullable String[] pageNames, @Nullable Integer endIndex, @Nullable String removeRegex) throws IOException {
-
-        Elements homeInfo = parseElements(url, cssQuery);
-        List<String> infoList = new ArrayList<>();
-        List<String> visitedLinks = new ArrayList<>();
-        if (pageNames != null) {
-            for (String pageName : pageNames) {
-                infoList.addAll(parseKeysFromPages(url, homeInfo, pageName, visitedLinks, key));
-            }
-        } infoList.addAll(parseKeys(homeInfo, key, endIndex, removeRegex));
-        return infoList;
-    }
-
-    private List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
-        List<String> emails = new ArrayList<>();
-        for (int i = 0; i < anchors.size(); i++) {
-            Element anchor = anchors.get(i);
-            if (anchor.text().contains(pageName)) {
-                if (!anchor.hasAttr("href")) continue;
-                String pageLink = anchors.get(i).attr("href");
-                if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
-                if (visitedLinks.contains(pageLink)) continue;
-                else visitedLinks.add(pageLink);
-                Document page = Jsoup.connect(pageLink).get();
-                Elements pageAnchors = page.select("a");
-
-                emails.addAll(parseKeys(pageAnchors, key, null, " "));
-            }
-        }
-        return emails;
-    }
-
-    private List<String> parseKeys(Elements anchors, String key, @Nullable Integer endIndex, @Nullable String removeRegex) {
-        List<String> values = new ArrayList<>();
-        for (int j = 0; j < anchors.size(); j++) {
-            Element anchor = anchors.get(j);
-            if (anchor.hasAttr("href")) {
-                if (anchor.attr("href").contains(key))
-                    values.add(anchor.attr("href").split(key)[1].trim());
-            } else if (anchor.text().contains(key)) {
-                String text = anchor.text();
-                String value = text.split(key)[1].trim();
-                if (endIndex != null) value = value.substring(0, endIndex);
-                if (removeRegex != null) value = value.replaceAll(removeRegex, "");
-                values.add(value);
-            }
-        }
-        return values;
-    }
-
-    private Elements parseElements(String url, String cssQuery) throws IOException {
-        Document homepage = Jsoup.connect(url).get();
-        return homepage.select(cssQuery);
     }
 }

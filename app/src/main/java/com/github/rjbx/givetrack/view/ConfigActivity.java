@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -34,7 +34,7 @@ import android.widget.TextView;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.Calendar;
@@ -154,7 +154,7 @@ public class ConfigActivity
         if (!map.containsKey(preferenceKey)) return;
         map.put(preferenceKey, newValue);
         mUser.fromParameterMap(map);
-        DatabaseService.startActionUpdateUser(changedPreference.getContext(), mUser);
+        DatabaseManager.startActionUpdateUser(changedPreference.getContext(), mUser);
     }
 
     /**
@@ -428,7 +428,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetSpawn(getActivity());
+                        DatabaseManager.startActionResetSpawn(getActivity());
                         startActivity(new Intent(getActivity(), IndexActivity.class));
                         break;
                     default:
@@ -566,7 +566,7 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         mUser.setGiveReset(true);
-                        DatabaseService.startActionUpdateUser(getActivity(), mUser);
+                        DatabaseManager.startActionUpdateUser(getActivity(), mUser);
                         break;
                     default:
                 }
@@ -576,7 +576,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetTarget(getActivity());
+                        DatabaseManager.startActionResetTarget(getActivity());
                         startActivity(new Intent(getActivity(), HomeActivity.class));
                         break;
                     default:
@@ -676,7 +676,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        DatabaseService.startActionResetRecord(getActivity());
+                        DatabaseManager.startActionResetRecord(getActivity());
                         startActivity(new Intent(getActivity(), JournalActivity.class));
                         break;
                     default:

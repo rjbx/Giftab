@@ -3,9 +3,6 @@ package com.github.rjbx.givetrack.data;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
-import com.github.rjbx.givetrack.data.entry.Entry;
-import com.github.rjbx.givetrack.data.entry.User;
-
 /**
  * Defines attributes for tables and entries of database initialized in {@link DatabaseOpener}.
  */
@@ -97,49 +94,5 @@ public final class DatabaseContract {
         public static final String COLUMN_TARGET_STAMP = "targetStamp";
         public static final String COLUMN_RECORD_STAMP = "recordStamp";
         public static final String COLUMN_USER_STAMP = "userStamp";
-    }
-
-    public static <T extends Entry> Uri getContentUri(Class<T> entryType) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_TARGET: return CompanyEntry.CONTENT_URI_TARGET;
-            case CompanyEntry.TABLE_NAME_RECORD: return CompanyEntry.CONTENT_URI_RECORD;
-            case CompanyEntry.TABLE_NAME_SPAWN: return CompanyEntry.CONTENT_URI_SPAWN;
-            case UserEntry.TABLE_NAME_USER: return UserEntry.CONTENT_URI_USER;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> String getTimeTableColumn(Class<T> entryType) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_TARGET: return UserEntry.COLUMN_TARGET_STAMP;
-            case CompanyEntry.TABLE_NAME_RECORD: return UserEntry.COLUMN_RECORD_STAMP;
-            case CompanyEntry.TABLE_NAME_SPAWN: return "";
-            case UserEntry.TABLE_NAME_USER: return UserEntry.COLUMN_USER_STAMP;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> long getTableTime(Class<T> entryType, User user) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_SPAWN: return 0;
-            case CompanyEntry.TABLE_NAME_TARGET: return user.getTargetStamp();
-            case CompanyEntry.TABLE_NAME_RECORD: return user.getRecordStamp();
-            case UserEntry.TABLE_NAME_USER: return user.getUserStamp();
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
-    }
-
-    public static <T extends Entry> void setTableTime(Class<T> entryType, User user, long time) {
-        String name = entryType.getSimpleName().toLowerCase();
-        switch (name) {
-            case CompanyEntry.TABLE_NAME_SPAWN: break;
-            case CompanyEntry.TABLE_NAME_TARGET: user.setTargetStamp(time); break;
-            case CompanyEntry.TABLE_NAME_RECORD: user.setRecordStamp(time); break;
-            case UserEntry.TABLE_NAME_USER: user.setUserStamp(time); break;
-            default: throw new IllegalArgumentException("Argument must implement Entry interface");
-        }
     }
 }

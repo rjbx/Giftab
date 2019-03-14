@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -32,7 +32,7 @@ import butterknife.OnClick;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Spawn;
@@ -164,8 +164,8 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onStop() {
 //        if (sInitialState != sCurrentState) {
-//            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
-//            else DatabaseService.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
+//            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
+//            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
 //        }
         mUnbinder.unbind();
         super.onStop();
@@ -235,8 +235,8 @@ public class DetailFragment extends Fragment {
 //        drawActionButton();
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseService.startActionGiveSpawn(getContext(), sCompany);
-            else DatabaseService.startActionUntargetCompany(mParentActivity, sCompany);
+            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
+            else DatabaseManager.startActionUntargetCompany(mParentActivity, sCompany);
             mEnabled = false;
         }
     }

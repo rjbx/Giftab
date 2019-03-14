@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +44,7 @@ import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -55,7 +56,6 @@ import java.util.TimeZone;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseService;
 
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
@@ -215,7 +215,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_TARGET:
                 if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
-                    DatabaseService.startActionFetchTarget(this);
+                    DatabaseManager.startActionFetchTarget(this);
                 } else {
                     mTargetLock = false;
                     mTargetArray = new Target[data.getCount()];
@@ -231,7 +231,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_RECORD:
                 if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
-                    DatabaseService.startActionFetchRecord(this);
+                    DatabaseManager.startActionFetchRecord(this);
                 } else {
                     mRecordLock = false;
                     mRecordArray = new Record[data.getCount()];
@@ -262,7 +262,7 @@ public class HomeActivity extends AppCompatActivity implements
                                             anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
                             if (mUser.getGiveTiming() == 0 && !mAnchorToday) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
-                                    DatabaseService.startActionUpdateUser(this, mUser);
+                                    DatabaseManager.startActionUpdateUser(this, mUser);
                             }
                             if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
                             if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
@@ -349,7 +349,7 @@ public class HomeActivity extends AppCompatActivity implements
                         mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                         mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                     } else mUser.setGiveTiming(0);
-                    DatabaseService.startActionUpdateUser(this, mUser);
+                    DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 default:
             }
@@ -357,11 +357,11 @@ public class HomeActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     mUser.setGiveTiming(2);
-                    DatabaseService.startActionUpdateUser(this, mUser);
+                    DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setGiveTiming(1);
-                    DatabaseService.startActionUpdateUser(this, mUser);
+                    DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 default:
             }

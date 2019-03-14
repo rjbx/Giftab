@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.HomeActivity"
+            android:name=".view.HomeActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -28,29 +28,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.IndexActivity"
+            android:name=".view.IndexActivity"
             android:label="@string/title_activity_index"
-            android:parentActivityName=".ui.HomeActivity"
+            android:parentActivityName=".view.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.rjbx.givetrack.ui.HomeActivity" />
+                android:value="com.github.rjbx.givetrack.view.HomeActivity" />
         </activity>
         <activity
-            android:name=".ui.JournalActivity"
+            android:name=".view.JournalActivity"
             android:label="History"
-            android:parentActivityName=".ui.HomeActivity"
+            android:parentActivityName=".view.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.rjbx.givetrack.ui.HomeActivity" />
+                android:value="com.github.rjbx.givetrack.view.HomeActivity" />
         </activity>
         <activity
-            android:name=".ui.ConfigActivity"
+            android:name=".view.ConfigActivity"
             android:label="@string/title_activity_config"
             android:theme="@style/AppTheme.StatusBarOverlay" />
         <activity
-            android:name=".ui.AuthActivity"
+            android:name=".view.AuthActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,7 +71,7 @@
             android:name=".AppWidget$AppWidgetRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
-            android:name=".data.DatabaseService"
+            android:name=".data.DatabaseManager"
             android:exported="false" />
 
         <provider

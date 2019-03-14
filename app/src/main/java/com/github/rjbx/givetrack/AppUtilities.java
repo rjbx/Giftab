@@ -5,16 +5,16 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
-import com.github.rjbx.givetrack.ui.ConfigActivity;
-import com.github.rjbx.givetrack.ui.JournalActivity;
-import com.github.rjbx.givetrack.ui.HomeActivity;
-import com.github.rjbx.givetrack.ui.IndexActivity;
+import com.github.rjbx.givetrack.view.ConfigActivity;
+import com.github.rjbx.givetrack.view.JournalActivity;
+import com.github.rjbx.givetrack.view.HomeActivity;
+import com.github.rjbx.givetrack.view.IndexActivity;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 
-public class AppUtilities {
+public final class AppUtilities {
 
     public static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     public static final NumberFormat PERCENT_FORMATTER = NumberFormat.getPercentInstance();

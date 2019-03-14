@@ -1,4 +1,4 @@
-package com.github.rjbx.givetrack.ui;
+package com.github.rjbx.givetrack.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -39,7 +39,7 @@ import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseService;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -252,7 +252,7 @@ public class IndexActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
                     mUser.setIndexDialog(sDialogShown);
-                    DatabaseService.startActionUpdateUser(this, mUser);
+                    DatabaseManager.startActionUpdateUser(this, mUser);
                     AppUtilities.launchPreferenceFragment(this, ACTION_SPAWN_INTENT);
                     break;
                 default:
@@ -287,7 +287,7 @@ public class IndexActivity extends AppCompatActivity implements
     private void fetchResults() {
         mSpawnProgress.setVisibility(View.VISIBLE);
 
-        DatabaseService.startActionFetchSpawn(getBaseContext());
+        DatabaseManager.startActionFetchSpawn(getBaseContext());
         mSnackbar = getString(R.string.message_spawn_refresh);
     }
 
@@ -304,7 +304,7 @@ public class IndexActivity extends AppCompatActivity implements
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
                         final String company =  values.getId();
-                        DatabaseService.startActionRemoveSpawn(getBaseContext(), values);
+                        DatabaseManager.startActionRemoveSpawn(getBaseContext(), values);
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getNavigatorUrl();
