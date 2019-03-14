@@ -201,8 +201,8 @@ public final class DatabaseAccessor {
                 Iterator<Target> iterator = targetList.iterator();
                 do iterator.next().setPercent(1d / targetList.size());
                 while (iterator.hasNext());
-                target = targetList.toArray(new Target[0]);
             }
+            target = targetList.toArray(new Target[0]);
         }
 
         addEntriesToLocal(local, Target.class, stamp, true, target);
