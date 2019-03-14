@@ -510,7 +510,15 @@ public class GiveFragment extends Fragment implements
          */
         @Override public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
+            TextView nameView = holder.mNameView;
+            TextView frequencyView = holder.mFrequencyView;
+            TextView impactView = holder.mImpactView;
+            EditText percentageView = holder.mPercentageView;
+            TextView amountView = holder.mAmountView;
+            TextView incrementButton = holder.mIncrementButton;
+            TextView decrementButton = holder.mDecrementButton;
             Button addButton = holder.mAddButton;
+            ImageButton inspectButton = holder.mInspectButton;
 
             if (position == getItemCount() - 1 && addButton != null) {
                 addButton.setOnClickListener(clickedView -> {
@@ -535,31 +543,14 @@ public class GiveFragment extends Fragment implements
             }
 
             Target values = sValuesArray[position];
-            final String name = values.getName();
-            final int frequency =
-                    values.getFrequency();
-            final float impact = Float.parseFloat(values.getImpact());
 
-            String mutableName = name;
-            if (mutableName.length() > 30) {
-                mutableName = mutableName.substring(0, 30);
-                mutableName = mutableName.substring(0, mutableName.lastIndexOf(" ")).concat("...");
+            String name = values.getName();
+            if (name.length() > 30) {
+                name = name.substring(0, 30);
+                name = name.substring(0, name.lastIndexOf(" ")).concat("...");
             }
-            holder.mNameView.setText(mutableName);
 
-            String impactStr = CURRENCY_FORMATTER.format(impact);
-            int impactLength = impactStr.length();
-            if (impactLength > 12) impactStr = String.format("%s%sM", impactStr.substring(0, impactLength - 11),
-                    impactLength > 14 ? "" : "." + impactStr.substring(impactLength - 9, impactLength - 7));
-            else if (impactLength > 6) impactStr = impactStr.substring(0, impactLength - 3);
-
-            holder.mFrequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
-            holder.mImpactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
-            if (impact > 10)
-                holder.mImpactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
-                else holder.mImpactView.setTextAppearance(getContext(), R.style.AppTheme_TextEmphasis);
-
-            for (View view : holder.itemView.getTouchables()) view.setTag(position);
+            final int frequency = values.getFrequency();
 
             double amount = sPercentages[position] * mAmountTotal;
             String amountStr = CURRENCY_FORMATTER.format(amount);
@@ -568,19 +559,40 @@ public class GiveFragment extends Fragment implements
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            holder.mPercentageView.setText(PERCENT_FORMATTER.format(sPercentages[position]));
-            holder.mAmountView.setText(amountStr);
+            final float impact = Float.parseFloat(values.getImpact());
+            String impactStr = CURRENCY_FORMATTER.format(impact);
+            int impactLength = impactStr.length();
 
-            if (!sDualPane) holder.mInspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
-            else if (mPanePosition == position) {
-                mLastClicked = holder.mInspectButton;
-                mLastClicked.setImageResource(R.drawable.ic_baseline_expand_less_24px);
+            if (impactLength > 12) impactStr = String.format("%s%sM", impactStr.substring(0, impactLength - 11),
+                    impactLength > 14 ? "" : "." + impactStr.substring(impactLength - 9, impactLength - 7));
+            else if (impactLength > 6) impactStr = impactStr.substring(0, impactLength - 3);
+
+            if (nameView != null) nameView.setText(name);
+            if (frequencyView != null) frequencyView.setText(getString(R.string.indicator_donation_frequency, String.valueOf(frequency)));
+            if (amountView != null) amountView.setText(amountStr);
+            if (impactView != null) {
+                impactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
+                if (impact > 10) impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+                else impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+            }
+
+            if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(sPercentages[position]));
+
+            for (View view : holder.itemView.getTouchables()) view.setTag(position);
+
+            if (inspectButton != null) {
+                if (!sDualPane) inspectButton.setImageResource(R.drawable.ic_baseline_expand_more_24px);
+                else if (mPanePosition == position) {
+                    inspectButton.setImageResource(R.drawable.ic_baseline_expand_less_24px);
+                    mLastClicked = inspectButton;
+                }
             }
 
             final int adapterPosition = holder.getAdapterPosition();
-
-            mRateraidArrays.addShifters(holder.mIncrementButton, holder.mDecrementButton, adapterPosition)
-                           .addEditor(holder.mPercentageView, adapterPosition, mMethodManager, null);
+            if (incrementButton != null && decrementButton != null && percentageView != null) {
+                mRateraidArrays.addShifters(incrementButton, decrementButton, adapterPosition)
+                        .addEditor(percentageView, adapterPosition, mMethodManager, null);
+            }
         }
 
         /**

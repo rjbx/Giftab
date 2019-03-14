@@ -145,7 +145,6 @@ public class IndexActivity extends AppCompatActivity implements
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            // TODO: Decide whether to implement sort on fetch as well as stored entries
             case LOADER_ID_SPAWN: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SPAWN, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
@@ -280,7 +279,6 @@ public class IndexActivity extends AppCompatActivity implements
         mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
     }
 
-    // TODO: Handled by accessor fetch; factor out
     private void fetchResults() {
         mSpawnProgress.setVisibility(View.VISIBLE);
 

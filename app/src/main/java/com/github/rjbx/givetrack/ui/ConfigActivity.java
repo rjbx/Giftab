@@ -63,7 +63,6 @@ public class ConfigActivity
 
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            // TODO: Decide whether to recalibrate Target from callback data of Loader initialized from GivePreferneceFragment.onCreate
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }

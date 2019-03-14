@@ -32,7 +32,6 @@ import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
 
-// TODO: Modify handler signatures to accept only the required data
 /**
  * Handles asynchronous task requests in a service on a separate handler thread.
  */
@@ -76,8 +75,6 @@ public class DatabaseService extends IntentService {
         super(DatabaseService.class.getSimpleName());
     }
 
-    // TODO: Add boolean returns for launching error message
-
     /**
      * Starts this service to perform action FetchSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -88,7 +85,6 @@ public class DatabaseService extends IntentService {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseService.class);
         intent.setAction(ACTION_FETCH_SPAWN);
-//        intent.putExtra(EXTRA_API_REQUEST, apiRequest);
         context.startService(intent);
     }
 
@@ -173,6 +169,7 @@ public class DatabaseService extends IntentService {
         context.startService(intent);
     }
 
+    // TODO Migrate handling from UI thread
     /**
      * Starts this service to perform action RecordTarget with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -352,19 +349,6 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Starts this service to perform action UpdateFrequency with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionUpdateFrequency(Context context) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseService.class);
-        intent.setAction(ACTION_UPDATE_TARGET);
-        context.startService(intent);
-    }
-
-    /**
      * Starts this service to perform action ResetData with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -388,7 +372,6 @@ public class DatabaseService extends IntentService {
         final String action = intent.getAction();
         switch (action) {
             case ACTION_FETCH_SPAWN:
-//                final HashMap fetchSpawnMap = (HashMap) intent.getSerializableExtra(EXTRA_API_REQUEST);
                 handleActionFetchSpawn();
                 break;
             case ACTION_FETCH_TARGET:
@@ -466,8 +449,6 @@ public class DatabaseService extends IntentService {
             case ACTION_RESET_DATA:
                 handleActionResetData();
         }
-        // TODO: Decide whether AppWidget refresh should occur here, inside accessor local update helpers or ContentProvider notify helper
-        AppWidget.refresh(this);
     }
 
     /**
@@ -650,7 +631,7 @@ public class DatabaseService extends IntentService {
             target.setImpact("0");
             target.setFrequency(0);
         }
-        DatabaseAccessor.addTarget(this, targets.toArray(new Target[targets.size()]));
+        DatabaseAccessor.addTarget(this, targets.toArray(new Target[0]));
     }
 
     private void handleActionResetUser() {
@@ -686,7 +667,8 @@ public class DatabaseService extends IntentService {
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
     }
 
-//          TODO: Impelement retrieval from additional sources; alternative: Clearbit Enrichment API
+    // TODO Consider moving below methods
+    // TODO Retrieve from Clearbit Enrichment API with Retrofit
     private String urlToSocialHandle(Target target) {
         String socialHandle = DEFAULT_VALUE_STR;
         String url = target.getHomepageUrl();

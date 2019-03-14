@@ -99,7 +99,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mUsers.get(i).setUserActive(isActive);
                     if (isActive) isPersisted = true;
                 } if (!isPersisted) mUsers.add(activeUser);
-                DatabaseAccessor.addEntriesToLocal(getContentResolver(), User.class, 0, false, mUsers.toArray(new User[0]));
+                DatabaseService.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                 mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);

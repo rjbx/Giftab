@@ -9,6 +9,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+import com.github.rjbx.givetrack.AppWidget;
+
 import androidx.annotation.NonNull;
 
 import timber.log.Timber;
@@ -333,12 +335,16 @@ public class DatabaseProvider extends ContentProvider {
         super.shutdown();
     }
 
+    // TODO Restore row qualifier after resolving initial Loader callback enforcement
     /**
      * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
      * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
     private void notifyDataSetChange(Uri uri, int rowsChanged) {
         Context context = getContext();
-        /*if (context != null && rowsChanged > 0) */context.getContentResolver().notifyChange(uri, null);
+        if (context != null /*&& rowsChanged > 0*/) {
+            context.getContentResolver().notifyChange(uri, null);
+            if (rowsChanged > 0) AppWidget.refresh(context);
+        }
     }
 }

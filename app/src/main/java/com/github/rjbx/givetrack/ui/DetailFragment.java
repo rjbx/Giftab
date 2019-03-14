@@ -193,7 +193,6 @@ public class DetailFragment extends Fragment {
         sb.show();
     }
 
-    // TODO: Launch Dialog and sync onClick rather than remove item on parent Fragment Lifecycle method invocation
     /**
      * Generates toggle Button based on item collection status.
      */

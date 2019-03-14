@@ -51,21 +51,13 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import timber.log.Timber;
 
-// TODO 1: Feed myself breakfast and rest/recover
 public final class DatabaseAccessor {
 
     static void fetchSpawn(Context context) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
-        Uri contentUri = UserEntry.CONTENT_URI_USER;
-        Cursor cursor = local.query(
-                contentUri, null, null, null, null
-        );
-        List<User> entries = getEntryListFromCursor(cursor, User.class);
-        
-        User user = null;
-        for (User u : entries) if (u.getUserActive()) user = u;
+        User user =  getActiveUserFromLocal(local);
         
         Map<String, String> request = new HashMap<>();
         if (user.getIndexFocus()) request.put(DatabaseAccessor.FetchContract.PARAM_EIN, user.getIndexCompany());
@@ -114,7 +106,7 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Spawn.class, stamp, false, parsedResponse);
     }
 
-    static List<Spawn> getSpawn(Context context, @Nullable Pair<String, String>... where) {
+    @SafeVarargs static List<Spawn> getSpawn(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
@@ -126,7 +118,7 @@ public final class DatabaseAccessor {
 
         if (where != null) {
             for (Pair<String, String> p : where) {
-                selection.concat(", " + p.first);
+                selection = selection.concat(", " + p.first);
                 selectionArgList.add(p.second);
             }
         }
@@ -136,7 +128,7 @@ public final class DatabaseAccessor {
                 contentUri, null, selection, selectionArgs, null
         );
         List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
-        cursor.close();
+        if (cursor != null) cursor.close();
         return entries;
     }
 
@@ -147,7 +139,7 @@ public final class DatabaseAccessor {
         addEntriesToLocal(local, Spawn.class, stamp, false, entries);
     }
 
-    static void removeSpawn(Context context, @Nullable Spawn... spawns) {
+    static void removeSpawn(Context context, Spawn... spawns) {
         ContentResolver local = context.getContentResolver();
 
         long stamp = System.currentTimeMillis();
@@ -161,7 +153,7 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Target.class);
     }
 
-    static List<Target> getTarget(Context context, @Nullable Pair<String, String>... where) {
+    @SafeVarargs static List<Target> getTarget(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
@@ -183,7 +175,7 @@ public final class DatabaseAccessor {
                 contentUri, null, selection, selectionArgs, null
         );
         List<Target> entries = getEntryListFromCursor(cursor, Target.class);
-        cursor.close();
+        if (cursor != null) cursor.close();
         return entries;
     }
 
@@ -208,9 +200,8 @@ public final class DatabaseAccessor {
         for (Target t1 : target) for (Target t2 : targetList)
             if (t2.getId().equals(t1.getId()))
                 removalIndeces[targetList.indexOf(t2)] = 1;
-        for (int i = 0; i < removalIndeces.length; i++) {
+        for (int i = 0; i < removalIndeces.length; i++)
             if (removalIndeces[i] == 1) targetList.remove(i);
-        }
 
         if (!targetList.isEmpty()) {
             Iterator<Target> iterator = targetList.iterator();
@@ -230,7 +221,7 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, Record.class);
     }
 
-    static List<Record> getRecord(Context context, @Nullable Pair<String, String>... where) {
+    @SafeVarargs static List<Record> getRecord(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
@@ -242,7 +233,7 @@ public final class DatabaseAccessor {
 
         if (where != null) {
             for (Pair<String, String> p : where) {
-                selection.concat(", " + p.first);
+                selection = selection.concat(", " + p.first);
                 selectionArgList.add(p.second);
             }
         }
@@ -253,7 +244,7 @@ public final class DatabaseAccessor {
         );
         List<Record> entries = getEntryListFromCursor(cursor, Record.class);
 
-        cursor.close();
+        if (cursor != null) cursor.close();
         return entries;
     }
 
@@ -266,7 +257,7 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, Record.class, stamp, false, entries);
     }
 
-    static void removeRecord(Context context, @Nullable Record... record) {
+    static void removeRecord(Context context, Record... record) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
@@ -282,7 +273,7 @@ public final class DatabaseAccessor {
         validateEntries(local, remote, User.class);
     }
 
-    static List<User> getUser(Context context, @Nullable String id) {
+    static List<User> getUser(Context context) {
         ContentResolver local = context.getContentResolver();
 
         User activeUser = getActiveUserFromLocal(local);
@@ -291,7 +282,7 @@ public final class DatabaseAccessor {
                 contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
         List<User> entries = getEntryListFromCursor(cursor, User.class);
-        cursor.close();
+        if (cursor != null) cursor.close();
         return entries;
     }
 
@@ -304,7 +295,7 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, User.class, stamp, false, entries);
     }
 
-    static void removeUser(Context context, @Nullable User... user) {
+    static void removeUser(Context context, User... user) {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
@@ -319,9 +310,9 @@ public final class DatabaseAccessor {
         entry.fromContentValues(values);
     }
 
-    public static <T extends Entry> List<T> getEntryListFromCursor(@NonNull Cursor cursor, Class<T> type) {
+    public static <T extends Entry> List<T> getEntryListFromCursor(Cursor cursor, Class<T> type) {
         List<T> entries = new ArrayList<>();
-        if (!cursor.moveToFirst()) return entries;
+        if (cursor == null || !cursor.moveToFirst()) return entries;
         entries.clear();
         int i = 0;
         do {
@@ -332,7 +323,7 @@ public final class DatabaseAccessor {
         return entries;
     }
 
-    public static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, boolean reset, T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
 
@@ -341,9 +332,13 @@ public final class DatabaseAccessor {
 
         if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
-        ContentValues[] values = new ContentValues[entries.length];
-        for (int i = 0; i < values.length; i++) { values[i] = entries[i].toContentValues(); }
-        local.bulkInsert(contentUri, values);
+        if (entries != null) {
+            ContentValues[] values = new ContentValues[entries.length];
+            for (int i = 0; i < values.length; i++) {
+                values[i] = entries[i].toContentValues();
+            }
+            local.bulkInsert(contentUri, values);
+        }
 
         updateLocalTableTime(local, entryType, stamp, uid);
     }
@@ -351,7 +346,7 @@ public final class DatabaseAccessor {
     /**
      * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
      */
-    static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
         if (entryType.equals(Spawn.class)) return;
 
@@ -365,15 +360,17 @@ public final class DatabaseAccessor {
 
         if (reset) childReference.removeValue();
 
-        for (T entry: entries) {
-            if (entry instanceof Company) childReference = childReference.child(entry.getId());
-            childReference.updateChildren(entry.toParameterMap());
+        if (entries != null) {
+            for (T entry : entries) {
+                if (entry instanceof Company) childReference = childReference.child(entry.getId());
+                childReference.updateChildren(entry.toParameterMap());
+            }
         }
 
         updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
-    static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, @Nullable T... entries) {
+    @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DatabaseContract.getContentUri(entryType);
         String uid;
@@ -389,7 +386,7 @@ public final class DatabaseAccessor {
         } updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, @Nullable T... entries) {
+    @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
         if (entryType.equals(Spawn.class)) return;
 
@@ -411,7 +408,7 @@ public final class DatabaseAccessor {
         } updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
-    static User getActiveUserFromLocal(ContentResolver local) {
+    private static User getActiveUserFromLocal(ContentResolver local) {
         User u = User.getDefault();
         u.setUserStamp(-1);
         u.setTargetStamp(-1);
@@ -427,16 +424,16 @@ public final class DatabaseAccessor {
         } return u;
     }
 
-    static User getActiveUserFromRemote(FirebaseDatabase remote) {
+    private static User getActiveUserFromRemote(FirebaseDatabase remote) {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
-                while (iterator.hasNext()) {
-                    User u = iterator.next().getValue(User.class);
+                Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
+                for (DataSnapshot snapshot : iterable) {
+                    User u = snapshot.getValue(User.class);
                     if (u != null && u.getUserActive()) taskSource.trySetResult(u);
                 }
             }
@@ -455,7 +452,7 @@ public final class DatabaseAccessor {
         return u;
     }
 
-    static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
+    private static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
 
         if (entryType.equals(Spawn.class)) return;
 
@@ -466,7 +463,7 @@ public final class DatabaseAccessor {
         local.update(uri, values, null,null);
     }
 
-    static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
+    private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         Map<String, Object> map = new HashMap<>();
         map.put(DatabaseContract.getTimeTableColumn(entryType), stamp);
@@ -475,7 +472,7 @@ public final class DatabaseAccessor {
         userReference.child(uid).updateChildren(map);
     }
 
-    static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
+    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
         Uri contentUri = DatabaseContract.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
@@ -486,18 +483,17 @@ public final class DatabaseAccessor {
         addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
-    static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
+    private static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
         if (entryType == Record.class || entryType == Target.class) pathReference = pathReference.child(uid);
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> iterator = dataSnapshot.getChildren().iterator();
+                Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
                 List<T> entryList = new ArrayList<>();
-                int i = 0;
-                while (iterator.hasNext()) {
-                    T entry = iterator.next().getValue(entryType);
+                for (DataSnapshot snapshot : iterable) {
+                    T entry = snapshot.getValue(entryType);
                     if (entry instanceof User) {
                         ((User) entry).setRecordStamp(0);
                         ((User) entry).setTargetStamp(0);
@@ -512,10 +508,7 @@ public final class DatabaseAccessor {
         });
     }
 
-    // TODO Decide:
-    // a. Handle local User updates with company stamp reset for future company validation
-    // b. Revert to remote database schema with company stamps nested inside company items
-    static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
+    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(local);
         User remoteUser = getActiveUserFromRemote(remote);
@@ -548,6 +541,9 @@ public final class DatabaseAccessor {
 //        return requestResponseFromUrl(clearbitURL, context.getString(R.string.cb_api_key));
 //    }
 
+
+    // TODO Consider moving below methods
+
     /**
      * Builds the proper {@link Uri} for requesting movie data.
      * Users must register and reference a unique API key.
@@ -570,7 +566,6 @@ public final class DatabaseAccessor {
      * Returns the result of the HTTP request.
      * @param url address from which to fetch the HTTP response.
      * @return the result of the HTTP request; null if none received.
-     * @throws IOException caused by network and stream reading.
      */
     private static String requestResponseFromUrl(URL url, @Nullable String password) {
 
@@ -611,7 +606,6 @@ public final class DatabaseAccessor {
 
     /**
      * This method parses JSON String of data API response and returns array of {@link Spawn}.
-     * @throws JSONException if JSON data cannot be properly parsed.
      */
     private static Spawn[] parseSpawns(@NonNull String jsonResponse, String uid, boolean single) {
 
