@@ -55,7 +55,7 @@ public class IndexActivity extends AppCompatActivity implements
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
-    public static final String ACTION_SPAWN_INTENT = "com.github.rjbx.givetrack.ui.action.SPAWN_INTENT";
+    public static final String ACTION_INDEX_INTENT = "com.github.rjbx.givetrack.ui.action.INDEX_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
     private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
     private static boolean sDialogShown;
@@ -135,7 +135,7 @@ public class IndexActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_filter):
-                AppUtilities.launchPreferenceFragment(this, ACTION_SPAWN_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -252,7 +252,7 @@ public class IndexActivity extends AppCompatActivity implements
                     sDialogShown = true;
                     mUser.setIndexDialog(sDialogShown);
                     DatabaseManager.startActionUpdateUser(this, mUser);
-                    AppUtilities.launchPreferenceFragment(this, ACTION_SPAWN_INTENT);
+                    AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
                     break;
                 default:
             }

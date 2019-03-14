@@ -23,12 +23,11 @@ import butterknife.Optional;
 
 final class ViewUtilities {
 
-    static void launchBrowserIntent(Activity launchingActivity, Uri webUrl) {
+    static void launchBrowserIntent(Context context, Uri webUrl) {
         new CustomTabsIntent.Builder()
-                .setToolbarColor(launchingActivity.getColor(R.color.colorPrimaryDark))
+                .setToolbarColor(context.getColor(R.color.colorPrimaryDark))
                 .build()
-                .launchUrl(launchingActivity, webUrl);
-        launchingActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+                .launchUrl(context, webUrl);
     }
 
     static void launchShareIntent(Activity launchingActivity, String textMessage) {
@@ -51,8 +50,7 @@ final class ViewUtilities {
         private static String mSocial;
         private static String mWebsite;
         private static String mLocation;
-        @BindView(R.id.phone_button) @Nullable
-        Button mPhoneButton;
+        @BindView(R.id.phone_button) @Nullable Button mPhoneButton;
         @BindView(R.id.email_button) @Nullable Button mEmailButton;
         @BindView(R.id.social_button) @Nullable Button mSocialButton;
         @BindView(R.id.website_button) @Nullable Button mWebsiteButton;
@@ -141,20 +139,14 @@ final class ViewUtilities {
          * Defines behavior on click of social launch button.
          */
         @Optional @OnClick(R.id.social_button) void launchSocial() {
-            new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                    .build()
-                    .launchUrl(mContext, Uri.parse(mSocial));
+            launchBrowserIntent(mContext, Uri.parse(mWebsite));
         }
 
         /**
          * Defines behavior on click of website launch button.
          */
         @Optional @OnClick(R.id.website_button) void launchWebsite() {
-            new CustomTabsIntent.Builder()
-                    .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                    .build()
-                    .launchUrl(mContext, Uri.parse(mWebsite));
+            launchBrowserIntent(mContext, Uri.parse("https://twitter.com/" + mSocial));
         }
 
         /**

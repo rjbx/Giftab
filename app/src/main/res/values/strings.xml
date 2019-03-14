@@ -197,7 +197,7 @@
     </string-array>
 
     <!-- Spawn settings -->
-    <string name="pref_header_index">Index</string>
+    <string name="pref_header_index">Search</string>
     <string-array name="list_preference_minrating">
         <item>No Preference</item>
         <item>★</item>
@@ -371,7 +371,7 @@
 
     <string name="pref_header_give">Home</string>
 
-    <string name="pref_header_record">Journal</string>
+    <string name="pref_header_record">History</string>
 
     <!-- Notification settings -->
     <string name="pref_header_notifications">Notifications</string>

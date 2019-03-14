@@ -73,7 +73,7 @@ public class HomeActivity extends AppCompatActivity implements
         DatePickerDialog.OnDateSetListener {
 
     public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
-    public static final String ACTION_MAIN_INTENT = "com.github.rjbx.givetrack.ui.action.MAIN_INTENT";
+    public static final String ACTION_HOME_INTENT = "com.github.rjbx.givetrack.ui.action.HOME_INTENT";
 
     public static final String ARGS_PLACEHOLDER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.PLACEHOLDER_ATTRIBUTES";
     public static final String ARGS_TARGET_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.GIVE_ATTRIBUTES";
@@ -165,7 +165,7 @@ public class HomeActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                AppUtilities.launchPreferenceFragment(this, ACTION_MAIN_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
                 Calendar calendar = Calendar.getInstance();
@@ -299,7 +299,7 @@ public class HomeActivity extends AppCompatActivity implements
         switch (id) {
             case (R.id.nav_spawn): startActivity(new Intent(this, IndexActivity.class)); break;
             case (R.id.nav_record): startActivity(new Intent(this, JournalActivity.class)); break;
-            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_MAIN_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
+            case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_HOME_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
             case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
@@ -371,7 +371,10 @@ public class HomeActivity extends AppCompatActivity implements
     /**
      * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
      */
-    private void launchCustomTabs(String url) { ViewUtilities.launchBrowserIntent(this, Uri.parse(url)); }
+    private void launchCustomTabs(String url) {
+        ViewUtilities.launchBrowserIntent(this, Uri.parse(url));
+        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+    }
 
     /**
      * Provides logic and views for a default screen when others are unavailable.
@@ -419,7 +422,8 @@ public class HomeActivity extends AppCompatActivity implements
             Bundle arguments = getArguments();
             if (arguments == null) return;
             String launchAction = arguments.getString(ARGS_ACTION_ATTRIBUTES);
-            if (launchAction != null && launchAction.equals(AuthActivity.ACTION_SIGN_IN)) {
+            if (launchAction != null &&
+                    (launchAction.equals(AuthActivity.ACTION_SIGN_IN))) {
                 if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.VISIBLE);
                 if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.VISIBLE);
             }

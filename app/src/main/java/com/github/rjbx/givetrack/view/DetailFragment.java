@@ -20,7 +20,6 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -28,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
@@ -48,7 +48,6 @@ import java.util.List;
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
-    static final String ARG_ITEM_URL= "com.github.rjbx.givetrack.ui.arg.ITEM_URL";
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
@@ -174,7 +173,8 @@ public class DetailFragment extends Fragment {
 //            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
 //            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
 //        }
-        mUnbinder.unbind();
+        try { mUnbinder.unbind(); }
+        catch (IllegalStateException e) { Timber.e(e); }
         super.onStop();
     }
 
@@ -223,12 +223,7 @@ public class DetailFragment extends Fragment {
      * Defines behavior on click of browser close button.
      */
     @OnClick(R.id.browser_open_button) void openBrowser() {
-        new CustomTabsIntent.Builder()
-                .setToolbarColor(getResources()
-                        .getColor(R.color.colorPrimaryDark, null))
-                .build()
-                .launchUrl(mContext, Uri.parse(sCompany.getNavigatorUrl()));
-        mParentActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+        ViewUtilities.launchBrowserIntent(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
     }
 
     /**

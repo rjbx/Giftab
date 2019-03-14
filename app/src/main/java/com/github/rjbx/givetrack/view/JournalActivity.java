@@ -70,7 +70,7 @@ public class JournalActivity extends AppCompatActivity implements
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
 
-    public static final String ACTION_RECORD_INTENT = "com.github.rjbx.givetrack.ui.action.RECORD_INTENT";
+    public static final String ACTION_JOURNAL_INTENT = "com.github.rjbx.givetrack.ui.action.JOURNAL_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private long mDeletedTime;
     private static boolean sDualPane;
@@ -143,7 +143,7 @@ public class JournalActivity extends AppCompatActivity implements
                 navigateUpTo(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_record):
-                AppUtilities.launchPreferenceFragment(this, ACTION_RECORD_INTENT);
+                AppUtilities.launchPreferenceFragment(this, ACTION_JOURNAL_INTENT);
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -40,7 +40,7 @@
 
     <Button
         android:id="@+id/social_button"
-        android:drawableStart="@drawable/web"
+        android:drawableStart="@drawable/social"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="end"

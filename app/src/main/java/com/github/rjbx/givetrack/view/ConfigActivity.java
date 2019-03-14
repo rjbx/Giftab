@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.media.Ringtone;
@@ -79,7 +78,8 @@ public class ConfigActivity
      * when device orientation is landscape.
      */
     @Override public boolean onIsMultiPane() {
-        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        return true;
+//                getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
     /**
@@ -225,13 +225,13 @@ public class ConfigActivity
             String action = getIntent().getAction();
             if (action != null) {
                 switch (action) {
-                    case JournalActivity.ACTION_RECORD_INTENT:
+                    case JournalActivity.ACTION_JOURNAL_INTENT:
                         startActivity(new Intent(this, JournalActivity.class));
                         return true;
-                    case IndexActivity.ACTION_SPAWN_INTENT:
+                    case IndexActivity.ACTION_INDEX_INTENT:
                         startActivity(new Intent(this, IndexActivity.class));
                         return true;
-                    case HomeActivity.ACTION_MAIN_INTENT:
+                    case HomeActivity.ACTION_HOME_INTENT:
                         startActivity(new Intent(this, HomeActivity.class));
                         return true;
                 }
