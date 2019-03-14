@@ -84,6 +84,7 @@ public class GlanceFragment extends Fragment implements
             R.color.colorComfort,
             R.color.colorNeutral
     };
+    // TODO Persist field instance states
     private static Record[] sValuesArray;
     private static User sUser;
     private static boolean mViewTracked;

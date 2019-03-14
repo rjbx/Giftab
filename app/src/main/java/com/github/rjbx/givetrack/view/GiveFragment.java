@@ -69,6 +69,7 @@ public class GiveFragment extends Fragment implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADJUST = "com.github.rjbx.givetrack.ui.state.RECORD_ADJUST";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.RECORD_POSITION";
+    // TODO Persist field instance states
     private static Target[] sValuesArray;
     private static User sUser;
     private static boolean sDualPane;

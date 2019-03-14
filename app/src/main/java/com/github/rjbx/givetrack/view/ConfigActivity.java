@@ -54,6 +54,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 // TODO: Add anchor reset option for HomePreferenceFragment
 // TODO: Add rounding list preference for HomePreferenceFragment
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
+// TODO: Reimplement rows and pages after resolving inconsistency and add other options
 // TODO: Fully implement removed options
 /**
  * Presents the application settings.
@@ -62,6 +63,7 @@ public class ConfigActivity
         extends PreferenceActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
+    // TODO Persist field instance states
     private static User mUser;
 
     /**
@@ -365,8 +367,8 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexState_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexPages_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexSize_key)), this);
+//            handlePreferenceChange(findPreference(getString(R.string.pref_indexPages_key)), this);
+//            handlePreferenceChange(findPreference(getString(R.string.pref_indexSize_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);

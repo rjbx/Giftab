@@ -51,6 +51,7 @@ public class DetailFragment extends Fragment {
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
+    // TODO Persist field instance states
     private static Spawn sCompany;
     private static boolean sInitialState;
     private static boolean sCurrentState;
@@ -234,7 +235,7 @@ public class DetailFragment extends Fragment {
         sCurrentState = !sCurrentState;
         mFab.setVisibility(View.GONE);
 //        drawActionButton();
-//        drawSnackbar();
+        drawSnackbar();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
             else DatabaseManager.startActionUntargetCompany(mContext, sCompany);

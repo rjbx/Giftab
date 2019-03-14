@@ -65,6 +65,7 @@ public class IndexActivity extends AppCompatActivity implements
     private AlertDialog mSpawnDialog;
     private String mSnackbar;
     private User mUser;
+    private boolean mFetching = false;
     private boolean mLock = true;
     @BindView(R.id.spawn_fab) FloatingActionButton mFab;
     @BindView(R.id.spawn_toolbar) Toolbar mToolbar;
@@ -170,10 +171,13 @@ public class IndexActivity extends AppCompatActivity implements
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
-                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh);
-                Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
-                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-                sb.show();
+                if (mFetching) {
+                    if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh);
+                    Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
+                    sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+                    sb.show();
+                    mFetching = false;
+                }
                 break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
@@ -285,9 +289,9 @@ public class IndexActivity extends AppCompatActivity implements
      */
     private void fetchResults() {
         mSpawnProgress.setVisibility(View.VISIBLE);
-
         DatabaseManager.startActionFetchSpawn(getBaseContext());
         mSnackbar = getString(R.string.message_spawn_refresh);
+        mFetching = true;
     }
 
     /**

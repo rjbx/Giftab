@@ -67,19 +67,19 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_order_label"/>
 
-    <EditTextPreference
-        android:dependency="@string/pref_indexFocus_key"
-        android:inputType="number"
-        android:key="@string/pref_indexPages_key"
-        android:singleLine="true"
-        android:title="@string/pref_start_label"/>
+    <!--<EditTextPreference-->
+        <!--android:dependency="@string/pref_indexFocus_key"-->
+        <!--android:inputType="number"-->
+        <!--android:key="@string/pref_indexPages_key"-->
+        <!--android:singleLine="true"-->
+        <!--android:title="@string/pref_start_label"/>-->
 
-    <EditTextPreference
-        android:dependency="@string/pref_indexFocus_key"
-        android:inputType="number"
-        android:key="@string/pref_indexSize_key"
-        android:singleLine="true"
-        android:title="@string/pref_rows_label"/>
+    <!--<EditTextPreference-->
+        <!--android:dependency="@string/pref_indexFocus_key"-->
+        <!--android:inputType="number"-->
+        <!--android:key="@string/pref_indexSize_key"-->
+        <!--android:singleLine="true"-->
+        <!--android:title="@string/pref_rows_label"/>-->
 
     <EditTextPreference
         android:inputType="number"
