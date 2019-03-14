@@ -43,6 +43,7 @@ import timber.log.Timber;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -359,34 +360,7 @@ public class GiveFragment extends Fragment implements
      * Syncs donations to database.
      */
     private void syncDonations() {
-
-        for (Target target : sValuesArray) {
-            if (target.getPercent() == 0d) continue;
-            target.setFrequency(target.getFrequency() + 1);
-            double transactionImpact = target.getPercent() * mAmountTotal;
-            double totalImpact = Float.parseFloat(target.getImpact()) + transactionImpact;
-            target.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
-        }
-        DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
-
-        List<Record> records = new ArrayList<>();
-        for (int i = 0; i < sValuesArray.length; i++) {
-            if (sValuesArray[i].getPercent() == 0d) continue;
-            double transactionImpact = sValuesArray[i].getPercent() * mAmountTotal;
-            sUser.setGiveAnchor(sUser.getGiveAnchor() + 1);
-            long time = sUser.getGiveAnchor();
-            Record record = Record.fromSuper(sValuesArray[i].getSuper());
-            record.setStamp(System.currentTimeMillis() + i);
-            record.setTime(time);
-            record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
-            records.add(record);
-        }
-        if (sUser.getGiveTiming() == 1) {
-            sUser.setGiveAnchor(System.currentTimeMillis());
-            sUser.setGiveTiming(0);
-        }
-        DatabaseManager.startActionUpdateUser(mContext, sUser);
-        DatabaseManager.startActionUpdateRecord(mContext, records.toArray(new Record[0]));
+        DatabaseManager.startActionRecordTarget(mContext, sValuesArray);
     }
 
     /**

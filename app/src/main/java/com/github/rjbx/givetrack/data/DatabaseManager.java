@@ -15,6 +15,7 @@ import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -156,7 +157,6 @@ public final class DatabaseManager extends IntentService {
         context.startService(intent);
     }
 
-    // TODO Migrate handling from UI thread
     /**
      * Starts this service to perform action RecordTarget with the given parameters.
      * If the service is already performing a task this action will be queued.
@@ -530,14 +530,38 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionRecordTarget(Target... target) {
 
-        Record[] record = new Record[target.length];
+        User activeUser;
+        List<User> userList = DatabaseAccessor.getUser(this);
+        if (userList.size() > 1) { startActionFetchUser(this); return; }
+        else activeUser = userList.get(0);
+
+        double giveImpact = Double.parseDouble(activeUser.getGiveImpact());
+
+        for (Target t : target) {
+            if (t.getPercent() == 0d) continue;
+            t.setFrequency(t.getFrequency() + 1);
+            double transactionImpact = t.getPercent() * giveImpact;
+            double totalImpact = Float.parseFloat(t.getImpact()) + transactionImpact;
+            t.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
+        } DatabaseAccessor.addTarget(this, target);
+
+        List<Record> records = new ArrayList<>();
         for (int i = 0; i < target.length; i++) {
-            long time = System.currentTimeMillis();
-            record[i] = Record.fromSuper(target[i].getSuper());
-            record[i].setStamp(time);
-            record[i].setTime(time);
-        }
-        DatabaseAccessor.addRecord(this, record);
+            if (target[i].getPercent() == 0d) continue;
+            double transactionImpact = target[i].getPercent() * giveImpact;
+            activeUser.setGiveAnchor(activeUser.getGiveAnchor() + 1);
+            long time = activeUser.getGiveAnchor();
+            Record record = Record.fromSuper(target[i].getSuper());
+            record.setStamp(System.currentTimeMillis() + i);
+            record.setTime(time);
+            record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+            records.add(record);
+        } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
+
+        if (activeUser.getGiveTiming() == 1) {
+            activeUser.setGiveAnchor(System.currentTimeMillis());
+            activeUser.setGiveTiming(0);
+        } DatabaseAccessor.addUser(this, activeUser);
     }
 
     /**
