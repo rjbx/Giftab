@@ -648,7 +648,6 @@ public class ConfigActivity
                 String entryName = Record.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.message_clear_all, entryName, "creating", entryName));
-                mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
