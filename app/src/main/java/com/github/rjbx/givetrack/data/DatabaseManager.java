@@ -542,7 +542,7 @@ public final class DatabaseManager extends IntentService {
             t.setFrequency(t.getFrequency() + 1);
             double transactionImpact = t.getPercent() * giveImpact;
             double totalImpact = Float.parseFloat(t.getImpact()) + transactionImpact;
-            t.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
+            t.setImpact(String.valueOf(totalImpact));
         } DatabaseAccessor.addTarget(this, target);
 
         List<Record> records = new ArrayList<>();
@@ -554,7 +554,7 @@ public final class DatabaseManager extends IntentService {
             Record record = Record.fromSuper(target[i].getSuper());
             record.setStamp(System.currentTimeMillis() + i);
             record.setTime(time);
-            record.setImpact(String.format(Locale.getDefault(), "%.2f", transactionImpact));
+            record.setImpact(String.valueOf(transactionImpact));
             records.add(record);
         } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
 

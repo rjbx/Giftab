@@ -53,6 +53,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Add change email option to UserPreferenceFragment
 // TODO: Add anchor reset option for HomePreferenceFragment
+// TODO: Add rounding list preference for HomePreferenceFragment
 // TODO: Add option to disable remote persistence, converting users to guests and deleting data
 // TODO: Fully implement removed options
 /**
