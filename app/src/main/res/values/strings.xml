@@ -69,8 +69,8 @@
     <string name="nav_menu_interact">Interact</string>
     <string name="nav_menu_manage">Manage</string>
     <string name="nav_menu_learn">Learn</string>
-    <string name="nav_item_index">Index</string>
-    <string name="nav_item_journal">Journal</string>
+    <string name="nav_item_index">Search</string>
+    <string name="nav_item_journal">History</string>
     <string name="nav_item_settings">Settings</string>
     <string name="nav_item_logout">Logout</string>
     <string name="nav_item_cn">About Charity Navigator API</string>
@@ -107,8 +107,8 @@
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
     <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
     <string name="dialog_filter_setup">To set up your search filters, click the icon in the top right corner, or press \'Get Started\'.</string>
-    <string name="dialog_removal_charity">Remove %s from your collection?</string>
-    <string name="dialog_removal_record">Remove %s from your records?</string>
+    <string name="message_remove_entry">Remove %s from your %s?</string>
+    <string name="message_clear_all">Your %ss will not be recoverable except by %s them again. Are you sure you want to permanently delete all of your %ss?</string>
     <string name="snippet_all_charities">all charities</string>
     <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
     <string name="message_record_refresh">Your records have been updated.</string>

@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,17 +11,32 @@ import android.widget.LinearLayout;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.entry.Company;
-import com.github.rjbx.givetrack.data.entry.Target;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.core.app.ShareCompat.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
 
 final class ViewUtilities {
+
+    static void launchBrowserIntent(Activity launchingActivity, Uri webUrl) {
+        new CustomTabsIntent.Builder()
+                .setToolbarColor(launchingActivity.getColor(R.color.colorPrimaryDark))
+                .build()
+                .launchUrl(launchingActivity, webUrl);
+        launchingActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+    }
+
+    static void launchShareIntent(Activity launchingActivity, String textMessage) {
+        IntentBuilder intentBuilder = IntentBuilder.from(launchingActivity)
+                .setType("text/plain")
+                .setText(textMessage);
+        launchingActivity.startService(intentBuilder.getIntent());
+    }
 
     /**
      * Provides an inflated layout populated with contact method buttons and associated

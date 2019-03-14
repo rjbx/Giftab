@@ -56,11 +56,12 @@ public class DetailFragment extends Fragment {
     private static boolean sInitialState;
     private static boolean sCurrentState;
     private static int sScrollState = 0;
-    private boolean mEnabled = true;
+    private Context mContext;
     private AppCompatActivity mParentActivity;
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebview;
     private Unbinder mUnbinder;
+    private boolean mEnabled = true;
     @BindView(R.id.detail_fab) FloatingActionButton mFab;
     @BindView(R.id.detail_progress) ProgressBar mProgress;
     @BindView(R.id.detail_frame) FrameLayout mFrame;
@@ -87,6 +88,12 @@ public class DetailFragment extends Fragment {
         DetailFragment fragment = new DetailFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     /**
@@ -196,15 +203,14 @@ public class DetailFragment extends Fragment {
      * Generates toggle Button based on item collection status.
      */
     private void drawActionButton() {
-        Context context = getContext();
-        if (context == null || mFab == null) return;
+        if (mContext == null || mFab == null) return;
         mFab.setImageResource(sCurrentState ?
                 R.drawable.minus: R.drawable.plus);
         mFab.setBackgroundTintList(sCurrentState ?
-                ColorStateList.valueOf(context.getResources().getColor(R.color.colorAttentionDark, null)) :
-                ColorStateList.valueOf(context.getResources().getColor(R.color.colorConversionDark, null)));
-        mFab.setContentDescription(sCurrentState ? context.getString(R.string.description_collected_remove_button) :
-                mParentActivity.getString(R.string.description_collected_add_button));
+                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorAttentionDark, null)) :
+                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversionDark, null)));
+        mFab.setContentDescription(sCurrentState ? mContext.getString(R.string.description_collected_remove_button) :
+                mContext.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
     }
 
@@ -221,7 +227,7 @@ public class DetailFragment extends Fragment {
                 .setToolbarColor(getResources()
                         .getColor(R.color.colorPrimaryDark, null))
                 .build()
-                .launchUrl(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
+                .launchUrl(mContext, Uri.parse(sCompany.getNavigatorUrl()));
         mParentActivity.getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
     }
 
@@ -236,7 +242,7 @@ public class DetailFragment extends Fragment {
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
-            else DatabaseManager.startActionUntargetCompany(mParentActivity, sCompany);
+            else DatabaseManager.startActionUntargetCompany(mContext, sCompany);
             mEnabled = false;
         }
     }

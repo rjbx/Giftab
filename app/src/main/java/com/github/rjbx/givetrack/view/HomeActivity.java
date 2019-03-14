@@ -371,13 +371,7 @@ public class HomeActivity extends AppCompatActivity implements
     /**
      * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
      */
-    private void launchCustomTabs(String url) {
-        new CustomTabsIntent.Builder()
-                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                .build()
-                .launchUrl(this, Uri.parse(url));
-        getIntent().setAction(ACTION_CUSTOM_TABS);
-    }
+    private void launchCustomTabs(String url) { ViewUtilities.launchBrowserIntent(this, Uri.parse(url)); }
 
     /**
      * Provides logic and views for a default screen when others are unavailable.

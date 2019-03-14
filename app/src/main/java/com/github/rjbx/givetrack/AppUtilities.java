@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
@@ -13,6 +14,8 @@ import com.github.rjbx.givetrack.view.IndexActivity;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.Map;
+import java.util.Set;
 
 public final class AppUtilities {
 
@@ -51,6 +54,19 @@ public final class AppUtilities {
                             IndexActivity.ACTION_SPAWN_INTENT,
                             JournalActivity.ACTION_RECORD_INTENT
                     ));
+        }
+    }
+
+    public static void mapToSharedPreferences(Map<String, Object> map, SharedPreferences sp) {
+
+        Set<Map.Entry<String, Object>> entrySet = map.entrySet();
+        for (Map.Entry<String, Object> entry : entrySet) {
+            Object value = entry.getValue();
+            if (value instanceof String) sp.edit().putString(entry.getKey(), (String) value).apply();
+            if (value instanceof Boolean) sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
+            if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
+            if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
+            if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
         }
     }
 

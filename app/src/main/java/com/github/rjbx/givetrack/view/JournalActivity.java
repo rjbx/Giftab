@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.core.app.ShareCompat;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -283,8 +281,9 @@ public class JournalActivity extends AppCompatActivity implements
                         String formattedDate = DATE_FORMATTER.format(mDeletedTime);
                         mDeletedTime = values.getTime();
                         mRemoveDialog = new AlertDialog.Builder(JournalActivity.this).create();
-                        String messageArgs = String.format("this donation for %s in the amount of %s on %s", name, amount, formattedDate);
-                        mRemoveDialog.setMessage(getString(R.string.dialog_removal_record, messageArgs));
+                        String messageArgs = String.format("this contribution for %s in the amount of %s on %s", name, amount, formattedDate);
+                        String screenName = JournalActivity.class.getSimpleName().replace("Activity", "").toLowerCase();
+                        mRemoveDialog.setMessage(getString(R.string.message_remove_entry, messageArgs, screenName));
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), JournalActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), JournalActivity.this);
                         mRemoveDialog.show();
@@ -295,11 +294,7 @@ public class JournalActivity extends AppCompatActivity implements
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getNavigatorUrl();
-                        new CustomTabsIntent.Builder()
-                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                                .build()
-                                .launchUrl(JournalActivity.this, Uri.parse(url));
-                        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+                        ViewUtilities.launchBrowserIntent(JournalActivity.this, Uri.parse(url));
                         break;
                     default:
                 }
@@ -467,15 +462,9 @@ public class JournalActivity extends AppCompatActivity implements
                 long time = values.getTime();
                 float impact = Float.parseFloat(values.getImpact());
 
-                Intent shareIntent = ShareCompat.IntentBuilder.from(JournalActivity.this)
-                        .setType("text/plain")
-                        .setText(String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
-                                DATE_FORMATTER.format(new Date(time)),
-                                CURRENCY_FORMATTER.format(impact),
-                                name,
-                                getString(R.string.app_name)))
-                        .getIntent();
-                startActivity(shareIntent);
+                String textMessage = String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
+                        DATE_FORMATTER.format(new Date(time)), CURRENCY_FORMATTER.format(impact), name, getString(R.string.app_name));
+                ViewUtilities.launchShareIntent(JournalActivity.this, textMessage);
             }
 
             /**

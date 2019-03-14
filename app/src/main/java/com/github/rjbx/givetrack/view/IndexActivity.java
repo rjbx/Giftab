@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -308,11 +307,7 @@ public class IndexActivity extends AppCompatActivity implements
                         break;
                     case ItemTouchHelper.RIGHT:
                         final String url = values.getNavigatorUrl();
-                        new CustomTabsIntent.Builder()
-                                .setToolbarColor(getResources().getColor(R.color.colorPrimaryDark, null))
-                                .build()
-                                .launchUrl(IndexActivity.this, Uri.parse(url));
-                        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
+                        ViewUtilities.launchBrowserIntent(IndexActivity.this, Uri.parse(url));
                         break;
                     default:
                 }

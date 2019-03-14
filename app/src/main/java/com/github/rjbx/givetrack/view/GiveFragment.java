@@ -12,7 +12,6 @@ import android.os.Handler;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -78,6 +77,7 @@ public class GiveFragment extends Fragment implements
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private static double[] sPercentages;
+    private Context mContext;
     private InputMethodManager mMethodManager;
     private HomeActivity mParentActivity;
     private DetailFragment mDetailFragment;
@@ -112,6 +112,12 @@ public class GiveFragment extends Fragment implements
         return fragment;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
     /**
      * Generates a Layout for the Fragment.
      */
@@ -138,6 +144,7 @@ public class GiveFragment extends Fragment implements
                 sValuesArray = valuesArray;
             }
             sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            if (sUser == null) mParentActivity.recreate();
         }
 
         mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
@@ -198,7 +205,7 @@ public class GiveFragment extends Fragment implements
                 }
 
             });
-            mMethodManager = (InputMethodManager) mParentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            mMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
         if (mListAdapter != null) mListAdapter.swapValues();
     }
@@ -275,7 +282,7 @@ public class GiveFragment extends Fragment implements
                         return false;
                     }
                     sUser.setGiveImpact(String.valueOf(mAmountTotal));
-                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                    DatabaseManager.startActionUpdateUser(mContext, sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -298,7 +305,7 @@ public class GiveFragment extends Fragment implements
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             sUser.setGiveImpact(String.valueOf(mAmountTotal));
-            DatabaseManager.startActionUpdateUser(getContext(), sUser);
+            DatabaseManager.startActionUpdateUser(mContext, sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -312,7 +319,7 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         sUser.setGiveImpact(String.valueOf(mAmountTotal));
-        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+        DatabaseManager.startActionUpdateUser(mContext, sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
@@ -344,7 +351,7 @@ public class GiveFragment extends Fragment implements
             sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        DatabaseManager.startActionUpdateTarget(getContext(), sValuesArray);
+        DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -360,7 +367,7 @@ public class GiveFragment extends Fragment implements
             double totalImpact = Float.parseFloat(target.getImpact()) + transactionImpact;
             target.setImpact(String.format(Locale.getDefault(), "%.2f", totalImpact));
         }
-        DatabaseManager.startActionUpdateTarget(getContext(), sValuesArray);
+        DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < sValuesArray.length; i++) {
@@ -378,8 +385,8 @@ public class GiveFragment extends Fragment implements
             sUser.setGiveAnchor(System.currentTimeMillis());
             sUser.setGiveTiming(0);
         }
-        DatabaseManager.startActionUpdateUser(getContext(), sUser);
-        DatabaseManager.startActionUpdateRecord(getContext(), records.toArray(new Record[0]));
+        DatabaseManager.startActionUpdateUser(mContext, sUser);
+        DatabaseManager.startActionUpdateRecord(mContext, records.toArray(new Record[0]));
     }
 
     /**
@@ -485,9 +492,9 @@ public class GiveFragment extends Fragment implements
          */
         @Override public @NonNull ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
-            if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(parent.getContext())
+            if (viewType == VIEW_TYPE_CHARITY) view = LayoutInflater.from(mContext)
                     .inflate(R.layout.item_give, parent, false);
-            else view = LayoutInflater.from(parent.getContext())
+            else view = LayoutInflater.from(mContext)
                     .inflate(R.layout.button_collect, parent, false);
             return new ViewHolder(view);
         }
@@ -517,7 +524,7 @@ public class GiveFragment extends Fragment implements
 
             if (position == getItemCount() - 1 && addButton != null) {
                 addButton.setOnClickListener(clickedView -> {
-                    Intent spawnIntent = new Intent(getContext(), IndexActivity.class);
+                    Intent spawnIntent = new Intent(mContext, IndexActivity.class);
                     startActivity(spawnIntent);
                 });
                 return;
@@ -610,7 +617,7 @@ public class GiveFragment extends Fragment implements
                 Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
                 syncPercentages();
                     sUser.setGiveReset(false);
-                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                    DatabaseManager.startActionUpdateUser(mContext, sUser);
             }
             notifyDataSetChanged();
         }
@@ -655,7 +662,7 @@ public class GiveFragment extends Fragment implements
                             Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseManager.startActionRemoveTarget(getContext(), target);
+                            DatabaseManager.startActionRemoveTarget(mContext, target);
                             break;
                         default:
                     }
@@ -670,8 +677,9 @@ public class GiveFragment extends Fragment implements
                 Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
 
-                mRemoveDialog = new AlertDialog.Builder(getContext()).create();
-                mRemoveDialog.setMessage(mParentActivity.getString(R.string.dialog_removal_charity, name));
+                if (mContext == null) return;
+                mRemoveDialog = new AlertDialog.Builder(mContext).create();
+                mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mRemoveDialog.show();
@@ -715,22 +723,18 @@ public class GiveFragment extends Fragment implements
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
 
-                Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                        .setType("text/plain")
-                        .setText(String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
-                                frequency,
-                                CURRENCY_FORMATTER.format(impact),
-                                name,
-                                getString(R.string.app_name)))
-                        .getIntent();
-                startActivity(shareIntent);
+                String textMessage =
+                        String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
+                                frequency, CURRENCY_FORMATTER.format(impact), name, getString(R.string.app_name));
+                ViewUtilities.launchShareIntent(mParentActivity, textMessage);
             }
 
             /**
              * Defines behavior on click of contact button.
              */
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
-                mContactDialog = new AlertDialog.Builder(getContext()).create();
+                if (mContext == null) return;
+                mContactDialog = new AlertDialog.Builder(mContext).create();
                 ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();

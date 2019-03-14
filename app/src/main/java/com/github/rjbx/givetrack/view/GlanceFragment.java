@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.view;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ShareCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
@@ -91,6 +89,7 @@ public class GlanceFragment extends Fragment implements
     private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
+    private Context mContext;
     private HomeActivity mParentActivity;
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
@@ -125,6 +124,12 @@ public class GlanceFragment extends Fragment implements
         GlanceFragment fragment = new GlanceFragment();
         if (args != null) fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 
     /**
@@ -295,7 +300,7 @@ public class GlanceFragment extends Fragment implements
         Calendar calendar = Calendar.getInstance();
         if (sUser.getGlanceAnchor() != 0) calendar.setTimeInMillis(sUser.getGlanceAnchor());
         DatePickerDialog datePicker = new DatePickerDialog(
-                getContext(),
+                mContext,
                 this,
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -310,9 +315,8 @@ public class GlanceFragment extends Fragment implements
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
         mAnchorDate = calendar.getTimeInMillis();
-        Context context = getContext();
-        if (context == null) return;
-        mTimeDialog = new AlertDialog.Builder(context).create();
+        if (mContext == null) return;
+        mTimeDialog = new AlertDialog.Builder(mContext).create();
         mTimeDialog.setMessage(String.format("Do you want to display your total contributions %s?", mTimeTracked));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
@@ -329,14 +333,10 @@ public class GlanceFragment extends Fragment implements
     void shareText() {
         String amount = mViewTracked ? mTracked : mTotal;
         String timeframe = mViewTracked ? mTimeTracked : mTotalTime;
-        Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                .setType("text/plain")
-                .setText(String.format("My %s in donations %s have been added to my personal record with #%s App",
-                        amount,
-                        timeframe,
-                        getString(R.string.app_name)))
-                .getIntent();
-        startActivity(shareIntent);
+        String textMessage =
+                String.format("My %s in donations %s have been added to my personal record with #%s App",
+                        amount, timeframe, getString(R.string.app_name));
+        ViewUtilities.launchShareIntent(mParentActivity, textMessage);
     }
 
     /**
@@ -369,8 +369,7 @@ public class GlanceFragment extends Fragment implements
      */
     private void renderCharts() {
 
-        Context context = getContext();
-        if (context == null) return;
+        if (mContext == null) return;
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
@@ -483,7 +482,7 @@ public class GlanceFragment extends Fragment implements
         percentageDesc.setTextSize(fontSize);
         percentageDesc.setTextColor(Color.WHITE);
 
-        int margin = (int) context.getResources().getDimension(R.dimen.item_initial_top_margin);
+        int margin = (int) mContext.getResources().getDimension(R.dimen.item_initial_top_margin);
         float labelSize = fontSize * 1.35f;
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -665,20 +664,20 @@ public class GlanceFragment extends Fragment implements
     private void expandChart(Chart chart, String title, String stats) {
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
-        mChartDialog = new AlertDialog.Builder(mParentActivity).create();
+        mChartDialog = new AlertDialog.Builder(mContext).create();
         mChartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
         mChartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.action_share), this);
         Chart chartClone;
 
         if (chart instanceof PieChart) {
-            chartClone = new PieChart(mParentActivity);
+            chartClone = new PieChart(mContext);
             chartClone.setLayoutParams(chart.getLayoutParams());
             ((PieChart) chartClone).setData(((PieChart) chart).getData());
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
             ((PieChart) chartClone).setEntryLabelTextSize(fontSize * 1.25f);
         } else if (chart instanceof HorizontalBarChart) {
-            chartClone = new HorizontalBarChart(mParentActivity);
+            chartClone = new HorizontalBarChart(mContext);
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
             chartClone.getXAxis().setTextSize(fontSize / 1.1f);
             ((HorizontalBarChart) chartClone).setData(((HorizontalBarChart) chart).getData());
@@ -694,19 +693,19 @@ public class GlanceFragment extends Fragment implements
         chartClone.setMinimumHeight(500);
 
         int padding = (int) getResources().getDimension(R.dimen.button_padding);
-        ScrollView scrollView = new ScrollView(mParentActivity);
-        LinearLayout linearLayout = new LinearLayout(mParentActivity);
+        ScrollView scrollView = new ScrollView(mContext);
+        LinearLayout linearLayout = new LinearLayout(mContext);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         linearLayout.setPadding(padding, padding, padding, padding);
 
-        TextView titleView = new TextView(mParentActivity);
+        TextView titleView = new TextView(mContext);
         titleView.setText(title);
         titleView.setTextSize(fontSize * 1.25f);
         titleView.setTextColor(Color.BLACK);
         titleView.setTypeface(Typeface.DEFAULT_BOLD);
         titleView.setGravity(Gravity.CENTER_HORIZONTAL);
 
-        TextView statsView = new TextView(mParentActivity);
+        TextView statsView = new TextView(mContext);
         statsView.setText(stats);
         statsView.setTextSize(fontSize * 1.2f);
         statsView.setTextColor(Color.BLACK);
@@ -731,13 +730,8 @@ public class GlanceFragment extends Fragment implements
      * Builds and launches implicit text messaging Intent.
      */
     private void shareDialogText(String message) {
-        Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
-                .setType("text/plain")
-                .setText(String.format("My giving trends: %s\n#%s App",
-                        message,
-                        getString(R.string.app_name)))
-                .getIntent();
-        startActivity(shareIntent);
+        String textMessage = String.format("My giving trends: %s\n#%s App", message, getString(R.string.app_name));
+        ViewUtilities.launchShareIntent(mParentActivity, textMessage);
     }
 
     /**

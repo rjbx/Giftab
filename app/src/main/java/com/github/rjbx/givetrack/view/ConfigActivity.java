@@ -31,17 +31,20 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
+import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.Spawn;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -120,7 +123,7 @@ public class ConfigActivity
                     mUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                     if (sharedPreferences.getAll().isEmpty())
-                        mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+                        AppUtilities.mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
                     break;
                 }
             } while (data.moveToNext());
@@ -376,16 +379,7 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
-                mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_record, getString(R.string.snippet_all_charities)));
-                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
-                mClearDialog.show();
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mClearDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                return true;
-            } else if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
                 if ((boolean) newValue) {
                     preference.setEnabled(true);
                 } else preference.setEnabled(false);
@@ -402,8 +396,9 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+                String entryName = Spawn.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.message_clear_all, entryName, "fetchinng", entryName));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
@@ -515,8 +510,9 @@ public class ConfigActivity
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+                String entryName = Target.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_charity, getString(R.string.snippet_all_charities)));
+                mClearDialog.setMessage(getString(R.string.message_clear_all, entryName, "saving", entryName));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
@@ -649,8 +645,9 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+                String entryName = Record.class.getSimpleName().toLowerCase();
+                mClearDialog.setMessage(getString(R.string.message_clear_all, entryName, "creating", entryName));
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
-                mClearDialog.setMessage(getString(R.string.dialog_removal_record, getString(R.string.snippet_all_charities)));
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mClearDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
                 mClearDialog.show();
@@ -790,19 +787,6 @@ public class ConfigActivity
                     default:
                 }
             }
-        }
-    }
-    
-    private static void mapToSharedPreferences(Map<String, Object> map, SharedPreferences sp) {
-
-        Set<Map.Entry<String, Object>> entrySet = map.entrySet();
-        for (Map.Entry<String, Object> entry : entrySet) {
-            Object value = entry.getValue();
-            if (value instanceof String) sp.edit().putString(entry.getKey(), (String) value).apply();
-            if (value instanceof Boolean) sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
-            if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
-            if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
-            if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
         }
     }
 }
