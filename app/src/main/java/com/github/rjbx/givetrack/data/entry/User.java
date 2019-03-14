@@ -13,7 +13,9 @@ import java.util.Map;
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
 /**
- * Interfaces with {@link com.google.firebase.auth.FirebaseUser} through object relational mapping.
+ * Stores data about an end user; initialized from {@link com.google.firebase.auth.FirebaseUser},
+ * persisted locally with {@link android.content.ContentProvider}
+ * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
 @IgnoreExtraProperties
 public class User implements Entry, Parcelable, Cloneable {

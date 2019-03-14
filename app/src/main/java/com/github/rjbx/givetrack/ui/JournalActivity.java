@@ -65,8 +65,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 //TODO: Implement toggle for type attribute and launcher for memo
 /**
- * Presents a list of API request generated items, which when touched, arrange the list of items and
- * item details side-by-side using two vertical panes.
+ * Presents a list of editable giving records with toggleable detail pane.
  */
 public class JournalActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -121,7 +120,7 @@ public class JournalActivity extends AppCompatActivity implements
     }
 
     /**
-     * Saves Layout configuration state.
+     * Persists values through destructive lifecycle changes.
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -152,6 +151,9 @@ public class JournalActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
+     */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, mUser.getJournalSort() + " " + mUser.getJournalOrder());
@@ -264,13 +266,13 @@ public class JournalActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Defines behavior on interactions with list items.
+     */
     private ItemTouchHelper.SimpleCallback getSimpleCallback(int dragDirs, int swipeDirs) {
         return new ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
 
-            @Override public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
+            @Override public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) { return false; }
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = (int) viewHolder.itemView.getTag();
                 Record values = mAdapter.mValuesArray[position];
@@ -448,6 +450,9 @@ public class JournalActivity extends AppCompatActivity implements
                 }
             }
 
+            /**
+             * Defines behavior on click of amount view.
+             */
             @OnClick(R.id.record_amount_text) void editAmount(EditText v) {
                 if (isDualPane()) togglePane(v);
             }
@@ -515,8 +520,10 @@ public class JournalActivity extends AppCompatActivity implements
                 }
             }
 
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            /**
+             * Updates the DatePicker with the date selected from the Dialog.
+             */
+            @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
                 int position = (int) view.getTag();
                 Calendar calendar = Calendar.getInstance();
@@ -535,8 +542,10 @@ public class JournalActivity extends AppCompatActivity implements
                 button.setTag(position);
             }
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+            /**
+             * Defines behavior onClick of each DialogInterface option.
+             */
+            @Override public void onClick(DialogInterface dialog, int which) {
                 if (dialog == mDateDialog) {
                     switch (which) {
                         case AlertDialog.BUTTON_NEUTRAL:
@@ -552,6 +561,9 @@ public class JournalActivity extends AppCompatActivity implements
                 }
             }
 
+            /**
+             * Defines behavior on click of record item view.
+             */
             private void togglePane(View v) {
                 int position = (int) v.getTag();
                 Record values = mValuesArray[position];

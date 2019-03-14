@@ -51,6 +51,9 @@ import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import timber.log.Timber;
 
+/**
+ * Accesses and simultaneously operates on local and remote databases to manage user requests.
+ */
 public final class DatabaseAccessor {
 
     static void fetchSpawn(Context context) {
@@ -343,9 +346,6 @@ public final class DatabaseAccessor {
         updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    /**
-     * Updates {@link FirebaseUser} attributes from {@link SharedPreferences}.
-     */
     @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
         if (entryType.equals(Spawn.class)) return;

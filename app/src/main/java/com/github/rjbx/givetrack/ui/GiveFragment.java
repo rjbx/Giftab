@@ -8,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -67,9 +66,7 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 // TODO: Implement OnTouchListeners for repeating actions on button long presses
 /**
- * Provides the logic and views for a donation management screen.
- * Presents a list of collected items, which when touched, arrange the list of items and
- * item details side-by-side using two vertical panes.
+ * Provides the logic and views for a user activity management screen.
  */
 public class GiveFragment extends Fragment implements
         DetailFragment.MasterDetailFlow,
@@ -226,7 +223,7 @@ public class GiveFragment extends Fragment implements
     }
 
     /**
-     * Saves Layout configuration state.
+     * Persists values through destructive lifecycle changes.
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

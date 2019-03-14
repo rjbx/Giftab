@@ -49,14 +49,12 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SPAWN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
- * Presents a list of API request generated items, which when touched, arrange the list of items and
- * item details side-by-side using two vertical panes.
+ * Presents a list of entities spawned from a remote data API with toggleable detail pane.
  */
 public class IndexActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
-
 
     public static final String ACTION_SPAWN_INTENT = "com.github.rjbx.givetrack.ui.action.SPAWN_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
@@ -112,7 +110,7 @@ public class IndexActivity extends AppCompatActivity implements
     }
 
     /**
-     * Saves Layout configuration state.
+     * Persists values through destructive lifecycle changes.
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -143,6 +141,9 @@ public class IndexActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
+     */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_SPAWN: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_SPAWN, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
@@ -208,9 +209,6 @@ public class IndexActivity extends AppCompatActivity implements
         mAdapter.swapValues(null);
     }
 
-
-
-
     /**
      * Indicates whether the MasterDetailFlow is in dual pane mode.
      */
@@ -269,6 +267,9 @@ public class IndexActivity extends AppCompatActivity implements
         fetchResults();
     }
 
+    /**
+     * Displays a dialog with instructions.
+     */
     private void showDialog() {
         mSpawnDialog = new AlertDialog.Builder(this).create();
         mSpawnDialog.setMessage(getString(R.string.dialog_filter_setup));
@@ -279,6 +280,10 @@ public class IndexActivity extends AppCompatActivity implements
         mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
     }
 
+    /**
+     * Fetches entities spawned from the remote data API based on the settings defined in
+     * {@link ConfigActivity.IndexPreferenceFragment}.
+     */
     private void fetchResults() {
         mSpawnProgress.setVisibility(View.VISIBLE);
 
@@ -286,13 +291,13 @@ public class IndexActivity extends AppCompatActivity implements
         mSnackbar = getString(R.string.message_spawn_refresh);
     }
 
+    /**
+     * Defines behavior on interactions with list items.
+     */
     private ItemTouchHelper.SimpleCallback getSimpleCallback(int dragDirs, int swipeDirs) {
         return new ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
 
-            @Override public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
+            @Override public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) { return false; }
             @Override public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = (int) viewHolder.itemView.getTag();
                 Spawn values = mValuesArray[position];
@@ -323,6 +328,10 @@ public class IndexActivity extends AppCompatActivity implements
         private Spawn[] mValuesArray;
         int mLastPosition;
 
+        /**
+         * Instantiates the {@link RecyclerView.Adapter} and locks requests to populate
+         * until active {@link User} is returned from {@link Loader} callback.
+         */
         ListAdapter() {
             super();
             mLock = true;

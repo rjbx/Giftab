@@ -70,7 +70,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 // TODO: Add toggle for type as with interval attribute
 /**
- * Provides the logic and views for an activity overview screen.
+ * Provides the logic and views for a user activity overview screen.
  */
 public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
@@ -303,8 +303,10 @@ public class GlanceFragment extends Fragment implements
         datePicker.show();
     }
 
-    @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+    /**
+     * Updates the DatePicker with the date selected from the Dialog.
+     */
+    @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, month, dayOfMonth);
         mAnchorDate = calendar.getTimeInMillis();
@@ -337,6 +339,9 @@ public class GlanceFragment extends Fragment implements
         startActivity(shareIntent);
     }
 
+    /**
+     * Handles changes between and populates tracked and total impact views.
+     */
     private void toggleAmount(TextView amountLabel, boolean viewTracked) {
         String amountStr;
         String labelStr;
@@ -654,6 +659,9 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.invalidate();
     }
 
+    /**
+     * Builds and launches dialog populated with chart view and description.
+     */
     private void expandChart(Chart chart, String title, String stats) {
 
         float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
@@ -719,6 +727,9 @@ public class GlanceFragment extends Fragment implements
         window.getDecorView().setTag(String.format("%s", stats));
     }
 
+    /**
+     * Builds and launches implicit text messaging Intent.
+     */
     private void shareDialogText(String message) {
         Intent shareIntent = ShareCompat.IntentBuilder.from(mParentActivity)
                 .setType("text/plain")
@@ -729,6 +740,9 @@ public class GlanceFragment extends Fragment implements
         startActivity(shareIntent);
     }
 
+    /**
+     * Defines listener for handling chart interactions.
+     */
     class OnSelectedChartOnGestureListener implements OnChartGestureListener {
 
         Chart mView;

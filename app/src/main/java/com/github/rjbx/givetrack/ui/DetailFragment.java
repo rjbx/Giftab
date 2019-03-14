@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.database.Cursor;
@@ -44,7 +43,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 /**
- * Provides the logic and views for a single Charity detail screen.
+ * Provides the logic and views for a single detail screen.
  */
 public class DetailFragment extends Fragment {
 
@@ -173,7 +172,7 @@ public class DetailFragment extends Fragment {
     }
 
     /**
-     * Saves {@link WebView} scroll state.
+     * Persists values through destructive lifecycle changes.
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

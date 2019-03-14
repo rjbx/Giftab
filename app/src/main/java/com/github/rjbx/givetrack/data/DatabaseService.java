@@ -12,7 +12,6 @@ import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
-import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
@@ -33,7 +32,7 @@ import java.util.concurrent.Executor;
 import static com.github.rjbx.givetrack.data.DatabaseAccessor.DEFAULT_VALUE_STR;
 
 /**
- * Handles asynchronous task requests in a service on a separate handler thread.
+ * Interfaces with data requests from the UI thread and delegates them to a separate handler thread.
  */
 public class DatabaseService extends IntentService {
 
@@ -452,32 +451,35 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action FetchSpawn in the provided background thread with the provided parameters.
+     * Handles action FetchSpawn on the service worker thread.
      */
     private void handleActionFetchSpawn() {
         DatabaseAccessor.fetchSpawn(this);
     }
 
     /**
-     * Handles action FetchTargetin the provided background thread.
+     * Handles action FetchTarget on the service worker thread.
      */
     private void handleActionFetchTarget() {
         DatabaseAccessor.fetchTarget(this);
     }
 
     /**
-     * Handles action FetchRecord in the provided background thread.
+     * Handles action FetchRecord on the service worker thread.
      */
     private void handleActionFetchRecord() {
         DatabaseAccessor.fetchRecord(this);
     }
 
+    /**
+     * Handles action FetchUser on the service worker thread.
+     */
     private void handleActionFetchUser() {
         DatabaseAccessor.fetchUser(this);
     }
 
     /**
-     * Handles action GiveSpawn in the provided background thread with the provided parameters.
+     * Handles action GiveSpawn on the service worker thread.
      */
     private void handleActionGiveSpawn(Spawn spawn) {
 
@@ -514,6 +516,9 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addTarget(this, target);
     }
 
+    /**
+     * Handles action TargetRecord on the service worker thread.
+     */
     private void handleActionTargetRecord(Record record) {
 
         double impact = 0d;
@@ -532,6 +537,9 @@ public class DatabaseService extends IntentService {
             }
     }
 
+    /**
+     * Handles action RecordTarget on the service worker thread.
+     */
     private void handleActionRecordTarget(Target... target) {
 
         Record[] record = new Record[target.length];
@@ -544,6 +552,9 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addRecord(this, record);
     }
 
+    /**
+     * Handles action UntargetCompany on the service worker thread.
+     */
     private void handleActionUntargetCompany(String uid) {
 
         Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
@@ -552,21 +563,21 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action RemoveSpawn in the provided background thread with the provided parameters.
+     * Handles action RemoveSpawn on the service worker thread.
      */
     private void handleActionRemoveSpawn(Spawn... spawns) {
         DatabaseAccessor.removeSpawn(this, spawns);
     }
 
     /**
-     * Handles action RemoveTargetin the provided background thread with the provided parameters.
+     * Handles action RemoveTarget on the service worker thread.
      */
     private void handleActionRemoveTarget(Target... target) {
         DatabaseAccessor.removeTarget(this, target);
     }
 
     /**
-     * Handles action RemoveRecord in the provided background thread with the provided parameters.
+     * Handles action RemoveRecord on the service worker thread.
      */
     private void handleActionRemoveRecord(Record... records) {
 
@@ -586,6 +597,9 @@ public class DatabaseService extends IntentService {
         }
     }
 
+    /**
+     * Handles action RemoveUser on the service worker thread.
+     */
     private void handleActionRemoveUser(User... users) {
 
         List<Spawn> spawns = DatabaseAccessor.getSpawn(this);
@@ -607,21 +621,21 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action ResetSpawn in the provided background thread with the provided parameters.
+     * Handles action ResetSpawn on the service worker thread.
      */
     private void handleActionResetSpawn() {
         DatabaseAccessor.removeSpawn(this);
     }
 
     /**
-     * Handles action ResetTargetin the provided background thread with the provided parameters.
+     * Handles action ResetTarget on the service worker thread.
      */
     private void handleActionResetTarget() {
         DatabaseAccessor.removeTarget(this);
     }
 
     /**
-     * Handles action ResetRecord in the provided background thread with the provided parameters.
+     * Handles action ResetRecord in the provided background.
      */
     private void handleActionResetRecord() {
 
@@ -634,6 +648,9 @@ public class DatabaseService extends IntentService {
         DatabaseAccessor.addTarget(this, targets.toArray(new Target[0]));
     }
 
+    /**
+     * Handles action ResetUser on the service worker thread.
+     */
     private void handleActionResetUser() {
         DatabaseAccessor.removeSpawn(this);
         DatabaseAccessor.removeTarget(this);
@@ -642,22 +659,28 @@ public class DatabaseService extends IntentService {
     }
 
     /**
-     * Handles action UpdatePercent in the provided background thread with the provided parameters.
+     * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
        DatabaseAccessor.addTarget(this, targets);
     }
 
+    /**
+     * Handles action UpdateRecord on the service worker thread.
+     */
     private void handleActionUpdateRecord(Record... records) {
         DatabaseAccessor.addRecord(this, records);
     }
 
+    /**
+     * Handles action UpdateUser on the service worker thread.
+     */
     private void handleActionUpdateUser(User... user) {
         DatabaseAccessor.addUser(this, user);
     }
 
     /**
-     * Handles action ResetData in the provided background thread.
+     * Handles action ResetData on the service worker thread.
      */
     private void handleActionResetData() {
         DatabaseAccessor.removeSpawn(this);

@@ -42,6 +42,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Disable remote persistence for guests
 
+/**
+ * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
+ */
 public class AuthActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -112,6 +115,9 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
+     */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
@@ -119,6 +125,9 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Replaces old data that is to be subsequently released from the {@link Loader}.
+     */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
@@ -133,12 +142,17 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Tells the application to remove any stored references to the {@link Loader} data.
+     */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mUsers = null;
     }
 
+    /**
+     * Processes actions defined by the source Intent.
+     */
     private void handleAction(String action) {
-
         // TODO: Enable user selection
         User user = null;
         for (User u : mUsers) if (u.getUserActive()) { user = u; break; }

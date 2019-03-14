@@ -6,6 +6,9 @@ import android.os.Looper;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * Exposes main and worker threads for synchronizing code execution.
+ */
 public final class AppExecutors {
 
     private static final Object LOCK = new Object();

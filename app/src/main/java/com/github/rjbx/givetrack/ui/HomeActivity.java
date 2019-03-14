@@ -63,7 +63,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
- * Provides the main screen for this application.
+ * Provides the application home screen; manages {@link CursorLoader} and {@link ViewPager} for
+ * {@link GlanceFragment} and {@link GiveFragment}.
  */
 public class HomeActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
@@ -183,14 +184,19 @@ public class HomeActivity extends AppCompatActivity implements
         } return false;
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
+    /**
+     * Persists values through destructive lifecycle changes.
+     */
+    @Override protected void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelableArray(STATE_TARGET_ARRAY, mTargetArray);
         outState.putParcelableArray(STATE_RECORD_ARRAY, mRecordArray);
         outState.putParcelable(STATE_ACTIVE_USER, mUser);
         super.onSaveInstanceState(outState);
     }
 
+    /**
+     * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
+     */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_TARGET: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_TARGET, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
@@ -411,8 +417,10 @@ public class HomeActivity extends AppCompatActivity implements
             return rootView;
         }
 
-        @Override
-        public void onResume() {
+        /**
+         * Manages the display of the loading icon.
+         */
+        @Override public void onResume() {
             super.onResume();
             Bundle arguments = getArguments();
             if (arguments == null) return;
@@ -423,8 +431,10 @@ public class HomeActivity extends AppCompatActivity implements
             }
         }
 
-        @Override
-        public void onPause() {
+        /**
+         * Manages the display of the loading icon.
+         */
+        @Override public void onPause() {
             if (mLaunchProgress != null) mLaunchProgress.setVisibility(View.GONE);
             if (mLaunchIcon != null) mLaunchIcon.setVisibility(View.GONE);
             super.onPause();

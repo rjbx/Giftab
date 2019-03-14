@@ -22,7 +22,7 @@ import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 /**
- * Implements App Widget functionality.
+ * Provides a home screen interface that displays user data and offers navigation shortcuts.
  */
 public class AppWidget extends AppWidgetProvider {
 

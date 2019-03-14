@@ -11,6 +11,11 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+/**
+ * Stores data about a giving target; associated with a {@link com.google.firebase.auth.FirebaseUser},
+ * persisted locally with {@link android.content.ContentProvider}
+ * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
+ */
 @IgnoreExtraProperties
 public class Target extends Spawn implements Company, Rateraid.RatedObject<Target>, Parcelable, Cloneable {
 
