@@ -187,19 +187,22 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
 
         // TODO Update recalibration with Rateraid
-        List<Target> targetList = getTarget(context);
-        int[] removalIndeces = new int[targetList.size()];
-        for (Target t1 : target) for (Target t2 : targetList)
-            if (t2.getId().equals(t1.getId()))
-                removalIndeces[targetList.indexOf(t2)] = 1;
-        for (int i = 0; i < removalIndeces.length; i++)
-            if (removalIndeces[i] == 1) targetList.remove(i);
+        if (target != null && target.length > 0) {
+            List<Target> targetList = getTarget(context);
+            int[] removalIndeces = new int[targetList.size()];
+            for (Target t1 : target)
+                for (Target t2 : targetList)
+                    if (t2.getId().equals(t1.getId()))
+                        removalIndeces[targetList.indexOf(t2)] = 1;
+            for (int i = 0; i < removalIndeces.length; i++)
+                if (removalIndeces[i] == 1) targetList.remove(i);
 
-        if (!targetList.isEmpty()) {
-            Iterator<Target> iterator = targetList.iterator();
-            do iterator.next().setPercent(1d / targetList.size());
-            while (iterator.hasNext());
-            target = targetList.toArray(new Target[0]);
+            if (!targetList.isEmpty()) {
+                Iterator<Target> iterator = targetList.iterator();
+                do iterator.next().setPercent(1d / targetList.size());
+                while (iterator.hasNext());
+                target = targetList.toArray(new Target[0]);
+            }
         }
 
         addEntriesToLocal(local, Target.class, stamp, true, target);
@@ -324,7 +327,7 @@ public final class DatabaseAccessor {
 
         if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
-        if (entries != null) {
+        if (entries != null && entries.length > 0) {
             ContentValues[] values = new ContentValues[entries.length];
             for (int i = 0; i < values.length; i++) {
                 values[i] = entries[i].toContentValues();
@@ -349,7 +352,7 @@ public final class DatabaseAccessor {
 
         if (reset) childReference.removeValue();
 
-        if (entries != null) {
+        if (entries != null && entries.length > 0) {
             for (T entry : entries) {
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
                 childReference.updateChildren(entry.toParameterMap());
