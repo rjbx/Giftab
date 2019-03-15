@@ -546,7 +546,7 @@ public final class DatabaseManager extends IntentService {
             String impactStr;
             switch (round) {
                 case 0: impactStr = String.valueOf((Math.floor(totalImpact * 100)) / 100); break;
-                case 1: impactStr = String.format("%.2s", totalImpact); break;
+                case 1: impactStr = String.format("%.2f", totalImpact); break;
                 default: impactStr = String.valueOf(totalImpact);
             }
             t.setImpact(impactStr);
@@ -565,7 +565,7 @@ public final class DatabaseManager extends IntentService {
             String impactStr;
             switch (round) {
                 case 0: impactStr = String.valueOf((Math.floor(transactionImpact * 100)) / 100); break;
-                case 1: impactStr = String.format("%.2s", transactionImpact); break;
+                case 1: impactStr = String.format("%.2f", transactionImpact); break;
                 default: impactStr = String.valueOf(transactionImpact);
             }
             record.setImpact(impactStr);
