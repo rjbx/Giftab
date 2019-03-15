@@ -397,8 +397,6 @@ public class GlanceFragment extends Fragment implements
         int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
         int backgroundColor = getResources().getColor(R.color.colorSlate, null);
 
-        Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
         float recordsTotal = 0;
         float[] intervalAggregates = new float[10000];
 
