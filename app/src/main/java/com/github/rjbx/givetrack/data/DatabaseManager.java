@@ -542,7 +542,14 @@ public final class DatabaseManager extends IntentService {
             t.setFrequency(t.getFrequency() + 1);
             double transactionImpact = t.getPercent() * giveImpact;
             double totalImpact = Float.parseFloat(t.getImpact()) + transactionImpact;
-            t.setImpact(String.valueOf(totalImpact));
+            int round = activeUser.getGiveRounding();
+            String impactStr;
+            switch (round) {
+                case 0: impactStr = String.valueOf(totalImpact); break;
+                case 1: impactStr = String.format("%.2s", totalImpact); break;
+                default: impactStr = String.valueOf((Math.floor(totalImpact * 100)) / 100); break;
+            }
+            t.setImpact(impactStr);
         } DatabaseAccessor.addTarget(this, target);
 
         List<Record> records = new ArrayList<>();
