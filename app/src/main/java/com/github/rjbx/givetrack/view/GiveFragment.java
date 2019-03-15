@@ -69,14 +69,14 @@ public class GiveFragment extends Fragment implements
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_USER";
     private static final String TARGETS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_TARGETS";
     private static final String PERCENTS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_PERCENTS";
-    private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.GIVE_PANE";
+    private static final String PANE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_PANE";
     private static final String ADJUST_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_ADJUST";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
+    private static User sUser;
+    private static Target[] sValuesArray;
     private static double[] sPercentages;
-    private User mUser;
-    private Target[] mValuesArray;
-    private boolean sDualPane;
-    private boolean sPercentagesAdjusted;
+    private static boolean sDualPane;
+    private static boolean sPercentagesAdjusted;
     private Context mContext;
     private InputMethodManager mMethodManager;
     private HomeActivity mParentActivity;
@@ -121,12 +121,12 @@ public class GiveFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            sDualPane = savedInstanceState.getBoolean(STATE_PANE);
+            sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
             Parcelable[] parcelables = savedInstanceState.getParcelableArray(TARGETS_STATE);
-            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Target.class);
-        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
+            if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Target.class);
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -150,21 +150,27 @@ public class GiveFragment extends Fragment implements
             if (parcelableArray != null) {
                 // TODO: Factor out with accessor validation
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
-                if (mValuesArray != null && mValuesArray.length != valuesArray.length) {
+                if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
                     sPercentagesAdjusted = true;
                 }
-                mValuesArray = valuesArray;
+                sValuesArray = valuesArray;
             }
-            mUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
-            if (mUser == null) mParentActivity.recreate();
+            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            if (sUser == null) mParentActivity.recreate();
         }
 
-        mAmountTotal = Float.parseFloat(mUser.getGiveImpact());
-        mMagnitude = Float.parseFloat(mUser.getGiveMagnitude());
+        mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
+        mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
+
+        if (savedInstanceState != null) {
+            sDualPane = savedInstanceState.getBoolean(PANE_STATE);
+            sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
+            mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
 
@@ -238,11 +244,9 @@ public class GiveFragment extends Fragment implements
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(STATE_PANE, sDualPane);
+        outState.putBoolean(PANE_STATE, sDualPane);
         outState.putBoolean(ADJUST_STATE, sPercentagesAdjusted);
         outState.putInt(POSITION_STATE, mPanePosition);
-        outState.putParcelableArray(TARGETS_STATE, mValuesArray);
-        outState.putParcelable(USER_STATE, mUser);
     }
 
     /**
@@ -289,8 +293,8 @@ public class GiveFragment extends Fragment implements
                         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                         return false;
                     }
-                    mUser.setGiveImpact(String.valueOf(mAmountTotal));
-                    DatabaseManager.startActionUpdateUser(mContext, mUser);
+                    sUser.setGiveImpact(String.valueOf(mAmountTotal));
+                    DatabaseManager.startActionUpdateUser(mContext, sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
                     return false;
@@ -312,8 +316,8 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
-            mUser.setGiveImpact(String.valueOf(mAmountTotal));
-            DatabaseManager.startActionUpdateUser(mContext, mUser);
+            sUser.setGiveImpact(String.valueOf(mAmountTotal));
+            DatabaseManager.startActionUpdateUser(mContext, sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
@@ -326,8 +330,8 @@ public class GiveFragment extends Fragment implements
      */
     @OnClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
-        mUser.setGiveImpact(String.valueOf(mAmountTotal));
-        DatabaseManager.startActionUpdateUser(mContext, mUser);
+        sUser.setGiveImpact(String.valueOf(mAmountTotal));
+        DatabaseManager.startActionUpdateUser(mContext, sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
@@ -356,10 +360,10 @@ public class GiveFragment extends Fragment implements
     private void syncPercentages() {
         if (sPercentages == null || sPercentages.length == 0) return;
         for (int i = 0; i < sPercentages.length; i++) {
-            mValuesArray[i].setPercent(sPercentages[i]);
+            sValuesArray[i].setPercent(sPercentages[i]);
             Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
         }
-        DatabaseManager.startActionUpdateTarget(mContext, mValuesArray);
+        DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
         sPercentagesAdjusted = false;
     }
 
@@ -367,7 +371,7 @@ public class GiveFragment extends Fragment implements
      * Syncs donations to database.
      */
     private void syncDonations() {
-        DatabaseManager.startActionRecordTarget(mContext, mValuesArray);
+        DatabaseManager.startActionRecordTarget(mContext, sValuesArray);
     }
 
     /**
@@ -398,7 +402,7 @@ public class GiveFragment extends Fragment implements
      */
     private void updateAmounts() {
         renderActionBar();
-        if (mValuesArray != null) mListAdapter.notifyDataSetChanged();
+        if (sValuesArray != null) mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -455,7 +459,7 @@ public class GiveFragment extends Fragment implements
          * Initializes percentage array and percentage button click handler and view updater.
          */
         ListAdapter() {
-            sPercentages = new double[mValuesArray.length];
+            sPercentages = new double[sValuesArray.length];
             mRateraidArrays = Rateraid.with(sPercentages, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
                 float sum = 0;
                 for (double percentage : sPercentages) sum += percentage;
@@ -511,7 +515,7 @@ public class GiveFragment extends Fragment implements
                 return;
             }
 
-            if (mValuesArray == null || mValuesArray.length == 0 || mValuesArray[position] == null
+            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null
                     || sPercentages == null || sPercentages.length == 0)
                 return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -525,7 +529,7 @@ public class GiveFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            Target values = mValuesArray[position];
+            Target values = sValuesArray[position];
 
             String name = values.getName();
             if (name.length() > 30) {
@@ -582,23 +586,23 @@ public class GiveFragment extends Fragment implements
          * Returns the number of items to display.
          */
         @Override public int getItemCount() {
-            return mValuesArray != null ? mValuesArray.length + 1 : 1;
+            return sValuesArray != null ? sValuesArray.length + 1 : 1;
         }
 
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
         private void swapValues() {
-            if (sPercentages.length != mValuesArray.length)
-                sPercentages = Arrays.copyOf(sPercentages, mValuesArray.length);
+            if (sPercentages.length != sValuesArray.length)
+                sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
             for (int i = 0; i < sPercentages.length; i++) {
-                sPercentages[i] = mValuesArray[i].getPercent();
+                sPercentages[i] = sValuesArray[i].getPercent();
             }
-            if (mUser.getGiveReset()) {
+            if (sUser.getGiveReset()) {
                 Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
                 syncPercentages();
-                    mUser.setGiveReset(false);
-                    DatabaseManager.startActionUpdateUser(mContext, mUser);
+                sUser.setGiveReset(false);
+                DatabaseManager.startActionUpdateUser(mContext, sUser);
             }
             notifyDataSetChanged();
         }
@@ -642,7 +646,7 @@ public class GiveFragment extends Fragment implements
                         case AlertDialog.BUTTON_NEGATIVE:
                             Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
-//                                if (mValuesArray.length == 1) onDestroy();
+//                                if (sValuesArray.length == 1) onDestroy();
                             DatabaseManager.startActionRemoveTarget(mContext, target);
                             break;
                         default:
@@ -655,7 +659,7 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
 
-                Target values = mValuesArray[(int) v.getTag()];
+                Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
 
                 if (mContext == null) return;
@@ -676,7 +680,7 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.inspect_button) void inspectGive(View v) {
 
                 int position = (int) v.getTag();
-                Target values = mValuesArray[position];
+                Target values = sValuesArray[position];
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -699,7 +703,7 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.share_button) void shareGive(View v) {
 
-                Target values = mValuesArray[(int) v.getTag()];
+                Target values = sValuesArray[(int) v.getTag()];
                 String name = values.getName();
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
@@ -716,7 +720,7 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
                 if (mContext == null) return;
                 mContactDialog = new AlertDialog.Builder(mContext).create();
-                ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, mValuesArray[(int) v.getTag()]);
+                ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
             }
