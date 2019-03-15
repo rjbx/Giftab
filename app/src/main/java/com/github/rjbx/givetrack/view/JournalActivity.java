@@ -173,7 +173,7 @@ public class JournalActivity extends AppCompatActivity implements
                     int i = 0;
                     do {
                         Record record = new Record();
-                        DatabaseAccessor.cursorRowToEntry(data, record);
+                        AppUtilities.cursorRowToEntry(data, record);
                         mValuesArray[i++] = record;
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
@@ -187,7 +187,7 @@ public class JournalActivity extends AppCompatActivity implements
                 if (data.moveToFirst()) {
                     do {
                         User user = User.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(data, user);
+                        AppUtilities.cursorRowToEntry(data, user);
                         if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);

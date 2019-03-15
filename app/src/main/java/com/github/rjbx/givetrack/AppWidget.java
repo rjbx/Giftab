@@ -105,7 +105,7 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor == null || mCursor.getCount() == 0) return null;
             mCursor.moveToPosition(position);
             Target target = Target.getDefault();
-            DatabaseAccessor.cursorRowToEntry(mCursor, target);
+            AppUtilities.cursorRowToEntry(mCursor, target);
 
             String name = target.getName();
             if (name.length() > 15) { name = name.substring(0, 15);

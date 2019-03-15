@@ -166,7 +166,7 @@ public class IndexActivity extends AppCompatActivity implements
                     int i = 0;
                     do {
                         Spawn spawn = Spawn.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(data, spawn);
+                        AppUtilities.cursorRowToEntry(data, spawn);
                         mValuesArray[i++] = spawn;
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
@@ -184,7 +184,7 @@ public class IndexActivity extends AppCompatActivity implements
                     do {
 
                         User user = User.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(data, user);
+                        AppUtilities.cursorRowToEntry(data, user);
                         if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
                             Bundle bundle = new Bundle();
                             bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);

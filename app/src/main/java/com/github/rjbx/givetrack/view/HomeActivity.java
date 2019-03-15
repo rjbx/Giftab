@@ -223,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements
                         int i = 0;
                         do {
                             Target target = new Target();
-                            DatabaseAccessor.cursorRowToEntry(data, target);
+                            AppUtilities.cursorRowToEntry(data, target);
                             mTargetArray[i++] = target;
                         } while (data.moveToNext());
                     }
@@ -239,7 +239,7 @@ public class HomeActivity extends AppCompatActivity implements
                         int i = 0;
                         do {
                             Record record = new Record();
-                            DatabaseAccessor.cursorRowToEntry(data, record);
+                            AppUtilities.cursorRowToEntry(data, record);
                             mRecordArray[i++] = record;
                         } while (data.moveToNext());
                     }
@@ -248,7 +248,7 @@ public class HomeActivity extends AppCompatActivity implements
                 if (data.moveToFirst()) {
                     do {
                         User user = User.getDefault();
-                        DatabaseAccessor.cursorRowToEntry(data, user);
+                        AppUtilities.cursorRowToEntry(data, user);
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;

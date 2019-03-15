@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.view;
 
+import android.database.DatabaseUtils;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -29,6 +30,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -317,7 +319,7 @@ public class DetailFragment extends Fragment {
                             new String[] { company[0].getEin() },
                             null);
             if (cursor == null) return null;
-            List<Target> targets = DatabaseAccessor.getEntryListFromCursor(cursor, Target.class);
+            List<Target> targets = AppUtilities.getEntryListFromCursor(cursor, Target.class);
             boolean isSaved = false;
             String uid = company[0].getUid();
             for (Target target : targets) {

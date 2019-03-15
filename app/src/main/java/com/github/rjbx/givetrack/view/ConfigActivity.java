@@ -128,7 +128,7 @@ public class ConfigActivity
         if (data.moveToFirst()) {
             do {
                 User user = User.getDefault();
-                DatabaseAccessor.cursorRowToEntry(data, user);
+                AppUtilities.cursorRowToEntry(data, user);
                 if (user.getUserActive()) {
                     sUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
