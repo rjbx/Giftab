@@ -535,6 +535,11 @@ public final class DatabaseManager extends IntentService {
         if (userList.size() > 1) { startActionFetchUser(this); return; }
         else activeUser = userList.get(0);
 
+        if (activeUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(activeUser.getGiveAnchor())) {
+            activeUser.setGiveAnchor(System.currentTimeMillis());
+            DatabaseManager.startActionUpdateUser(this, activeUser);
+        }
+
         double giveImpact = Double.parseDouble(activeUser.getGiveImpact());
 
         for (Target t : target) {

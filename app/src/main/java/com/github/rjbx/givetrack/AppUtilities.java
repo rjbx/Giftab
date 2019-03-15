@@ -21,6 +21,7 @@ import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -116,5 +117,15 @@ public final class AppUtilities {
             cursorRowToEntry(cursor, entries.get(i++));
         } while (cursor.moveToNext());
         return entries;
+    }
+
+    public static boolean dateIsCurrent(long dateStamp) {
+        Calendar anchorCalendar = Calendar.getInstance();
+        Calendar currentCalendar = Calendar.getInstance();
+        anchorCalendar.setTimeInMillis(dateStamp);
+        currentCalendar.setTimeInMillis(System.currentTimeMillis());
+        return anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                        anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH) &&
+                        anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
     }
 }

@@ -134,19 +134,6 @@ public class HomeActivity extends AppCompatActivity implements
         if (mUser == null) return;
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
-
-        Calendar anchorCalendar = Calendar.getInstance();
-        Calendar currentCalendar = Calendar.getInstance();
-        anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
-        currentCalendar.setTimeInMillis(System.currentTimeMillis());
-        boolean anchorToday =
-                anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
-                        anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH) &&
-                        anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
-        if (mUser.getGiveTiming() == 0 && !anchorToday) {
-            mUser.setGiveAnchor(System.currentTimeMillis());
-            DatabaseManager.startActionUpdateUser(this, mUser);
-        }
     }
 
 
@@ -183,6 +170,10 @@ public class HomeActivity extends AppCompatActivity implements
                 AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
+                if (mUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(mUser.getGiveAnchor())) {
+                    mUser.setGiveAnchor(System.currentTimeMillis());
+                    DatabaseManager.startActionUpdateUser(this, mUser);
+                }
                 Calendar calendar = Calendar.getInstance();
                 if (mUser.getGiveTiming() != 0) calendar.setTimeInMillis(mUser.getGiveAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
@@ -343,14 +334,7 @@ public class HomeActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setGiveAnchor(mAnchorTime);
-                    Calendar anchorCalendar = Calendar.getInstance();
-                    Calendar currentCalendar = Calendar.getInstance();
-                    anchorCalendar.setTimeInMillis(mAnchorTime);
-                    currentCalendar.setTimeInMillis(System.currentTimeMillis());
-                    mAnchorToday =
-                            (anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH)) &&
-                            (anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH)) &&
-                            (anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR));
+                    mAnchorToday = AppUtilities.dateIsCurrent(mUser.getGiveAnchor());
                     if (!mAnchorToday) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
