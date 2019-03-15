@@ -1,21 +1,31 @@
 package com.github.rjbx.givetrack;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
 
+import com.github.rjbx.givetrack.data.entry.Entry;
+import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.givetrack.view.ConfigActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import timber.log.Timber;
 
 public final class AppUtilities {
 
@@ -75,5 +85,36 @@ public final class AppUtilities {
         String[] stringArray = new String[arrayLength];
         for (int i = 0; i < arrayLength; i++) stringArray[i] = strings[i];
         return stringArray;
+    }
+
+    /**
+     * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
+     */
+    public static User convertRemoteToLocalUser(FirebaseUser firebaseUser) {
+
+        User user = User.getDefault();
+        user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
+        user.setUserEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
+        user.setUserActive(true);
+        return user;
+    }
+
+    public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
+        ContentValues values = new ContentValues();
+        DatabaseUtils.cursorRowToContentValues(cursor, values);
+        entry.fromContentValues(values);
+    }
+
+    public static <T extends Entry> List<T> getEntryListFromCursor(Cursor cursor, Class<T> type) {
+        List<T> entries = new ArrayList<>();
+        if (cursor == null || !cursor.moveToFirst()) return entries;
+        entries.clear();
+        int i = 0;
+        do {
+            try { entries.add(type.newInstance());
+            } catch (InstantiationException|IllegalAccessException e) { Timber.e(e); }
+            cursorRowToEntry(cursor, entries.get(i++));
+        } while (cursor.moveToNext());
+        return entries;
     }
 }

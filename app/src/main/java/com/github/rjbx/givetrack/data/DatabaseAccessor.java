@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.DatasourceContract.*;
@@ -119,7 +120,7 @@ public final class DatabaseAccessor {
         Cursor cursor = local.query(
                 contentUri, null, selection, selectionArgs, null
         );
-        List<Spawn> entries = getEntryListFromCursor(cursor, Spawn.class);
+        List<Spawn> entries = AppUtilities.getEntryListFromCursor(cursor, Spawn.class);
         if (cursor != null) cursor.close();
         return entries;
     }
@@ -166,7 +167,7 @@ public final class DatabaseAccessor {
         Cursor cursor = local.query(
                 contentUri, null, selection, selectionArgs, null
         );
-        List<Target> entries = getEntryListFromCursor(cursor, Target.class);
+        List<Target> entries = AppUtilities.getEntryListFromCursor(cursor, Target.class);
         if (cursor != null) cursor.close();
         return entries;
     }
@@ -237,7 +238,7 @@ public final class DatabaseAccessor {
         Cursor cursor = local.query(
                 contentUri, null, selection, selectionArgs, null
         );
-        List<Record> entries = getEntryListFromCursor(cursor, Record.class);
+        List<Record> entries = AppUtilities.getEntryListFromCursor(cursor, Record.class);
 
         if (cursor != null) cursor.close();
         return entries;
@@ -276,7 +277,7 @@ public final class DatabaseAccessor {
         Cursor cursor = local.query(
                 contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
         );
-        List<User> entries = getEntryListFromCursor(cursor, User.class);
+        List<User> entries = AppUtilities.getEntryListFromCursor(cursor, User.class);
         if (cursor != null) cursor.close();
         return entries;
     }
@@ -297,25 +298,6 @@ public final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, User.class, stamp, user);
         removeEntriesFromRemote(remote, User.class, stamp, user);
-    }
-
-    public static <T extends Entry> void cursorRowToEntry(Cursor cursor, T entry) {
-        ContentValues values = new ContentValues();
-        DatabaseUtils.cursorRowToContentValues(cursor, values);
-        entry.fromContentValues(values);
-    }
-
-    public static <T extends Entry> List<T> getEntryListFromCursor(Cursor cursor, Class<T> type) {
-        List<T> entries = new ArrayList<>();
-        if (cursor == null || !cursor.moveToFirst()) return entries;
-        entries.clear();
-        int i = 0;
-        do {
-            try { entries.add(type.newInstance());
-            } catch (InstantiationException|IllegalAccessException e) { Timber.e(e); }
-            cursorRowToEntry(cursor, entries.get(i++));
-        } while (cursor.moveToNext());
-        return entries;
     }
 
     @SafeVarargs private static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, boolean reset, T... entries) {
@@ -410,7 +392,7 @@ public final class DatabaseAccessor {
         if (data.moveToFirst()) {
             do {
                 User user = User.getDefault();
-                DatabaseAccessor.cursorRowToEntry(data, user);
+                AppUtilities.cursorRowToEntry(data, user);
                 if (user.getUserActive()) return user;
             } while (data.moveToNext());
         } return u;
@@ -468,7 +450,7 @@ public final class DatabaseAccessor {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
-        List<T> entryList = getEntryListFromCursor(cursor, entryType);
+        List<T> entryList = AppUtilities.getEntryListFromCursor(cursor, entryType);
         cursor.close();
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
@@ -512,17 +494,5 @@ public final class DatabaseAccessor {
         if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else local.notifyChange(DataUtilities.getContentUri(entryType), null);
-    }
-
-    /**
-     * Generates a {@link User} from {@link SharedPreferences} and {@link FirebaseUser} attributes.
-     */
-    public static User convertRemoteToLocalUser(FirebaseUser firebaseUser) {
-
-        User user = User.getDefault();
-        user.setUid(firebaseUser == null ? "" : firebaseUser.getUid());
-        user.setUserEmail(firebaseUser == null ? "" : firebaseUser.getEmail());
-        user.setUserActive(true);
-        return user;
     }
 }

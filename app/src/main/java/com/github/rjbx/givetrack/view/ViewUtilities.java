@@ -139,14 +139,14 @@ final class ViewUtilities {
          * Defines behavior on click of social launch button.
          */
         @Optional @OnClick(R.id.social_button) void launchSocial() {
-            launchBrowserIntent(mContext, Uri.parse(mWebsite));
+            launchBrowserIntent(mContext, Uri.parse("https://twitter.com/" + mSocial));
         }
 
         /**
          * Defines behavior on click of website launch button.
          */
         @Optional @OnClick(R.id.website_button) void launchWebsite() {
-            launchBrowserIntent(mContext, Uri.parse("https://twitter.com/" + mSocial));
+            launchBrowserIntent(mContext, Uri.parse(mWebsite));
         }
 
         /**

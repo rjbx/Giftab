@@ -23,6 +23,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
 import com.github.rjbx.givetrack.AppExecutors;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseAccessor;
@@ -105,7 +106,7 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 boolean isPersisted = false;
-                User activeUser = DatabaseAccessor.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+                User activeUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 for (int i = 0; i < mUsers.size(); i++) {
                     boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
                     mUsers.get(i).setUserActive(isActive);
@@ -139,7 +140,7 @@ public class AuthActivity extends AppCompatActivity implements
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
-        mUsers = DatabaseAccessor.getEntryListFromCursor(data, User.class);
+        mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
         switch (mProcessStage) {
             case 0: handleAction(getIntent().getAction()); break;
             case 2: DatabaseManager.startActionFetchUser(this); mProcessStage++; break;
