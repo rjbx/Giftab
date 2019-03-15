@@ -34,7 +34,7 @@ final class ViewUtilities {
         IntentBuilder intentBuilder = IntentBuilder.from(launchingActivity)
                 .setType("text/plain")
                 .setText(textMessage);
-        launchingActivity.startService(intentBuilder.getIntent());
+        launchingActivity.startActivity(intentBuilder.getIntent());
     }
 
     /**
