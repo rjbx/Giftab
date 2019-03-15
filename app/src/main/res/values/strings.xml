@@ -372,11 +372,11 @@
 
     <string name="pref_header_give">Home</string>
 
-    <string name="pref_giveRounding_label">Rounding</string>
+    <string name="pref_giveRounding_label">Round Contributions</string>
     <string-array name="list_preference_giveRounding">
-        <item>Exact</item>
-        <item>Up</item>
         <item>Down</item>
+        <item>Up</item>
+        <item>Exact</item>
     </string-array>
     <string-array name="list_preference_giveRounding_values">
         <item>0</item>

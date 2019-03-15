@@ -545,9 +545,9 @@ public final class DatabaseManager extends IntentService {
             int round = activeUser.getGiveRounding();
             String impactStr;
             switch (round) {
-                case 0: impactStr = String.valueOf(totalImpact); break;
+                case 0: impactStr = String.valueOf((Math.floor(totalImpact * 100)) / 100); break;
                 case 1: impactStr = String.format("%.2s", totalImpact); break;
-                default: impactStr = String.valueOf((Math.floor(totalImpact * 100)) / 100); break;
+                default: impactStr = String.valueOf(totalImpact);
             }
             t.setImpact(impactStr);
         } DatabaseAccessor.addTarget(this, target);
@@ -561,7 +561,14 @@ public final class DatabaseManager extends IntentService {
             Record record = Record.fromSuper(target[i].getSuper());
             record.setStamp(System.currentTimeMillis() + i);
             record.setTime(time);
-            record.setImpact(String.valueOf(transactionImpact));
+            int round = activeUser.getGiveRounding();
+            String impactStr;
+            switch (round) {
+                case 0: impactStr = String.valueOf((Math.floor(transactionImpact * 100)) / 100); break;
+                case 1: impactStr = String.format("%.2s", transactionImpact); break;
+                default: impactStr = String.valueOf(transactionImpact);
+            }
+            record.setImpact(impactStr);
             records.add(record);
         } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
 

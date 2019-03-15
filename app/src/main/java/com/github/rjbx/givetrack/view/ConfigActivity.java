@@ -165,7 +165,8 @@ public class ConfigActivity
         String preferenceKey = changedPreference.getKey();
         Map<String, Object> map = sUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
-        map.put(preferenceKey, newValue);
+        if (preferenceKey.equals(DatabaseContract.UserEntry.COLUMN_GIVE_ROUNDING)) map.put(preferenceKey, Integer.parseInt((String) newValue));
+        else map.put(preferenceKey, newValue);
         sUser.fromParameterMap(map);
         DatabaseManager.startActionUpdateUser(changedPreference.getContext(), sUser);
     }
