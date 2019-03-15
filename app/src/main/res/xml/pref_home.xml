@@ -21,6 +21,14 @@
         android:title="@string/pref_magnitude_label"
         android:defaultValue="0.01"/>
 
+    <ListPreference
+        android:entries="@array/list_preference_giveRounding"
+        android:entryValues="@array/list_preference_giveRounding_values"
+        android:key="@string/pref_giveRounding_key"
+        android:negativeButtonText="Clear Selection"
+        android:positiveButtonText="OK"
+        android:title="@string/pref_giveRounding_label"/>
+
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"

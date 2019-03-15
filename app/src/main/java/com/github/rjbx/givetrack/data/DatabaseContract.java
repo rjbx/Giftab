@@ -71,6 +71,7 @@ public final class DatabaseContract {
         public static final String COLUMN_GIVE_IMPACT = "giveImpact";
         public static final String COLUMN_GIVE_MAGNITUDE = "giveMagnitude";
         public static final String COLUMN_GIVE_ANCHOR = "giveAnchor";
+        public static final String COLUMN_GIVE_ROUNDING = "giveRounding";
         public static final String COLUMN_GIVE_TIMING = "giveTiming";
         public static final String COLUMN_GLANCE_ANCHOR = "glanceAnchor";
         public static final String COLUMN_GLANCE_SINCE = "glanceSince";

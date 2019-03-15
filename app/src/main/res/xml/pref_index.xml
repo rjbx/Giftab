@@ -42,12 +42,12 @@
 
     <ListPreference
         android:dependency="@string/pref_indexFocus_key"
-        android:entries="@array/list_preference_minrating"
-        android:entryValues="@array/list_preference_minrating_values"
+        android:entries="@array/list_preference_indexMinrating"
+        android:entryValues="@array/list_preference_indexMinrating_values"
         android:key="@string/pref_indexMinrating_key"
         android:negativeButtonText="Clear Selection"
         android:positiveButtonText="OK"
-        android:title="@string/pref_minrating_label"/>
+        android:title="@string/pref_indexMinrating_label"/>
 
     <ListPreference
         android:dependency="@string/pref_indexFocus_key"
