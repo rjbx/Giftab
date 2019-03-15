@@ -63,8 +63,8 @@ public class ConfigActivity
         extends PreferenceActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
-    // TODO Persist field instance states
-    private static User mUser;
+    private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.CONFIG_USER";
+    private static User sUser;
 
     /**
      * Constructs the Settings UI.
@@ -72,7 +72,14 @@ public class ConfigActivity
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+        if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(USER_STATE, sUser);
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -123,10 +130,10 @@ public class ConfigActivity
                 User user = User.getDefault();
                 DatabaseAccessor.cursorRowToEntry(data, user);
                 if (user.getUserActive()) {
-                    mUser = user;
+                    sUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                     if (sharedPreferences.getAll().isEmpty())
-                        AppUtilities.mapToSharedPreferences(mUser.toParameterMap(), sharedPreferences);
+                        AppUtilities.mapToSharedPreferences(sUser.toParameterMap(), sharedPreferences);
                     break;
                 }
             } while (data.moveToNext());
@@ -136,7 +143,7 @@ public class ConfigActivity
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { mUser = null; }
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
     /**
      * Sets up the {@link android.app.ActionBar}, if the API is available.
@@ -154,13 +161,13 @@ public class ConfigActivity
      * Fragment bound to preference header for updating advanced settings.
      */
     private static void changeUser(Preference changedPreference, Object newValue) {
-        if (mUser == null || newValue == null) return;
+        if (sUser == null || newValue == null) return;
         String preferenceKey = changedPreference.getKey();
-        Map<String, Object> map = mUser.toParameterMap();
+        Map<String, Object> map = sUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
         map.put(preferenceKey, newValue);
-        mUser.fromParameterMap(map);
-        DatabaseManager.startActionUpdateUser(changedPreference.getContext(), mUser);
+        sUser.fromParameterMap(map);
+        DatabaseManager.startActionUpdateUser(changedPreference.getContext(), sUser);
     }
 
     /**
@@ -301,7 +308,7 @@ public class ConfigActivity
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
                 mCalendar = Calendar.getInstance();
-                String birthdate = mUser.getUserBirthdate();
+                String birthdate = sUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
                 mCalendar.set(Integer.parseInt(birthdateParams[2]), Integer.parseInt(birthdateParams[0]) - 1, Integer.parseInt(birthdateParams[1]));
                 DatePickerDialog datePicker = new DatePickerDialog(
@@ -486,7 +493,7 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
-                String magnitudeStr = mUser.getGiveMagnitude();
+                String magnitudeStr = sUser.getGiveMagnitude();
                 mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
@@ -551,8 +558,8 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mUser.setGiveMagnitude(percentIntToDecimalString(mSeekProgress));
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_giveMagnitude_key), mUser.getGiveMagnitude()).apply();
+                        sUser.setGiveMagnitude(percentIntToDecimalString(mSeekProgress));
+                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_giveMagnitude_key), sUser.getGiveMagnitude()).apply();
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
                         handlePreferenceChange(magnitudePreference, this);
                         break;
@@ -564,8 +571,8 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mUser.setGiveReset(true);
-                        DatabaseManager.startActionUpdateUser(getActivity(), mUser);
+                        sUser.setGiveReset(true);
+                        DatabaseManager.startActionUpdateUser(getActivity(), sUser);
                         break;
                     default:
                 }

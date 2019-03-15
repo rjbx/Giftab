@@ -52,6 +52,8 @@ public class AuthActivity extends AppCompatActivity implements
 
     private static final int REQUEST_SIGN_IN = 0;
 
+    private static final String USERS_STATE = "com.github.rjbx.givetrack.ui.state.AUTH_USERS";
+
     public static final String ACTION_SIGN_IN = "com.github.rjbx.givetrack.ui.action.SIGN_IN";
     public static final String ACTION_SIGN_OUT = "com.github.rjbx.givetrack.ui.action.SIGN_OUT";
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
@@ -72,7 +74,14 @@ public class AuthActivity extends AppCompatActivity implements
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
+        if (savedInstanceState != null) mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelableArrayList(USERS_STATE, (ArrayList<User>) mUsers);
+        super.onSaveInstanceState(outState);
     }
 
     /**

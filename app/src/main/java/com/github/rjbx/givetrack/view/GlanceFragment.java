@@ -46,6 +46,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.rjbx.givetrack.AppUtilities;
+import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -75,6 +76,10 @@ public class GlanceFragment extends Fragment implements
         DatePickerDialog.OnDateSetListener,
         IAxisValueFormatter {
 
+    private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_USER";
+    private static final String RECORDS_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_RECORDS";
+    private static final String SINCE_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_SINCE";
+    private static final String THEMe_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_THEME";
     private static final int[] COLORS = new int[]{
             R.color.colorAttention,
             R.color.colorAccent,
@@ -84,12 +89,10 @@ public class GlanceFragment extends Fragment implements
             R.color.colorComfort,
             R.color.colorNeutral
     };
-    // TODO Persist field instance states
-    private static Record[] sValuesArray;
-    private static User sUser;
-    private static boolean mViewTracked;
-    private static boolean mShowYears;
-    private static int sThemeIndex;
+    private Record[] mValuesArray;
+    private User mUser;
+    private boolean mViewTracked;
+    private int mThemeIndex;
     private Context mContext;
     private HomeActivity mParentActivity;
     private Unbinder mUnbinder;
@@ -148,21 +151,30 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+            mUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
             Parcelable[] parcelables = args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES);
-            if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
+            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
         }
-        if (sUser != null) {
-            Date date = new Date(sUser.getGlanceAnchor());
+
+        if (savedInstanceState != null) {
+            mUser = savedInstanceState.getParcelable(USER_STATE);
+            mViewTracked = savedInstanceState.getBoolean(SINCE_STATE);
+            mThemeIndex = savedInstanceState.getInt(THEMe_STATE);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(RECORDS_STATE);
+            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
+        }
+
+        if (mUser != null) {
+            Date date = new Date(mUser.getGlanceAnchor());
             DATE_FORMATTER.setTimeZone(TimeZone.getDefault());
             String formattedDate = DATE_FORMATTER.format(date);
             mTimeTracked = String.format("since %s", formattedDate);
 
-            mViewTracked = sUser.getGlanceSince();
+            mViewTracked = mUser.getGlanceSince();
             toggleAmount(mAmountLabel, mViewTracked);
 
-            sThemeIndex = sUser.getGlanceTheme();
-            mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
+            mThemeIndex = mUser.getGlanceTheme();
+            mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[mThemeIndex], null));
         }
         return rootView;
     }
@@ -196,6 +208,15 @@ public class GlanceFragment extends Fragment implements
         mUnbinder.unbind();
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putParcelable(USER_STATE, mUser);
+        outState.putParcelableArray(RECORDS_STATE, mValuesArray);
+        outState.putBoolean(SINCE_STATE, mViewTracked);
+        outState.putInt(THEMe_STATE, mThemeIndex);
+        super.onSaveInstanceState(outState);
+    }
+
     /**
      * Defines behaviors on click of DialogInterface buttons.
      */
@@ -207,9 +228,9 @@ public class GlanceFragment extends Fragment implements
                     mTimeDialog.dismiss();
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    sUser.setGlanceAnchor(mAnchorDate);
-                    if (sUser.getGiveTiming() == 0) sUser.setGiveAnchor(System.currentTimeMillis());
-                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                    mUser.setGlanceAnchor(mAnchorDate);
+                    if (mUser.getGiveTiming() == 0) mUser.setGiveAnchor(System.currentTimeMillis());
+                    DatabaseManager.startActionUpdateUser(getContext(), mUser);
                     break;
                 default:
             }
@@ -251,11 +272,11 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_text)
     void toggleColor() {
-        sThemeIndex++;
-        if (sThemeIndex == 7) sThemeIndex = 0;
-        mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
-        sUser.setGlanceTheme(sThemeIndex);
-        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+        mThemeIndex++;
+        if (mThemeIndex == 7) mThemeIndex = 0;
+        mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[mThemeIndex], null));
+        mUser.setGlanceTheme(mThemeIndex);
+        DatabaseManager.startActionUpdateUser(getContext(), mUser);
     }
 
     /**
@@ -264,8 +285,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_amount_label)
     void toggleTracked() {
         mViewTracked = !mViewTracked;
-        sUser.setGlanceSince(mViewTracked);
-        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+        mUser.setGlanceSince(mViewTracked);
+        DatabaseManager.startActionUpdateUser(getContext(), mUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 
@@ -276,7 +297,6 @@ public class GlanceFragment extends Fragment implements
     void toggleTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
-        mShowYears = !mShowYears;
         switch (mInterval) {
             case Calendar.YEAR:
                 mIntervalLabel = "Year";
@@ -299,7 +319,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_config_button)
     void trackAmount() {
         Calendar calendar = Calendar.getInstance();
-        if (sUser.getGlanceAnchor() != 0) calendar.setTimeInMillis(sUser.getGlanceAnchor());
+        if (mUser.getGlanceAnchor() != 0) calendar.setTimeInMillis(mUser.getGlanceAnchor());
         DatePickerDialog datePicker = new DatePickerDialog(
                 mContext,
                 this,
@@ -385,14 +405,14 @@ public class GlanceFragment extends Fragment implements
         int highDifference = 0;
 
         float tracked = 0f;
-        long tracktime = sUser.getGlanceAnchor();
+        long tracktime = mUser.getGlanceAnchor();
 
         List<PieEntry> percentageEntries = new ArrayList<>();
         float donationAmount = 0f;
-        int donationFrequency = sValuesArray.length;
+        int donationFrequency = mValuesArray.length;
         if (donationFrequency == 0) return;
         Map<String, Float> recordAggregates = new HashMap<>(donationFrequency);
-        for (Record record : sValuesArray) {
+        for (Record record : mValuesArray) {
             long time = record.getTime();
             Float amount = Float.parseFloat(record.getImpact());
             String name = record.getName();
@@ -513,7 +533,7 @@ public class GlanceFragment extends Fragment implements
         String intervalLabel = "Average " + mIntervalLabel;
         String donationLabel = "Average Donation";
         float perInterval = recordsTotal / (highDifference + 1);
-        float perDonation = recordsTotal / sValuesArray.length;
+        float perDonation = recordsTotal / mValuesArray.length;
         String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalLabel, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
