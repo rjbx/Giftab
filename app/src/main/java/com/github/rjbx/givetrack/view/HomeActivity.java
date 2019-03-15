@@ -258,8 +258,8 @@ public class HomeActivity extends AppCompatActivity implements
                             currentCalendar.setTimeInMillis(System.currentTimeMillis());
                             mAnchorToday =
                                     anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
-                                            anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
-                                            anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
+                                    anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
+                                    anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
                             if (mUser.getGiveTiming() == 0 && !mAnchorToday) {
                                     mUser.setGiveAnchor(System.currentTimeMillis());
                                     DatabaseManager.startActionUpdateUser(this, mUser);
@@ -340,6 +340,14 @@ public class HomeActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setGiveAnchor(mAnchorTime);
+                    Calendar anchorCalendar = Calendar.getInstance();
+                    Calendar currentCalendar = Calendar.getInstance();
+                    anchorCalendar.setTimeInMillis(mAnchorTime);
+                    currentCalendar.setTimeInMillis(System.currentTimeMillis());
+                    mAnchorToday =
+                            anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                            anchorCalendar.get(Calendar.DAY_OF_WEEK) == currentCalendar.get(Calendar.DAY_OF_WEEK) &&
+                            anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
                     if (!mAnchorToday) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
