@@ -134,7 +134,22 @@ public class HomeActivity extends AppCompatActivity implements
         if (mUser == null) return;
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+
+        Calendar anchorCalendar = Calendar.getInstance();
+        Calendar currentCalendar = Calendar.getInstance();
+        anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
+        currentCalendar.setTimeInMillis(System.currentTimeMillis());
+        boolean anchorToday =
+                anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
+                        anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH) &&
+                        anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
+        if (mUser.getGiveTiming() == 0 && !anchorToday) {
+            mUser.setGiveAnchor(System.currentTimeMillis());
+            DatabaseManager.startActionUpdateUser(this, mUser);
+        }
     }
+
+
 
     public Context getContext() {
         return this;
@@ -252,18 +267,6 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            Calendar anchorCalendar = Calendar.getInstance();
-                            Calendar currentCalendar = Calendar.getInstance();
-                            anchorCalendar.setTimeInMillis(mUser.getGiveAnchor());
-                            currentCalendar.setTimeInMillis(System.currentTimeMillis());
-                            mAnchorToday =
-                                    anchorCalendar.get(Calendar.MONTH) == currentCalendar.get(Calendar.MONTH) &&
-                                    anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH) &&
-                                    anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
-                            if (mUser.getGiveTiming() == 0 && !mAnchorToday) {
-                                    mUser.setGiveAnchor(System.currentTimeMillis());
-                                    DatabaseManager.startActionUpdateUser(this, mUser);
-                            }
                             if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
                             if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
