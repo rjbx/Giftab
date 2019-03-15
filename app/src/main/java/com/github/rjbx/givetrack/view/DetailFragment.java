@@ -51,11 +51,11 @@ public class DetailFragment extends Fragment {
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
     private static final String CURRENT_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_CURRENT";
-    // TODO Persist field instance states
-    private static Spawn sCompany;
-    private static boolean sInitialState;
-    private static boolean sCurrentState;
-    private static int sScrollState = 0;
+    private static final String COMPANY_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_COMPANY";
+    private static Spawn mCompany;
+    private boolean mInitialState;
+    private boolean mCurrentState;
+    private int mScrollState = 0;
     private Context mContext;
     private AppCompatActivity mParentActivity;
     private MasterDetailFlow mMasterDetailFlow;
@@ -96,6 +96,17 @@ public class DetailFragment extends Fragment {
         mContext = context;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mScrollState = savedInstanceState.getInt(SCROLL_STATE);
+            mInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
+            mCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
+            mCompany = savedInstanceState.getParcelable(COMPANY_STATE);
+        }
+        super.onCreate(savedInstanceState);
+    }
+
     /**
      * Saves references to parent Activity or Fragment.
      */
@@ -127,17 +138,11 @@ public class DetailFragment extends Fragment {
             mMasterDetailFlow = parentFragment == null ? (MasterDetailFlow) mParentActivity : (MasterDetailFlow) parentFragment;
         }
 
-        if (savedInstanceState != null) {
-            sScrollState = savedInstanceState.getInt(SCROLL_STATE);
-            sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
-            sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
-            sCompany = savedInstanceState.getParcelable(ARG_ITEM_COMPANY);
-            drawActionButton();
-        } else if (getArguments() != null && getArguments().getParcelable(ARG_ITEM_COMPANY) != null) {
-
-            sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
-            sScrollState = 0;
-            new StatusAsyncTask(this).execute(sCompany);
+        if (savedInstanceState != null) drawActionButton();
+        else if (getArguments() != null && getArguments().getParcelable(ARG_ITEM_COMPANY) != null) {
+            mCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
+            mScrollState = 0;
+            new StatusAsyncTask(this).execute(mCompany);
         }
 
         mWebview = new WebView(inflater.getContext().getApplicationContext());
@@ -146,11 +151,11 @@ public class DetailFragment extends Fragment {
         mWebview.setPadding(padding, padding, padding, padding);
         mWebview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
-        mWebview.setWebViewClient(new DetailViewClient());
+        mWebview.setWebViewClient(new DetailViewClient(mScrollState));
         mWebview.setWebChromeClient(new WebChromeClient());
 
         mFrame.addView(mWebview);
-        mWebview.loadUrl(sCompany.getNavigatorUrl());
+        mWebview.loadUrl(mCompany.getNavigatorUrl());
 
         if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
@@ -170,9 +175,9 @@ public class DetailFragment extends Fragment {
      * simultaneous sync operations due to repetitive toggling of item collection status.
      */
     @Override public void onStop() {
-//        if (sInitialState != sCurrentState) {
-//            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
-//            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
+//        if (mInitialState != mCurrentState) {
+//            if (mCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), mCompany);
+//            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(mCompany));
 //        }
         try { mUnbinder.unbind(); }
         catch (IllegalStateException e) { Timber.e(e); }
@@ -185,16 +190,16 @@ public class DetailFragment extends Fragment {
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
-        outState.putBoolean(INITIAL_STATE, sInitialState);
-        outState.putBoolean(CURRENT_STATE, sCurrentState);
-        outState.putParcelable(ARG_ITEM_COMPANY, sCompany);
+        outState.putBoolean(INITIAL_STATE, mInitialState);
+        outState.putBoolean(CURRENT_STATE, mCurrentState);
+        outState.putParcelable(COMPANY_STATE, mCompany);
     }
 
     /**
      * Generates {@link Snackbar} based on item collection status.
      */
     private void drawSnackbar() {
-        String message = String.format(getString(sCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), sCompany.getName());
+        String message = String.format(getString(mCurrentState ? R.string.message_collected_add : R.string.message_collected_remove), mCompany.getName());
         Snackbar sb = Snackbar.make(mFab, message, Snackbar.LENGTH_LONG);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
         sb.show();
@@ -205,14 +210,19 @@ public class DetailFragment extends Fragment {
      */
     private void drawActionButton() {
         if (mContext == null || mFab == null) return;
-        mFab.setImageResource(sCurrentState ?
+        mFab.setImageResource(mCurrentState ?
                 R.drawable.minus: R.drawable.plus);
-        mFab.setBackgroundTintList(sCurrentState ?
+        mFab.setBackgroundTintList(mCurrentState ?
                 ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorAttentionDark, null)) :
                 ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversionDark, null)));
-        mFab.setContentDescription(sCurrentState ? mContext.getString(R.string.description_collected_remove_button) :
+        mFab.setContentDescription(mCurrentState ? mContext.getString(R.string.description_collected_remove_button) :
                 mContext.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
+    }
+
+    private void initializeState(boolean state) {
+        mInitialState = state;
+        mCurrentState = mInitialState;
     }
 
     /**
@@ -224,7 +234,7 @@ public class DetailFragment extends Fragment {
      * Defines behavior on click of browser close button.
      */
     @OnClick(R.id.browser_open_button) void openBrowser() {
-        ViewUtilities.launchBrowserIntent(mParentActivity, Uri.parse(sCompany.getNavigatorUrl()));
+        ViewUtilities.launchBrowserIntent(mParentActivity, Uri.parse(mCompany.getNavigatorUrl()));
     }
 
     /**
@@ -232,13 +242,13 @@ public class DetailFragment extends Fragment {
      */
     @OnClick(R.id.detail_fab) void toggleSaved() {
         if (!mEnabled) return;
-        sCurrentState = !sCurrentState;
+        mCurrentState = !mCurrentState;
         mFab.setVisibility(View.GONE);
 //        drawActionButton();
         drawSnackbar();
-        if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
-            else DatabaseManager.startActionUntargetCompany(mContext, sCompany);
+        if (mInitialState != mCurrentState) {
+            if (mCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), mCompany);
+            else DatabaseManager.startActionUntargetCompany(mContext, mCompany);
             mEnabled = false;
         }
     }
@@ -247,6 +257,12 @@ public class DetailFragment extends Fragment {
      * Defines a {@link WebViewClient} for displaying a webpage populated with organization details.
      */
     private class DetailViewClient extends WebViewClient {
+
+        int mScrollState;
+
+        public DetailViewClient(int scrollState) {
+            mScrollState = scrollState;
+        }
 
         /**
          * Displays a loading indicator while the page is loading.
@@ -262,7 +278,7 @@ public class DetailFragment extends Fragment {
         @Override public void onPageFinished(WebView view, String url) {
             if (mWebview == null) return;
             mProgress.setVisibility(View.GONE);
-            mWebview.setScrollY(sScrollState);
+            mWebview.setScrollY(mScrollState);
             super.onPageFinished(view, url);
         }
     }
@@ -312,8 +328,7 @@ public class DetailFragment extends Fragment {
          * Updates the Fragment field corresponding to the item collection status.
          */
         @Override protected void onPostExecute(Boolean isSaved) {
-            sInitialState = isSaved;
-            sCurrentState = sInitialState;
+            mFragment.get().initializeState(isSaved);
             mFragment.get().drawActionButton();
         }
     }

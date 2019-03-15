@@ -118,6 +118,18 @@ public class GiveFragment extends Fragment implements
         mContext = context;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            sDualPane = savedInstanceState.getBoolean(STATE_PANE);
+            sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
+            mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(TARGETS_STATE);
+            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Target.class);
+        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
+        super.onCreate(savedInstanceState);
+    }
+
     /**
      * Generates a Layout for the Fragment.
      */
@@ -153,15 +165,6 @@ public class GiveFragment extends Fragment implements
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
-
-        if (savedInstanceState != null) {
-            sDualPane = savedInstanceState.getBoolean(STATE_PANE);
-            sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
-            mPanePosition = savedInstanceState.getInt(POSITION_STATE);
-            mUser = savedInstanceState.getParcelable(USER_STATE);
-            Parcelable[] parcelables = savedInstanceState.getParcelableArray(TARGETS_STATE);
-            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Target.class);
-        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
 

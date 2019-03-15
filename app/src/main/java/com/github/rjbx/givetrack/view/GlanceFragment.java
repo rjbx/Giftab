@@ -136,6 +136,18 @@ public class GlanceFragment extends Fragment implements
         mContext = context;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mUser = savedInstanceState.getParcelable(USER_STATE);
+            mViewTracked = savedInstanceState.getBoolean(SINCE_STATE);
+            mThemeIndex = savedInstanceState.getInt(THEMe_STATE);
+            Parcelable[] parcelables = savedInstanceState.getParcelableArray(RECORDS_STATE);
+            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
+        }
+        super.onCreate(savedInstanceState);
+    }
+
     /**
      * Generates a Layout for the Fragment.
      */
@@ -153,14 +165,6 @@ public class GlanceFragment extends Fragment implements
         if (args != null) {
             mUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
             Parcelable[] parcelables = args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES);
-            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
-        }
-
-        if (savedInstanceState != null) {
-            mUser = savedInstanceState.getParcelable(USER_STATE);
-            mViewTracked = savedInstanceState.getBoolean(SINCE_STATE);
-            mThemeIndex = savedInstanceState.getInt(THEMe_STATE);
-            Parcelable[] parcelables = savedInstanceState.getParcelableArray(RECORDS_STATE);
             if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
         }
 
