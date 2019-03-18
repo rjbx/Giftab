@@ -305,13 +305,14 @@ public class ConfigActivity
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 mRequestedEmail = newValue.toString();
                 mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-                mAuthDialog.setContentView(mAuthDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null));
+                View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                mAuthDialog.setView(view);
                 mAuthDialog.setMessage(getString(R.string.message_update_email));
                 mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mAuthDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_remove), this);
                 mAuthDialog.show();
                 mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mAuthDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+                mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
