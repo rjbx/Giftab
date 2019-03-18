@@ -110,6 +110,7 @@
     <string name="dialog_filter_setup">To set up your search filters, click the icon in the top right corner, or press \'Get Started\'.</string>
     <string name="message_remove_entry">Remove %s from your %s?</string>
     <string name="message_clear_all">Your %ss will not be recoverable except by %s them again. Are you sure you want to permanently delete all of your %ss?</string>
+    <string name="message_update_email">The</string>
     <string name="snippet_all_charities">all charities</string>
     <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
     <string name="message_record_refresh">Your records have been updated.</string>

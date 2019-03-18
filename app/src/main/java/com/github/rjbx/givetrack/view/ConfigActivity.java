@@ -23,8 +23,10 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -252,9 +254,14 @@ public class ConfigActivity
     public static class UserPreferenceFragment extends PreferenceFragment implements
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
-            DatePickerDialog.OnDateSetListener {
+            DatePickerDialog.OnDateSetListener,
+            DialogInterface.OnClickListener,
+            TextView.OnEditorActionListener {
 
+        private AlertDialog mAuthDialog;
         private Calendar mCalendar;
+        private String mEmail;
+        private String mPassword;
 
         /**
          * Inflates the content of this fragment.
@@ -295,16 +302,15 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
-                if (sUser != null && sUser.getUserEmail().equals(newValue.toString())) {
-                    FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
-                    if (activeUser != null) {
-                        String password = getString(R.string.message_password_request);
-                        AppUtilities.completeTaskOnReauthentication(activeUser, password, authTask -> {
-                            FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
-                            reauthenticatedUser.updateEmail(newValue.toString()).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
-                        });
-                    }
-                }
+                mEmail = newValue.toString();
+                mAuthDialog = new AlertDialog.Builder(getActivity()).create();
+                mAuthDialog.setContentView(mAuthDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null));
+                mAuthDialog.setMessage(getString(R.string.message_update_email));
+                mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mAuthDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mAuthDialog.show();
+                mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mAuthDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
@@ -335,6 +341,31 @@ public class ConfigActivity
                 startActivity(intent);
                 return true;
             } return false;
+        }
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            switch (actionId) {
+                case EditorInfo.IME_ACTION_DONE:
+                    mPassword = v.getText().toString();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            if (sUser != null && sUser.getUserEmail().equals(mEmail)) {
+                FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (activeUser != null) {
+                    String password = getString(R.string.message_password_request);
+                    AppUtilities.completeTaskOnReauthentication(activeUser, mPassword, authTask -> {
+                        FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
+                        reauthenticatedUser.updateEmail(mEmail).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
+                    });
+                }
+            }
         }
     }
 
