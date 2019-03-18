@@ -214,7 +214,7 @@ public class ConfigActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
 
         preference.setOnPreferenceChangeListener(listener);
-        listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
+//        listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
     }
 
     /**
@@ -260,7 +260,8 @@ public class ConfigActivity
 
         private AlertDialog mAuthDialog;
         private Calendar mCalendar;
-        private String mEmail;
+        private String mRequestedEmail;
+        private String mCurrentEmail;
         private String mPassword;
 
         /**
@@ -301,6 +302,17 @@ public class ConfigActivity
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
 
             if (newValue == null) return false;
+            if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                mRequestedEmail = newValue.toString();
+                mAuthDialog = new AlertDialog.Builder(getActivity()).create();
+                mAuthDialog.setContentView(mAuthDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null));
+                mAuthDialog.setMessage(getString(R.string.message_update_email));
+                mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mAuthDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mAuthDialog.show();
+                mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mAuthDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+            }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
@@ -312,16 +324,7 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
 
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_userEmail_key).equals(preferenceKey)) {
-                mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-                mAuthDialog.setContentView(mAuthDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null));
-                mAuthDialog.setMessage(getString(R.string.message_update_email));
-                mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mAuthDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
-                mAuthDialog.show();
-                mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mAuthDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-            } else if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
                 mCalendar = Calendar.getInstance();
                 String birthdate = sUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
@@ -347,7 +350,7 @@ public class ConfigActivity
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 switch (v.getId()) {
                     case R.id.reauth_user:
-                        mEmail = v.getText().toString();
+                        mCurrentEmail = v.getText().toString();
                         return true;
                     case R.id.reauth_password:
                         mPassword = v.getText().toString();
@@ -358,12 +361,12 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (sUser != null && sUser.getUserEmail().equals(mEmail)) {
+            if (sUser != null && sUser.getUserEmail().equals(mRequestedEmail)) {
                 FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (activeUser != null) {
+                if (activeUser != null && mCurrentEmail.equals(sUser.getUserEmail())) {
                     AppUtilities.completeTaskOnReauthentication(activeUser, mPassword, authTask -> {
                         FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
-                        reauthenticatedUser.updateEmail(mEmail).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
+                        reauthenticatedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
                     });
                 }
             }
