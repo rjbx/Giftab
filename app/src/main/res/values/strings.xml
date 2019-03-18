@@ -2,7 +2,7 @@
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
-    <string name="app_name">Giveu</string>
+    <string name="app_name">Giftab</string>
 
     <!-- Errors -->
     <string name="removal_error_message">An unexpected error occurred; could not remove %s from your search results.</string>
@@ -61,7 +61,7 @@
     <string name="title_activity_config">Settings</string>
 
     <!-- Main -->
-    <string name="nav_header_title">Giveu</string>
+    <string name="nav_header_title">Giftab</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_subtitle">Menu</string>
@@ -78,7 +78,7 @@
     <string name="url_cn">https://charitynavigator.org/</string>
     <string name="url_clearbit">https://clearbit.com/</string>
     <string name="tab_text_1">Give</string>
-    <string name="tab_text_2">View</string>
+    <string name="tab_text_2">Glance</string>
     <string name="historical_dialog_message">Do you want to change back to the current date after recording the next donation?</string>
     <string name="anchor_dialog_message">Do you want to change the date to %s for recording donations?</string>
 

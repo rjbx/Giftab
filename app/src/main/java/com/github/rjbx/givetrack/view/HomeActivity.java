@@ -43,7 +43,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.github.rjbx.givetrack.AppUtilities;
-import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
