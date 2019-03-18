@@ -49,6 +49,7 @@ import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -297,7 +298,10 @@ public class ConfigActivity
 
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (activeUser != null) activeUser.updateEmail(newValue.toString());
+                if (activeUser != null) {
+                    String password = getString(R.string.message_password_request);
+                    AppUtilities.completeTaskOnReauthentication(activeUser, password, task -> activeUser.updateEmail(newValue.toString()));
+                } Timber.d(activeUser.getEmail());
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
