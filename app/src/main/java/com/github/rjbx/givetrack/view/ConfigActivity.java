@@ -51,7 +51,6 @@ import androidx.annotation.Nullable;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Add change email option to UserPreferenceFragment
-// TODO: Add anchor reset option for HomePreferenceFragment
 // TODO: Link to TOS and PP with option to disable remote persistence
 // TODO: Fully implement removed and add other options
 /**
@@ -452,6 +451,7 @@ public class ConfigActivity
 
         AlertDialog mMagnitudeDialog;
         AlertDialog mRecalibrateDialog;
+        AlertDialog mCurrentDialog;
         AlertDialog mClearDialog;
         TextView mSeekReadout;
         int mSeekProgress;
@@ -477,6 +477,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_giveReset_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_giveCurrent_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -521,6 +522,15 @@ public class ConfigActivity
                 mRecalibrateDialog.show();
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 mRecalibrateDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                return true;
+            } else if (getString(R.string.pref_giveCurrent_key).equals(preferenceKey)) {
+                mCurrentDialog = new AlertDialog.Builder(getActivity()).create();
+                mCurrentDialog.setMessage(getActivity().getString(R.string.dialog_message_current));
+                mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mCurrentDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                mCurrentDialog.show();
+                mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Target.class.getSimpleName().toLowerCase();
@@ -575,6 +585,18 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         sUser.setGiveReset(true);
+                        DatabaseManager.startActionUpdateUser(getActivity(), sUser);
+                        break;
+                    default:
+                }
+            }  else if (dialog == mCurrentDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEUTRAL:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_POSITIVE:
+                        sUser.setGiveAnchor(System.currentTimeMillis());
+                        sUser.setGiveTiming(0);
                         DatabaseManager.startActionUpdateUser(getActivity(), sUser);
                         break;
                     default:

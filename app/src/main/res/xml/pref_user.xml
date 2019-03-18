@@ -25,13 +25,13 @@
         android:key="@string/pref_userGender_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_gender_label" />
+        android:title="@string/pref_indexGender_label" />
 
     <Preference
         android:key="@string/pref_userBirthdate_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_birthdate_label"
+        android:title="@string/pref_indexBirthdate_label"
         android:defaultValue="1/1/2000"/>
 
     <!--<ListPreference-->

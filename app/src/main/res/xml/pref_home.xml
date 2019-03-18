@@ -11,7 +11,12 @@
 
     <Preference
         android:key="@string/pref_giveReset_key"
-        android:title="@string/pref_recalibrate_label"
+        android:title="@string/pref_giveReset_label"
+        android:summary="Allocate the same percentage of donations to each charity"/>
+
+    <Preference
+        android:key="@string/pref_giveCurrent_key"
+        android:title="@string/pref_giveCurrent_label"
         android:summary="Allocate the same percentage of donations to each charity"/>
 
     <Preference

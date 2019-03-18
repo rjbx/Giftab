@@ -6,7 +6,7 @@
         android:dependency="@string/pref_indexFocus_key"
         android:defaultValue="true"
         android:key="@string/pref_indexFilter_key"
-        android:title="@string/pref_fundraising_label"
+        android:title="@string/pref_indexFundraising_label"
         android:summaryOn="Show approved fundraising organizations"
         android:summaryOff="Show all organizations"/>
 
@@ -15,14 +15,14 @@
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
-        android:title="@string/pref_term_label"/>
+        android:title="@string/pref_indexTerm_label"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexFocus_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexCity_key"
         android:singleLine="true"
-        android:title="@string/pref_city_label"/>
+        android:title="@string/pref_indexCity_label"/>
 
     <ListPreference
         android:dependency="@string/pref_indexFocus_key"
@@ -31,14 +31,14 @@
         android:key="@string/pref_indexState_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_state_label"/>
+        android:title="@string/pref_indexState_label"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexFocus_key"
         android:inputType="number"
         android:key="@string/pref_indexZip_key"
         android:singleLine="true"
-        android:title="@string/pref_zip_label"/>
+        android:title="@string/pref_indexZip_label"/>
 
     <ListPreference
         android:dependency="@string/pref_indexFocus_key"
@@ -56,7 +56,7 @@
         android:key="@string/pref_indexSort_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_sort_label"/>
+        android:title="@string/pref_indexSort_label"/>
 
     <ListPreference
         android:dependency="@string/pref_indexFocus_key"
@@ -65,7 +65,7 @@
         android:key="@string/pref_indexOrder_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_order_label"/>
+        android:title="@string/pref_indexOrder_label"/>
 
     <!--<EditTextPreference-->
         <!--android:dependency="@string/pref_indexFocus_key"-->
@@ -85,13 +85,13 @@
         android:inputType="number"
         android:key="@string/pref_indexCompany_key"
         android:singleLine="true"
-        android:title="@string/pref_ein_label"/>
+        android:title="@string/pref_indexEin_label"/>
 
     <SwitchPreference
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:key="@string/pref_indexFocus_key"
-        android:title="@string/pref_focused_label"
+        android:title="@string/pref_indexFocused_label"
         android:summaryOn="Spawn for single charity"
         android:summaryOff="Spawn for multiple charities"/>
 

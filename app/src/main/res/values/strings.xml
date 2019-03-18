@@ -17,7 +17,7 @@
     <!-- Options -->
     <string name="action_settings">Settings</string>
     <string name="action_share">Share</string>
-    <string name="action_recalibrate">Recalibrate Donations</string>
+    <string name="action_recalibrate">Recalibrate Gifts</string>
     <string name="action_clear">Clear Charities</string>
     <string name="action_magnitude_label">Adjustment Magnitude</string>
     <string name="action_toggle_on">Toggle overlay on</string>
@@ -80,7 +80,7 @@
     <string name="tab_text_1">Give</string>
     <string name="tab_text_2">Glance</string>
     <string name="historical_dialog_message">Do you want to change back to the current date after recording the next donation?</string>
-    <string name="anchor_dialog_message">Do you want to change the date to %s for recording donations?</string>
+    <string name="anchor_dialog_message">Do you want to change the date to %s for recording gifts?</string>
 
     <!-- Auth -->
     <string name="fui_tos_and_pp">By continuing, you are indicating that you accept our %1$s and %2$s. Charity data and logos powered by Charity Navigator and Clearbit API.</string>
@@ -104,6 +104,7 @@
     <string name="add_widget">Add widget</string>
 
     <!-- Charity -->
+    <string name="dialog_message_current">Do you want to set the date of gifts to current?</string>
     <string name="dialog_message_recalibrate">Do you want to allocate the same percentage of dentations to each charity? The change is not permanent as you can still manually adjust the allocations afterward.</string>
     <string name="dialog_description_magnitude_adjustment">Change the magnitude of increments and decrements.The current magnitude is %s</string>
     <string name="dialog_filter_setup">To set up your search filters, click the icon in the top right corner, or press \'Get Started\'.</string>
@@ -116,7 +117,7 @@
     <string name="message_generated_remove">%s has been removed from your search results. </string>
     <string name="message_collected_add">"%s has been added to your collection"</string>
     <string name="message_collected_remove">"%s has been removed from your collection"</string>
-    <string name="indicator_donation_frequency">Number of donations: %s</string>
+    <string name="indicator_donation_frequency">Number of gifts: %s</string>
     <string name="indicator_donation_impact">Your total impact: %s</string>
     <string name="axis_value_high">All-time high</string>
     <string name="axis_value_this">This %s</string>
@@ -152,32 +153,34 @@
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
     <string name="pref_giveReset_key" translatable="false">giveReset</string>
+    <string name="pref_giveCurrent_key" translatable="false">giveCurrent</string>
     <string name="pref_giveMagnitude_key" translatable="false">giveMagnitude</string>
     <string name="pref_giveRounding_key" translatable="false">giveRounding</string>
     <string name="pref_indexCompany_key" translatable="false">indexCompany</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
     <string name="pref_show_key" translatable="false">showAll</string>
     <string name="pref_payments_key" translatable="false">payments</string>
-    <string name="pref_term_label">Keywords</string>
-    <string name="pref_city_label">City</string>
-    <string name="pref_state_label">State</string>
-    <string name="pref_zip_label">Postal Code</string>
-    <string name="pref_start_label">Start</string>
-    <string name="pref_rows_label">Rows</string>
+    <string name="pref_indexTerm_label">Keywords</string>
+    <string name="pref_indexCity_label">City</string>
+    <string name="pref_indexState_label">State</string>
+    <string name="pref_indexZip_label">Postal Code</string>
+    <string name="pref_indexStart_label">Start</string>
+    <string name="pref_indexRows_label">Rows</string>
     <string name="pref_indexMinrating_label">Minimum Rating</string>
-    <string name="pref_fundraising_label">Advisory Filter</string>
-    <string name="pref_sort_label">Sort</string>
-    <string name="pref_order_label">Order</string>
-    <string name="pref_focused_label">Focused Search</string>
-    <string name="pref_ein_label">Employer Identification Number</string>
-    <string name="pref_gender_label">Gender</string>
-    <string name="pref_birthdate_label">Birthdate</string>
+    <string name="pref_indexFundraising_label">Advisory Filter</string>
+    <string name="pref_indexSort_label">Sort</string>
+    <string name="pref_indexOrder_label">Order</string>
+    <string name="pref_indexFocused_label">Focused Search</string>
+    <string name="pref_indexEin_label">Employer Identification Number</string>
+    <string name="pref_indexGender_label">Gender</string>
+    <string name="pref_indexBirthdate_label">Birthdate</string>
     <string name="pref_delete_label">Delete Account</string>
-    <string name="pref_recalibrate_label">Recalibrate Percentages</string>
+    <string name="pref_giveReset_label">Recalibrate Percentages</string>
+    <string name="pref_giveCurrent_label">Reset Date</string>
     <string name="pref_magnitude_label">Adjust Magnitude</string>
     <string name="pref_clear_label">Clear Data</string>
     <string name="pref_show_label">Show All</string>
-    <string name="pref_payments_label">Process Donations</string>
+    <string name="pref_payments_label">Process Gifts</string>
 
     <!-- General settings -->
     <string name="pref_header_user">User</string>
@@ -372,7 +375,7 @@
 
     <string name="pref_header_give">Home</string>
 
-    <string name="pref_giveRounding_label">Round Contributions</string>
+    <string name="pref_giveRounding_label">Round Amounts</string>
     <string-array name="list_preference_giveRounding">
         <item>Down</item>
         <item>Up</item>
