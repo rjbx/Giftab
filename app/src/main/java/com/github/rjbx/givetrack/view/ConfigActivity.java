@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Record;
@@ -63,6 +62,7 @@ public class ConfigActivity
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.CONFIG_USER";
+    private List<Header> mTarget;
     private static User sUser;
 
     /**
@@ -94,7 +94,7 @@ public class ConfigActivity
      * {@inheritDoc}
      */
     @Override public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.pref_headers, target);
+        mTarget = target;
     }
 
     /**
@@ -132,7 +132,8 @@ public class ConfigActivity
                     sUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 //                    if (sharedPreferences.getAll().isEmpty())
-                        AppUtilities.mapToSharedPreferences(sUser.toParameterMap(), sharedPreferences);
+                    AppUtilities.mapToSharedPreferences(sUser.toParameterMap(), sharedPreferences);
+                    loadHeadersFromResource(R.xml.pref_headers, mTarget);
                     break;
                 }
             } while (data.moveToNext());
