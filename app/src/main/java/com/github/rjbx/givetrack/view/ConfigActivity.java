@@ -300,8 +300,11 @@ public class ConfigActivity
                 FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (activeUser != null) {
                     String password = getString(R.string.message_password_request);
-                    AppUtilities.completeTaskOnReauthentication(activeUser, password, task -> activeUser.updateEmail(newValue.toString()));
-                } Timber.d(activeUser.getEmail());
+                    AppUtilities.completeTaskOnReauthentication(activeUser, password, authTask -> {
+                        FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
+                        reauthenticatedUser.updateEmail(newValue.toString()).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
+                    });
+                }
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
