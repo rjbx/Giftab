@@ -8,19 +8,15 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Parcelable;
 import android.preference.PreferenceActivity;
-import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.givetrack.view.AuthActivity;
 import com.github.rjbx.givetrack.view.ConfigActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.lang.reflect.Array;
@@ -32,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import androidx.annotation.NonNull;
 import timber.log.Timber;
 
 public final class AppUtilities {
@@ -81,13 +76,11 @@ public final class AppUtilities {
         Set<Map.Entry<String, Object>> entrySet = map.entrySet();
         for (Map.Entry<String, Object> entry : entrySet) {
             Object value = entry.getValue();
-            if (value instanceof String)
-                sp.edit().putString(entry.getKey(), (String) value).apply();
-            if (value instanceof Boolean)
-                sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
-            if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
-            if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
-            if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
+            if (value instanceof String) sp.edit().putString(entry.getKey(), (String) value).apply();
+            else if (value instanceof Boolean) sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
+            else if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
+            else if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
+            else if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
         }
     }
 

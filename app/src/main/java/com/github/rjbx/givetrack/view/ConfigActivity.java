@@ -131,7 +131,7 @@ public class ConfigActivity
                 if (user.getUserActive()) {
                     sUser = user;
                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                    if (sharedPreferences.getAll().isEmpty())
+//                    if (sharedPreferences.getAll().isEmpty())
                         AppUtilities.mapToSharedPreferences(sUser.toParameterMap(), sharedPreferences);
                     break;
                 }
@@ -296,14 +296,17 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+            if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
-                FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
-                if (activeUser != null) {
-                    String password = getString(R.string.message_password_request);
-                    AppUtilities.completeTaskOnReauthentication(activeUser, password, authTask -> {
-                        FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
-                        reauthenticatedUser.updateEmail(newValue.toString()).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
-                    });
+                if (sUser != null && sUser.getUserEmail().equals(newValue.toString())) {
+                    FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
+                    if (activeUser != null) {
+                        String password = getString(R.string.message_password_request);
+                        AppUtilities.completeTaskOnReauthentication(activeUser, password, authTask -> {
+                            FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
+                            reauthenticatedUser.updateEmail(newValue.toString()).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
+                        });
+                    }
                 }
             }
             ConfigActivity.changeSummary(preference, newValue);

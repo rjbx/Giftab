@@ -20,7 +20,6 @@
 
     <EditTextPreference
         android:capitalize="none"
-        android:defaultValue="@string/pref_default_userEmail"
         android:inputType="text"
         android:key="@string/pref_userEmail_key"
         android:maxLines="1"
