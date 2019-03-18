@@ -150,6 +150,7 @@
     <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
     <string name="pref_userGender_key" translatable="false">userGender</string>
+    <string name="pref_userEmail_key" translatable="false">userEmail</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
     <string name="pref_giveReset_key" translatable="false">giveReset</string>
@@ -187,7 +188,9 @@
     <string name="pref_title_social_recommendations">Enable social recommendations</string>
     <string name="pref_description_social_recommendations">Recommendations for people to contact based on your message history</string>
     <string name="pref_title_display_name">Display name</string>
+    <string name="pref_userEmail_label">Account Email</string>
     <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_default_userEmail">example@example.com</string>
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
     <string-array name="pref_example_list_titles">
         <item>Always</item>

@@ -39,6 +39,8 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 import java.util.List;
@@ -50,7 +52,6 @@ import androidx.annotation.Nullable;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Add change email option to UserPreferenceFragment
 // TODO: Link to TOS and PP with option to disable remote persistence
 // TODO: Fully implement removed and add other options
 /**
@@ -273,7 +274,7 @@ public class ConfigActivity
             super.onResume();
 //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
-//            handlePreferenceChange(findPreference("example_list"), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
@@ -294,6 +295,10 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
 
+            if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (activeUser != null) activeUser.updateEmail(newValue.toString());
+            }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;

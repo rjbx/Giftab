@@ -18,6 +18,16 @@
         android:singleLine="true"
         android:title="@string/pref_title_display_name" />
 
+    <EditTextPreference
+        android:capitalize="none"
+        android:defaultValue="@string/pref_default_userEmail"
+        android:inputType="text"
+        android:key="@string/pref_userEmail_key"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_userEmail_label" />
+
     <ListPreference
         android:defaultValue="0"
         android:entries="@array/list_preference_gender"
