@@ -148,11 +148,10 @@ public class GiveFragment extends Fragment implements
         if (args != null) {
             Parcelable[] parcelableArray = args.getParcelableArray(HomeActivity.ARGS_TARGET_ATTRIBUTES);
             if (parcelableArray != null) {
-                // TODO: Factor out with accessor validation
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
-                if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
-                    sPercentagesAdjusted = true;
-                }
+//                if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
+//                    sPercentagesAdjusted = true;
+//                }
                 sValuesArray = valuesArray;
             }
             sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);

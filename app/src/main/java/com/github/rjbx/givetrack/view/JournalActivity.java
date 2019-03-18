@@ -61,7 +61,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-//TODO: Implement toggle for type attribute and launcher for memo
+//TODO: Implement toggle for type and launcher for memo
 /**
  * Presents a list of editable giving records with toggleable detail pane.
  */

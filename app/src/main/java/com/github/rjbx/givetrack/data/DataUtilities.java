@@ -191,7 +191,7 @@ final class DataUtilities {
         return (str.equals("null")) ? DatasourceContract.DEFAULT_VALUE_STR : str;
     }
 
-    // TODO Retrieve from Clearbit Enrichment API with Retrofit
+    // TODO Retrieve from Clearbit Enrichment API
     static String urlToSocialHandle(Target target) {
         String socialHandle = DatasourceContract.DEFAULT_VALUE_STR;
         String url = target.getHomepageUrl();

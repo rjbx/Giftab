@@ -41,8 +41,6 @@ import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Disable remote persistence for guests
-
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
@@ -163,7 +161,6 @@ public class AuthActivity extends AppCompatActivity implements
      * Processes actions defined by the source Intent.
      */
     private void handleAction(String action) {
-        // TODO: Enable user selection
         User user = null;
         for (User u : mUsers) if (u.getUserActive()) { user = u; break; }
         if (action != null) {
