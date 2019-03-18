@@ -26,12 +26,10 @@ import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -46,8 +44,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  */
 public class AuthActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor> {
-
-    private static final Executor DISK_IO = AppExecutors.getInstance().getDiskIO();
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -167,34 +163,29 @@ public class AuthActivity extends AppCompatActivity implements
             String password = AuthActivity.this.getString(R.string.message_password_request);
             switch (action) {
                 case ACTION_SIGN_OUT:
-                    User deactivatedUser = user;
-                    if (user != null) {
-                        deactivatedUser.setUserActive(false);
-                        DISK_IO.execute(() -> {
-                            DatabaseManager.startActionUpdateUser(this, deactivatedUser);
-                            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                            AppUtilities.completeTaskOnReauthentication(firebaseUser, password, signedOutTask -> {
+                    if (user != null) user.setUserActive(false);
+                    DatabaseManager.startActionUpdateUser(this, user);
+                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                    AppUtilities.completeTaskOnReauthentication(firebaseUser, password, signedOutTask -> {
+                        AuthUI.getInstance().signOut(this);
+                        finish();
+                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                    });
+                    break;
+                case ACTION_DELETE_ACCOUNT:
+                    DatabaseManager.startActionResetData(AuthActivity.this);
+                    FirebaseUser activeUser = mFirebaseAuth.getCurrentUser();
+                    AppUtilities.completeTaskOnReauthentication(activeUser, password, signedOutTask -> {
+                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                        if (refreshedUser != null)
+                            refreshedUser.delete().addOnCompleteListener(completedTask -> {
+                            if (completedTask.isSuccessful()) {
                                 AuthUI.getInstance().signOut(this);
                                 finish();
                                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
                                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                            });
-                        });
-                    }
-                    break;
-                case ACTION_DELETE_ACCOUNT:
-                    DatabaseManager.startActionResetData(AuthActivity.this);
-                    DISK_IO.execute(() -> {
-                        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                        AppUtilities.completeTaskOnReauthentication(firebaseUser, password, signedOutTask -> {
-                            if (firebaseUser != null) firebaseUser.delete().addOnCompleteListener(completedTask -> {
-                                if (completedTask.isSuccessful()) {
-                                    AuthUI.getInstance().signOut(this);
-                                    finish();
-                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                }
-                            });
+                            }
                         });
                     });
                     break;

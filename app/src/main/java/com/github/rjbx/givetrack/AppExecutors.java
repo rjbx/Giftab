@@ -6,6 +6,8 @@ import android.os.Looper;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+// TODO Synchronize data API requests with FirebaseAuth and FirebaseDatabase operations through network thread
+
 /**
  * Exposes main and worker threads for synchronizing code execution.
  */
