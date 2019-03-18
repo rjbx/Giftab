@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -101,6 +102,7 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 boolean isPersisted = false;
                 User activeUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+                AppUtilities.mapToSharedPreferences(activeUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                 for (int i = 0; i < mUsers.size(); i++) {
                     boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
                     mUsers.get(i).setUserActive(isActive);

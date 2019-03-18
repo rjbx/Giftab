@@ -62,7 +62,7 @@ public class ConfigActivity
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.CONFIG_USER";
-    private List<Header> mTarget;
+    private static List<Header> mTarget;
     private static User sUser;
 
     /**
@@ -94,7 +94,7 @@ public class ConfigActivity
      * {@inheritDoc}
      */
     @Override public void onBuildHeaders(List<Header> target) {
-        mTarget = target;
+        loadHeadersFromResource(R.xml.pref_headers, target);
     }
 
     /**
@@ -130,10 +130,6 @@ public class ConfigActivity
                 AppUtilities.cursorRowToEntry(data, user);
                 if (user.getUserActive()) {
                     sUser = user;
-                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//                    if (sharedPreferences.getAll().isEmpty())
-                    AppUtilities.mapToSharedPreferences(sUser.toParameterMap(), sharedPreferences);
-                    loadHeadersFromResource(R.xml.pref_headers, mTarget);
                     break;
                 }
             } while (data.moveToNext());
