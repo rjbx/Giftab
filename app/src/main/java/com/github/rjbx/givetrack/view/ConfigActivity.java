@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.util.TimeUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -43,12 +44,14 @@ import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.FirebaseUserMetadata;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -314,17 +317,35 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
-                mCurrentEmail = sUser.getUserEmail();
-                mRequestedEmail = newValue.toString();
-                mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-                mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                mAuthDialog.setView(mDialogView);
-                mAuthDialog.setMessage(getString(R.string.message_update_email));
-                mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                mAuthDialog.show();
-                mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (firebaseUser == null || firebaseUser.getMetadata() == null) return false;
+                long lastAuth = firebaseUser.getMetadata().getLastSignInTimestamp();
+                long elapsedSinceLastAuth = System.currentTimeMillis() - lastAuth;
+                if (TimeUnit.MILLISECONDS.toMinutes(elapsedSinceLastAuth) < 5) {
+                    firebaseUser.updateEmail(mRequestedEmail)
+                            .addOnSuccessListener(updateTask -> {
+                                sUser.setUserEmail(mRequestedEmail);
+                                DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                                Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(failTask -> {
+                                sUser.setUserEmail(mCurrentEmail);
+                                DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                                Toast.makeText(getContext(), "Your credentials are incorrect; try again.", Toast.LENGTH_SHORT).show();
+                            });
+                } else {
+                    mCurrentEmail = sUser.getUserEmail();
+                    mRequestedEmail = newValue.toString();
+                    mAuthDialog = new AlertDialog.Builder(getActivity()).create();
+                    mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                    mAuthDialog.setView(mDialogView);
+                    mAuthDialog.setMessage(getString(R.string.message_update_email));
+                    mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                    mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+                    mAuthDialog.show();
+                    mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                    mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                }
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
