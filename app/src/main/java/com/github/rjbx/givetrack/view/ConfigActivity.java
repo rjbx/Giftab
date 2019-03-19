@@ -349,11 +349,11 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+            mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
             if (sUser != null && sUser.getUserEmail().equals(mCurrentEmail)) {
                 FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (activeUser != null && mCurrentEmail.equals(sUser.getUserEmail())) {
-                    mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-                    mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                     AppUtilities.completeTaskOnReauthentication(activeUser, mPassword, authTask -> {
                         FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
                         reauthenticatedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
