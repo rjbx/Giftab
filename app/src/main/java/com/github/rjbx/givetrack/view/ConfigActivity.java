@@ -357,18 +357,28 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-            mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-            if (sUser != null && sUser.getUserEmail().equals(mCurrentEmail)) {
-                if (mCurrentEmail.equals(sUser.getUserEmail())) {
-                    AppUtilities.completeTaskOnReauthentication(mCurrentEmail, mPassword, authTask -> {
-                        FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
-                        if (refreshedUser != null) refreshedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> {
-                            sUser.setUserEmail(mRequestedEmail);
-                            DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                            Timber.d(refreshedUser.getEmail());
-                        });
-                    });
+            if (dialog == mAuthDialog) {
+                switch (which) {
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_POSITIVE:
+                        mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                        mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+                        if (sUser != null && sUser.getUserEmail().equals(mCurrentEmail)) {
+                            if (mCurrentEmail.equals(sUser.getUserEmail())) {
+                                AppUtilities.completeTaskOnReauthentication(mCurrentEmail, mPassword, authTask -> {
+                                    FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
+                                    if (refreshedUser != null)
+                                        refreshedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> {
+                                            sUser.setUserEmail(mRequestedEmail);
+                                            DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                                            Timber.d(refreshedUser.getEmail());
+                                        });
+                                });
+                            }
+                        }
+                        break;
                 }
             }
         }

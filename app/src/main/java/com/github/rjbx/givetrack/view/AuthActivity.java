@@ -1,15 +1,17 @@
 package com.github.rjbx.givetrack.view;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -23,7 +25,6 @@ import timber.log.Timber;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
-import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
@@ -36,7 +37,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -44,7 +44,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
 public class AuthActivity extends AppCompatActivity implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>,
+        DialogInterface.OnClickListener {
 
     private static final int REQUEST_SIGN_IN = 0;
 
@@ -57,8 +58,10 @@ public class AuthActivity extends AppCompatActivity implements
     private int mProcessStage = 0;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
-    @BindView(R.id.auth_progress)
-    ProgressBar mProgressbar;
+    private AlertDialog mAuthDialog;
+    private View mDialogView;
+    private String mAction;
+    @BindView(R.id.auth_progress) ProgressBar mProgressbar;
 
     /**
      * Handles sign in, sign out, and account deletion launch Intent actions.
@@ -177,67 +180,97 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = null;
     }
 
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        if (dialog == mAuthDialog) {
+            String email = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+            String password = ((EditText) mDialogView.findViewById(R.id.password)).getText().toString();
+            switch (which) {
+                case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
+                case AlertDialog.BUTTON_POSITIVE:
+                    if (mAction.equals(ACTION_SIGN_OUT)) {
+                        User activeUser = null;
+                        for (User u : mUsers) if (u.getUserActive()) activeUser = u;
+                        if (activeUser == null) return;
+                        activeUser.setUserActive(false);
+                        DatabaseManager.startActionUpdateUser(this, activeUser);
+                        AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
+                            AuthUI.getInstance().signOut(this);
+                            finish();
+                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                        });
+                    } else if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
+                        DatabaseManager.startActionResetData(AuthActivity.this);
+                        AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
+                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                            if (refreshedUser != null)
+                                refreshedUser.delete().addOnCompleteListener(completedTask -> {
+                                    if (completedTask.isSuccessful()) {
+                                        AuthUI.getInstance().signOut(this);
+                                        finish();
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                        });
+                    }
+                    break;
+                default:
+            }
+        }
+    }
+
     /**
      * Processes actions defined by the source Intent.
      */
     private void handleAction(String action) {
-        if (action != null) {
-            User activeUser = null;
-            for (User u : mUsers) if (u.getUserActive()) { activeUser = u; break; }
-            switch (action) {
-                case ACTION_SIGN_IN:
-                    if (mFirebaseAuth.getCurrentUser() == null) {
-                        List<AuthUI.IdpConfig> providers = new ArrayList<>();
-                        providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
-                        providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
-                        providers.add(new AuthUI.IdpConfig.AnonymousBuilder().build());
-                        Intent signIn = AuthUI.getInstance().createSignInIntentBuilder()
-                                .setLogo(R.mipmap.ic_launcher_round)
-                                .setTosAndPrivacyPolicyUrls("https://github.com/rjbx/Givetrack", "https://github.com/rjbx/Givetrack")
-                                .setTheme(R.style.AppTheme_AuthOverlay)
-                                .setIsSmartLockEnabled(false, true)
-                                .setAvailableProviders(providers)
-                                .build();
-                        startActivityForResult(signIn, REQUEST_SIGN_IN);
-                        mProcessStage++;
-                    } else {
-                        finish();
-                        Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
-                    }
-                    break;
-                case ACTION_SIGN_OUT:
-                    if (activeUser == null) return;
-                    String signoutEmail = activeUser.getUserEmail();
-                    String signoutPassword = AuthActivity.this.getString(R.string.message_password_request);
-                    activeUser.setUserActive(false);
-                    DatabaseManager.startActionUpdateUser(this, activeUser);
-                    AppUtilities.completeTaskOnReauthentication(signoutEmail, signoutPassword, signedOutTask -> {
-                        AuthUI.getInstance().signOut(this);
-                        finish();
-                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                    });
-                    break;
-                case ACTION_DELETE_ACCOUNT:
-                    if (activeUser == null) return;;
-                    String deleteEmail = activeUser.getUserEmail();
-                    String deletePassword = AuthActivity.this.getString(R.string.message_password_request);
-                    DatabaseManager.startActionResetData(AuthActivity.this);
-                    AppUtilities.completeTaskOnReauthentication(deleteEmail, deletePassword, signedOutTask -> {
-                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                        if (refreshedUser != null)
-                            refreshedUser.delete().addOnCompleteListener(completedTask -> {
-                                if (completedTask.isSuccessful()) {
-                                    AuthUI.getInstance().signOut(this);
-                                    finish();
-                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                }
-                            });
-                    });
-                    break;
-            }
+        if (action == null) return;
+        mAction = action;
+        switch (action) {
+            case ACTION_SIGN_IN:
+                if (mFirebaseAuth.getCurrentUser() == null) {
+                    List<AuthUI.IdpConfig> providers = new ArrayList<>();
+                    providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
+                    providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
+                    providers.add(new AuthUI.IdpConfig.AnonymousBuilder().build());
+                    Intent signIn = AuthUI.getInstance().createSignInIntentBuilder()
+                            .setLogo(R.mipmap.ic_launcher_round)
+                            .setTosAndPrivacyPolicyUrls("https://github.com/rjbx/Givetrack", "https://github.com/rjbx/Givetrack")
+                            .setTheme(R.style.AppTheme_AuthOverlay)
+                            .setIsSmartLockEnabled(false, true)
+                            .setAvailableProviders(providers)
+                            .build();
+                    startActivityForResult(signIn, REQUEST_SIGN_IN);
+                    mProcessStage++;
+                } else {
+                    finish();
+                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
+                }
+                break;
+            case ACTION_SIGN_OUT:
+                mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                mAuthDialog = new AlertDialog.Builder(this).create();
+                mAuthDialog.setView(mDialogView);
+                mAuthDialog.setMessage(getString(R.string.message_update_email));
+                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+                mAuthDialog.show();
+                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                break;
+            case ACTION_DELETE_ACCOUNT:
+                mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                mAuthDialog = new AlertDialog.Builder(this).create();
+                mAuthDialog.setView(mDialogView);
+                mAuthDialog.setMessage(getString(R.string.message_update_email));
+                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+                mAuthDialog.show();
+                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                break;
         }
     }
 }
