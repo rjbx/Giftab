@@ -28,6 +28,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -255,14 +256,14 @@ public class ConfigActivity
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             DatePickerDialog.OnDateSetListener,
-            DialogInterface.OnClickListener,
-            TextView.OnEditorActionListener {
+            DialogInterface.OnClickListener {
 
         private AlertDialog mAuthDialog;
         private Calendar mCalendar;
         private String mRequestedEmail;
         private String mCurrentEmail;
         private String mPassword;
+        private View mDialogView;
 
         /**
          * Inflates the content of this fragment.
@@ -305,8 +306,8 @@ public class ConfigActivity
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 mRequestedEmail = newValue.toString();
                 mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-                View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                mAuthDialog.setView(view);
+                mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                mAuthDialog.setView(mDialogView);
                 mAuthDialog.setMessage(getString(R.string.message_update_email));
                 mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                 mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_remove), this);
@@ -347,24 +348,12 @@ public class ConfigActivity
         }
 
         @Override
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                switch (v.getId()) {
-                    case R.id.reauth_user:
-                        mCurrentEmail = v.getText().toString();
-                        return true;
-                    case R.id.reauth_password:
-                        mPassword = v.getText().toString();
-                        return true;
-                }
-            } return false;
-        }
-
-        @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (sUser != null && sUser.getUserEmail().equals(mRequestedEmail)) {
+            if (sUser != null && sUser.getUserEmail().equals(mCurrentEmail)) {
                 FirebaseUser activeUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (activeUser != null && mCurrentEmail.equals(sUser.getUserEmail())) {
+                    mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                    mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                     AppUtilities.completeTaskOnReauthentication(activeUser, mPassword, authTask -> {
                         FirebaseUser reauthenticatedUser = FirebaseAuth.getInstance().getCurrentUser();
                         reauthenticatedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> Timber.d(activeUser.getEmail()));
