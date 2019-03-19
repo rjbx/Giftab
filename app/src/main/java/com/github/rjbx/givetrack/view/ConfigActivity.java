@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
-import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +20,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.app.ActionBar;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
@@ -82,7 +80,7 @@ public class ConfigActivity
 
     @Override
     public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
-        setupSummaries(preferenceScreen);
+        super.setPreferenceScreen(preferenceScreen);
     }
 
     @Override
@@ -151,7 +149,7 @@ public class ConfigActivity
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
-    public static void setupSummaries(PreferenceGroup pGroup) {
+    public static void setSummaries(PreferenceFragment pGroup) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(pGroup.getContext());
         Set<String> keySet = sharedPreferences.getAll().keySet();
         for (String key : keySet) changeSummary((pGroup.findPreference(key)), sharedPreferences.getAll().get(key));
@@ -281,6 +279,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
+            setSummaries(this);
        }
 
         /**
@@ -389,6 +388,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
+            setSummaries(this);
         }
 
         /**
@@ -509,6 +509,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
+            setSummaries(this);
         }
 
         /**
@@ -687,6 +688,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
+            setSummaries(this);
         }
 
         /**
@@ -776,6 +778,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
+            setSummaries(this);
         }
 
         /**
@@ -810,7 +813,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
-            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+            setSummaries(this);
         }
 
         /**
@@ -818,18 +821,10 @@ public class ConfigActivity
          */
         @Override public void onResume() {
             super.onResume();
+
+            handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 //            handlePreferenceChange(findPreference("sync_frequency"), this);
-            Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
-            deletePreference.setOnPreferenceClickListener(clickedPreference -> {
-                mDeleteDialog = new AlertDialog.Builder(getActivity()).create();
-                mDeleteDialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
-                mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
-                mDeleteDialog.show();
-                mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                return false;
-            });
+            handlePreferenceClick(findPreference(getString(R.string.pref_delete_key)), this);
         }
 
         /**
@@ -845,7 +840,18 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
-            if (getString(R.string.pref_show_key).equals(preference.getKey())) {
+            String preferenceKey = preference.getKey();
+            if (getString(R.string.pref_delete_key).equals(preferenceKey)) {
+                mDeleteDialog = new AlertDialog.Builder(getActivity()).create();
+                mDeleteDialog.setMessage(getActivity().getString(R.string.dialog_description_account_deletion));
+                mDeleteDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mDeleteDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_erase), this);
+                mDeleteDialog.show();
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mDeleteDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+                return false;
+            }
+            if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
