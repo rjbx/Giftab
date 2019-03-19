@@ -21,6 +21,7 @@ import android.preference.PreferenceActivity;
 import android.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -72,10 +73,16 @@ public class ConfigActivity
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupActionBar();
-        setupSummaries();
         if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+
+    }
+
+    @Override
+    public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
+        super.setPreferenceScreen(preferenceScreen);
+        setupActionBar();
+        setupSummaries();
     }
 
     @Override
@@ -144,11 +151,10 @@ public class ConfigActivity
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
-
     void setupSummaries() {
-        Map<String, ?> map = PreferenceManager.getDefaultSharedPreferences(this).getAll();
-        for (Map.Entry<String, ?> e : map.entrySet())
-            changeSummary(findPreference(e.getKey()), e.getValue());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> keySet = sharedPreferences.getAll().keySet();
+        for (String key : keySet) changeSummary((findPreference(key)), sharedPreferences.getAll().get(key));
     }
 
     /**
@@ -178,51 +184,47 @@ public class ConfigActivity
     }
 
     /**
-     * Updates the preference summary to reflect its new value.
-     */
-    private static void changeSummary(Preference changedPreference, Object newValue) {
-
-        if (newValue instanceof String) {
-            String stringValue = newValue.toString();
-
-            if (changedPreference instanceof ListPreference) {
-                ListPreference listPreference = (ListPreference) changedPreference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                changedPreference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else if (changedPreference instanceof RingtonePreference) {
-                if (TextUtils.isEmpty(stringValue)) {
-                    changedPreference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            changedPreference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        changedPreference.setSummary(null);
-                    } else {
-                        String name = ringtone.getTitle(changedPreference.getContext());
-                        changedPreference.setSummary(name);
-                    }
-                }
-            } else changedPreference.setSummary(stringValue);
-        }
-    }
-
-    /**
      * Binds value change listener to and initializes preference.
      */
     private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
-
-        String preferenceKey = preference.getKey();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(preference.getContext());
-
         preference.setOnPreferenceChangeListener(listener);
-//        listener.onPreferenceChange(preference, sharedPreferences.getAll().get(preferenceKey));
+    }
+
+    /**
+     * Updates the preference summary to reflect its new value.
+     */
+    private static void changeSummary(Preference changedPreference, Object newValue) {
+        if (changedPreference != null) {
+            if (newValue instanceof String) {
+                String stringValue = newValue.toString();
+
+                if (changedPreference instanceof ListPreference) {
+                    ListPreference listPreference = (ListPreference) changedPreference;
+                    int index = listPreference.findIndexOfValue(stringValue);
+
+                    changedPreference.setSummary(
+                            index >= 0
+                                    ? listPreference.getEntries()[index]
+                                    : null);
+
+                } else if (changedPreference instanceof RingtonePreference) {
+                    if (TextUtils.isEmpty(stringValue)) {
+                        changedPreference.setSummary(R.string.pref_ringtone_silent);
+
+                    } else {
+                        Ringtone ringtone = RingtoneManager.getRingtone(
+                                changedPreference.getContext(), Uri.parse(stringValue));
+
+                        if (ringtone == null) {
+                            changedPreference.setSummary(null);
+                        } else {
+                            String name = ringtone.getTitle(changedPreference.getContext());
+                            changedPreference.setSummary(name);
+                        }
+                    }
+                } else changedPreference.setSummary(stringValue);
+            } else if (newValue instanceof Integer || newValue instanceof Float) changedPreference.setSummary(String.valueOf(newValue));
+        }
     }
 
     /**
