@@ -31,6 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
@@ -269,7 +270,8 @@ public class ConfigActivity
         private Calendar mCalendar;
         private String mRequestedEmail;
         private String mCurrentEmail;
-        private String mPassword;
+        private String mEmailInput;
+        private String mPasswordInput;
         private View mDialogView;
 
         /**
@@ -312,6 +314,7 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                mCurrentEmail = sUser.getUserEmail();
                 mRequestedEmail = newValue.toString();
                 mAuthDialog = new AlertDialog.Builder(getActivity()).create();
                 mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
@@ -363,17 +366,24 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mCurrentEmail = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-                        mPassword = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                         if (sUser != null) {
-                            AppUtilities.completeTaskOnReauthentication(mCurrentEmail, mPassword, authTask -> {
+                            AppUtilities.completeTaskOnReauthentication(mEmailInput, mPasswordInput, authTask -> {
                                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                 if (refreshedUser != null)
-                                    refreshedUser.updateEmail(mRequestedEmail).addOnCompleteListener(updateTask -> {
-                                        sUser.setUserEmail(mRequestedEmail);
-                                        DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                        Timber.d(refreshedUser.getEmail());
-                                    });
+                                    refreshedUser.updateEmail(mRequestedEmail)
+                                            .addOnCompleteListener(updateTask -> {
+                                                    sUser.setUserEmail(mRequestedEmail);
+                                                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                                                    Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_SHORT).show();
+                                                })
+                                            .addOnFailureListener(failTask -> {
+                                                    sUser.setUserEmail(mCurrentEmail);
+                                                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
+
+                                                Toast.makeText(getContext(), "Your credentials are incorrect; try again.", Toast.LENGTH_SHORT).show();
+                                            });
                             });
                         }
                         break;
