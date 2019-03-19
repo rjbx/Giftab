@@ -57,12 +57,14 @@ public class AuthActivity extends AppCompatActivity implements
     private int mProcessStage = 0;
     private List<User> mUsers;
     private FirebaseAuth mFirebaseAuth;
-    @BindView(R.id.auth_progress) ProgressBar mProgressbar;
+    @BindView(R.id.auth_progress)
+    ProgressBar mProgressbar;
 
     /**
      * Handles sign in, sign out, and account deletion launch Intent actions.
      */
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
@@ -70,7 +72,8 @@ public class AuthActivity extends AppCompatActivity implements
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        if (savedInstanceState != null) mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
+        if (savedInstanceState != null)
+            mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
@@ -85,17 +88,22 @@ public class AuthActivity extends AppCompatActivity implements
      * and unregisters this Activity from listening to Preference changes
      * in order to prevent relaunching HomeActivity.
      */
-    @Override protected void onStop() {
+    @Override
+    protected void onStop() {
         mProgressbar.setVisibility(View.GONE);
         super.onStop();
     }
 
-    @Override public void onBackPressed() { finish(); }
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 
     /**
      * Defines behavior on user submission of login credentials.
      */
-    @Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
@@ -107,7 +115,8 @@ public class AuthActivity extends AppCompatActivity implements
                     boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
                     mUsers.get(i).setUserActive(isActive);
                     if (isActive) isPersisted = true;
-                } if (!isPersisted) mUsers.add(activeUser);
+                }
+                if (!isPersisted) mUsers.add(activeUser);
                 DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                 mProcessStage++;
             } else {
@@ -115,7 +124,8 @@ public class AuthActivity extends AppCompatActivity implements
                 mProgressbar.setVisibility(View.VISIBLE);
                 String message;
                 if (response == null) message = getString(R.string.network_error_message);
-                else message = getString(R.string.provider_error_message, response.getProviderType());
+                else
+                    message = getString(R.string.provider_error_message, response.getProviderType());
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
@@ -124,23 +134,34 @@ public class AuthActivity extends AppCompatActivity implements
     /**
      * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
      */
-    @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+    @NonNull
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
-            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
-            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+            case LOADER_ID_USER:
+                return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+            default:
+                throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
 
     /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
-    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+    @Override
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
         switch (mProcessStage) {
-            case 0: handleAction(getIntent().getAction()); break;
-            case 2: DatabaseManager.startActionFetchUser(this); mProcessStage++; break;
-            case 3: mProcessStage++;
+            case 0:
+                handleAction(getIntent().getAction());
+                break;
+            case 2:
+                DatabaseManager.startActionFetchUser(this);
+                mProcessStage++;
+                break;
+            case 3:
+                mProcessStage++;
             case 4:
                 mProcessStage++;
                 startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
@@ -151,7 +172,8 @@ public class AuthActivity extends AppCompatActivity implements
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    @Override
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         mUsers = null;
     }
 
@@ -159,44 +181,16 @@ public class AuthActivity extends AppCompatActivity implements
      * Processes actions defined by the source Intent.
      */
     private void handleAction(String action) {
-        User user = null;
-        for (User u : mUsers) if (u.getUserActive()) { user = u; break; }
-        if (action != null && user != null) {
-            String email = user.getUserEmail();
-            String password = AuthActivity.this.getString(R.string.message_password_request);
+        if (action != null) {
+            User activeUser = null;
+            for (User u : mUsers) if (u.getUserActive()) { activeUser = u; break; }
             switch (action) {
-                case ACTION_SIGN_OUT:
-                    user.setUserActive(false);
-                    DatabaseManager.startActionUpdateUser(this, user);
-                    AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
-                        AuthUI.getInstance().signOut(this);
-                        finish();
-                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                    });
-                    break;
-                case ACTION_DELETE_ACCOUNT:
-                    DatabaseManager.startActionResetData(AuthActivity.this);
-                    AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
-                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                        if (refreshedUser != null)
-                            refreshedUser.delete().addOnCompleteListener(completedTask -> {
-                            if (completedTask.isSuccessful()) {
-                                AuthUI.getInstance().signOut(this);
-                                finish();
-                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
-                                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    });
-                    break;
-                case Intent.ACTION_MAIN:
+                case ACTION_SIGN_IN:
                     if (mFirebaseAuth.getCurrentUser() == null) {
                         List<AuthUI.IdpConfig> providers = new ArrayList<>();
                         providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
                         providers.add(new AuthUI.IdpConfig.AnonymousBuilder().build());
-
                         Intent signIn = AuthUI.getInstance().createSignInIntentBuilder()
                                 .setLogo(R.mipmap.ic_launcher_round)
                                 .setTosAndPrivacyPolicyUrls("https://github.com/rjbx/Givetrack", "https://github.com/rjbx/Givetrack")
@@ -211,6 +205,38 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                     }
+                    break;
+                case ACTION_SIGN_OUT:
+                    if (activeUser == null) return;
+                    String signoutEmail = activeUser.getUserEmail();
+                    String signoutPassword = AuthActivity.this.getString(R.string.message_password_request);
+                    activeUser.setUserActive(false);
+                    DatabaseManager.startActionUpdateUser(this, activeUser);
+                    AppUtilities.completeTaskOnReauthentication(signoutEmail, signoutPassword, signedOutTask -> {
+                        AuthUI.getInstance().signOut(this);
+                        finish();
+                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                    });
+                    break;
+                case ACTION_DELETE_ACCOUNT:
+                    if (activeUser == null) return;;
+                    String deleteEmail = activeUser.getUserEmail();
+                    String deletePassword = AuthActivity.this.getString(R.string.message_password_request);
+                    DatabaseManager.startActionResetData(AuthActivity.this);
+                    AppUtilities.completeTaskOnReauthentication(deleteEmail, deletePassword, signedOutTask -> {
+                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                        if (refreshedUser != null)
+                            refreshedUser.delete().addOnCompleteListener(completedTask -> {
+                                if (completedTask.isSuccessful()) {
+                                    AuthUI.getInstance().signOut(this);
+                                    finish();
+                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                }
+                            });
+                    });
+                    break;
             }
         }
     }
