@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.app.ActionBar;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
@@ -75,14 +77,12 @@ public class ConfigActivity
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
-
+        setupActionBar();
     }
 
     @Override
     public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
-        super.setPreferenceScreen(preferenceScreen);
-        setupActionBar();
-        setupSummaries();
+        setupSummaries(preferenceScreen);
     }
 
     @Override
@@ -151,10 +151,10 @@ public class ConfigActivity
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
-    void setupSummaries() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+    public static void setupSummaries(PreferenceGroup pGroup) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(pGroup.getContext());
         Set<String> keySet = sharedPreferences.getAll().keySet();
-        for (String key : keySet) changeSummary((findPreference(key)), sharedPreferences.getAll().get(key));
+        for (String key : keySet) changeSummary((pGroup.findPreference(key)), sharedPreferences.getAll().get(key));
     }
 
     /**
