@@ -23,10 +23,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -48,6 +46,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -74,6 +73,7 @@ public class ConfigActivity
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+        setupSummaries();
         if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
@@ -143,6 +143,13 @@ public class ConfigActivity
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
+
+
+    void setupSummaries() {
+        Map<String, ?> map = PreferenceManager.getDefaultSharedPreferences(this).getAll();
+        for (Map.Entry<String, ?> e : map.entrySet())
+            changeSummary(findPreference(e.getKey()), e.getValue());
+    }
 
     /**
      * Sets up the {@link android.app.ActionBar}, if the API is available.
