@@ -38,6 +38,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
@@ -197,7 +198,7 @@ public class AuthActivity extends AppCompatActivity implements
                         AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                             AuthUI.getInstance().signOut(this);
                             finish();
-                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                             Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                         });
                     } else if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
@@ -209,7 +210,7 @@ public class AuthActivity extends AppCompatActivity implements
                                     if (completedTask.isSuccessful()) {
                                         AuthUI.getInstance().signOut(this);
                                         finish();
-                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -228,7 +229,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (action == null) return;
         mAction = action;
         switch (action) {
-            case ACTION_SIGN_IN:
+            case ACTION_MAIN:
                 if (mFirebaseAuth.getCurrentUser() == null) {
                     List<AuthUI.IdpConfig> providers = new ArrayList<>();
                     providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
