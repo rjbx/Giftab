@@ -11,7 +11,7 @@
         android:layout_margin="5dp"
         android:textSize="@dimen/text_size_paragraph_title"
         android:gravity="center"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
         android:hint=""/>

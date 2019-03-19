@@ -161,14 +161,14 @@ public class AuthActivity extends AppCompatActivity implements
     private void handleAction(String action) {
         User user = null;
         for (User u : mUsers) if (u.getUserActive()) { user = u; break; }
-        if (action != null) {
+        if (action != null && user != null) {
+            String email = user.getUserEmail();
             String password = AuthActivity.this.getString(R.string.message_password_request);
             switch (action) {
                 case ACTION_SIGN_OUT:
-                    if (user != null) user.setUserActive(false);
+                    user.setUserActive(false);
                     DatabaseManager.startActionUpdateUser(this, user);
-                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                    AppUtilities.completeTaskOnReauthentication(firebaseUser, password, signedOutTask -> {
+                    AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                         AuthUI.getInstance().signOut(this);
                         finish();
                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(Intent.ACTION_MAIN));
@@ -177,8 +177,7 @@ public class AuthActivity extends AppCompatActivity implements
                     break;
                 case ACTION_DELETE_ACCOUNT:
                     DatabaseManager.startActionResetData(AuthActivity.this);
-                    FirebaseUser activeUser = mFirebaseAuth.getCurrentUser();
-                    AppUtilities.completeTaskOnReauthentication(activeUser, password, signedOutTask -> {
+                    AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                         FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                         if (refreshedUser != null)
                             refreshedUser.delete().addOnCompleteListener(completedTask -> {

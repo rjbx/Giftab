@@ -17,6 +17,7 @@ import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.lang.reflect.Array;
@@ -136,7 +137,8 @@ public final class AppUtilities {
     }
 
 
-    public static void completeTaskOnReauthentication(FirebaseUser firebaseUser, String password, OnCompleteListener<Void> listener) {
+    public static void completeTaskOnReauthentication(String email, String password, OnCompleteListener<Void> listener) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (firebaseUser == null || firebaseUser.getEmail() == null) return;
         firebaseUser.reauthenticate(
                 EmailAuthProvider.getCredential(
