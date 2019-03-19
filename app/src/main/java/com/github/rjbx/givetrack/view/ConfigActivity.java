@@ -318,6 +318,7 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (firebaseUser == null) return false;
                 firebaseUser.updateEmail(mRequestedEmail)
@@ -331,7 +332,6 @@ public class ConfigActivity
                         DatabaseManager.startActionUpdateUser(getContext(), sUser);
                         Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
                         mCurrentEmail = sUser.getUserEmail();
-                        mRequestedEmail = newValue.toString();
                         mAuthDialog = new AlertDialog.Builder(getActivity()).create();
                         mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
                         mAuthDialog.setView(mDialogView);
