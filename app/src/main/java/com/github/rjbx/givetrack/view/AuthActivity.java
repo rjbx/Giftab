@@ -189,19 +189,7 @@ public class AuthActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    if (mAction.equals(ACTION_SIGN_OUT)) {
-                        User activeUser = null;
-                        for (User u : mUsers) if (u.getUserActive()) activeUser = u;
-                        if (activeUser == null) return;
-                        activeUser.setUserActive(false);
-                        DatabaseManager.startActionUpdateUser(this, activeUser);
-                        AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
-                            AuthUI.getInstance().signOut(this);
-                            finish();
-                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                        });
-                    } else if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
+                    if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
@@ -251,15 +239,15 @@ public class AuthActivity extends AppCompatActivity implements
                 }
                 break;
             case ACTION_SIGN_OUT:
-                mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                mAuthDialog = new AlertDialog.Builder(this).create();
-                mAuthDialog.setView(mDialogView);
-                mAuthDialog.setMessage(getString(R.string.message_update_email));
-                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                mAuthDialog.show();
-                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                User activeUser = null;
+                for (User u : mUsers) if (u.getUserActive()) activeUser = u;
+                if (activeUser == null) return;
+                activeUser.setUserActive(false);
+                DatabaseManager.startActionUpdateUser(this, activeUser);
+                AuthUI.getInstance().signOut(this);
+                finish();
+                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                 break;
             case ACTION_DELETE_ACCOUNT:
                 mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
