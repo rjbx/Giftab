@@ -193,14 +193,15 @@ public class AuthActivity extends AppCompatActivity implements
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                            if (refreshedUser != null)
-                                refreshedUser.delete().addOnCompleteListener(completedTask -> {
-                                    if (completedTask.isSuccessful()) {
-                                        AuthUI.getInstance().signOut(this);
-                                        finish();
-                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                    }
+                            if (refreshedUser != null) refreshedUser.delete()
+                                .addOnSuccessListener(deleteTask -> {
+                                    AuthUI.getInstance().signOut(this);
+                                    finish();
+                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                })
+                                .addOnFailureListener(failTask -> {
+                                    Toast.makeText(this, "Your credentials could not be validated; try again.", Toast.LENGTH_SHORT).show();
                                 });
                         });
                     }
@@ -250,15 +251,26 @@ public class AuthActivity extends AppCompatActivity implements
                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                 break;
             case ACTION_DELETE_ACCOUNT:
-                mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                mAuthDialog = new AlertDialog.Builder(this).create();
-                mAuthDialog.setView(mDialogView);
-                mAuthDialog.setMessage(getString(R.string.message_update_email));
-                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                mAuthDialog.show();
-                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                if (refreshedUser != null) refreshedUser.delete()
+                    .addOnSuccessListener(deleteTask -> {
+                        AuthUI.getInstance().signOut(this);
+                        finish();
+                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                    })
+                    .addOnFailureListener(failTask -> {
+                        Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                        mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+                        mAuthDialog = new AlertDialog.Builder(this).create();
+                        mAuthDialog.setView(mDialogView);
+                        mAuthDialog.setMessage(getString(R.string.message_update_email));
+                        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+                        mAuthDialog.show();
+                        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                    });
                 break;
         }
     }

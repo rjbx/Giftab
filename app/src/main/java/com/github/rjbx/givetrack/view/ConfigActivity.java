@@ -398,7 +398,7 @@ public class ConfigActivity
                                             .addOnFailureListener(failTask -> {
                                                     sUser.setUserEmail(mCurrentEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                                    Toast.makeText(getContext(), "Your credentials are incorrect; try again.", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Your credentials could not be validated; try again.", Toast.LENGTH_SHORT).show();
                                             });
                             });
                         }
