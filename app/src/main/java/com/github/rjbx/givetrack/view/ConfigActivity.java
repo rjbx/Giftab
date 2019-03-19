@@ -373,7 +373,7 @@ public class ConfigActivity
                                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                 if (refreshedUser != null)
                                     refreshedUser.updateEmail(mRequestedEmail)
-                                            .addOnCompleteListener(updateTask -> {
+                                            .addOnSuccessListener(updateTask -> {
                                                     sUser.setUserEmail(mRequestedEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
                                                     Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_SHORT).show();
@@ -381,8 +381,7 @@ public class ConfigActivity
                                             .addOnFailureListener(failTask -> {
                                                     sUser.setUserEmail(mCurrentEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
-
-                                                Toast.makeText(getContext(), "Your credentials are incorrect; try again.", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Your credentials are incorrect; try again.", Toast.LENGTH_SHORT).show();
                                             });
                             });
                         }
