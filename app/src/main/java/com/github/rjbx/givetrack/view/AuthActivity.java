@@ -226,8 +226,10 @@ public class AuthActivity extends AppCompatActivity implements
         switch (action) {
             case ACTION_MAIN:
                 if (firebaseUser == null) {
-                    for (User u : mUsers) u.setUserActive(false);
-                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
+                    if (!mUsers.isEmpty()) {
+                        for (User u : mUsers) u.setUserActive(false);
+                        DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
+                    }
                     List<AuthUI.IdpConfig> providers = new ArrayList<>();
                     providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                     providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
