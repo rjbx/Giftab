@@ -254,7 +254,7 @@ public class AuthActivity extends AppCompatActivity implements
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
-                AuthUI.getInstance().signOut(this);
+                mFirebaseAuth.signOut();
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
