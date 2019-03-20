@@ -331,7 +331,7 @@ public class ConfigActivity
                         Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(failTask -> {
-                       Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
                        launchAuthDialog();
                     });
                 return false;
@@ -383,25 +383,26 @@ public class ConfigActivity
                         if (sUser != null) {
                             AppUtilities.completeTaskOnReauthentication(mEmailInput, mPasswordInput, authTask -> {
                                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
-                                if (refreshedUser != null)
+                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
+                                if (refreshedUser != null) {
                                     refreshedUser.updateEmail(mRequestedEmail)
-                                            .addOnSuccessListener(updateTask -> {
+                                            .addOnSuccessListener(failTask -> {
                                                 mAuthAttempts = 0;
-                                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
                                                 ConfigActivity.changeSummary(emailPref, mRequestedEmail);
                                                 ConfigActivity.changeUser(emailPref, mRequestedEmail);
                                                 emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
                                                 Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-                                                })
-                                            .addOnFailureListener(failTask -> {
-                                                    if (mAuthAttempts < 5) {
-                                                        launchAuthDialog();
-                                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                                    } else {
-                                                        mAuthAttempts = 0;
-                                                        Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                                    }
+                                            })
+                                            .addOnFailureListener(updateTask -> {
+                                                if (mAuthAttempts < 5) {
+                                                    launchAuthDialog();
+                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    mAuthAttempts = 0;
+                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                }
                                             });
+                                }
                             });
                         }
                         break;
