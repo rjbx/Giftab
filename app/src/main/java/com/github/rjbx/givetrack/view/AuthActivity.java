@@ -115,14 +115,9 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 boolean isPersisted = false;
-                User activeUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                AppUtilities.mapToSharedPreferences(activeUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
-                for (int i = 0; i < mUsers.size(); i++) {
-                    boolean isActive = mUsers.get(i).getUid().equals(activeUser.getUid());
-                    mUsers.get(i).setUserActive(isActive);
-                    if (isActive) isPersisted = true;
-                }
-                if (!isPersisted) mUsers.add(activeUser);
+                mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+                AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
+                mUsers.add(mActiveUser);
                 DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                 mProcessStage++;
             } else {
@@ -227,9 +222,12 @@ public class AuthActivity extends AppCompatActivity implements
     private void handleAction(String action) {
         if (action == null) return;
         mAction = action;
+        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         switch (action) {
             case ACTION_MAIN:
-                if (mFirebaseAuth.getCurrentUser() == null) {
+                if (firebaseUser == null) {
+                    for (User u : mUsers) u.setUserActive(false);
+                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                     List<AuthUI.IdpConfig> providers = new ArrayList<>();
                     providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                     providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
@@ -250,6 +248,8 @@ public class AuthActivity extends AppCompatActivity implements
                 }
                 break;
             case ACTION_SIGN_OUT:
+                if (firebaseUser == null) return;
+                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
                 AuthUI.getInstance().signOut(this);
@@ -258,8 +258,9 @@ public class AuthActivity extends AppCompatActivity implements
                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                 break;
             case ACTION_DELETE_ACCOUNT:
-                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                if (refreshedUser != null) refreshedUser.delete()
+                if (firebaseUser == null) return;
+                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
+                firebaseUser.delete()
                     .addOnSuccessListener(deleteTask -> {
                         mReauthAttempts = 0;
                         DatabaseManager.startActionRemoveUser(this, mActiveUser);
