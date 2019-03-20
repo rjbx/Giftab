@@ -57,7 +57,9 @@ public class AuthActivity extends AppCompatActivity implements
     public static final String ACTION_DELETE_ACCOUNT = "com.github.rjbx.givetrack.ui.action.DELETE_ACCOUNT";
 
     private int mProcessStage = 0;
+    private int mReauthAttempts;
     private List<User> mUsers;
+    private User mActiveUser;
     private FirebaseAuth mFirebaseAuth;
     private AlertDialog mAuthDialog;
     private View mDialogView;
@@ -195,13 +197,21 @@ public class AuthActivity extends AppCompatActivity implements
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                 .addOnSuccessListener(deleteTask -> {
+                                    mReauthAttempts = 0;
+                                    DatabaseManager.startActionRemoveUser(this, mActiveUser);
                                     AuthUI.getInstance().signOut(this);
                                     finish();
                                     startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                     Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                 })
                                 .addOnFailureListener(failTask -> {
-                                    Toast.makeText(this, "Your credentials could not be validated; try again.", Toast.LENGTH_SHORT).show();
+                                    if (mReauthAttempts < 5) {
+                                        launchAuthDialog();
+                                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        mReauthAttempts = 0;
+                                        Toast.makeText(this, "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                    }
                                 });
                         });
                     }
@@ -240,11 +250,8 @@ public class AuthActivity extends AppCompatActivity implements
                 }
                 break;
             case ACTION_SIGN_OUT:
-                User activeUser = null;
-                for (User u : mUsers) if (u.getUserActive()) activeUser = u;
-                if (activeUser == null) return;
-                activeUser.setUserActive(false);
-                DatabaseManager.startActionUpdateUser(this, activeUser);
+                mActiveUser.setUserActive(false);
+                DatabaseManager.startActionUpdateUser(this, mActiveUser);
                 AuthUI.getInstance().signOut(this);
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
@@ -261,17 +268,22 @@ public class AuthActivity extends AppCompatActivity implements
                     })
                     .addOnFailureListener(failTask -> {
                         Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                        mAuthDialog = new AlertDialog.Builder(this).create();
-                        mAuthDialog.setView(mDialogView);
-                        mAuthDialog.setMessage(getString(R.string.message_update_email));
-                        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                        mAuthDialog.show();
-                        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                        launchAuthDialog();
                     });
                 break;
         }
+    }
+
+    private void launchAuthDialog() {
+        mReauthAttempts++;
+        mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+        mAuthDialog = new AlertDialog.Builder(this).create();
+        mAuthDialog.setView(mDialogView);
+        mAuthDialog.setMessage(getString(R.string.message_update_email));
+        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+        mAuthDialog.show();
+        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
     }
 }
