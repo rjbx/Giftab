@@ -32,7 +32,8 @@
         android:key="@string/pref_giveRounding_key"
         android:negativeButtonText="Clear Selection"
         android:positiveButtonText="OK"
-        android:title="@string/pref_giveRounding_label"/>
+        android:title="@string/pref_giveRounding_label"
+        android:defaultValue="0"/>
 
     <Preference
         android:key="@string/pref_clear_key"

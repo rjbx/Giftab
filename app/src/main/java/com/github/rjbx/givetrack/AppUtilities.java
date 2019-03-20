@@ -79,7 +79,7 @@ public final class AppUtilities {
             Object value = entry.getValue();
             if (value instanceof String) sp.edit().putString(entry.getKey(), (String) value).apply();
             else if (value instanceof Boolean) sp.edit().putBoolean(entry.getKey(), (Boolean) value).apply();
-            else if (value instanceof Integer) sp.edit().putInt(entry.getKey(), (Integer) value).apply();
+            else if (value instanceof Integer) sp.edit().putString(entry.getKey(), String.valueOf(value)).apply();
             else if (value instanceof Long) sp.edit().putLong(entry.getKey(), (Long) value).apply();
             else if (value instanceof Float) sp.edit().putFloat(entry.getKey(), (Float) value).apply();
         }
