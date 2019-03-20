@@ -318,6 +318,7 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                boolean updatePref;
                 mCurrentEmail = sUser.getUserEmail();
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -341,7 +342,6 @@ public class ConfigActivity
                         mAuthDialog.show();
                         mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                         mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
-                        return false;
                     });
             }
             ConfigActivity.changeSummary(preference, newValue);
