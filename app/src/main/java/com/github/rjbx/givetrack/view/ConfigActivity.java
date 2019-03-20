@@ -191,6 +191,7 @@ public class ConfigActivity
      * Binds value change listener to and initializes preference.
      */
     private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
+        if (preference == null) return;
         preference.setOnPreferenceChangeListener(listener);
     }
 
@@ -235,6 +236,7 @@ public class ConfigActivity
      * Binds value click listener to preference.
      */
     private static void handlePreferenceClick(Preference preference, Preference.OnPreferenceClickListener listener) {
+        if (preference == null) return;
         preference.setOnPreferenceClickListener(listener);
     }
 
@@ -575,7 +577,7 @@ public class ConfigActivity
         @Override public void onResume() {
             super.onResume();
             ListPreference roundingPref = (ListPreference) findPreference(getString(R.string.pref_giveRounding_key));
-            if (roundingPref.getValue() == null)
+            if (roundingPref != null && roundingPref.getValue() == null)
                 roundingPref.setValueIndex(roundingPref.getEntries().length - 1);
             handlePreferenceChange(findPreference(getString(R.string.pref_giveRounding_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
