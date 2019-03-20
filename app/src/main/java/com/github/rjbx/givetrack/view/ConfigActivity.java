@@ -327,7 +327,7 @@ public class ConfigActivity
                     .addOnSuccessListener(updateTask -> {
                         ConfigActivity.changeSummary(preference, mRequestedEmail);
                         ConfigActivity.changeUser(preference, mRequestedEmail);
-                        preference.getEditor().putString(preference.getKey(), mRequestedEmail);
+                        preference.getEditor().putString(preference.getKey(), mRequestedEmail).apply();
                         Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(failTask -> {
