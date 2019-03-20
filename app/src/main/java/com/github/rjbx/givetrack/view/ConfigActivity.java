@@ -333,15 +333,9 @@ public class ConfigActivity
                         sUser.setUserEmail(mCurrentEmail);
                         DatabaseManager.startActionUpdateUser(getContext(), sUser);
                         Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-                        mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-                        mAuthDialog.setView(mDialogView);
-                        mAuthDialog.setMessage(getString(R.string.message_update_email));
-                        mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                        mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-                        mAuthDialog.show();
-                        mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                        mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                        launchAuthDialog();
+                        ConfigActivity.changeSummary(preference, mCurrentEmail);
+                        ConfigActivity.changeUser(preference, mCurrentEmail);
                     });
             }
             ConfigActivity.changeSummary(preference, newValue);
@@ -395,17 +389,32 @@ public class ConfigActivity
                                                     sUser.setUserEmail(mRequestedEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
                                                     Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_SHORT).show();
+                                                    ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
+                                                    ConfigActivity.changeUser(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
                                                 })
                                             .addOnFailureListener(failTask -> {
                                                     sUser.setUserEmail(mCurrentEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
                                                     Toast.makeText(getContext(), "Your credentials could not be validated; try again.", Toast.LENGTH_SHORT).show();
+                                                    launchAuthDialog();
                                             });
                             });
                         }
                         break;
                 }
             }
+        }
+
+        private void launchAuthDialog() {
+            mAuthDialog = new AlertDialog.Builder(getActivity()).create();
+            mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+            mAuthDialog.setView(mDialogView);
+            mAuthDialog.setMessage(getString(R.string.message_update_email));
+            mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+            mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+            mAuthDialog.show();
+            mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+            mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
         }
     }
 
