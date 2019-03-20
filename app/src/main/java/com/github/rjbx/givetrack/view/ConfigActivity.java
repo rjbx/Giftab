@@ -277,6 +277,7 @@ public class ConfigActivity
         private String mEmailInput;
         private String mPasswordInput;
         private View mDialogView;
+        private int mAuthAttempts;
 
         /**
          * Inflates the content of this fragment.
@@ -388,15 +389,17 @@ public class ConfigActivity
                                             .addOnSuccessListener(updateTask -> {
                                                     sUser.setUserEmail(mRequestedEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                                    Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
                                                     ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
                                                     ConfigActivity.changeUser(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
                                                 })
                                             .addOnFailureListener(failTask -> {
                                                     sUser.setUserEmail(mCurrentEmail);
                                                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                                    Toast.makeText(getContext(), "Your credentials could not be validated; try again.", Toast.LENGTH_SHORT).show();
-                                                    launchAuthDialog();
+                                                    if (mAuthAttempts <= 5) {
+                                                        launchAuthDialog();
+                                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                                    } else Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                             });
                             });
                         }
@@ -406,6 +409,7 @@ public class ConfigActivity
         }
 
         private void launchAuthDialog() {
+            mAuthAttempts++;
             mAuthDialog = new AlertDialog.Builder(getActivity()).create();
             mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
             mAuthDialog.setView(mDialogView);
