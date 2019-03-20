@@ -319,29 +319,27 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
-                boolean updatePref;
                 mCurrentEmail = sUser.getUserEmail();
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (firebaseUser == null) return false;
                 firebaseUser.updateEmail(mRequestedEmail)
                     .addOnSuccessListener(updateTask -> {
-                        sUser.setUserEmail(mRequestedEmail);
-                        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                        ConfigActivity.changeSummary(preference, mRequestedEmail);
+                        ConfigActivity.changeUser(preference, mRequestedEmail);
+                        preference.getEditor().putString(preference.getKey(), mRequestedEmail);
                         Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(failTask -> {
-                        sUser.setUserEmail(mCurrentEmail);
-                        DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                        Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        launchAuthDialog();
-                        ConfigActivity.changeSummary(preference, mCurrentEmail);
-                        ConfigActivity.changeUser(preference, mCurrentEmail);
+                       Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                       launchAuthDialog();
                     });
+                return false;
+            } else {
+                ConfigActivity.changeSummary(preference, newValue);
+                ConfigActivity.changeUser(preference, newValue);
+                return true;
             }
-            ConfigActivity.changeSummary(preference, newValue);
-            ConfigActivity.changeUser(preference, newValue);
-            return true;
         }
 
         /**
@@ -376,6 +374,7 @@ public class ConfigActivity
             if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
+                        mAuthAttempts = 0;
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
@@ -387,19 +386,21 @@ public class ConfigActivity
                                 if (refreshedUser != null)
                                     refreshedUser.updateEmail(mRequestedEmail)
                                             .addOnSuccessListener(updateTask -> {
-                                                    sUser.setUserEmail(mRequestedEmail);
-                                                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                                    Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-                                                    ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
-                                                    ConfigActivity.changeUser(findPreference(getString(R.string.pref_userEmail_key)), mCurrentEmail);
+                                                mAuthAttempts = 0;
+                                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
+                                                ConfigActivity.changeSummary(emailPref, mRequestedEmail);
+                                                ConfigActivity.changeUser(emailPref, mRequestedEmail);
+                                                emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
+                                                Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
                                                 })
                                             .addOnFailureListener(failTask -> {
-                                                    sUser.setUserEmail(mCurrentEmail);
-                                                    DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                                                    if (mAuthAttempts <= 5) {
+                                                    if (mAuthAttempts < 5) {
                                                         launchAuthDialog();
                                                         Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                                    } else Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                    } else {
+                                                        mAuthAttempts = 0;
+                                                        Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                    }
                                             });
                             });
                         }
