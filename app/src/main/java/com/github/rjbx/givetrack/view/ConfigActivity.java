@@ -15,6 +15,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -297,6 +298,7 @@ public class ConfigActivity
 //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_userEmail_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
@@ -348,7 +350,9 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
 
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_userEmail_key).equals(preferenceKey)) {
+                ((EditTextPreference) preference).getEditText().setText("");
+            } else if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
                 mCalendar = Calendar.getInstance();
                 String birthdate = sUser.getUserBirthdate();
                 String[] birthdateParams = birthdate.split("/");
