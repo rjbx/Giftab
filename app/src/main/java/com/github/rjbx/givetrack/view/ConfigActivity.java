@@ -318,6 +318,7 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
+                mCurrentEmail = sUser.getUserEmail();
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (firebaseUser == null) return false;
@@ -331,7 +332,6 @@ public class ConfigActivity
                         sUser.setUserEmail(mCurrentEmail);
                         DatabaseManager.startActionUpdateUser(getContext(), sUser);
                         Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        mCurrentEmail = sUser.getUserEmail();
                         mAuthDialog = new AlertDialog.Builder(getActivity()).create();
                         mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
                         mAuthDialog.setView(mDialogView);
@@ -341,6 +341,7 @@ public class ConfigActivity
                         mAuthDialog.show();
                         mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                         mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                        return false;
                     });
             }
             ConfigActivity.changeSummary(preference, newValue);
