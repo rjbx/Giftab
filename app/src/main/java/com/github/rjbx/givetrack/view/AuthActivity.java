@@ -194,7 +194,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 .addOnSuccessListener(deleteTask -> {
                                     mReauthAttempts = 0;
                                     DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                                    AuthUI.getInstance().signOut(this);
+                                    mFirebaseAuth.signOut();
                                     finish();
                                     startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                     Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
@@ -266,7 +266,7 @@ public class AuthActivity extends AppCompatActivity implements
                     .addOnSuccessListener(deleteTask -> {
                         mReauthAttempts = 0;
                         DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                        AuthUI.getInstance().signOut(this);
+                        mFirebaseAuth.signOut();
                         finish();
                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
