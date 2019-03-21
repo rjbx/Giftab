@@ -150,7 +150,6 @@
     <string name="pref_journalSort_key" translatable="false">journalSort</string>
     <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
-    <string name="pref_userRemote_key" translatable="false">userRemote</string>
     <string name="pref_userGender_key" translatable="false">userGender</string>
     <string name="pref_userEmail_key" translatable="false">userEmail</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
@@ -177,7 +176,6 @@
     <string name="pref_indexEin_label">Employer Identification Number</string>
     <string name="pref_indexGender_label">Gender</string>
     <string name="pref_indexBirthdate_label">Birthdate</string>
-    <string name="pref_userRemote_label">Remote Persistence</string>
     <string name="pref_delete_label">Delete Account</string>
     <string name="pref_giveReset_label">Recalibrate Percentages</string>
     <string name="pref_giveCurrent_label">Reset Date</string>

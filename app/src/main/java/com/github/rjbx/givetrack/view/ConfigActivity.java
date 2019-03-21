@@ -15,6 +15,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -61,7 +62,7 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Link to TOS and PP with option to disable remote persistence
+// TODO: Link to TOS and PP
 // TODO: Fully implement removed and add other options
 /**
  * Presents the application settings.
