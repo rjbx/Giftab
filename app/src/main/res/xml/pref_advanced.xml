@@ -15,6 +15,13 @@
         <intent android:action="android.settings.SYNC_SETTINGS" />
     </Preference>
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="@string/pref_userRemote_key"
+        android:title="@string/pref_userRemote_label"
+        android:summaryOn="Store data offline to enable data restore point and multi-device syncing"
+        android:summaryOff="Do not store data offline and disable data restore point and multi-device syncing"/>
+
     <Preference
         android:key="@string/pref_delete_key"
         android:title="@string/pref_delete_label"/>
