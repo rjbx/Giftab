@@ -236,7 +236,7 @@ public class AuthActivity extends AppCompatActivity implements
                     providers.add(new AuthUI.IdpConfig.AnonymousBuilder().build());
                     Intent signIn = AuthUI.getInstance().createSignInIntentBuilder()
                             .setLogo(R.mipmap.ic_launcher_round)
-                            .setTosAndPrivacyPolicyUrls("https://github.com/rjbx/Givetrack", "https://github.com/rjbx/Givetrack")
+                            .setTosAndPrivacyPolicyUrls("https://raw.githubusercontent.com/rjbx/Giftab/master/terms.md", "https://raw.githubusercontent.com/rjbx/Giftab/master/privacy.md")
                             .setTheme(R.style.AppTheme_AuthOverlay)
                             .setIsSmartLockEnabled(false, true)
                             .setAvailableProviders(providers)
