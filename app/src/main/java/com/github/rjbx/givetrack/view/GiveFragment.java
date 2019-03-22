@@ -703,12 +703,12 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.share_button) void shareGive(View v) {
 
                 Target values = sValuesArray[(int) v.getTag()];
-                String name = values.getName();
+                String name = values.getName().replace(" ", "");
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
 
                 String textMessage =
-                        String.format("My %s donations totaling %s to %s have been added to my personal record with #%s App!",
+                        String.format("My %s donations totaling %s to #%s have been added to my personal record with #%s App!",
                                 frequency, CURRENCY_FORMATTER.format(impact), name, getString(R.string.app_name));
                 ViewUtilities.launchShareIntent(mParentActivity, textMessage);
             }

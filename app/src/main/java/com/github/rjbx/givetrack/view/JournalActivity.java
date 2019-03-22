@@ -458,11 +458,11 @@ public class JournalActivity extends AppCompatActivity implements
             @Optional @OnClick(R.id.record_share_button) void shareRecord(View v) {
 
                 Record values = mValuesArray[(int) v.getTag()];
-                String name = values.getName();
+                String name = values.getName().replace(" ", "");
                 long time = values.getTime();
                 float impact = Float.parseFloat(values.getImpact());
 
-                String textMessage = String.format("My donation on %s totaling %s to %s have been added to my personal record with #%s App!",
+                String textMessage = String.format("My donation on %s totaling %s to #%s have been added to my personal record with #%s App!",
                         DATE_FORMATTER.format(new Date(time)), CURRENCY_FORMATTER.format(impact), name, getString(R.string.app_name));
                 ViewUtilities.launchShareIntent(JournalActivity.this, textMessage);
             }
