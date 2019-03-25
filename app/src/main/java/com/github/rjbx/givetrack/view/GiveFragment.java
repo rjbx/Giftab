@@ -313,7 +313,7 @@ public class GiveFragment extends Fragment implements
         }
     }
 
-    @OnLongClick(R.id.donation_decrement_button) boolean longclickDecrementImpact(MotionEvent e) {
+    @OnTouch(R.id.donation_decrement_button) boolean longclickDecrementImpact(MotionEvent e) {
         Runnable runnable = new Runnable() {
             @Override public void run() {
                 mRepeatHandler.postDelayed(this, 1000);
