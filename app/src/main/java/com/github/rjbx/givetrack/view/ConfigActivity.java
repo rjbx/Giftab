@@ -15,7 +15,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -26,7 +25,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.util.TimeUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
@@ -45,20 +43,16 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.FirebaseUserMetadata;
 
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -280,7 +274,7 @@ public class ConfigActivity
         private String mEmailInput;
         private String mPasswordInput;
         private View mDialogView;
-        private int mAuthAttempts;
+        private int mReauuthAttempts;
 
         /**
          * Inflates the content of this fragment.
@@ -335,8 +329,9 @@ public class ConfigActivity
                         Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                     })
                     .addOnFailureListener(failTask -> {
+                        mReauuthAttempts++;
+                        ViewUtilities.launchAuthDialog(getContext(), this, R.string.message_update_email);
                         Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                       launchAuthDialog();
                     });
                 return false;
             } else {
@@ -380,7 +375,7 @@ public class ConfigActivity
             if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
-                        mAuthAttempts = 0;
+                        mReauuthAttempts = 0;
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
@@ -393,18 +388,19 @@ public class ConfigActivity
                                 if (refreshedUser != null) {
                                     refreshedUser.updateEmail(mRequestedEmail)
                                             .addOnSuccessListener(failTask -> {
-                                                mAuthAttempts = 0;
+                                                mReauuthAttempts = 0;
                                                 ConfigActivity.changeSummary(emailPref, mRequestedEmail);
                                                 ConfigActivity.changeUser(emailPref, mRequestedEmail);
                                                 emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
                                                 Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
                                             })
                                             .addOnFailureListener(updateTask -> {
-                                                if (mAuthAttempts < 5) {
-                                                    launchAuthDialog();
+                                                if (mReauuthAttempts < 5) {
+                                                    mReauuthAttempts++;
+                                                    ViewUtilities.launchAuthDialog(getContext(), this, R.string.message_update_email);
                                                     Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                                 } else {
-                                                    mAuthAttempts = 0;
+                                                    mReauuthAttempts = 0;
                                                     Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                                 }
                                             });
@@ -414,19 +410,6 @@ public class ConfigActivity
                         break;
                 }
             }
-        }
-
-        private void launchAuthDialog() {
-            mAuthAttempts++;
-            mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-            mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-            mAuthDialog.setView(mDialogView);
-            mAuthDialog.setMessage(getString(R.string.message_update_email));
-            mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-            mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-            mAuthDialog.show();
-            mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-            mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
         }
     }
 

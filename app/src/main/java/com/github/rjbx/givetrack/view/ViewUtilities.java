@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -35,6 +36,42 @@ final class ViewUtilities {
                 .setType("text/plain")
                 .setText(textMessage);
         launchingActivity.startActivity(intentBuilder.getIntent());
+    }
+
+    static void launchAuthDialog(Context context, DialogInterface.OnClickListener listener, int messageResId) {
+        AlertDialog alertDialog = setupAlertDialog(
+                context,
+                listener,
+                R.color.colorNeutralDark,
+                R.color.colorConversionDark,
+                R.string.dialog_option_keep,
+                R.string.dialog_option_change,
+                AlertDialog.BUTTON_NEUTRAL,
+                AlertDialog.BUTTON_POSITIVE,
+                messageResId);
+        View dialogView = alertDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+    }
+
+    static AlertDialog setupAlertDialog(
+            Context context,
+            DialogInterface.OnClickListener listener,
+            int button1ColorRes,
+            int button2ColorRes,
+            int button1TitleRes,
+            int button2TitleRes,
+            int button1Type,
+            int button2Type,
+            int messageRes,
+            String... messageArgs) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setMessage(context.getString(messageRes, messageArgs));
+        alertDialog.setButton(button1Type, context.getString(button1TitleRes), listener);
+        alertDialog.setButton(button2Type, context.getString(button2TitleRes), listener);
+        alertDialog.getButton(button1Type).setTextColor(button1ColorRes);
+        alertDialog.getButton(button2Type).setTextColor(button1ColorRes);
+        return alertDialog;
     }
 
     /**
