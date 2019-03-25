@@ -62,7 +62,6 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Link to TOS and PP
 // TODO: Fully implement removed and add other options
 /**
  * Presents the application settings.

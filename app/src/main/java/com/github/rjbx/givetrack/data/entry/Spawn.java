@@ -11,7 +11,6 @@ import com.google.firebase.database.IgnoreExtraProperties;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO Disable remote persistence
 /**
  * Stores data about an entity spawned from the remote data API;
  * persisted locally with {@link android.content.ContentProvider}.
