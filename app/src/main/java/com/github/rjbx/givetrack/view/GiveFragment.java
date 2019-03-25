@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
+import butterknife.OnLongClick;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,7 +59,7 @@ import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 
-// TODO: Implement OnTouchListeners for repeating actions on button long presses
+// TODO: Implement OnTouchListeners with Rateraid library for repeating actions on button long presses
 /**
  * Provides the logic and views for a user activity management screen.
  */
@@ -312,7 +313,7 @@ public class GiveFragment extends Fragment implements
     /**
      * Defines behavior on click of decrement amount button.
      */
-    @OnClick(R.id.donation_decrement_button) void decrementAmount() {
+    @OnClick @OnLongClick(R.id.donation_decrement_button) void decrementAmount() {
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             sUser.setGiveImpact(String.valueOf(mAmountTotal));
@@ -327,7 +328,7 @@ public class GiveFragment extends Fragment implements
     /**
      * Defines behavior on click of increment amount button.
      */
-    @OnClick(R.id.donation_increment_button) void incrementAmount() {
+    @OnClick @OnLongClick(R.id.donation_increment_button) void incrementAmount() {
         mAmountTotal += mMagnitude;
         sUser.setGiveImpact(String.valueOf(mAmountTotal));
         DatabaseManager.startActionUpdateUser(mContext, sUser);
