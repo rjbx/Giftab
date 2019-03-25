@@ -20,6 +20,7 @@ import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
 import butterknife.OnLongClick;
+import butterknife.OnTouch;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -75,6 +77,7 @@ public class GiveFragment extends Fragment implements
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static User sUser;
     private static Target[] sValuesArray;
+    private Handler mRepeatHandler;
     private static double[] sPercentages;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
@@ -310,8 +313,26 @@ public class GiveFragment extends Fragment implements
         }
     }
 
-    @OnLongClick(R.id.donation_decrement_button) boolean longclickDecrementImpact() {
-        clickDecrementImpact();
+    @OnLongClick(R.id.donation_decrement_button) boolean longclickDecrementImpact(MotionEvent e) {
+        Runnable runnable = new Runnable() {
+            @Override public void run() {
+                mRepeatHandler.postDelayed(this, 1000);
+                clickDecrementImpact();
+            }
+        };
+
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (mRepeatHandler != null) return true;
+                mRepeatHandler = new Handler();
+                mRepeatHandler.postDelayed(runnable, 1000);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mRepeatHandler == null) return true;
+                mRepeatHandler.removeCallbacks(runnable);
+                mRepeatHandler = null;
+                break;
+        }
         return false;
     }
 
@@ -330,8 +351,27 @@ public class GiveFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnLongClick(R.id.donation_increment_button) boolean longclickIncrementImpact() {
-        clickIncrementImpact();
+    @OnTouch(R.id.donation_increment_button) boolean longclickIncrementImpact(MotionEvent e) {
+
+        Runnable runnable = new Runnable() {
+            @Override public void run() {
+                mRepeatHandler.postDelayed(this, 1000);
+                clickIncrementImpact();
+            }
+        };
+
+        switch (e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (mRepeatHandler != null) return true;
+                mRepeatHandler = new Handler();
+                mRepeatHandler.postDelayed(runnable, 1000);
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mRepeatHandler == null) return true;
+                mRepeatHandler.removeCallbacks(runnable);
+                mRepeatHandler = null;
+                break;
+        }
         return false;
     }
 
@@ -466,7 +506,7 @@ public class GiveFragment extends Fragment implements
         private Rateraid.Arrays mRateraidArrays; // TODO: Replace with Rateraid.Object
 
         /**
-         * Initializes percentage array and percentage button click handler and view updater.
+         * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
         ListAdapter() {
             sPercentages = new double[sValuesArray.length];
