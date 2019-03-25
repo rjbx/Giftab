@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -201,7 +202,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 })
                                 .addOnFailureListener(failTask -> {
                                     if (mReauthAttempts < 5) {
-                                        launchAuthDialog();
+                                        launchAuthDialog(this, this, mReauthAttempts);
                                         Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                     } else {
                                         mReauthAttempts = 0;
@@ -273,22 +274,37 @@ public class AuthActivity extends AppCompatActivity implements
                     })
                     .addOnFailureListener(failTask -> {
                         Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        launchAuthDialog();
+                        mReauthAttempts = launchAuthDialog(this, this, mReauthAttempts);
                     });
                 break;
         }
     }
 
-    private void launchAuthDialog() {
-        mReauthAttempts++;
-        mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-        mAuthDialog = new AlertDialog.Builder(this).create();
-        mAuthDialog.setView(mDialogView);
-        mAuthDialog.setMessage(getString(R.string.message_update_email));
-        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
-        mAuthDialog.show();
-        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+    private static int launchAuthDialog(Context context, DialogInterface.OnClickListener listener, int reauthAttempts) {
+        AlertDialog alertDialog = setupAlertDialog(context, listener, R.color.colorNeutralDark, R.color.colorConversionDark, R.string.dialog_option_keep, R.string.dialog_option_change, AlertDialog.BUTTON_NEUTRAL, AlertDialog.BUTTON_POSITIVE, R.string.message_update_email);
+        View dialogView = alertDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+        alertDialog.setView(dialogView);
+        alertDialog.show();
+        return ++reauthAttempts;
+    }
+
+    private static AlertDialog setupAlertDialog(
+            Context context,
+            DialogInterface.OnClickListener listener,
+            int button1ColorResint,
+            int button2ColorResInt,
+            int button1TitleResInt,
+            int button2TitleResInt,
+            int button1Type,
+            int button2Type,
+            int messageRes,
+            String... messageArgs) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setMessage(context.getString(messageRes, messageArgs));
+        alertDialog.setButton(button1Type, context.getString(button1TitleResInt), listener);
+        alertDialog.setButton(button2Type, context.getString(button2TitleResInt), listener);
+        alertDialog.getButton(button1Type).setTextColor(button1ColorResint);
+        alertDialog.getButton(button2Type).setTextColor(button2ColorResInt);
+        return alertDialog;
     }
 }
