@@ -60,8 +60,6 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
-
-// TODO: Implement OnTouchListeners for repeating actions on button long presses
 /**
  * Provides the logic and views for a user activity management screen.
  */
@@ -313,29 +311,6 @@ public class GiveFragment extends Fragment implements
         }
     }
 
-    @OnTouch(R.id.donation_decrement_button) boolean longclickDecrementImpact(MotionEvent e) {
-        Runnable runnable = new Runnable() {
-            @Override public void run() {
-                mRepeatHandler.postDelayed(this, 1000);
-                clickDecrementImpact();
-            }
-        };
-
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (mRepeatHandler != null) return true;
-                mRepeatHandler = new Handler();
-                mRepeatHandler.postDelayed(runnable, 1000);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mRepeatHandler == null) return true;
-                mRepeatHandler.removeCallbacks(runnable);
-                mRepeatHandler = null;
-                break;
-        }
-        return false;
-    }
-
     /**
      * Defines behavior on click of decrement amount button.
      */
@@ -351,34 +326,11 @@ public class GiveFragment extends Fragment implements
         updateAmounts();
     }
 
-    @OnTouch(R.id.donation_increment_button) boolean longclickIncrementImpact(MotionEvent e) {
-
-        Runnable runnable = new Runnable() {
-            @Override public void run() {
-                mRepeatHandler.postDelayed(this, 1000);
-                clickIncrementImpact();
-            }
-        };
-
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (mRepeatHandler != null) return true;
-                mRepeatHandler = new Handler();
-                mRepeatHandler.postDelayed(runnable, 1000);
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mRepeatHandler == null) return true;
-                mRepeatHandler.removeCallbacks(runnable);
-                mRepeatHandler = null;
-                break;
-        }
-        return false;
-    }
-
     /**
      * Defines behavior on click of increment amount button.
      */
     @OnClick(R.id.donation_increment_button) void clickIncrementImpact() {
+        if (mTotalText == null) return;
         mAmountTotal += mMagnitude;
         sUser.setGiveImpact(String.valueOf(mAmountTotal));
         DatabaseManager.startActionUpdateUser(mContext, sUser);
