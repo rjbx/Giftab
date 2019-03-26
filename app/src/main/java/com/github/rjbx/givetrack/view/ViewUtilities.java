@@ -2,7 +2,6 @@ package com.github.rjbx.givetrack.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.core.app.ShareCompat.*;
-import androidx.core.util.Pair;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -37,36 +35,6 @@ final class ViewUtilities {
                 .setType("text/plain")
                 .setText(textMessage);
         launchingActivity.startActivity(intentBuilder.getIntent());
-    }
-
-    static void launchAuthDialog(Context context, DialogInterface.OnClickListener listener, int messageResId) {
-        AlertDialog alertDialog = setupAlertDialog(
-                context,
-                listener,
-                new Pair<>(R.color.colorNeutralDark, R.color.colorConversionDark),
-                new Pair<>(R.string.dialog_option_keep, R.string.dialog_option_change),
-                new Pair<>(AlertDialog.BUTTON_NEUTRAL, AlertDialog.BUTTON_POSITIVE),
-                messageResId);
-        View dialogView = alertDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null);
-        alertDialog.setView(dialogView);
-        alertDialog.show();
-    }
-
-    static AlertDialog setupAlertDialog(
-            Context context,
-            DialogInterface.OnClickListener listener,
-            Pair<Integer, Integer> buttonColorRes,
-            Pair<Integer, Integer> buttonTitleRes,
-            Pair<Integer, Integer> buttonType,
-            int messageRes,
-            String... messageArgs) {
-        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-        alertDialog.setMessage(context.getString(messageRes, messageArgs));
-        alertDialog.setButton(buttonType.first, context.getString(buttonTitleRes.first), listener);
-        alertDialog.setButton(buttonType.second, context.getString(buttonTitleRes.second), listener);
-        alertDialog.getButton(buttonType.first).setTextColor(buttonColorRes.first);
-        alertDialog.getButton(buttonType.second).setTextColor(buttonColorRes.second);
-        return alertDialog;
     }
 
     /**

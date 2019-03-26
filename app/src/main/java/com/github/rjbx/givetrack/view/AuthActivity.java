@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -192,24 +191,23 @@ public class AuthActivity extends AppCompatActivity implements
                         AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
-                                .addOnSuccessListener(deleteTask -> {
-                                    mReauthAttempts = 0;
-                                    DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                                    mFirebaseAuth.signOut();
-                                    finish();
-                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                })
-                                .addOnFailureListener(failTask -> {
-                                    if (mReauthAttempts < 5) {
-                                        mReauthAttempts++;
-                                        ViewUtilities.launchAuthDialog(this, this, mReauthAttempts);
-                                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                    } else {
+                                    .addOnSuccessListener(deleteTask -> {
                                         mReauthAttempts = 0;
-                                        Toast.makeText(this, "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                                        mFirebaseAuth.signOut();
+                                        finish();
+                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                    })
+                                    .addOnFailureListener(failTask -> {
+                                        if (mReauthAttempts < 5) {
+                                            launchAuthDialog();
+                                            Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            mReauthAttempts = 0;
+                                            Toast.makeText(this, "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
                         });
                     }
                     break;
@@ -238,7 +236,7 @@ public class AuthActivity extends AppCompatActivity implements
                     providers.add(new AuthUI.IdpConfig.AnonymousBuilder().build());
                     Intent signIn = AuthUI.getInstance().createSignInIntentBuilder()
                             .setLogo(R.mipmap.ic_launcher_round)
-                            .setTosAndPrivacyPolicyUrls("https://raw.githubusercontent.com/rjbx/Giftab/master/terms.md", "https://raw.githubusercontent.com/rjbx/Giftab/master/privacy.md")
+                            .setTosAndPrivacyPolicyUrls("https://github.com/rjbx/giftab/terms.md", "https://github.com/rjbx/giftab/privacy.md")
                             .setTheme(R.style.AppTheme_AuthOverlay)
                             .setIsSmartLockEnabled(false, true)
                             .setAvailableProviders(providers)
@@ -265,20 +263,32 @@ public class AuthActivity extends AppCompatActivity implements
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 firebaseUser.delete()
-                    .addOnSuccessListener(deleteTask -> {
-                        mReauthAttempts = 0;
-                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                        mFirebaseAuth.signOut();
-                        finish();
-                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                    })
-                    .addOnFailureListener(failTask -> {
-                        mReauthAttempts++;
-                        ViewUtilities.launchAuthDialog(this, this, R.string.message_update_email);
-                        Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                    });
+                        .addOnSuccessListener(deleteTask -> {
+                            mReauthAttempts = 0;
+                            DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                            mFirebaseAuth.signOut();
+                            finish();
+                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                        })
+                        .addOnFailureListener(failTask -> {
+                            Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                            launchAuthDialog();
+                        });
                 break;
         }
+    }
+
+    private void launchAuthDialog() {
+        mReauthAttempts++;
+        mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+        mAuthDialog = new AlertDialog.Builder(this).create();
+        mAuthDialog.setView(mDialogView);
+        mAuthDialog.setMessage(getString(R.string.message_update_email));
+        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+        mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
+        mAuthDialog.show();
+        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
     }
 }

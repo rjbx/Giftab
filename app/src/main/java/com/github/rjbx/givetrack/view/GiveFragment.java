@@ -75,7 +75,6 @@ public class GiveFragment extends Fragment implements
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static User sUser;
     private static Target[] sValuesArray;
-    private Handler mRepeatHandler;
     private static double[] sPercentages;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
