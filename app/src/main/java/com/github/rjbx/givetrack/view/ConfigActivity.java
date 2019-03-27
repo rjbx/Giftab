@@ -36,6 +36,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -48,7 +49,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseUserMetadata;
+import com.google.firebase.auth.UserInfo;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -298,10 +301,21 @@ public class ConfigActivity
          */
         @Override public void onResume() {
             super.onResume();
-//            handlePreferenceChange(findPreference("example_text"), this);
+
+            boolean hasPassword = false;
+            Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user == null) return;
+            List<String> providers = new ArrayList<>();
+            for (UserInfo ufo : user.getProviderData()) providers.add(ufo.getProviderId());
+
+            if (providers.contains("password")) handlePreferenceClick(emailPreference, this);
+            else emailPreference.setEnabled(false);
+
+            //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
-            handlePreferenceClick(findPreference(getString(R.string.pref_userEmail_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
