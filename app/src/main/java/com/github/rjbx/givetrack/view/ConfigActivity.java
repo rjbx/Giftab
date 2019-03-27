@@ -264,6 +264,7 @@ public class ConfigActivity
         return super.onOptionsItemSelected(item);
     }
 
+    // TODO: Disable email update preference when sign-in method is by OAuth
     /**
      * Fragment bound to preference header for updating user settings.
      */
