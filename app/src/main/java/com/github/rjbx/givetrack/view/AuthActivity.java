@@ -265,7 +265,7 @@ public class AuthActivity extends AppCompatActivity implements
                 firebaseUser.delete() // TODO Reauthenticate with OAuth provider access token where applicable
                         .addOnSuccessListener(deleteTask -> {
                             mReauthAttempts = 0;
-                            DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                            DatabaseManager.startActionRemoveUser(this, mActiveUser);  // TODO Synchronize database update with authentication
                             mFirebaseAuth.signOut();
                             finish();
                             startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
