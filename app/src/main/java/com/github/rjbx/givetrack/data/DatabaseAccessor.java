@@ -320,8 +320,9 @@ public final class DatabaseAccessor {
         updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> Task addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
+        Task<Void> task = null;
         if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
@@ -332,16 +333,18 @@ public final class DatabaseAccessor {
 
         DatabaseReference childReference = entryReference.child(uid);
 
-        if (reset) childReference.removeValue();
+        if (reset) task = childReference.removeValue();
 
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.updateChildren(entry.toParameterMap());
+                task = childReference.updateChildren(entry.toParameterMap());
             }
         }
 
         updateRemoteTableTime(remote, entryType, stamp, uid);
+
+        return task;
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
@@ -360,8 +363,9 @@ public final class DatabaseAccessor {
         } updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
+    @SafeVarargs private static <T extends Entry> Task removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
+        Task<Void> task = null;
         if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
@@ -371,15 +375,16 @@ public final class DatabaseAccessor {
             User user = getActiveUserFromRemote(remote);
             uid = user.getUid();
             DatabaseReference childReference = entryReference.child(uid);
-            childReference.removeValue();
+            task = childReference.removeValue();
         } else {
             uid = entries[0].getUid();
             for (T entry : entries) {
                 DatabaseReference childReference = entryReference.child(uid);
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.removeValue();
+                task = childReference.removeValue();
             }
         } updateRemoteTableTime(remote, entryType, stamp, uid);
+        return task;
     }
 
     private static User getActiveUserFromLocal(ContentResolver local) {
