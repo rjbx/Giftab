@@ -178,6 +178,7 @@ public class AuthActivity extends AppCompatActivity implements
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
             }
+            mProcessStage = 0;
         } else {
             switch (mProcessStage) {
                 case 0:
