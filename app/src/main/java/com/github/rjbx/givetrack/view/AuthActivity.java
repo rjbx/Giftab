@@ -157,13 +157,13 @@ public class AuthActivity extends AppCompatActivity implements
         if (firebaseUser != null) {
             for (User u : mUsers) {
                 if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                if (!mActiveUser.getUserActive()) {
-                    mFirebaseAuth.signOut();
-                    finish();
-                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                    Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                }
             }
+        }
+        if (mActiveUser != null && !mActiveUser.getUserActive()) {
+            mFirebaseAuth.signOut();
+            finish();
+            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
         } else {
             switch (mProcessStage) {
                 case 0:
