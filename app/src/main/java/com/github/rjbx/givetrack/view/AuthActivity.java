@@ -262,7 +262,7 @@ public class AuthActivity extends AppCompatActivity implements
             case ACTION_DELETE_ACCOUNT:
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                firebaseUser.delete()
+                firebaseUser.delete() // TODO Reauthenticate with OAuth provider access token where applicable
                         .addOnSuccessListener(deleteTask -> {
                             mReauthAttempts = 0;
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);

@@ -267,7 +267,6 @@ public class ConfigActivity
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO: Disable email update preference when sign-in method is by OAuth
     /**
      * Fragment bound to preference header for updating user settings.
      */
@@ -280,7 +279,6 @@ public class ConfigActivity
         private AlertDialog mAuthDialog;
         private Calendar mCalendar;
         private String mRequestedEmail;
-        private String mCurrentEmail;
         private String mEmailInput;
         private String mPasswordInput;
         private View mDialogView;
@@ -302,13 +300,12 @@ public class ConfigActivity
         @Override public void onResume() {
             super.onResume();
 
-            boolean hasPassword = false;
             Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
 
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             if (user == null) return;
             List<String> providers = new ArrayList<>();
-            for (UserInfo ufo : user.getProviderData()) providers.add(ufo.getProviderId());
+            for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
 
             if (providers.contains("password")) handlePreferenceClick(emailPreference, this);
             else emailPreference.setEnabled(false);
@@ -338,7 +335,6 @@ public class ConfigActivity
 
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
-                mCurrentEmail = sUser.getUserEmail();
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (firebaseUser == null) return false;
