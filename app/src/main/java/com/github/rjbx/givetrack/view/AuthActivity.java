@@ -151,7 +151,6 @@ public class AuthActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
-        mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
         if (mProcessStage == -1) {
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
             if (firebaseUser != null) {
@@ -180,6 +179,7 @@ public class AuthActivity extends AppCompatActivity implements
             }
             mProcessStage = 0;
         } else {
+            mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             switch (mProcessStage) {
                 case 0:
                     handleAction(getIntent().getAction());
