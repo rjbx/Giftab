@@ -323,7 +323,7 @@ public final class DatabaseAccessor {
     @SafeVarargs private static <T extends Entry> Task addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
         Task<Void> task = null;
-        if (entryType.equals(Spawn.class)) return;
+        if (entryType.equals(Spawn.class)) return null;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -366,7 +366,7 @@ public final class DatabaseAccessor {
     @SafeVarargs private static <T extends Entry> Task removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
         Task<Void> task = null;
-        if (entryType.equals(Spawn.class)) return;
+        if (entryType.equals(Spawn.class)) return null;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
