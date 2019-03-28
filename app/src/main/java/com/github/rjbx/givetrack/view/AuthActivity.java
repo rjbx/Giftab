@@ -155,7 +155,6 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         if (firebaseUser != null) {
-            mActiveUser
             for (User u : mUsers) {
                 if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 if (!mActiveUser.getUserActive()) {
