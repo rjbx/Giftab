@@ -11,7 +11,6 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.view.JournalActivity;

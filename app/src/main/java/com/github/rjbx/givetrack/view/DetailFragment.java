@@ -32,7 +32,6 @@ import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
-import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Company;
