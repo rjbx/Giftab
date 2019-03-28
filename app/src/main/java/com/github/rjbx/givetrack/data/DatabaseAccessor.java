@@ -3,9 +3,7 @@ package com.github.rjbx.givetrack.data;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 
 import java.lang.reflect.Array;
@@ -20,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
-import com.github.rjbx.givetrack.data.DatasourceContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Spawn;
@@ -30,7 +27,6 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
-import timber.log.Timber;
 
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
@@ -51,7 +46,7 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         User user =  getActiveUserFromLocal(local);
-        
+
         Map<String, String> request = new HashMap<>();
         if (user.getIndexFocus()) request.put(DatasourceContract.PARAM_EIN, user.getIndexCompany());
         else {
@@ -320,10 +315,9 @@ public final class DatabaseAccessor {
         updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    @SafeVarargs private static <T extends Entry> Task addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
-        Task<Void> task = null;
-        if (entryType.equals(Spawn.class)) return null;
+        if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -333,18 +327,14 @@ public final class DatabaseAccessor {
 
         DatabaseReference childReference = entryReference.child(uid);
 
-        if (reset) task = childReference.removeValue();
+        if (reset) childReference.removeValue();
 
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                task = childReference.updateChildren(entry.toParameterMap());
+                childReference.updateChildren(entry.toParameterMap());
             }
-        }
-
-        updateRemoteTableTime(remote, entryType, stamp, uid);
-
-        return task;
+        } updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
@@ -363,10 +353,9 @@ public final class DatabaseAccessor {
         } updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    @SafeVarargs private static <T extends Entry> Task removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
+    @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
-        Task<Void> task = null;
-        if (entryType.equals(Spawn.class)) return null;
+        if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference entryReference = remote.getReference(entryPath);
@@ -375,16 +364,15 @@ public final class DatabaseAccessor {
             User user = getActiveUserFromRemote(remote);
             uid = user.getUid();
             DatabaseReference childReference = entryReference.child(uid);
-            task = childReference.removeValue();
+            childReference.removeValue();
         } else {
             uid = entries[0].getUid();
             for (T entry : entries) {
                 DatabaseReference childReference = entryReference.child(uid);
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                task = childReference.removeValue();
+                childReference.removeValue();
             }
         } updateRemoteTableTime(remote, entryType, stamp, uid);
-        return task;
     }
 
     private static User getActiveUserFromLocal(ContentResolver local) {

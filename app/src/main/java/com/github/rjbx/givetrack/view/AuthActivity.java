@@ -114,7 +114,6 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
-                boolean isPersisted = false;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                 mUsers.add(mActiveUser);
@@ -159,11 +158,26 @@ public class AuthActivity extends AppCompatActivity implements
                 if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
             }
         }
-        if (mActiveUser != null && !mActiveUser.getUserActive()) {
-            mFirebaseAuth.signOut();
-            finish();
-            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+        if (mProcessStage == -1) {
+            if (mActiveUser == null) {
+                firebaseUser.delete()
+                        .addOnSuccessListener(deleteTask -> {
+                            mReauthAttempts = 0;
+                            mFirebaseAuth.signOut();
+                            finish();
+                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                        })
+                        .addOnFailureListener(failTask -> {
+                            Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                            launchAuthDialog();
+                        });
+            } else if (!mActiveUser.getUserActive()) {
+                mFirebaseAuth.signOut();
+                finish();
+                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+            }
         } else {
             switch (mProcessStage) {
                 case 0:
@@ -267,23 +281,15 @@ public class AuthActivity extends AppCompatActivity implements
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
+                mActiveUser = null;
+                mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                firebaseUser.delete() // TODO Reauthenticate with OAuth provider access token where applicable
-                        .addOnSuccessListener(deleteTask -> {
-                            mReauthAttempts = 0;
-                            DatabaseManager.startActionRemoveUser(this, mActiveUser);  // TODO Synchronize database update with authentication
-                            mFirebaseAuth.signOut();
-                            finish();
-                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                        })
-                        .addOnFailureListener(failTask -> {
-                            Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                            launchAuthDialog();
-                        });
+                DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                mActiveUser = null;
+                mProcessStage = -1;
                 break;
         }
     }
