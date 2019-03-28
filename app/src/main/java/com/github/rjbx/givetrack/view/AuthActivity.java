@@ -152,13 +152,13 @@ public class AuthActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
-        FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-        if (firebaseUser != null) {
-            for (User u : mUsers) {
-                if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-            }
-        }
         if (mProcessStage == -1) {
+            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+            if (firebaseUser != null) {
+                for (User u : mUsers) {
+                    if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
+                }
+            }
             if (mActiveUser == null) {
                 firebaseUser.delete()
                         .addOnSuccessListener(deleteTask -> {
