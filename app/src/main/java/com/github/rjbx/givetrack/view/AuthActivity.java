@@ -152,32 +152,28 @@ public class AuthActivity extends AppCompatActivity implements
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         if (mProcessStage == -1) {
+            mProcessStage = 0;
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-            if (firebaseUser != null) {
-                for (User u : mUsers) {
-                    if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                }
-            }
+            if (firebaseUser == null) return;
             if (mActiveUser == null) {
-                firebaseUser.delete()
-                        .addOnSuccessListener(deleteTask -> {
-                            mReauthAttempts = 0;
-                            mFirebaseAuth.signOut();
-                            finish();
-                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                        })
-                        .addOnFailureListener(failTask -> {
-                            Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                            launchAuthDialog();
-                        });
-            } else if (!mActiveUser.getUserActive()) {
+                firebaseUser.delete().addOnSuccessListener(deleteTask -> {
+                        mReauthAttempts = 0;
+                        mFirebaseAuth.signOut();
+                        finish();
+                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                    })
+                    .addOnFailureListener(failTask -> {
+                        Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                        launchAuthDialog();
+                    });
+            } else {
+                if (mActiveUser.getUid().equals(firebaseUser.getUid())) return;
                 mFirebaseAuth.signOut();
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
             }
-            mProcessStage = 0;
         } else {
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             switch (mProcessStage) {
@@ -282,7 +278,6 @@ public class AuthActivity extends AppCompatActivity implements
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
-                mActiveUser = null;
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
