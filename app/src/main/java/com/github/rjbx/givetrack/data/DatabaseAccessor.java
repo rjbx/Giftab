@@ -473,7 +473,7 @@ public final class DatabaseAccessor {
                 addEntriesToLocal(local, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
-        });
+        };
         if (entryType == Record.class || entryType == Target.class) pathReference.child(uid).addValueEventListener(listener);
         if (entryType == User.class) pathReference.equalTo(uid, "uid").addValueEventListener(listener);
     }
