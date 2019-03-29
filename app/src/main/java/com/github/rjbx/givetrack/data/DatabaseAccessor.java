@@ -350,7 +350,8 @@ public final class DatabaseAccessor {
                 Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
                 local.delete(rowUri, null, null);
             }
-        } if (!entryType.equals(User.class)) updateLocalTableTime(local, entryType, stamp, uid);
+        }
+        if (entries == null || !(entries[0] instanceof User)) updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
@@ -372,7 +373,8 @@ public final class DatabaseAccessor {
                 if (entry instanceof Company) childReference = childReference.child(entry.getId());
                 childReference.removeValue();
             }
-        } updateRemoteTableTime(remote, entryType, stamp, uid);
+        }
+        if (entries == null || !(entries[0] instanceof User)) updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     private static User getActiveUserFromLocal(ContentResolver local) {
