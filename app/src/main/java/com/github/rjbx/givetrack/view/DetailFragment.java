@@ -1,6 +1,5 @@
 package com.github.rjbx.givetrack.view;
 
-import android.database.DatabaseUtils;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
