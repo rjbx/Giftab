@@ -185,10 +185,6 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                     break;
                 case 3:
-                    mProcessStage++;
-                    break;
-                case 4:
-                    mProcessStage++;
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                     finish();
             }
