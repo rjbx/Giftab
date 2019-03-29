@@ -97,7 +97,8 @@ public final class AppUtilities {
      */
     public static User convertRemoteToLocalUser(FirebaseUser firebaseUser) {
 
-        String uid, email = "";
+        String uid = "";
+        String email = "";
         if (firebaseUser != null) {
             uid = firebaseUser.getUid();
             String firebaseEmail = firebaseUser.getEmail();
