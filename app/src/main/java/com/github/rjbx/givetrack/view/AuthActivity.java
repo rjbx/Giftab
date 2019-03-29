@@ -262,6 +262,7 @@ public class AuthActivity extends AppCompatActivity implements
                             .setIsSmartLockEnabled(false, true)
                             .setAvailableProviders(providers)
                             .build();
+                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                     startActivityForResult(signIn, REQUEST_SIGN_IN);
                     mProcessStage++;
                 } else {
