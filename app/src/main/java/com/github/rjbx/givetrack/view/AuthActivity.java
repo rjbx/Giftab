@@ -181,7 +181,7 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
-                    DatabaseManager.startActionFetchUser(this);
+                    DatabaseManager.startActionFetchUser(this); // TODO Select account matching credentials from remote database rather than pull remote to local and select from local
                     mProcessStage++;
                     break;
                 case 3:
