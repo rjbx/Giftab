@@ -351,7 +351,7 @@ public final class DatabaseAccessor {
                 local.delete(rowUri, null, null);
             }
         }
-        if (entries == null || !(entries[0] instanceof User)) updateLocalTableTime(local, entryType, stamp, uid);
+        if (entryType != User.class) updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
@@ -374,7 +374,7 @@ public final class DatabaseAccessor {
                 childReference.removeValue();
             }
         }
-        if (entries == null || !(entries[0] instanceof User)) updateRemoteTableTime(remote, entryType, stamp, uid);
+        if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     private static User getActiveUserFromLocal(ContentResolver local) {
