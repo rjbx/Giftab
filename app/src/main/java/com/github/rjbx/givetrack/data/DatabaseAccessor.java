@@ -456,8 +456,7 @@ public final class DatabaseAccessor {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        if (entryType == Record.class || entryType == Target.class) pathReference = pathReference.child(uid);
-        pathReference.addValueEventListener(new ValueEventListener() {
+        ValueEventListener listener = new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
                 List<T> entryList = new ArrayList<>();
@@ -475,6 +474,8 @@ public final class DatabaseAccessor {
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
+        if (entryType == Record.class || entryType == Target.class) pathReference.child(uid).addValueEventListener(listener);
+        if (entryType == User.class) pathReference.equalTo(uid, "uid").addValueEventListener(listener);
     }
 
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
