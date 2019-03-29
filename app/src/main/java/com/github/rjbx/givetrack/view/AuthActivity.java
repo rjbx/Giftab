@@ -282,8 +282,8 @@ public class AuthActivity extends AppCompatActivity implements
                 break;
             case ACTION_DELETE_ACCOUNT:
                 if (firebaseUser == null) return;
-                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid()))
+                    DatabaseManager.startActionRemoveUser(this, u);
                 mActiveUser = null;
                 mProcessStage = -1;
                 break;
