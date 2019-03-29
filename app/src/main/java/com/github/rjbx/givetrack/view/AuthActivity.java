@@ -168,7 +168,7 @@ public class AuthActivity extends AppCompatActivity implements
                         launchAuthDialog();
                     });
             } else {
-                if (mActiveUser.getUid().equals(firebaseUser.getUid())) return;
+                if (!mActiveUser.getUid().equals(firebaseUser.getUid())) return;
                 mFirebaseAuth.signOut();
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
