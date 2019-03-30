@@ -186,21 +186,21 @@ public class AuthActivity extends AppCompatActivity implements
                             launchAuthDialog();
                         } else if (providers.contains("google.com")) {
 
-
-                           Runnable runnable = new Runnable() {
-                                @Override
-                                public void run() {
+//
+//                           Runnable runnable = new Runnable() {
+//                                @Override
+//                                public void run() {
                                     AuthCredential credential = null;
-                                    String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
+//                                    String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
                                     GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(AuthActivity.this);
 
                                     if (account != null) {
-                                        String id = account.getId();
-        //                                            String token = account.getIdToken();
-                                        try {
-                                            String token = GoogleAuthUtil.getToken(AuthActivity.this, account.getAccount(), scope);
-                                            credential = GoogleAuthProvider.getCredential(id, token);
-                                        } catch (GoogleAuthException|IOException e) { Timber.e(e); }
+//                                        String id = account.getId();
+                                        String token = account.getIdToken();
+//                                        try {
+//                                            String token = GoogleAuthUtil.getToken(AuthActivity.this, account.getAccount(), scope);
+                                            credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
+//                                        } catch (GoogleAuthException|IOException e) { Timber.e(e); }
                                     }
                                     retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
                                         FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
@@ -224,9 +224,9 @@ public class AuthActivity extends AppCompatActivity implements
                                                 });
                                             });
                                         }
-                                    };
-                           AsyncTask.execute(runnable);
-                        }
+//                                    };
+//                           AsyncTask.execute(runnable);
+//                        }
                     });
             } else {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
