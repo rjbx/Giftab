@@ -874,6 +874,7 @@ public class ConfigActivity
             DialogInterface.OnClickListener {
 
         AlertDialog mDeleteDialog;
+        FirebaseAuth mFirebaseAuth;
 
         /**
          * Inflates the content of this fragment.
@@ -891,9 +892,18 @@ public class ConfigActivity
         @Override public void onResume() {
             super.onResume();
 
+            Preference deletePreference = findPreference(getString(R.string.pref_delete_key));
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            if (user == null) return;
+            List<String> providers = new ArrayList<>();
+            for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+
+            if (providers.size() > 1) handlePreferenceClick(deletePreference, this);
+            else deletePreference.setEnabled(false);
+
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 //            handlePreferenceChange(findPreference("sync_frequency"), this);
-            handlePreferenceClick(findPreference(getString(R.string.pref_delete_key)), this);
         }
 
         /**

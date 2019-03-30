@@ -185,22 +185,11 @@ public class AuthActivity extends AppCompatActivity implements
                             Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
                         } else if (providers.contains("google.com")) {
-
-//
-//                           Runnable runnable = new Runnable() {
-//                                @Override
-//                                public void run() {
                                     AuthCredential credential = null;
-//                                    String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
                                     GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(AuthActivity.this);
-
                                     if (account != null) {
-//                                        String id = account.getId();
                                         String token = account.getIdToken();
-//                                        try {
-//                                            String token = GoogleAuthUtil.getToken(AuthActivity.this, account.getAccount(), scope);
-                                            credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
-//                                        } catch (GoogleAuthException|IOException e) { Timber.e(e); }
+                                        credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
                                     }
                                     FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
                                         FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
