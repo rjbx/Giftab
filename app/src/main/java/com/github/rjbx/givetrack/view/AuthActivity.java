@@ -159,10 +159,10 @@ public class AuthActivity extends AppCompatActivity implements
         if (loader.getId() != DatabaseContract.LOADER_ID_USER) return;
         if (mProcessStage == -1) {
             mProcessStage = 0;
-            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-            if (firebaseUser == null) return;
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            if (user == null) return;
             if (mActiveUser == null) {
-                firebaseUser.delete().addOnSuccessListener(deleteTask -> { // TODO Reauthenticate with OAuth provider access token where applicable
+                user.delete().addOnSuccessListener(deleteTask -> { // TODO Reauthenticate with OAuth provider access token where applicable
                         mReauthAttempts = 0;
                         mFirebaseAuth.signOut();
                         finish();
@@ -170,10 +170,10 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                     })
                     .addOnFailureListener(failTask -> {
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        if (user == null) return;
+                        FirebaseUser retryUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (retryUser == null) return;
                         List<String> providers = new ArrayList<>();
-                        for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+                        for (UserInfo uInfo : retryUser.getProviderData()) providers.add(uInfo.getProviderId());
                         if (providers.contains("password")) {
                             Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
@@ -185,7 +185,8 @@ public class AuthActivity extends AppCompatActivity implements
                                 String id = account.getId();
                                 String token = account.getIdToken();
                                 AuthCredential credential = GoogleAuthProvider.getCredential(id, token);
-                                AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
+
+                                retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
                                     FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                                     if (refreshedUser != null) refreshedUser.delete()
                                             .addOnSuccessListener(retryDeleteTask -> {
@@ -210,7 +211,7 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                     });
             } else {
-                if (!mActiveUser.getUid().equals(firebaseUser.getUid())) return;
+                if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
@@ -253,7 +254,9 @@ public class AuthActivity extends AppCompatActivity implements
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
-                        AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
+                        FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
+                        if (retryUser == null) return;
+                        retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {

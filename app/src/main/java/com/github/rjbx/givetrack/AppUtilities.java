@@ -144,11 +144,4 @@ public final class AppUtilities {
                 anchorCalendar.get(Calendar.DAY_OF_MONTH) == currentCalendar.get(Calendar.DAY_OF_MONTH) &&
                 anchorCalendar.get(Calendar.YEAR) == currentCalendar.get(Calendar.YEAR);
     }
-
-
-    public static void completeTaskOnReauthentication(AuthCredential credential, OnCompleteListener<Void> listener) {
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (firebaseUser == null || firebaseUser.getEmail() == null) return;
-        firebaseUser.reauthenticate(credential).addOnCompleteListener(listener);
-    }
 }

@@ -394,7 +394,8 @@ public class ConfigActivity
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                         if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                            AppUtilities.completeTaskOnReauthentication(credential, authTask -> {
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            user.reauthenticate(credential).addOnCompleteListener(authTask -> {
                                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                 Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
                                 if (refreshedUser != null) {
