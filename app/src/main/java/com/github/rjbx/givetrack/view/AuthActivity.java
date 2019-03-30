@@ -32,10 +32,16 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,7 +218,19 @@ public class AuthActivity extends AppCompatActivity implements
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AuthCredential credential = null;
-                        credential = EmailAuthProvider.getCredential(email, password);
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user == null) return;
+                        List<String> providers = new ArrayList<>();
+                        for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+                        if (providers.contains("google")) {
+//                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
+                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                            if (account != null) {
+//                            String token = GoogleAuthUtil.getToken((this, account, scope);
+                                credential = GoogleAuthProvider.getCredential(account.getId(), account.getIdToken());
+                            }
+                        }
+                        if (providers.contains("password") credential = EmailAuthProvider.getCredential(email, password);
                         AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
