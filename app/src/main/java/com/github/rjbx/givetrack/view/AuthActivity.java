@@ -184,7 +184,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                                     FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                                     if (refreshedUser != null) refreshedUser.delete()
-                                            .addOnSuccessListener(deleteTask -> {
+                                            .addOnSuccessListener(retryDeleteTask -> {
                                                 mReauthAttempts = 0;
                                                 DatabaseManager.startActionRemoveUser(this, mActiveUser);
                                                 mFirebaseAuth.signOut();
@@ -192,7 +192,7 @@ public class AuthActivity extends AppCompatActivity implements
                                                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                             })
-                                            .addOnFailureListener(failTask -> {
+                                            .addOnFailureListener(retryFailTask -> {
                                                 if (mReauthAttempts < 5) {
                                                     Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                                 } else {
