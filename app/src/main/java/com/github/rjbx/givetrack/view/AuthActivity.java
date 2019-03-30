@@ -5,9 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -25,6 +27,7 @@ import timber.log.Timber;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
@@ -32,7 +35,9 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
@@ -43,6 +48,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -178,36 +184,40 @@ public class AuthActivity extends AppCompatActivity implements
                             Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
                         } else if (providers.contains("google.com")) {
-//                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
-                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                            if (account != null) {
-//                                String token = GoogleAuthUtil.getToken((this, account, scope);
-                                String id = account.getId();
-                                String token = account.getIdToken();
-                                AuthCredential credential = GoogleAuthProvider.getCredential(id, token);
 
-                                retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
-                                    FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                                    if (refreshedUser != null) refreshedUser.delete()
-                                            .addOnSuccessListener(retryDeleteTask -> {
-                                                mReauthAttempts = 0;
-                                                DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                                                mFirebaseAuth.signOut();
-                                                finish();
-                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                            })
-                                            .addOnFailureListener(retryFailTask -> {
-                                                Timber.e(retryFailTask.getMessage());
-                                                if (mReauthAttempts < 5) {
-                                                    Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                                } else {
-                                                    mReauthAttempts = 0;
-                                                    Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                });
+                            AuthCredential credential = null;
+                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
+                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(AuthActivity.this);
+                            if (account != null) {
+                                String id = account.getId();
+//                                            String token = account.getIdToken();
+                                try {
+                                    String token = GoogleAuthUtil.getToken(this, account.getAccount(), scope);
+                                    credential = GoogleAuthProvider.getCredential(id, token);
+                                } catch (GoogleAuthException|IOException e) { Timber.e(e); }
                             }
+
+                            retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
+                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                if (refreshedUser != null) refreshedUser.delete()
+                                        .addOnSuccessListener(retryDeleteTask -> {
+                                            mReauthAttempts = 0;
+                                            DatabaseManager.startActionRemoveUser(AuthActivity.this, mActiveUser);
+                                            mFirebaseAuth.signOut();
+                                            finish();
+                                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                        })
+                                        .addOnFailureListener(retryFailTask -> {
+                                            Timber.e(retryFailTask.getMessage());
+                                            if (mReauthAttempts < 5) {
+                                                Toast.makeText(AuthActivity.this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                mReauthAttempts = 0;
+                                                Toast.makeText(AuthActivity.this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                            });
                         }
                     });
             } else {
