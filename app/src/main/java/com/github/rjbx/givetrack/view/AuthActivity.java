@@ -32,10 +32,8 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
-import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,8 +130,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mProgressbar.setVisibility(View.VISIBLE);
                 String message;
                 if (response == null) message = getString(R.string.network_error_message);
-                else
-                    message = getString(R.string.provider_error_message, response.getProviderType());
+                else message = getString(R.string.provider_error_message, response.getProviderType());
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show();
             }
         }
@@ -148,8 +145,7 @@ public class AuthActivity extends AppCompatActivity implements
         switch (id) {
             case LOADER_ID_USER:
                 return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_USER_ACTIVE + " = ? ", new String[] { "1" }, null);
-            default:
-                throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
 
@@ -172,8 +168,41 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                     })
                     .addOnFailureListener(failTask -> {
-                        Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
-                        launchAuthDialog();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (user == null) return;
+                        List<String> providers = new ArrayList<>();
+                        for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+                        if (providers.contains("password")) {
+                            Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
+                            launchAuthDialog();
+                        } else if (providers.contains("google")) {
+//                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
+                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+                            if (account != null) {
+//                            String token = GoogleAuthUtil.getToken((this, account, scope);
+                                AuthCredential credential = GoogleAuthProvider.getCredential(account.getId(), account.getIdToken());
+                                AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
+                                    FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                    if (refreshedUser != null) refreshedUser.delete()
+                                            .addOnSuccessListener(deleteTask -> {
+                                                mReauthAttempts = 0;
+                                                DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                                                mFirebaseAuth.signOut();
+                                                finish();
+                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                                                Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                            })
+                                            .addOnFailureListener(failTask -> {
+                                                if (mReauthAttempts < 5) {
+                                                    Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    mReauthAttempts = 0;
+                                                    Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                });
+                            }
+                        }
                     });
             } else {
                 if (!mActiveUser.getUid().equals(firebaseUser.getUid())) return;
@@ -218,20 +247,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
-                        AuthCredential credential = null;
-                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                        if (user == null) return;
-                        List<String> providers = new ArrayList<>();
-                        for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
-                        if (providers.contains("google")) {
-//                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
-                            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                            if (account != null) {
-//                            String token = GoogleAuthUtil.getToken((this, account, scope);
-                                credential = GoogleAuthProvider.getCredential(account.getId(), account.getIdToken());
-                            }
-                        }
-                        if (providers.contains("password")) credential = EmailAuthProvider.getCredential(email, password);
+                        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
