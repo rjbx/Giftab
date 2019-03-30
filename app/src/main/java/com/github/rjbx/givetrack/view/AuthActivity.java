@@ -32,8 +32,10 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.Scopes;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -175,12 +177,14 @@ public class AuthActivity extends AppCompatActivity implements
                         if (providers.contains("password")) {
                             Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
-                        } else if (providers.contains("google")) {
+                        } else if (providers.contains("google.com")) {
 //                            String scope = "oauth2:" + Scopes.EMAIL + " " + Scopes.PROFILE;
                             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
                             if (account != null) {
-//                            String token = GoogleAuthUtil.getToken((this, account, scope);
-                                AuthCredential credential = GoogleAuthProvider.getCredential(account.getId(), account.getIdToken());
+//                                String token = GoogleAuthUtil.getToken((this, account, scope);
+                                String id = account.getId();
+                                String token = account.getIdToken();
+                                AuthCredential credential = GoogleAuthProvider.getCredential(id, token);
                                 AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                                     FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                                     if (refreshedUser != null) refreshedUser.delete()
@@ -193,6 +197,7 @@ public class AuthActivity extends AppCompatActivity implements
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                             })
                                             .addOnFailureListener(retryFailTask -> {
+                                                Timber.e(retryFailTask.getMessage());
                                                 if (mReauthAttempts < 5) {
                                                     Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                                 } else {
