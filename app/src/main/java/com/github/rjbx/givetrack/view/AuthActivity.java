@@ -193,6 +193,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                     break;
                 case 3:
+                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                     finish();
             }
@@ -284,7 +285,6 @@ public class AuthActivity extends AppCompatActivity implements
                             .setIsSmartLockEnabled(false, true)
                             .setAvailableProviders(providers)
                             .build();
-                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                     startActivityForResult(signIn, REQUEST_SIGN_IN);
                     mProcessStage++;
                 } else {
