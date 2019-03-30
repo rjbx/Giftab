@@ -187,7 +187,7 @@ public class AuthActivity extends AppCompatActivity implements
                         } else if (providers.contains("google.com")) {
 
 
-                           new Runnable() {
+                           Runnable runnable = new Runnable() {
                                 @Override
                                 public void run() {
                                     AuthCredential credential = null;
@@ -225,6 +225,7 @@ public class AuthActivity extends AppCompatActivity implements
                                             });
                                         }
                                     };
+                           AsyncTask.execute(runnable);
                         }
                     });
             } else {
