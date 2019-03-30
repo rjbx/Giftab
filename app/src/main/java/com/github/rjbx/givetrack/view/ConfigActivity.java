@@ -42,6 +42,8 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
@@ -391,7 +393,9 @@ public class ConfigActivity
                         mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                         if (sUser != null) {
-                            AppUtilities.completeTaskOnReauthentication(mEmailInput, mPasswordInput, authTask -> {
+                            AuthCredential credential = null;
+                            credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                            AppUtilities.completeTaskOnReauthentication(credential, authTask -> {
                                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                 Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
                                 if (refreshedUser != null) {

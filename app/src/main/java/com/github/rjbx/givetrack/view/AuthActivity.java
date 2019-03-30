@@ -32,6 +32,8 @@ import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -209,7 +211,9 @@ public class AuthActivity extends AppCompatActivity implements
                 case AlertDialog.BUTTON_POSITIVE:
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
-                        AppUtilities.completeTaskOnReauthentication(email, password, signedOutTask -> {
+                        AuthCredential credential = null;
+                        credential = EmailAuthProvider.getCredential(email, password);
+                        AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {
