@@ -169,7 +169,7 @@ public class AuthActivity extends AppCompatActivity implements
             if (user == null) return;
             if (mActiveUser == null) {
                 user.delete()
-                    .addOnSuccessListener(deleteTask -> { // TODO Reauthenticate with OAuth provider access token where applicable
+                    .addOnSuccessListener(deleteTask -> {
                         mReauthAttempts = 0;
                         mFirebaseAuth.signOut();
                         finish();
@@ -212,9 +212,6 @@ public class AuthActivity extends AppCompatActivity implements
                                                 });
                                             });
                                         }
-//                                    };
-//                           AsyncTask.execute(runnable);
-//                        }
                     });
             } else {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
@@ -230,8 +227,7 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
-                    DatabaseManager.startActionFetchUser(this); // TODO Select account matching credentials from remote database rather than pull remote to local and select from local
-                    mProcessStage++;
+                    DatabaseManager.startActionFetchUser(this);
                     break;
                 case 3:
                     Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
