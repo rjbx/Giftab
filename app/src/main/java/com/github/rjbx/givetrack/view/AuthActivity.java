@@ -230,7 +230,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 credential = GoogleAuthProvider.getCredential(account.getId(), account.getIdToken());
                             }
                         }
-                        if (providers.contains("password") credential = EmailAuthProvider.getCredential(email, password);
+                        if (providers.contains("password")) credential = EmailAuthProvider.getCredential(email, password);
                         AppUtilities.completeTaskOnReauthentication(credential, signedOutTask -> {
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
