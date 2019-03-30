@@ -170,7 +170,7 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                     })
                     .addOnFailureListener(failTask -> {
-                        FirebaseUser retryUser = FirebaseAuth.getInstance().getCurrentUser();
+                        FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
                         if (retryUser == null) return;
                         List<String> providers = new ArrayList<>();
                         for (UserInfo uInfo : retryUser.getProviderData()) providers.add(uInfo.getProviderId());

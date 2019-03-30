@@ -271,6 +271,7 @@ public class ConfigActivity
             DatePickerDialog.OnDateSetListener,
             DialogInterface.OnClickListener {
 
+        private FirebaseAuth mFirebaseAuth;
         private AlertDialog mAuthDialog;
         private Calendar mCalendar;
         private String mRequestedEmail;
@@ -297,7 +298,8 @@ public class ConfigActivity
 
             Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
 
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
             if (user == null) return;
             List<String> providers = new ArrayList<>();
             for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
@@ -331,7 +333,7 @@ public class ConfigActivity
             if (newValue == null) return false;
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 mRequestedEmail = newValue.toString();
-                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
                 if (firebaseUser == null) return false;
                 firebaseUser.updateEmail(mRequestedEmail)
                         .addOnSuccessListener(updateTask -> {
@@ -394,9 +396,9 @@ public class ConfigActivity
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
                         if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             user.reauthenticate(credential).addOnCompleteListener(authTask -> {
-                                FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
+                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                                 Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
                                 if (refreshedUser != null) {
                                     refreshedUser.updateEmail(mRequestedEmail)
