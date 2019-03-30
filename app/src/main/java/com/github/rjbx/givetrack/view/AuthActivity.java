@@ -202,12 +202,11 @@ public class AuthActivity extends AppCompatActivity implements
                                             credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
 //                                        } catch (GoogleAuthException|IOException e) { Timber.e(e); }
                                     }
-                                    retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
-                                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                    FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
+                                        FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                         if (refreshedUser != null) refreshedUser.delete()
                                                 .addOnSuccessListener(retryDeleteTask -> {
                                                     mReauthAttempts = 0;
-                                                    DatabaseManager.startActionRemoveUser(AuthActivity.this, mActiveUser);
                                                     mFirebaseAuth.signOut();
                                                     finish();
                                                     startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
