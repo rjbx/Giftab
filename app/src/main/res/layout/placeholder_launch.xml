@@ -18,7 +18,7 @@
             android:layout_width="170dp"
             android:layout_height="170dp"
             android:padding="24dp"
-            android:src="@mipmap/ic_launcher_round"
+            android:src="@mipmap/ic_launcher"
             android:visibility="gone"
             android:layout_gravity="center"/>
 
