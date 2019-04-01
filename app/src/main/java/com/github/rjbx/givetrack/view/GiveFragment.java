@@ -72,7 +72,6 @@ public class GiveFragment extends Fragment implements
     private static final String ADJUST_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_ADJUST";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static User sUser;
-    private static Target[] sValuesArray;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private Context mContext;
@@ -122,8 +121,14 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
-            Parcelable[] parcelables = savedInstanceState.getParcelableArray(TARGETS_STATE);
-            if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Target.class);
+            Parcelable[] parcelableArray = savedInstanceState.getParcelableArray(TARGETS_STATE);
+            if (mListAdapter == null && parcelableArray != null) {
+                Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
+                List<Target> targetList = Arrays.asList(valuesArray);
+                if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
+                else if (getFragmentManager() != null) getFragmentManager().popBackStack();
+                mRecyclerView.setAdapter(mListAdapter);
+            }
         }
         super.onCreate(savedInstanceState);
     }
@@ -145,12 +150,12 @@ public class GiveFragment extends Fragment implements
         Bundle args = getArguments();
         if (args != null) {
             Parcelable[] parcelableArray = args.getParcelableArray(HomeActivity.ARGS_TARGET_ATTRIBUTES);
-            if (parcelableArray != null) {
+            if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
-//                if (sValuesArray != null && sValuesArray.length != valuesArray.length) {
-//                    sPercentagesAdjusted = true;
-//                }
-                sValuesArray = valuesArray;
+                List<Target> targetList = Arrays.asList(valuesArray);
+                if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
+                else if (getFragmentManager() != null) getFragmentManager().popBackStack();
+                mRecyclerView.setAdapter(mListAdapter);
             }
             sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
             if (sUser == null) mParentActivity.recreate();
@@ -170,10 +175,6 @@ public class GiveFragment extends Fragment implements
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
-
-        if (mListAdapter == null) mListAdapter = new ListAdapter();
-        else if (getFragmentManager() != null) getFragmentManager().popBackStack();
-        mRecyclerView.setAdapter(mListAdapter);
 
         renderActionBar();
 
@@ -216,7 +217,10 @@ public class GiveFragment extends Fragment implements
             });
             mMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
-        if (mListAdapter != null) mListAdapter.swapValues();
+//        if (mListAdapter != null) {
+//            List<Target> targetList = Arrays.asList(sValuesArray)
+//            mListAdapter.swapValues(targetList);
+//        }
     }
 
     /**
@@ -298,7 +302,8 @@ public class GiveFragment extends Fragment implements
                 }
                 mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                 mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
-                updateAmounts();
+                renderActionBar();
+                if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
                 if (mMethodManager == null) return false;
                 mMethodManager.toggleSoftInput(0, 0);
                 return true;
@@ -319,7 +324,8 @@ public class GiveFragment extends Fragment implements
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
-        updateAmounts();
+        renderActionBar();
+        if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -333,7 +339,8 @@ public class GiveFragment extends Fragment implements
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, formattedTotal));
-        updateAmounts();
+        renderActionBar();
+        if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -342,21 +349,14 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
-            mListAdapter.syncPercentages();
+            if (mListAdapter != null) mListAdapter.syncPercentages();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
-            syncDonations();
+            if (mListAdapter != null) mListAdapter.syncDonations();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
-    }
-
-    /**
-     * Syncs donations to database.
-     */
-    private void syncDonations() {
-        DatabaseManager.startActionRecordTarget(mContext, sValuesArray);
     }
 
     /**
@@ -379,15 +379,6 @@ public class GiveFragment extends Fragment implements
                 });
             }
         }, 2000); // Wait until this time interval has elapsed to sync percentages
-    }
-
-    /**
-     * Updates the amounts allocated to each charity on increment or decrement
-     * of total donation amount.
-     */
-    private void updateAmounts() {
-        renderActionBar();
-        if (sValuesArray != null) mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -444,8 +435,8 @@ public class GiveFragment extends Fragment implements
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
-        ListAdapter() {
-            mTargetList = Arrays.asList(sValuesArray);
+        ListAdapter(List<Target> targetList) {
+            mTargetList = targetList;
             mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -506,7 +497,7 @@ public class GiveFragment extends Fragment implements
                 return;
             }
 
-            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null)
+            if (mTargetList == null || mTargetList.size()== 0 || mTargetList.get(position) == null)
                 return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
@@ -519,24 +510,24 @@ public class GiveFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            Target values = sValuesArray[position];
+            Target target = mTargetList.get(position);
 
-            String name = values.getName();
+            String name = target.getName();
             if (name.length() > 30) {
                 name = name.substring(0, 30);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("...");
             }
 
-            final int frequency = values.getFrequency();
+            final int frequency = target.getFrequency();
 
-            double amount = sValuesArray[position].getPercent() * mAmountTotal;
+            double amount = target.getPercent() * mAmountTotal;
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            final float impact = Float.parseFloat(values.getImpact());
+            final float impact = Float.parseFloat(target.getImpact());
             String impactStr = CURRENCY_FORMATTER.format(impact);
             int impactLength = impactStr.length();
 
@@ -553,7 +544,7 @@ public class GiveFragment extends Fragment implements
                 else impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
             }
 
-            if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(sValuesArray[position].getPercent()));
+            if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(mTargetList.get(position).getPercent()));
 
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
@@ -576,19 +567,19 @@ public class GiveFragment extends Fragment implements
          * Returns the number of items to display.
          */
         @Override public int getItemCount() {
-            return sValuesArray != null ? sValuesArray.length + 1 : 1;
+            return mTargetList != null ? mTargetList.size() + 1 : 1;
         }
 
         /**
          * Swaps the Cursor after completing a load or resetting Loader.
          */
-        private void swapValues() {
+        private void swapValues(List<Target> targetList) {
 //            if (sPercentages.length != sValuesArray.length)
 //                sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
 //            for (int i = 0; i < sPercentages.length; i++) {
 //                sPercentages[i] = sValuesArray[i].getPercent();
 //            }
-            mTargetList = Arrays.asList(sValuesArray);
+            mTargetList = targetList;
             if (sUser.getGiveReset()) {
                 Rateraid.resetRatings(mTargetList, true, Calibrater.STANDARD_PRECISION);
                 syncPercentages();
@@ -602,13 +593,20 @@ public class GiveFragment extends Fragment implements
          * Syncs donation percentage and amount mValues to database from which table is repopulated.
          */
         private void syncPercentages() {
-            if (sValuesArray == null || sValuesArray.length == 0) return;
+            if (mTargetList == null || mTargetList.size() == 0) return;
 //        for (int i = 0; i < sValuesArray.length; i++) {
 //            sValuesArray[i].setPercent(sPercentages[i]);
 //            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
 //        }
             DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0]));
             sPercentagesAdjusted = false;
+        }
+
+        /**
+         * Syncs donations to database.
+         */
+        private void syncDonations() {
+            DatabaseManager.startActionRecordTarget(mContext, mTargetList.toArray(new Target[0]));
         }
 
         /**
@@ -663,8 +661,8 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
 
-                Target values = sValuesArray[(int) v.getTag()];
-                String name = values.getName();
+                Target target = mTargetList.get((int) v.getTag());
+                String name = target.getName();
 
                 if (mContext == null) return;
                 mRemoveDialog = new AlertDialog.Builder(mContext).create();
@@ -675,7 +673,7 @@ public class GiveFragment extends Fragment implements
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                button.setTag(values);
+                button.setTag(target);
             }
 
             /**
@@ -684,7 +682,7 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.inspect_button) void inspectGive(View v) {
 
                 int position = (int) v.getTag();
-                Target values = sValuesArray[position];
+                Target values = mTargetList.get(position);
                 if (mLastClicked != null && mLastClicked.equals(v)) sDualPane = !sDualPane;
                 else sDualPane = true;
 
@@ -707,7 +705,7 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.share_button) void shareGive(View v) {
 
-                Target values = sValuesArray[(int) v.getTag()];
+                Target values = mTargetList.get((int) v.getTag());
                 String name = values.getName().replace(" ", "");
                 int frequency = values.getFrequency();
                 float impact = Float.parseFloat(values.getImpact());
@@ -724,7 +722,7 @@ public class GiveFragment extends Fragment implements
             @Optional @OnClick(R.id.contact_button) void viewContacts(View v) {
                 if (mContext == null) return;
                 mContactDialog = new AlertDialog.Builder(mContext).create();
-                ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, sValuesArray[(int) v.getTag()]);
+                ViewUtilities.ContactDialogLayout alertLayout = ViewUtilities.ContactDialogLayout.getInstance(mContactDialog, mTargetList.get((int) v.getTag()));
                 mContactDialog.setView(alertLayout);
                 mContactDialog.show();
             }
