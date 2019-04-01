@@ -153,16 +153,19 @@ public class GiveFragment extends Fragment implements
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
                 List<Target> targetList = Arrays.asList(valuesArray);
-                if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
-                else if (getFragmentManager() != null) getFragmentManager().popBackStack();
-                mRecyclerView.setAdapter(mListAdapter);
+                sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
+                if (sUser == null) mParentActivity.recreate();
+                else {
+                    mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
+                    mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
+                    if (mListAdapter == null) {
+                        mListAdapter = new ListAdapter(targetList);
+                        mRecyclerView.setAdapter(mListAdapter);
+                    } else if (getFragmentManager() != null) getFragmentManager().popBackStack();
+                }
             }
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
-            if (sUser == null) mParentActivity.recreate();
         }
 
-        mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
-        mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
