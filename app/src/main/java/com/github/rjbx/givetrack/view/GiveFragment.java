@@ -452,13 +452,14 @@ public class GiveFragment extends Fragment implements
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
         private Rateraid.Objects mObjects;
+        private List<Target> mTargetList;
 
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
         ListAdapter() {
-            List<Rateraid.RatedObject> targetList = Arrays.asList(sValuesArray);
-            mObjects = Rateraid.with(targetList, mMagnitude, Calibrater.STANDARD_PRECISION, new View.OnClickListener() {
+            mTargetList = Arrays.asList(sValuesArray);
+            mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
@@ -518,8 +519,7 @@ public class GiveFragment extends Fragment implements
                 return;
             }
 
-            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null
-                    || sPercentages == null || sPercentages.length == 0)
+            if (sValuesArray == null || sValuesArray.length == 0 || sValuesArray[position] == null)
                 return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                     && position == 0) {
@@ -542,7 +542,7 @@ public class GiveFragment extends Fragment implements
 
             final int frequency = values.getFrequency();
 
-            double amount = sPercentages[position] * mAmountTotal;
+            double amount = sValuesArray[position].getPercent() * mAmountTotal;
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
@@ -566,7 +566,7 @@ public class GiveFragment extends Fragment implements
                 else impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
             }
 
-            if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(sPercentages[position]));
+            if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(sValuesArray[position].getPercent()));
 
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
 
@@ -596,13 +596,14 @@ public class GiveFragment extends Fragment implements
          * Swaps the Cursor after completing a load or resetting Loader.
          */
         private void swapValues() {
-            if (sPercentages.length != sValuesArray.length)
-                sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
-            for (int i = 0; i < sPercentages.length; i++) {
-                sPercentages[i] = sValuesArray[i].getPercent();
-            }
+//            if (sPercentages.length != sValuesArray.length)
+//                sPercentages = Arrays.copyOf(sPercentages, sValuesArray.length);
+//            for (int i = 0; i < sPercentages.length; i++) {
+//                sPercentages[i] = sValuesArray[i].getPercent();
+//            }
+            mTargetList = Arrays.asList(sValuesArray);
             if (sUser.getGiveReset()) {
-                Calibrater.resetRatings(sPercentages, true, Calibrater.STANDARD_PRECISION);
+                Rateraid.resetRatings(mTargetList, true, Calibrater.STANDARD_PRECISION);
                 syncPercentages();
                 sUser.setGiveReset(false);
                 DatabaseManager.startActionUpdateUser(mContext, sUser);
