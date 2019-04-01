@@ -437,21 +437,16 @@ public class GiveFragment extends Fragment implements
          */
         ListAdapter(List<Target> targetList) {
             mTargetList = targetList;
-            mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                        }
-                    });
+            mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
 //                float sum = 0;
 //                for (double percentage : sPercentages) sum += percentage;
 //                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
-//                sPercentagesAdjusted = true;
-//                scheduleSyncPercentages();
-//                renderActionBar();
-//                mProgress.setVisibility(View.VISIBLE);
-//                notifyDataSetChanged();
-//            });
+                sPercentagesAdjusted = true;
+                scheduleSyncPercentages();
+                renderActionBar();
+                mProgress.setVisibility(View.VISIBLE);
+                notifyDataSetChanged();
+            });
         }
 
         /**
