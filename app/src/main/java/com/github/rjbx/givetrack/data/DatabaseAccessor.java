@@ -182,7 +182,6 @@ public final class DatabaseAccessor {
 
         long stamp = System.currentTimeMillis();
 
-        // TODO Update recalibration with Rateraid
         if (target != null && target.length > 0) {
             List<Target> targetList = getTarget(context);
             int[] removalIndeces = new int[targetList.size()];
@@ -190,6 +189,7 @@ public final class DatabaseAccessor {
                 for (Target t2 : targetList)
                     if (t2.getId().equals(t1.getId()))
                         removalIndeces[targetList.indexOf(t2)] = 1;
+
             for (int i = 0; i < removalIndeces.length; i++)
                 if (removalIndeces[i] == 1) targetList.remove(i);
 
