@@ -282,7 +282,7 @@ public class DetailFragment extends Fragment {
          * Hides the loading indicator and restores scroll state when the page has loaded.
          */
         @Override public void onPageFinished(WebView view, String url) {
-            if (mWebview == null) return;
+            if (mWebview == null || mProgress == null) return;
             mProgress.setVisibility(View.GONE);
             mWebview.setScrollY(sScrollState);
             super.onPageFinished(view, url);
