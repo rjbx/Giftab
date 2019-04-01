@@ -61,7 +61,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 //TODO: Implement toggle for type and launcher for memo
-//TODO: Enable selection of multiple list items and drop down menu for bulk actions on selections
 /**
  * Presents a list of editable giving records with toggleable detail pane.
  */

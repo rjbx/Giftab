@@ -47,7 +47,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String indexTerm;
     private String indexZip;
     private String uid;
-    private boolean userActive; // TODO Set status as inactive for all when users when local table is empty
+    private boolean userActive;
     private String userBirthdate;
     private String userEmail;
     private String userGender;
