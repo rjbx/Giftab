@@ -33,8 +33,6 @@ import android.widget.TextView;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
-import butterknife.OnLongClick;
-import butterknife.OnTouch;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -52,6 +50,7 @@ import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -74,7 +73,6 @@ public class GiveFragment extends Fragment implements
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static User sUser;
     private static Target[] sValuesArray;
-    private static double[] sPercentages;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private Context mContext;
@@ -358,11 +356,11 @@ public class GiveFragment extends Fragment implements
      * Syncs donation percentage and amount mValues to database from which table is repopulated.
      */
     private void syncPercentages() {
-        if (sPercentages == null || sPercentages.length == 0) return;
-        for (int i = 0; i < sPercentages.length; i++) {
-            sValuesArray[i].setPercent(sPercentages[i]);
-            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
-        }
+        if (sValuesArray == null || sValuesArray.length == 0) return;
+//        for (int i = 0; i < sValuesArray.length; i++) {
+//            sValuesArray[i].setPercent(sPercentages[i]);
+//            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
+//        }
         DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
         sPercentagesAdjusted = false;
     }
@@ -453,23 +451,28 @@ public class GiveFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-        private Rateraid.Arrays mRateraidArrays; // TODO: Replace with Rateraid.Object
+        private Rateraid.Objects mObjects;
 
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
         ListAdapter() {
-            sPercentages = new double[sValuesArray.length];
-            mRateraidArrays = Rateraid.with(sPercentages, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
-                float sum = 0;
-                for (double percentage : sPercentages) sum += percentage;
-                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
-                sPercentagesAdjusted = true;
-                scheduleSyncPercentages();
-                renderActionBar();
-                mProgress.setVisibility(View.VISIBLE);
-                notifyDataSetChanged();
-            });
+            List<Rateraid.RatedObject> targetList = Arrays.asList(sValuesArray);
+            mObjects = Rateraid.with(targetList, mMagnitude, Calibrater.STANDARD_PRECISION, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+//                float sum = 0;
+//                for (double percentage : sPercentages) sum += percentage;
+//                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
+//                sPercentagesAdjusted = true;
+//                scheduleSyncPercentages();
+//                renderActionBar();
+//                mProgress.setVisibility(View.VISIBLE);
+//                notifyDataSetChanged();
+//            });
         }
 
         /**
@@ -577,7 +580,7 @@ public class GiveFragment extends Fragment implements
 
             final int adapterPosition = holder.getAdapterPosition();
             if (incrementButton != null && decrementButton != null && percentageView != null) {
-                mRateraidArrays.addShifters(incrementButton, decrementButton, adapterPosition)
+                mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null);
             }
         }
