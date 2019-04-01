@@ -342,7 +342,7 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
-            syncPercentages();
+            mListAdapter.syncPercentages();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
@@ -350,19 +350,6 @@ public class GiveFragment extends Fragment implements
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
-    }
-
-    /**
-     * Syncs donation percentage and amount mValues to database from which table is repopulated.
-     */
-    private void syncPercentages() {
-        if (sValuesArray == null || sValuesArray.length == 0) return;
-//        for (int i = 0; i < sValuesArray.length; i++) {
-//            sValuesArray[i].setPercent(sPercentages[i]);
-//            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
-//        }
-        DatabaseManager.startActionUpdateTarget(mContext, sValuesArray);
-        sPercentagesAdjusted = false;
     }
 
     /**
@@ -387,7 +374,7 @@ public class GiveFragment extends Fragment implements
             @Override
             public void run() {
                 handler.post(() -> {
-                    if (sPercentagesAdjusted) syncPercentages();
+                    if (sPercentagesAdjusted) mListAdapter.syncPercentages();
                     sPercentagesAdjusted = false;
                 });
             }
@@ -609,6 +596,19 @@ public class GiveFragment extends Fragment implements
                 DatabaseManager.startActionUpdateUser(mContext, sUser);
             }
             notifyDataSetChanged();
+        }
+
+        /**
+         * Syncs donation percentage and amount mValues to database from which table is repopulated.
+         */
+        private void syncPercentages() {
+            if (sValuesArray == null || sValuesArray.length == 0) return;
+//        for (int i = 0; i < sValuesArray.length; i++) {
+//            sValuesArray[i].setPercent(sPercentages[i]);
+//            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
+//        }
+            DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0]));
+            sPercentagesAdjusted = false;
         }
 
         /**
