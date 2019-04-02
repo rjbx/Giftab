@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/spawn_item_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
+    android:rowCount="3"
+    android:columnCount="4"
     android:layout_margin="1dp"
     android:background="#fff">
 
@@ -19,14 +22,6 @@
         android:textStyle="bold"
         android:text="@string/symbol_decrement_button"/>
 
-    <TextView
-        android:id="@+id/spawn_item_primary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:textAppearance="?attr/textAppearanceListItem" />
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -35,42 +30,60 @@
         android:baselineAligned="false"
         android:gravity="center">
 
+        <TextView
+            android:id="@+id/spawn_item_primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:textAppearance="?attr/textAppearanceListItem" />
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:gravity="center">
 
-            <TextView
-                android:id="@+id/spawn_item_secondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:textAppearance="?attr/textAppearanceListItem" />
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/spawn_item_tertiary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="4dp"
-                android:textAppearance="?attr/textAppearanceListItem" />
+                <TextView
+                    android:id="@+id/spawn_item_secondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/spawn_item_tertiary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp"
+                    android:textAppearance="?attr/textAppearanceListItem" />
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="#000"
-            android:gravity="end">
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/spawn_item_logo"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/description_charity_logo"/>
+                android:background="#000"
+                android:gravity="end">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/spawn_item_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:adjustViewBounds="true"
+                    android:contentDescription="@string/description_charity_logo"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -85,4 +98,4 @@
         android:textStyle="bold"
         android:text="+"/>
 
-</LinearLayout>
+</GridLayout>
