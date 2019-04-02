@@ -1,23 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-    <GridLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/spawn_item_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:rowCount="4"
-        android:columnCount="4"
-        android:layout_margin="1dp"
-        android:background="#fff">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/spawn_item_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="1dp"
+    android:background="#fff">
 
     <FrameLayout
         android:id="@+id/index_remove_view"
-        android:layout_row="0"
-        android:layout_column="0"
         android:layout_width="10dp"
-        android:layout_rowSpan="4"
-        android:layout_gravity="fill"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:textSize="@dimen/text_size_paragraph_title"
         android:background="@color/colorAttention"
@@ -27,59 +21,63 @@
 
     <TextView
         android:id="@+id/spawn_item_primary"
-        android:layout_row="0"
-        android:layout_column="1"
-        android:layout_columnWeight=".8"
-        android:layout_rowSpan="2"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        android:layout_width="0dp"
-        android:ellipsize="end"
-        android:maxLines="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="4dp"
         android:textSize="@dimen/text_size_paragraph_title"
-        android:textAppearance="?attr/textAppearanceListItem"/>
+        android:textAppearance="?attr/textAppearanceListItem" />
 
-    <TextView
-        android:id="@+id/spawn_item_secondary"
-        android:layout_row="2"
-        android:layout_column="1"
-        android:layout_columnWeight=".7"
-        android:layout_margin="4dp"
-        android:textAppearance="?attr/textAppearanceListItem"/>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
+        android:gravity="center">
 
-    <TextView
-        android:id="@+id/spawn_item_tertiary"
-        android:layout_row="3"
-        android:layout_column="1"
-        android:layout_columnWeight=".7"
-        android:layout_margin="4dp"
-        android:textAppearance="?attr/textAppearanceListItem"/>
-
-    <FrameLayout
-        android:layout_row="2"
-        android:layout_column="2"
-        android:layout_width="25dp"
-        android:layout_columnWeight=".1"
-        android:layout_rowSpan="2"
-        android:background="#000"
-        android:gravity="end">
-
-        <ImageView
-            android:id="@+id/spawn_item_logo"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:contentDescription="@string/description_charity_logo"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/spawn_item_secondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+            <TextView
+                android:id="@+id/spawn_item_tertiary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:textAppearance="?attr/textAppearanceListItem" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#000"
+            android:gravity="end">
+
+            <ImageView
+                android:id="@+id/spawn_item_logo"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/description_charity_logo"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/index_add_view"
-        android:layout_row="0"
-        android:layout_column="3"
         android:layout_width="10dp"
-        android:layout_gravity="fill"
-        android:layout_rowSpan="4"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:textSize="@dimen/text_size_paragraph_title"
         android:background="@color/colorConversionDark"
@@ -87,4 +85,4 @@
         android:textStyle="bold"
         android:text="+"/>
 
-</GridLayout>
+</LinearLayout>
