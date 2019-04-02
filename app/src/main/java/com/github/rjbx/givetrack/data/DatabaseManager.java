@@ -121,7 +121,7 @@ public final class DatabaseManager extends IntentService {
      *
      * @see IntentService
      */
-    public static void startActionGiveSpawn(Context context, Spawn spawn) {
+    public static void startActionTargetSpawn(Context context, Spawn spawn) {
         if (context == null) return;
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_TARGET_SPAWN);

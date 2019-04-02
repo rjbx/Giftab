@@ -192,7 +192,6 @@ public final class DatabaseAccessor {
                     if (t2.getId().equals(t1.getId()))
                         removalIndeces[targetList.indexOf(t2)] = 1;
 
-
             for (int i = 0; i < removalIndeces.length; i++)
                 if (removalIndeces[i] == 1) targetList.remove(i);
 

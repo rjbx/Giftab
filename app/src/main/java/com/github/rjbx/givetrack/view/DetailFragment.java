@@ -182,7 +182,7 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onStop() {
 //        if (sInitialState != sCurrentState) {
-//            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
+//            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany);
 //            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
 //        }
         try { mUnbinder.unbind(); }
@@ -253,7 +253,7 @@ public class DetailFragment extends Fragment {
 //        drawActionButton();
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseManager.startActionGiveSpawn(getContext(), sCompany);
+            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany);
             else DatabaseManager.startActionUntargetCompany(mContext, sCompany);
             mEnabled = false;
         }

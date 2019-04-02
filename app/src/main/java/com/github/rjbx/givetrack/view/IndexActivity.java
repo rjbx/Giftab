@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.view;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -305,12 +304,10 @@ public class IndexActivity extends AppCompatActivity implements
                 Spawn values = mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        final String company =  values.getId();
                         DatabaseManager.startActionRemoveSpawn(getBaseContext(), values);
                         break;
                     case ItemTouchHelper.RIGHT:
-                        final String url = values.getNavigatorUrl();
-                        ViewUtilities.launchBrowserIntent(IndexActivity.this, Uri.parse(url));
+                        DatabaseManager.startActionTargetSpawn(IndexActivity.this, mValuesArray[position]);
                         break;
                     default:
                 }
