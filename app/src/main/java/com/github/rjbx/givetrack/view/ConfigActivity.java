@@ -61,6 +61,7 @@ import androidx.annotation.Nullable;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options
+// TODO: Add option to convert guest with account linking
 /**
  * Presents the application settings.
  */
