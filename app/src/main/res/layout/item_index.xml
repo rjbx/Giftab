@@ -35,7 +35,7 @@
         android:layout_gravity="fill_horizontal"
         android:layout_width="0dp"
         android:ellipsize="end"
-        android:maxLines="1"
+        android:maxLines="2"
         android:layout_margin="4dp"
         android:textSize="@dimen/text_size_paragraph_title"
         android:textAppearance="?attr/textAppearanceListItem"/>
