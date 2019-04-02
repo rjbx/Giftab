@@ -29,7 +29,7 @@
         android:id="@+id/spawn_item_primary"
         android:layout_row="0"
         android:layout_column="1"
-        android:layout_columnWeight=".7"
+        android:layout_columnWeight=".8"
         android:layout_columnSpan="2"
         android:layout_gravity="fill"
         android:layout_margin="4dp"
@@ -40,6 +40,7 @@
         android:id="@+id/spawn_item_secondary"
         android:layout_row="1"
         android:layout_column="1"
+        android:layout_columnWeight=".7"
         android:layout_margin="4dp"
         android:textAppearance="?attr/textAppearanceListItem" />
 
@@ -47,6 +48,7 @@
         android:id="@+id/spawn_item_tertiary"
         android:layout_row="2"
         android:layout_column="1"
+        android:layout_columnWeight=".7"
         android:layout_margin="4dp"
         android:textAppearance="?attr/textAppearanceListItem" />
 
