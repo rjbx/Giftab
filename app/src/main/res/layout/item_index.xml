@@ -8,6 +8,17 @@
     android:layout_margin="1dp"
     android:background="#fff">
 
+    <FrameLayout
+        android:id="@+id/index_remove_view"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:background="@color/colorAttention"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:text="@string/symbol_decrement_button"/>
+
     <TextView
         android:id="@+id/spawn_item_primary"
         android:layout_width="match_parent"
@@ -62,5 +73,16 @@
         </RelativeLayout>
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/index_add_view"
+        android:layout_width="10dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_paragraph_title"
+        android:background="@color/colorConversionDark"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:text="+"/>
 
 </LinearLayout>
