@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
@@ -24,6 +25,7 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -190,14 +192,11 @@ public final class DatabaseAccessor {
                     if (t2.getId().equals(t1.getId()))
                         removalIndeces[targetList.indexOf(t2)] = 1;
 
+
             for (int i = 0; i < removalIndeces.length; i++)
                 if (removalIndeces[i] == 1) targetList.remove(i);
 
-            if (!targetList.isEmpty()) {
-                Iterator<Target> iterator = targetList.iterator();
-                do iterator.next().setPercent(1d / targetList.size());
-                while (iterator.hasNext());
-            }
+            if (!targetList.isEmpty()) Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
             target = targetList.toArray(new Target[0]);
         }
 
