@@ -87,7 +87,7 @@ public class GiveFragment extends Fragment implements
     @BindView(R.id.save_progress_bar) ProgressBar mProgress;
     @BindView(R.id.action_bar) ImageButton mActionBar;
     @BindView(R.id.action_bar_wrapper) View mActionWrapper;
-    @BindView(R.id.donation_wrapper) View mDonationWrapper;
+//    @BindView(R.id.donation_wrapper) View mDonationWrapper;
     @BindView(R.id.donation_amount_text) EditText mTotalText;
     @BindView(R.id.donation_amount_label) View mTotalLabel;
     @BindView(R.id.donation_detail_container) View mDetailContainer;
@@ -210,10 +210,10 @@ public class GiveFragment extends Fragment implements
                 contentView.getWindowVisibleDisplayFrame(r);
 
                 if (100 < (contentView.getHeight() - (r.bottom - r.top))) {
-                    mDonationWrapper.setVisibility(View.GONE);
+//                    mDonationWrapper.setVisibility(View.GONE);
                     mActionWrapper.setVisibility(View.GONE);
                 } else {
-                    mDonationWrapper.setVisibility(View.VISIBLE);
+//                    mDonationWrapper.setVisibility(View.VISIBLE);
                     mActionWrapper.setVisibility(View.VISIBLE);
                 }
 
