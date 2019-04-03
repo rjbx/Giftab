@@ -5,7 +5,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/spawn_item_view"
     android:layout_width="match_parent"
     android:layout_height="125dp"
@@ -16,8 +15,7 @@
         android:id="@+id/spawn_item_primary"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:layout_marginTop="8dp"
-
+        android:layout_margin="4dp"
         android:ellipsize="end"
         android:scrollHorizontally="true"
         android:textAppearance="?attr/textAppearanceListItem"
@@ -32,6 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="64dp"
         android:orientation="vertical"
+        android:layout_margin="4dp"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintEnd_toStartOf="@+id/relativeLayout"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,16 +41,12 @@
             android:id="@+id/spawn_item_secondary"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
             android:textAppearance="?attr/textAppearanceListItem" />
 
         <TextView
             android:id="@+id/spawn_item_tertiary"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:textAppearance="?attr/textAppearanceListItem"/>
 
     </LinearLayout>
@@ -60,6 +55,7 @@
         android:id="@+id/relativeLayout"
         android:layout_width="77dp"
         android:layout_height="62dp"
+        android:layout_margin="4dp"
         android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
