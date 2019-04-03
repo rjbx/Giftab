@@ -177,6 +177,12 @@ public class DetailFragment extends Fragment {
         super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mUnbinder.unbind();
+    }
+
     /**
      * Syncs item collection status only onDestroy in order to prevent multithreading issues on
      * simultaneous sync operations due to repetitive toggling of item collection status.
@@ -235,7 +241,8 @@ public class DetailFragment extends Fragment {
     /**
      * Defines behavior on click of browser close button.
      */
-    @OnClick(R.id.browser_close_button) void closeBrowser() { mMasterDetailFlow.showSinglePane(); }
+    @OnClick(R.id.browser_close_button) void closeBrowser() {
+        mMasterDetailFlow.showSinglePane(); }
 
     /**
      * Defines behavior on click of browser close button.
