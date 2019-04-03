@@ -42,6 +42,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+// TODO: Restore function to open window buttons on return from CustomTabs
 /**
  * Provides the logic and views for a single detail screen.
  */
