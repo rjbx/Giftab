@@ -1,163 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--TODO: Convert to ConstraintLayout-->
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/donation_fragment"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/donation_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/donation_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="628dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorNeutral"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/item_index" />
+        android:layout_height="0dp"
+        android:layout_weight=".8"
+        android:orientation="horizontal">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/donation_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:background="@color/colorNeutral"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_index"/>
 
-    <FrameLayout
-        android:id="@+id/donation_detail_container"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorNeutral"
+        <FrameLayout
+            android:id="@+id/donation_detail_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="@color/colorNeutral"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/save_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorAccent"
         android:visibility="gone"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+        app:layout_anchor="@id/action_bar_wrapper"
+        app:layout_anchorGravity="top|center_horizontal"
+        style="?android:attr/progressBarStyleHorizontal" />
 
     <FrameLayout
         android:id="@+id/action_bar_wrapper"
-        android:layout_width="396dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/donation_wrapper"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <ImageButton
             android:id="@+id/action_bar"
-            style="@style/Widget.AppCompat.Button"
             android:layout_width="match_parent"
-            android:layout_height="37dp"
+            android:layout_height="40dp"
             android:layout_gravity="start|center_vertical"
             android:gravity="center"
-            android:src="@drawable/action_save" />
+            android:src="@drawable/action_save"
+            style="@style/Widget.AppCompat.Button"/>
 
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/donation_list"
-        app:layout_constraintHorizontal_bias="0.485"
-        app:layout_constraintStart_toStartOf="@+id/donation_list"
-        app:layout_constraintTop_toTopOf="@+id/donation_list"
-        app:layout_constraintVertical_bias="0.492">
-
-        <ProgressBar
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/save_progress_bar"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/colorAccent"
-            android:indeterminateTintMode="src_atop"
-            android:visibility="gone"
-            app:layout_anchor="@id/action_bar_wrapper"
-            app:layout_anchorGravity="top|center_horizontal" />
-
-    </FrameLayout>
-
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/donation_wrapper"
-        android:layout_width="397dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center"
-        android:labelFor="@id/donation_amount_text"
-        android:orientation="horizontal"
-        android:padding="5dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/donation_amount_label"
-        android:layout_width="231dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:labelFor="@id/donation_amount_text"
-        app:layout_constraintEnd_toStartOf="@+id/donation_increment_button"
-        app:layout_constraintStart_toEndOf="@+id/donation_decrement_button"
-        app:layout_constraintBottom_toBottomOf="@+id/donation_wrapper"
-        app:layout_constraintTop_toTopOf="@+id/donation_wrapper">
-
-        <EditText
-            android:id="@+id/donation_amount_text"
-            android:layout_width="209dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@color/colorSlate"
-            android:gravity="center"
-            android:imeOptions="actionDone"
-            android:importantForAutofill="no"
-            android:inputType="numberDecimal"
-            android:padding="3dp"
-            android:textColor="#fff"
-            android:textSize="@dimen/text_size_paragraph_title"
-            android:textStyle="bold" />
-
-    </FrameLayout>
-
-    <Button
-        android:id="@+id/donation_increment_button"
-        android:layout_width="91dp"
-        android:layout_height="45dp"
-        android:background="@color/colorPrimary"
-        android:contentDescription="@string/description_increment_donation_text"
-        android:gravity="center"
-        android:text="@string/symbol_increment_button"
-        android:textColor="#fff"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/donation_wrapper"
-        app:layout_constraintBottom_toBottomOf="@+id/donation_wrapper"
-        app:layout_constraintTop_toTopOf="@+id/donation_wrapper"/>
-
-    <Button
-        android:id="@+id/donation_decrement_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:contentDescription="@string/description_decrement_donation_text"
+        android:background="@color/colorPrimaryDark"
+        android:padding="5dp"
         android:gravity="center"
-        android:text="@string/symbol_decrement_button"
-        android:textColor="#fff"
-        android:textSize="@dimen/text_size_paragraph_title"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/donation_wrapper"
-        app:layout_constraintBottom_toBottomOf="@+id/donation_wrapper"
-        app:layout_constraintTop_toTopOf="@+id/donation_wrapper"/>
+        android:orientation="horizontal">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/donation_decrement_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".3"
+            android:layout_gravity="start"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:text="@string/symbol_decrement_button"
+            android:contentDescription="@string/description_decrement_donation_text"/>
+
+        <FrameLayout
+            android:id="@+id/donation_amount_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".4"
+            android:labelFor="@id/donation_amount_text">
+
+            <EditText
+                android:id="@+id/donation_amount_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="3dp"
+                android:layout_gravity="center"
+                android:background="@color/colorSlate"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_paragraph_title"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:inputType="numberDecimal"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"/>
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/donation_increment_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".3"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:background="@color/colorPrimary"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:textColor="#fff"
+            android:textStyle="bold"
+            android:text="@string/symbol_increment_button"
+            android:contentDescription="@string/description_increment_donation_text"/>
+
+    </LinearLayout>
+
+</LinearLayout>
