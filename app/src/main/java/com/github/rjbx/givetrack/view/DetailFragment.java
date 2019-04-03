@@ -147,7 +147,6 @@ public class DetailFragment extends Fragment {
             sCompany = savedInstanceState.getParcelable(COMPANY_STATE);
             drawActionButton();
         } else if (getArguments() != null && getArguments().getParcelable(ARG_ITEM_COMPANY) != null) {
-
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
             new StatusAsyncTask(this).execute(sCompany);

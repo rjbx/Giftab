@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -80,6 +81,8 @@ public class IndexActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_index);
         ButterKnife.bind(this);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) sDualPane = true;
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
@@ -238,6 +241,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) return;
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
     }
