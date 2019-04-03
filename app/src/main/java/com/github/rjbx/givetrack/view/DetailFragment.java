@@ -42,6 +42,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+// TODO: Keep Master Detail in two pane mode in landscape
 // TODO: Restore function to open window buttons on return from CustomTabs
 /**
  * Provides the logic and views for a single detail screen.
