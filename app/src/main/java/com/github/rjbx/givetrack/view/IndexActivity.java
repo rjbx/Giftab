@@ -82,17 +82,19 @@ public class IndexActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_index);
         ButterKnife.bind(this);
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) sDualPane = true;
-
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
-        if (savedInstanceState != null) {
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
+            sDualPane = true;
+        } else if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
+
         Bundle bundle = getIntent().getExtras();
-        if (sDualPane) showDualPane(bundle);
+        if (bundle != null && sDualPane) showDualPane(bundle);
 
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
@@ -180,6 +182,11 @@ public class IndexActivity extends AppCompatActivity implements
                     sb.show();
                     mFetching = false;
                 }
+                if (sDualPane) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[0]);
+                    showDualPane(bundle);
+                }
                 break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
@@ -241,7 +248,6 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) return;
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
     }
