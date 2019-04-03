@@ -184,20 +184,6 @@ public class DetailFragment extends Fragment {
     }
 
     /**
-     * Syncs item collection status only onDestroy in order to prevent multithreading issues on
-     * simultaneous sync operations due to repetitive toggling of item collection status.
-     */
-    @Override public void onStop() {
-//        if (sInitialState != sCurrentState) {
-//            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany);
-//            else DatabaseManager.startActionRemoveTarget(mParentActivity, Target.fromSuper(sCompany));
-//        }
-        try { mUnbinder.unbind(); }
-        catch (IllegalStateException e) { Timber.e(e); }
-        super.onStop();
-    }
-
-    /**
      * Persists values through destructive lifecycle changes.
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
