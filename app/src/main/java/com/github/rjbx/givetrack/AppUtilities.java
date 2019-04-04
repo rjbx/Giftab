@@ -15,10 +15,6 @@ import com.github.rjbx.givetrack.view.ConfigActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.lang.reflect.Array;
