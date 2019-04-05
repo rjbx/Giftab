@@ -453,7 +453,7 @@ public final class DatabaseAccessor {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        if (entryType == Record.class || entryType == Target.class) pathReference.child(uid);
+        if (entryType == Record.class || entryType == Target.class) pathReference = pathReference.child(uid);
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
