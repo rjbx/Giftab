@@ -222,7 +222,10 @@ public class AuthActivity extends AppCompatActivity implements
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
-                        if (isPersisted) mUsers.get(i).setUserActive(true);
+                        if (isPersisted) {
+                            mUsers.get(i).setUserActive(true);
+                            break;
+                        }
                     }
                     if (!isPersisted) {
                         AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
