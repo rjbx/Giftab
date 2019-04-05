@@ -122,6 +122,7 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
+                // TODO: Compare FirebaseAuth User with remote database user to prevent overwriting remote database User with default User values during Auth user conversion
                 AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                 mUsers.add(mActiveUser);
                 DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
@@ -287,6 +288,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (action == null) return;
         mAction = action;
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+        // TODO: Handle case where remote user is active and local user attempts sign-in
         switch (action) {
             case ACTION_MAIN:
                 if (firebaseUser == null) {
