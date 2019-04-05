@@ -124,6 +124,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 // TODO: Compare FirebaseAuth User with remote database user to prevent overwriting remote database User with default User values during Auth user conversion
                 DatabaseManager.startActionFetchUser(this);
+                mProcessStage++;
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
