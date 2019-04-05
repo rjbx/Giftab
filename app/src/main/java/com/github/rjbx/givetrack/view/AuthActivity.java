@@ -123,10 +123,7 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
                 // TODO: Compare FirebaseAuth User with remote database user to prevent overwriting remote database User with default User values during Auth user conversion
-                AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
-                mUsers.add(mActiveUser);
-                DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
-                mProcessStage++;
+                DatabaseManager.startActionFetchUser(this);
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
@@ -221,7 +218,16 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
-                    DatabaseManager.startActionFetchUser(this);
+                    boolean isPersisted = false;
+                    for (int i = 0; i < mUsers.size(); i++) {
+                        isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
+                        if (isPersisted) mUsers.get(i).setUserActive(true);
+                    }
+                    if (!isPersisted) {
+                        AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
+                        mUsers.add(mActiveUser);
+                    }
+                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                     mProcessStage++;
                     break;
                 case 3:
