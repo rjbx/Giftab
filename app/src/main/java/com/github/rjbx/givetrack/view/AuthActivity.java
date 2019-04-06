@@ -219,17 +219,22 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
-                    for (int i = 0; i < mUsers.size(); i++)
-                        if (mUsers.get(i).getUid().equals(mActiveUser.getUid())) {
+                    boolean isPersisted = false;
+                    for (int i = 0; i < mUsers.size(); i++) {
+                        isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
+                        if (isPersisted) {
                             Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             finish();
                             break;
                         }
-                    AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
-                    mUsers.add(mActiveUser);
-                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
-                    mProcessStage++;
+                    }
+                    if (!isPersisted) {
+                        AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
+                        mUsers.add(mActiveUser);
+                        DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
+                        mProcessStage++;
+                    }
                     break;
                 case 3:
                     Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
