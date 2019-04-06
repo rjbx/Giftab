@@ -230,8 +230,8 @@ public class AuthActivity extends AppCompatActivity implements
                     if (!isPersisted) {
                         AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                         mUsers.add(mActiveUser);
+                        DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                     }
-                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                     mProcessStage++;
                     break;
                 case 3:
