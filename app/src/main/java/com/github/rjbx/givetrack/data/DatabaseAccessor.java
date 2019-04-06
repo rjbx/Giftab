@@ -435,6 +435,7 @@ public final class DatabaseAccessor {
         userReference.child(uid).updateChildren(map);
     }
 
+    //TODO: Decide whether to permit pulling inactive Users
     private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
