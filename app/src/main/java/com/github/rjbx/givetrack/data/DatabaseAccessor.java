@@ -385,7 +385,6 @@ public final class DatabaseAccessor {
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " = ?", new String[] { uid }, null);
         if (data == null) return u;
         if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
-        u.setUserActive(true);
         return u;
     }
 
@@ -413,7 +412,6 @@ public final class DatabaseAccessor {
         u.setTargetStamp(-1);
         u.setRecordStamp(-1);
         if (task.isSuccessful()) u = task.getResult();
-        u.setUserActive(true);
         return u;
     }
 
@@ -460,6 +458,7 @@ public final class DatabaseAccessor {
                     if (entry instanceof User) {
                         ((User) entry).setRecordStamp(0);
                         ((User) entry).setTargetStamp(0);
+                        ((User) entry).setUserActive(true);
                     }
                     entryList.add(entry);
                 } else {
