@@ -225,6 +225,7 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
+                        break;
                     }
                     if (!isPersisted) {
                         AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
