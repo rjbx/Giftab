@@ -222,10 +222,9 @@ public class AuthActivity extends AppCompatActivity implements
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
-                        if (isPersisted) {
-                            mUsers.get(i).setUserActive(true);
-                            break;
-                        }
+                        Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
+                        finish();
                         // TODO: Start activity if persisted either directly or by loader callback
                         // TODO: Persist active status to prior signed out user on local and remote databases without overwriting table stamps
                     }
