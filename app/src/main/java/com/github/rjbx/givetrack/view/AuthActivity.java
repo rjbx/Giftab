@@ -122,7 +122,6 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                // TODO: Compare FirebaseAuth User with remote database user to prevent overwriting remote database User with default User values during Auth user conversion
                 DatabaseManager.startActionFetchUser(this);
                 mProcessStage++;
             } else {
@@ -225,8 +224,6 @@ public class AuthActivity extends AppCompatActivity implements
                         Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                         finish();
-                        // TODO: Start activity if persisted either directly or by loader callback
-                        // TODO: Persist active status to prior signed out user on local and remote databases without overwriting table stamps
                     }
                     if (!isPersisted) {
                         AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
@@ -299,14 +296,9 @@ public class AuthActivity extends AppCompatActivity implements
         if (action == null) return;
         mAction = action;
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-        // TODO: Handle case where remote user is active and local user attempts sign-in
         switch (action) {
             case ACTION_MAIN:
                 if (firebaseUser == null) {
-                    if (!mUsers.isEmpty()) {
-                        for (User u : mUsers) u.setUserActive(false);
-                        DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
-                    }
                     List<AuthUI.IdpConfig> providers = new ArrayList<>();
                     providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
                     providers.add(new AuthUI.IdpConfig.EmailBuilder().build());

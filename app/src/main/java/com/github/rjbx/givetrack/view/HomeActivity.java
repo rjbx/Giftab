@@ -65,7 +65,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  * Provides the application home screen; manages {@link CursorLoader} and {@link ViewPager} for
  * {@link GlanceFragment} and {@link GiveFragment}.
  */
-// TODO: Restore validation from local to remote targets
 public class HomeActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         NavigationView.OnNavigationItemSelectedListener,
