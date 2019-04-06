@@ -398,11 +398,8 @@ public final class DatabaseAccessor {
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
-                for (DataSnapshot snapshot : iterable) {
-                    User u = snapshot.getValue(User.class);
+                    User u = dataSnapshot.getValue(User.class);
                     if (u != null) taskSource.trySetResult(u);
-                }
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
