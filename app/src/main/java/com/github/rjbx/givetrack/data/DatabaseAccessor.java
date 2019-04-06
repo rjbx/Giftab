@@ -382,7 +382,7 @@ public final class DatabaseAccessor {
         u.setUserStamp(-1);
         u.setTargetStamp(-1);
         u.setRecordStamp(-1);
-        Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " ?", new String[] { uid }, null);
+        Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " = ?", new String[] { uid }, null);
         if (data == null) return u;
         if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
         u.setUserActive(true);
