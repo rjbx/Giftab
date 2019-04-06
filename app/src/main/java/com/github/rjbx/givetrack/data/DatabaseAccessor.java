@@ -452,18 +452,22 @@ public final class DatabaseAccessor {
 
         String path = entryType.getSimpleName().toLowerCase();
         DatabaseReference pathReference = remote.getReference(path);
-        if (entryType == Record.class || entryType == Target.class) pathReference = pathReference.child(uid);
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
                 List<T> entryList = new ArrayList<>();
-                for (DataSnapshot snapshot : iterable) {
-                    T entry = snapshot.getValue(entryType);
+                if (entryType == User.class) {
+                    T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
                         ((User) entry).setRecordStamp(0);
                         ((User) entry).setTargetStamp(0);
                     }
                     entryList.add(entry);
+                } else {
+                    Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
+                    for (DataSnapshot s : iterable) {
+                        T entry = s.getValue(entryType);
+                        entryList.add(entry);
+                    }
                 }
                 removeEntriesFromLocal(local, entryType, stamp);
                 if (entryList.isEmpty()) return;
