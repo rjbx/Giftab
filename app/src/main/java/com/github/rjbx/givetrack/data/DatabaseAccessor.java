@@ -28,6 +28,7 @@ import com.github.rjbx.rateraid.Rateraid;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +47,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
-        User user =  getActiveUserFromLocal(local);
+        User user =  getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
 
         Map<String, String> request = new HashMap<>();
         if (user.getIndexFocus()) request.put(DatasourceContract.PARAM_EIN, user.getIndexCompany());
@@ -98,7 +99,7 @@ public final class DatabaseAccessor {
     @SafeVarargs static List<Spawn> getSpawn(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
-        User activeUser = getActiveUserFromLocal(local);
+        User activeUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         Uri contentUri = CompanyEntry.CONTENT_URI_SPAWN;
 
         String selection = CompanyEntry.COLUMN_UID + " = ? ";
@@ -145,7 +146,7 @@ public final class DatabaseAccessor {
     @SafeVarargs static List<Target> getTarget(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
-        User activeUser = getActiveUserFromLocal(local);
+        User activeUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         Uri contentUri = CompanyEntry.CONTENT_URI_TARGET;
 
         String selection = CompanyEntry.COLUMN_UID + " = ? ";
@@ -212,7 +213,7 @@ public final class DatabaseAccessor {
     @SafeVarargs static List<Record> getRecord(Context context, Pair<String, String>... where) {
         ContentResolver local = context.getContentResolver();
 
-        User activeUser = getActiveUserFromLocal(local);
+        User activeUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         Uri contentUri = CompanyEntry.CONTENT_URI_RECORD;
 
         String selection = CompanyEntry.COLUMN_UID + " = ? ";
@@ -264,7 +265,7 @@ public final class DatabaseAccessor {
     static List<User> getUser(Context context) {
         ContentResolver local = context.getContentResolver();
 
-        User activeUser = getActiveUserFromLocal(local);
+        User activeUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         Uri contentUri = UserEntry.CONTENT_URI_USER;
         Cursor cursor = local.query(
                 contentUri, null, CompanyEntry.COLUMN_UID + " = ? ", new String[] { activeUser.getUid() }, null
@@ -297,7 +298,7 @@ public final class DatabaseAccessor {
         Uri contentUri = DataUtilities.getContentUri(entryType);
 
         String uid =  entries == null || entries.length == 0 ?
-                getActiveUserFromLocal(local).getUid() : entries[0].getUid();
+                getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid() : entries[0].getUid();
 
         if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
@@ -320,7 +321,7 @@ public final class DatabaseAccessor {
         DatabaseReference entryReference = remote.getReference(entryPath);
 
         String uid = entries == null || entries.length == 0 ?
-                getActiveUserFromRemote(remote).getUid() : entries[0].getUid();
+                getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
         DatabaseReference childReference = entryReference.child(uid);
 
@@ -339,7 +340,7 @@ public final class DatabaseAccessor {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         String uid;
         if (entries == null || entries.length == 0) {
-            uid = getActiveUserFromLocal(local).getUid();
+            uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
         } else {
             uid = entries[0].getUid();
@@ -359,7 +360,7 @@ public final class DatabaseAccessor {
         DatabaseReference entryReference = remote.getReference(entryPath);
         String uid;
         if (entries == null || entries.length == 0) {
-            User user = getActiveUserFromRemote(remote);
+            User user = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
             uid = user.getUid();
             DatabaseReference childReference = entryReference.child(uid);
             childReference.removeValue();
@@ -374,33 +375,33 @@ public final class DatabaseAccessor {
         if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
-    private static User getActiveUserFromLocal(ContentResolver local) {
+    private static User getActiveUserFromLocal(FirebaseAuth auth, ContentResolver local) {
+
+        String uid = auth.getUid();
         User u = User.getDefault();
         u.setUserStamp(-1);
         u.setTargetStamp(-1);
         u.setRecordStamp(-1);
-        Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, null, null, null);
+        Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " ?", new String[] { uid }, null);
         if (data == null) return u;
-        if (data.moveToFirst()) {
-            do {
-                User user = User.getDefault();
-                AppUtilities.cursorRowToEntry(data, user);
-                if (user.getUserActive()) return user;
-            } while (data.moveToNext());
-        } return u;
+        if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
+        u.setUserActive(true);
+        return u;
     }
 
-    private static User getActiveUserFromRemote(FirebaseDatabase remote) {
+    private static User getActiveUserFromRemote(FirebaseAuth auth, FirebaseDatabase remote) {
+
+        String uid = auth.getUid();
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
-        DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase());
+        DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Iterable<DataSnapshot> iterable = dataSnapshot.getChildren();
                 for (DataSnapshot snapshot : iterable) {
                     User u = snapshot.getValue(User.class);
-                    if (u != null && u.getUserActive()) taskSource.trySetResult(u);
+                    if (u != null) taskSource.trySetResult(u);
                 }
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -415,6 +416,7 @@ public final class DatabaseAccessor {
         u.setTargetStamp(-1);
         u.setRecordStamp(-1);
         if (task.isSuccessful()) u = task.getResult();
+        u.setUserActive(true);
         return u;
     }
 
@@ -476,8 +478,8 @@ public final class DatabaseAccessor {
 
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
-        User localUser = getActiveUserFromLocal(local);
-        User remoteUser = getActiveUserFromRemote(remote);
+        User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
+        User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
 
         long localTableStamp = DataUtilities.getTableTime(entryType, localUser);
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
