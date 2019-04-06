@@ -48,6 +48,7 @@ import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Run logic in background of HomeActivity launch to prevent screen transition
+// TODO: Prevent User table stamp from resetting on sign out and subsequent sign in
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
