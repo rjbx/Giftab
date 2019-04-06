@@ -451,7 +451,7 @@ public final class DatabaseAccessor {
     private static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         String path = entryType.getSimpleName().toLowerCase();
-        DatabaseReference pathReference = remote.getReference(path);
+        DatabaseReference pathReference = remote.getReference(path).child(uid);
         pathReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<T> entryList = new ArrayList<>();
