@@ -226,6 +226,8 @@ public class AuthActivity extends AppCompatActivity implements
                             mUsers.get(i).setUserActive(true);
                             break;
                         }
+                        // TODO: Start activity if persisted either directly or by loader callback
+                        // TODO: Persist active status to prior signed out user on local and remote databases without overwriting table stamps
                     }
                     if (!isPersisted) {
                         AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
