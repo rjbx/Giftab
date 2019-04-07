@@ -645,10 +645,10 @@ public class GiveFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
-                            Target target = (Target) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
+                            int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseManager.startActionRemoveTarget(mContext, target);
+                            DatabaseManager.startActionRemoveTarget(mContext, mTargetList.get(position));
                             break;
                         default:
                     }
@@ -660,7 +660,8 @@ public class GiveFragment extends Fragment implements
              */
             @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
 
-                Target target = mTargetList.get((int) v.getTag());
+                int position = (int) v.getTag();
+                Target target = mTargetList.get(position);
                 String name = target.getName();
 
                 if (mContext == null) return;
@@ -672,7 +673,7 @@ public class GiveFragment extends Fragment implements
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
                 button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                button.setTag(target);
+                button.setTag(position);
             }
 
             /**
