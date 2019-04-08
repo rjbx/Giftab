@@ -227,6 +227,7 @@ public class AuthActivity extends AppCompatActivity implements
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
                         if (isPersisted) {
+                            getSupportLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
                             Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             finish();
