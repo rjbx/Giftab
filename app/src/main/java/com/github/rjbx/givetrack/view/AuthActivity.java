@@ -208,6 +208,8 @@ public class AuthActivity extends AppCompatActivity implements
             } else {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
+                mUsers = null;
+                mActiveUser = null;
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG).show();
