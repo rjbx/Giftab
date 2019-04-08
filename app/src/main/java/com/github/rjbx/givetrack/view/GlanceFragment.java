@@ -93,6 +93,11 @@ public class GlanceFragment extends Fragment implements
     private static boolean mViewTracked;
     private static boolean mShowYears;
     private static int sThemeIndex;
+    private long mAnchorDate;
+    private int mInterval;
+    private int mDescFontSize;
+    private float mAxisFontSize;
+    private float mValueFontSize;
     private Context mContext;
     private HomeActivity mParentActivity;
     private Unbinder mUnbinder;
@@ -103,8 +108,6 @@ public class GlanceFragment extends Fragment implements
     private String mTracked = "$0.00";
     private String mTimeTracked;
     private String mTotalTime = "all-time";
-    private long mAnchorDate;
-    private int mInterval;
     @BindView(R.id.home_title) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
@@ -394,7 +397,9 @@ public class GlanceFragment extends Fragment implements
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
-        int fontSize = (int) getResources().getDimension(R.dimen.description_text);
+        mDescFontSize = (int) getResources().getDimension(R.dimen.description_text);
+        mValueFontSize = mContext.getResources().getDimension(R.dimen.value_text);
+        mAxisFontSize = mContext.getResources().getDimension(R.dimen.axis_text);
         int backgroundColor = getResources().getColor(R.color.colorSlate, null);
 
         float recordsTotal = 0;
@@ -498,7 +503,7 @@ public class GlanceFragment extends Fragment implements
         PieData percentageData = new PieData(percentageSet);
         Description percentageDesc = new Description();
         percentageDesc.setText(getString(R.string.chart_title_percentage));
-        percentageDesc.setTextSize(fontSize);
+        percentageDesc.setTextSize(mDescFontSize);
         percentageDesc.setTextColor(Color.WHITE);
 
         int margin = (int) mContext.getResources().getDimension(R.dimen.item_initial_top_margin);
@@ -542,7 +547,7 @@ public class GlanceFragment extends Fragment implements
 
         Description averageDesc = new Description();
         averageDesc.setText(getString(R.string.chart_title_average));
-        averageDesc.setTextSize(fontSize);
+        averageDesc.setTextSize(mDescFontSize);
         averageDesc.setTextColor(Color.WHITE);
 
         PieData averageData = new PieData(averageSet);
@@ -573,7 +578,7 @@ public class GlanceFragment extends Fragment implements
 
         Description usageDesc = new Description();
         usageDesc.setText(getString(R.string.chart_title_usage));
-        usageDesc.setTextSize(fontSize);
+        usageDesc.setTextSize(mDescFontSize);
         usageDesc.setTextColor(Color.WHITE);
 
         PieData usageData = new PieData(usageSet);
@@ -606,7 +611,7 @@ public class GlanceFragment extends Fragment implements
 
         Description timingDesc = new Description();
         timingDesc.setText(getString(R.string.chart_title_timing));
-        timingDesc.setTextSize(fontSize);
+        timingDesc.setTextSize(mDescFontSize);
         timingDesc.setTextColor(Color.WHITE);
 
         PieData timingData = new PieData(timingSet);
@@ -652,21 +657,21 @@ public class GlanceFragment extends Fragment implements
 
         Description activityDesc = new Description();
         activityDesc.setText(getString(R.string.chart_title_activity));
-        activityDesc.setTextSize(fontSize);
+        activityDesc.setTextSize(mDescFontSize);
         activityDesc.setTextColor(Color.WHITE);
 
         mActivityChart.setTag(activityMessage);
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
         mActivityChart.getXAxis().setValueFormatter(this);
-        mActivityChart.getXAxis().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
+        mActivityChart.getXAxis().setTextSize(mAxisFontSize);
         mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getAxisRight().setTextColor(Color.WHITE);
-        mActivityChart.getAxisRight().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
+        mActivityChart.getAxisRight().setTextSize(mAxisFontSize);
         mActivityChart.getAxisLeft().setTextColor(Color.WHITE);
-        mActivityChart.getAxisLeft().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
+        mActivityChart.getAxisLeft().setTextSize(mAxisFontSize);
         mActivityChart.getBarData().setValueTextColor(Color.WHITE);
-        mActivityChart.getBarData().setValueTextSize(mContext.getResources().getDimension(R.dimen.value_text));
+        mActivityChart.getBarData().setValueTextSize(mValueFontSize);
         mActivityChart.getBarData().setDrawValues(false);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);
@@ -681,7 +686,7 @@ public class GlanceFragment extends Fragment implements
      */
     private void expandChart(Chart chart, String title, String stats) {
 
-        float fontSize = getResources().getDimension(R.dimen.text_size_subtitle);
+        float fontSize = getResources().getDimension(R.dimen.chart_dialog_text);
         mChartDialog = new AlertDialog.Builder(mContext).create();
         mChartDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_return), this);
         mChartDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.action_share), this);
@@ -693,11 +698,11 @@ public class GlanceFragment extends Fragment implements
             ((PieChart) chartClone).setData(((PieChart) chart).getData());
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
-            ((PieChart) chartClone).setEntryLabelTextSize(fontSize * 1.25f);
+            ((PieChart) chartClone).setEntryLabelTextSize(fontSize);
         } else if (chart instanceof HorizontalBarChart) {
             chartClone = new HorizontalBarChart(mContext);
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
-            chartClone.getXAxis().setTextSize(fontSize / 1.1f);
+            chartClone.getXAxis().setTextSize(mAxisFontSize);
             ((HorizontalBarChart) chartClone).setData(((HorizontalBarChart) chart).getData());
             ((HorizontalBarChart) chartClone).setDoubleTapToZoomEnabled(false);
             ((HorizontalBarChart) chartClone).getBarData().setDrawValues(false);
@@ -718,14 +723,14 @@ public class GlanceFragment extends Fragment implements
 
         TextView titleView = new TextView(mContext);
         titleView.setText(title);
-        titleView.setTextSize(fontSize * 1.25f);
+        titleView.setTextSize(fontSize);
         titleView.setTextColor(Color.BLACK);
         titleView.setTypeface(Typeface.DEFAULT_BOLD);
         titleView.setGravity(Gravity.CENTER_HORIZONTAL);
 
         TextView statsView = new TextView(mContext);
         statsView.setText(stats);
-        statsView.setTextSize(fontSize * 1.2f);
+        statsView.setTextSize(mDescFontSize);
         statsView.setTextColor(Color.BLACK);
         statsView.setGravity(Gravity.CENTER_HORIZONTAL);
 

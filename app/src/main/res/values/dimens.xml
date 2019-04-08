@@ -32,4 +32,5 @@
     <dimen name="label_text">7.83sp</dimen>
     <dimen name="axis_text">5.4sp</dimen>
     <dimen name="value_text">3.6sp</dimen>
+    <dimen name="chart_dialog_text">7.2sp</dimen>
 </resources>
