@@ -58,8 +58,7 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
-// TODO: Prevent errant removal of target adjacent to selected removal
-// TODO: Prevent errant nesting of targets when persisting conversions to remote database
+// TODO: Prevent errant removal of target adjacent to selected removal resulting in nesting of targets when persisting to remote database
 /**
  * Provides the logic and views for a user activity management screen.
  */
