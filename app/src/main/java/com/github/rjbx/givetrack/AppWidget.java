@@ -107,7 +107,7 @@ public class AppWidget extends AppWidgetProvider {
             AppUtilities.cursorRowToEntry(mCursor, target);
 
             String name = target.getName();
-            if (name.length() > 15) { name = name.substring(0, 15);
+            if (name.length() > 12) { name = name.substring(0, 12);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
             Float amount = Float.parseFloat(target.getImpact());
