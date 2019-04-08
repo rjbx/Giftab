@@ -25,7 +25,7 @@
         android:layout_height="0dp"
         android:layout_weight=".6"
         tools:listitem="@layout/item_widget"
-        android:background="@color/colorConversionDark"/>
+        android:background="@color/colorAccentLight"/>
 
     <include layout="@layout/button_widget"/>
 
