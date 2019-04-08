@@ -315,7 +315,7 @@ public final class DatabaseAccessor {
 
     @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
 
-        if (entryType.equals(Spawn.class)) return;
+        if (entryType == Spawn.class) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference typeReference = remote.getReference(entryPath);
@@ -327,10 +327,11 @@ public final class DatabaseAccessor {
 
         if (reset) userReference.removeValue();
 
-        DatabaseReference entryReference = null;
+        DatabaseReference entryReference;
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
-                entryReference = userReference.child(entry.getId());
+                entryReference = userReference;
+                if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
                 entryReference.updateChildren(entry.toParameterMap());
             }
         } updateRemoteTableTime(remote, entryType, stamp, uid);
@@ -355,22 +356,26 @@ public final class DatabaseAccessor {
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
 
-        if (entryType.equals(Spawn.class)) return;
+        if (entryType == Spawn.class) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
-        DatabaseReference entryReference = remote.getReference(entryPath);
-        String uid;
+        DatabaseReference typeReference = remote.getReference(entryPath);
+
+        String uid = entries == null || entries.length == 0 ?
+                getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
+
+        DatabaseReference userReference = typeReference.child(uid);
+
+        DatabaseReference entryReference;
         if (entries == null || entries.length == 0) {
             User user = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
             uid = user.getUid();
-            DatabaseReference childReference = entryReference.child(uid);
-            childReference.removeValue();
+            userReference.removeValue();
         } else {
-            uid = entries[0].getUid();
             for (T entry : entries) {
-                DatabaseReference childReference = entryReference.child(uid);
-                if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.removeValue();
+                entryReference = userReference;
+                if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
+                entryReference.removeValue();
             }
         }
         if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
