@@ -210,6 +210,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mFirebaseAuth.signOut();
                 mUsers = null;
                 mActiveUser = null;
+                mProcessStage = 0;
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG).show();
