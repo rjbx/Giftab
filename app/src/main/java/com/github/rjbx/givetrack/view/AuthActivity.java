@@ -219,6 +219,7 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
+                    // TODO: Ensure processing when validation does not update local database preventing callback
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
