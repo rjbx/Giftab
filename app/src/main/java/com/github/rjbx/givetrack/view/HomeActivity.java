@@ -462,6 +462,8 @@ public class HomeActivity extends AppCompatActivity implements
          */
         @Override public @NonNull Fragment getItem(int position) {
 
+            mUserLock = true;
+
             Bundle argsPlaceholder = new Bundle();
             if (mTargetArray == null || mRecordArray == null) {
                 argsPlaceholder.putBoolean(ARGS_PLACEHOLDER_ATTRIBUTES, true);
