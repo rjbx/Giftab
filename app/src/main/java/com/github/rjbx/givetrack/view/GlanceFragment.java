@@ -394,7 +394,7 @@ public class GlanceFragment extends Fragment implements
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
 
-        int fontSize = (int) getResources().getDimension(R.dimen.text_size_subtitle);
+        int fontSize = (int) getResources().getDimension(R.dimen.description_text);
         int backgroundColor = getResources().getColor(R.color.colorSlate, null);
 
         float recordsTotal = 0;
@@ -502,13 +502,12 @@ public class GlanceFragment extends Fragment implements
         percentageDesc.setTextColor(Color.WHITE);
 
         int margin = (int) mContext.getResources().getDimension(R.dimen.item_initial_top_margin);
-        float labelSize = fontSize * 1.35f;
+        float labelSize = mContext.getResources().getDimension(R.dimen.label_text);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.piechart_diameter));
             params.setMargins(margin * 2, margin, margin * 2, margin);
             mPercentageChart.setLayoutParams(params);
-            labelSize = fontSize * 1.15f;
         }
 
         mPercentageChart.setTag(percentMessage);
@@ -660,14 +659,14 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
         mActivityChart.getXAxis().setValueFormatter(this);
-        mActivityChart.getXAxis().setTextSize(fontSize / 1.1f);
+        mActivityChart.getXAxis().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
         mActivityChart.getXAxis().setTextColor(Color.WHITE);
         mActivityChart.getAxisRight().setTextColor(Color.WHITE);
-        mActivityChart.getAxisRight().setTextSize(fontSize / 1.1f);
+        mActivityChart.getAxisRight().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
         mActivityChart.getAxisLeft().setTextColor(Color.WHITE);
-        mActivityChart.getAxisLeft().setTextSize(fontSize / 1.1f);
+        mActivityChart.getAxisLeft().setTextSize(mContext.getResources().getDimension(R.dimen.axis_text));
         mActivityChart.getBarData().setValueTextColor(Color.WHITE);
-        mActivityChart.getBarData().setValueTextSize(fontSize / 1.4f);
+        mActivityChart.getBarData().setValueTextSize(mContext.getResources().getDimension(R.dimen.value_text));
         mActivityChart.getBarData().setDrawValues(false);
         mActivityChart.setFitBars(true);
         mActivityChart.getLegend().setEnabled(false);

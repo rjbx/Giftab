@@ -28,4 +28,8 @@
     <dimen name="text_size_bitmap_overlay_indicator">75sp</dimen>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="toggle_padding">10dp</dimen>
+    <dimen name="description_text">6sp</dimen>
+    <dimen name="label_text">7.83sp</dimen>
+    <dimen name="axis_text">5.4sp</dimen>
+    <dimen name="value_text">3.6sp</dimen>
 </resources>
