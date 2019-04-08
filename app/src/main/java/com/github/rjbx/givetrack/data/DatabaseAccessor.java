@@ -183,7 +183,7 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-
+        // TODO: Refactor to prevent errant removal of target adjacent to selected removal resulting in nesting of targets when persisting to remote database
         if (target != null && target.length > 0) {
             List<Target> targetList = getTarget(context);
             int[] removalIndeces = new int[targetList.size()];
