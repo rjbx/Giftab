@@ -318,19 +318,20 @@ public final class DatabaseAccessor {
         if (entryType.equals(Spawn.class)) return;
 
         String entryPath = entryType.getSimpleName().toLowerCase();
-        DatabaseReference entryReference = remote.getReference(entryPath);
+        DatabaseReference typeReference = remote.getReference(entryPath);
 
         String uid = entries == null || entries.length == 0 ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
-        DatabaseReference childReference = entryReference.child(uid);
+        DatabaseReference userReference = typeReference.child(uid);
 
-        if (reset) childReference.removeValue();
+        if (reset) userReference.removeValue();
 
+        DatabaseReference entryReference = null;
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
-                if (entry instanceof Company) childReference = childReference.child(entry.getId());
-                childReference.updateChildren(entry.toParameterMap());
+                entryReference = userReference.child(entry.getId());
+                entryReference.updateChildren(entry.toParameterMap());
             }
         } updateRemoteTableTime(remote, entryType, stamp, uid);
     }
