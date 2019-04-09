@@ -538,8 +538,8 @@ public class GiveFragment extends Fragment implements
             if (amountView != null) amountView.setText(amountStr);
             if (impactView != null) {
                 impactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
-                if (impact > 10) impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
-                else impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
+                if (impact > 9999) impactView.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                if (impact > 999) impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
             }
 
             if (percentageView != null) percentageView.setText(PERCENT_FORMATTER.format(mTargetList.get(position).getPercent()));
