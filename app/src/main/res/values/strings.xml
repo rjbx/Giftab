@@ -118,8 +118,8 @@
     <string name="message_generated_remove">%s has been removed from your search results. </string>
     <string name="message_collected_add">"%s has been added to your collection"</string>
     <string name="message_collected_remove">"%s has been removed from your collection"</string>
-    <string name="indicator_donation_frequency">Number of gifts: %s</string>
-    <string name="indicator_donation_impact">Your total impact: %s</string>
+    <string name="indicator_donation_frequency">Gift count: %s</string>
+    <string name="indicator_donation_impact">Total impact: %s</string>
     <string name="axis_value_high">All-time high</string>
     <string name="axis_value_this">This %s</string>
     <string name="axis_value_yester">Yester%s</string>
