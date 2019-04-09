@@ -107,8 +107,12 @@ public class AppWidget extends AppWidgetProvider {
             AppUtilities.cursorRowToEntry(mCursor, target);
 
             String name = target.getName();
-            if (name.length() > 12) { name = name.substring(0, 11);
-                name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+            if (name.length() > 11) {
+                name = name.substring(0, 11);
+                if (name.contains("The ")) name = name.replace("The ", "");
+                if (name.contains(" ")) name = name.substring(0, name.lastIndexOf(" "));
+                name = name.concat("...");
+            }
 
             Float amount = Float.parseFloat(target.getImpact());
             String amountStr = CURRENCY_FORMATTER.format(amount);
