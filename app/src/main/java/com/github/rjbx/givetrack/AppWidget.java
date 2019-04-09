@@ -107,7 +107,7 @@ public class AppWidget extends AppWidgetProvider {
             AppUtilities.cursorRowToEntry(mCursor, target);
 
             String name = target.getName();
-            if (name.length() > 12) { name = name.substring(0, 12);
+            if (name.length() > 12) { name = name.substring(0, 11);
                 name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
 
             Float amount = Float.parseFloat(target.getImpact());
@@ -115,6 +115,8 @@ public class AppWidget extends AppWidgetProvider {
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                 amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
+            else if (amountLength > 9) amountStr = String.format("%s%sK", amountStr.substring(0, amountLength - 7),
+                    amountLength > 10 ? "" : "." + amountStr.substring(amountLength - 6, amountLength - 4));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
             String percentStr = PERCENT_FORMATTER.format(target.getPercent());
