@@ -523,6 +523,8 @@ public class GiveFragment extends Fragment implements
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
                     amountLength > 14 ? "" : "." + amountStr.substring(amountLength - 9, amountLength - 7));
+            else if (amountLength > 9) amountStr = String.format("%s%sK", amountStr.substring(0, amountLength - 7),
+                    amountLength > 10 ? "" : "." + amountStr.substring(amountLength - 6, amountLength - 4));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
             final float impact = Float.parseFloat(target.getImpact());
@@ -531,6 +533,8 @@ public class GiveFragment extends Fragment implements
 
             if (impactLength > 12) impactStr = String.format("%s%sM", impactStr.substring(0, impactLength - 11),
                     impactLength > 14 ? "" : "." + impactStr.substring(impactLength - 9, impactLength - 7));
+            else if (impactLength > 9) impactStr = String.format("%s%sK", impactStr.substring(0, impactLength - 7),
+                    impactLength > 10 ? "" : "." + impactStr.substring(impactLength - 6, impactLength - 4));
             else if (impactLength > 6) impactStr = impactStr.substring(0, impactLength - 3);
 
             if (nameView != null) nameView.setText(name);
