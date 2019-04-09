@@ -206,6 +206,7 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                     });
             } else {
+                // TODO: Handle inability to update remote database user when Auth user idles and signs out
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
                 mUsers = null;
