@@ -478,6 +478,7 @@ public final class DatabaseAccessor {
                 removeEntriesFromLocal(local, entryType, stamp);
                 if (entryList.isEmpty()) return;
                 addEntriesToLocal(local, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
+                updateRemoteTableTime(remote, entryType, stamp, uid);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
