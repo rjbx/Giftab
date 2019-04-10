@@ -442,7 +442,7 @@ public final class DatabaseAccessor {
     }
 
     //TODO: Decide whether to permit pulling inactive Users
-    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
+    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
@@ -451,6 +451,7 @@ public final class DatabaseAccessor {
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
         addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
+        updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     private static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
@@ -493,7 +494,7 @@ public final class DatabaseAccessor {
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
-        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid());
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else local.notifyChange(DataUtilities.getContentUri(entryType), null);
     }
