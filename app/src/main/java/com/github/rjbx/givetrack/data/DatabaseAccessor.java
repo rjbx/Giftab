@@ -438,7 +438,7 @@ public final class DatabaseAccessor {
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
-        // TODO: Decide whether to update user stamps concurrent with company stamps
+        // TODO: Decide whether to update user stamps concurrent with company stamps or alternately persist User at point of execution for user stamp updates
         // Otherwise local retains default value and pulls from remote on validation subsequent to company removal
         Map<String, Object> map = new HashMap<>();
         map.put(DataUtilities.getTimeTableColumn(entryType), stamp);
