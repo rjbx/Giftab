@@ -335,7 +335,8 @@ public final class DatabaseAccessor {
                 if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
                 entryReference.updateChildren(entry.toParameterMap());
             }
-        } updateRemoteTableTime(remote, entryType, stamp, uid);
+        }
+        updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     // TODO: Decide whether to unqualify user table stamp on removals
@@ -353,7 +354,7 @@ public final class DatabaseAccessor {
                 local.delete(rowUri, null, null);
             }
         }
-        if (entryType != User.class) updateLocalTableTime(local, entryType, stamp, uid);
+        updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
@@ -381,7 +382,7 @@ public final class DatabaseAccessor {
             }
         }
         // Do not update user stamp to prevent creating user entry on account deletion
-        if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
+        updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     private static User getActiveUserFromLocal(FirebaseAuth auth, ContentResolver local) {
@@ -437,6 +438,8 @@ public final class DatabaseAccessor {
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
+        // TODO: Decide whether to update user stamps concurrent with company stamps
+        // Otherwise local retains default value and pulls from remote on validation subsequent to company removal
         Map<String, Object> map = new HashMap<>();
         map.put(DataUtilities.getTimeTableColumn(entryType), stamp);
 
