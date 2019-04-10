@@ -184,6 +184,7 @@ public final class DatabaseAccessor {
 
         long stamp = System.currentTimeMillis();
         // TODO: Refactor to prevent errant removal of target adjacent to selected removal resulting in nesting of targets when persisting to remote database
+        // TODO: Update Rateraid remove button signature to accept dialog interface for handling removals
         if (target != null && target.length > 0) {
             List<Target> targetList = getTarget(context);
             int[] removalIndeces = new int[targetList.size()];
@@ -337,6 +338,7 @@ public final class DatabaseAccessor {
         } updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
+    // TODO: Decide whether to unqualify user table stamp on removals
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
@@ -378,6 +380,7 @@ public final class DatabaseAccessor {
                 entryReference.removeValue();
             }
         }
+        // Do not update user stamp to prevent creating user entry on account deletion
         if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
@@ -442,7 +445,7 @@ public final class DatabaseAccessor {
     }
 
     //TODO: Decide whether to permit pulling inactive Users
-    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
+    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
         if (cursor == null) return;
@@ -451,7 +454,6 @@ public final class DatabaseAccessor {
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
         addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
-        updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     private static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
@@ -464,8 +466,10 @@ public final class DatabaseAccessor {
                 if (entryType == User.class) {
                     T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
+                        // Prevents HomeActivity SectionsPagerAdapter lock on validation due to equivalent stamps
                         ((User) entry).setRecordStamp(0);
                         ((User) entry).setTargetStamp(0);
+
                         ((User) entry).setUserActive(true);
                     }
                     entryList.add(entry);
@@ -479,7 +483,6 @@ public final class DatabaseAccessor {
                 removeEntriesFromLocal(local, entryType, stamp);
                 if (entryList.isEmpty()) return;
                 addEntriesToLocal(local, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
-                updateRemoteTableTime(remote, entryType, stamp, uid);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
@@ -494,7 +497,7 @@ public final class DatabaseAccessor {
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
-        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid());
+        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else local.notifyChange(DataUtilities.getContentUri(entryType), null);
     }
