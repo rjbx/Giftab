@@ -434,10 +434,10 @@ public final class DatabaseAccessor {
         companyValues.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         local.update(uri, companyValues, null,null);
 
-        if (entryType == User.class) return;
-        ContentValues entryMap = new ContentValues();
-        entryMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
-        local.update(uri, entryMap, null, null);
+//        if (entryType == User.class) return;
+//        ContentValues entryMap = new ContentValues();
+//        entryMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
+//        local.update(uri, entryMap, null, null);
     }
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
@@ -449,10 +449,10 @@ public final class DatabaseAccessor {
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         userReference.child(uid).updateChildren(entryMap);
 
-        if (entryType == User.class) return;
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
-        userReference.child(uid).updateChildren(userMap);
+//        if (entryType == User.class) return;
+//        Map<String, Object> userMap = new HashMap<>();
+//        userMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
+//        userReference.child(uid).updateChildren(userMap);
     }
 
     //TODO: Decide whether to permit pulling inactive Users
