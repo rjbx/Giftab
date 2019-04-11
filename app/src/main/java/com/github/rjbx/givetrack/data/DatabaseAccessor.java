@@ -428,23 +428,31 @@ public final class DatabaseAccessor {
     private static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
 
         if (entryType.equals(Spawn.class)) return;
-
-        ContentValues values = new ContentValues();
-        values.put(DataUtilities.getTimeTableColumn(entryType), stamp);
-
         Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build();
-        local.update(uri, values, null,null);
+
+        ContentValues companyValues = new ContentValues();
+        companyValues.put(DataUtilities.getTimeTableColumn(entryType), stamp);
+        local.update(uri, companyValues, null,null);
+
+        if (entryType == User.class) return;
+        ContentValues entryMap = new ContentValues();
+        entryMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
+        local.update(uri, entryMap, null, null);
     }
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
         // TODO: Decide whether to update user stamps concurrent with company stamps or alternately persist User at point of execution for user stamp updates
         // Otherwise local retains default value and pulls from remote on validation subsequent to company removal
-        Map<String, Object> map = new HashMap<>();
-        map.put(DataUtilities.getTimeTableColumn(entryType), stamp);
-
+        Map<String, Object> entryMap = new HashMap<>();
+        entryMap.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
-        userReference.child(uid).updateChildren(map);
+        userReference.child(uid).updateChildren(entryMap);
+
+        if (entryType == User.class) return;
+        Map<String, Object> userMap = new HashMap<>();
+        userMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
+        userReference.child(uid).updateChildren(userMap);
     }
 
     //TODO: Decide whether to permit pulling inactive Users
