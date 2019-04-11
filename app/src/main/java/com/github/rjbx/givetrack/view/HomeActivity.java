@@ -303,11 +303,13 @@ public class HomeActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onDestroy() {
-        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER); // Prevents callback resulting from persisting user active status to false within AuthActivity
-        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_TARGET);
-        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_RECORD);
-        super.onDestroy();
+    protected void onPause() {
+        if (isFinishing()) {
+            getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER); // Prevents callback resulting from persisting user active status to false within AuthActivity
+            getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_TARGET);
+            getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_RECORD);
+        }
+        super.onPause();
     }
 
     /**
