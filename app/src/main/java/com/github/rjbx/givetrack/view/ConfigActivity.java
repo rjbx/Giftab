@@ -264,9 +264,9 @@ public class ConfigActivity
     }
 
     @Override
-    protected void onDestroy() {
-        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
-        super.onDestroy();
+    protected void onPause() {
+        if (isFinishing()) getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
+        super.onPause();
     }
 
     /**
