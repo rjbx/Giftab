@@ -256,7 +256,6 @@ public class AuthActivity extends AppCompatActivity implements
         mUsers = null;
     }
 
-    // TODO: Block recursion resulting in loader callback to HomeActivity and redundant sign out sequence when signing out and in after auth user has idled
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (dialog == mAuthDialog) {
