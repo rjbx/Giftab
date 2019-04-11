@@ -183,7 +183,6 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        // TODO: Refactor to prevent errant removal of target adjacent to selected removal resulting in nesting of targets when persisting to remote database
         // TODO: Update Rateraid remove button signature to accept dialog interface for handling removals
         if (target != null && target.length > 0) {
             List<Target> targetList = getTarget(context);
@@ -339,7 +338,7 @@ public final class DatabaseAccessor {
         updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
-    // TODO: Decide whether to unqualify user table stamp on removals
+    // TODO: Handle account deletion to prevent updating User that was prior removed
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
