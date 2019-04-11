@@ -108,6 +108,12 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     @Override
+    protected void onPause() {
+        if (isFinishing()) getSupportLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
+        super.onPause();
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
     }
@@ -210,8 +216,8 @@ public class AuthActivity extends AppCompatActivity implements
                 mUsers = null;
                 mActiveUser = null;
                 mProcessStage = 0;
-                finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                finish();
                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG).show();
             }
         } else {
@@ -226,7 +232,6 @@ public class AuthActivity extends AppCompatActivity implements
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
                         if (isPersisted) {
-                            getSupportLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
                             Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             finish();
