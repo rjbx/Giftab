@@ -263,6 +263,13 @@ public class JournalActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_RECORD);
+        super.onDestroy();
+    }
+
     /**
      * Defines behavior on interactions with list items.
      */

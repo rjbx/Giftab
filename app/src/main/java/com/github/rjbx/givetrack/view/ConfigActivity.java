@@ -263,6 +263,12 @@ public class ConfigActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onDestroy() {
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
+        super.onDestroy();
+    }
+
     /**
      * Fragment bound to preference header for updating user settings.
      */

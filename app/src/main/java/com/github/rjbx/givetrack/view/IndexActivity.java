@@ -280,6 +280,14 @@ public class IndexActivity extends AppCompatActivity implements
         fetchResults();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_SPAWN);
+        super.onDestroy();
+    }
+
     /**
      * Displays a dialog with instructions.
      */
