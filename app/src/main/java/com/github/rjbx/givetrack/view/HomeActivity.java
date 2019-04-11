@@ -293,16 +293,21 @@ public class HomeActivity extends AppCompatActivity implements
             case (R.id.nav_spawn): startActivity(new Intent(this, IndexActivity.class)); break;
             case (R.id.nav_record): startActivity(new Intent(this, JournalActivity.class)); break;
             case (R.id.nav_settings): startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_HOME_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
-            case (R.id.nav_logout):
-                startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT));
-                getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER); // Prevent callback resulting from persisting user active status to false within AuthActivity
-                break;
+            case (R.id.nav_logout): startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT));break;
             case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
             case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER); // Prevents callback resulting from persisting user active status to false within AuthActivity
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_TARGET);
+        getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_RECORD);
+        super.onDestroy();
     }
 
     /**
