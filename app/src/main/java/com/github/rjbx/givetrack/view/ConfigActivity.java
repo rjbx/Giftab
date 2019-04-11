@@ -249,16 +249,16 @@ public class ConfigActivity
             if (action != null) {
                 switch (action) {
                     case JournalActivity.ACTION_JOURNAL_INTENT:
-                        startActivity(new Intent(this, JournalActivity.class));
                         finish();
+                        startActivity(new Intent(this, JournalActivity.class));
                         return true;
                     case IndexActivity.ACTION_INDEX_INTENT:
-                        startActivity(new Intent(this, IndexActivity.class));
                         finish();
+                        startActivity(new Intent(this, IndexActivity.class));
                         return true;
                     case HomeActivity.ACTION_HOME_INTENT:
-                        startActivity(new Intent(this, HomeActivity.class));
                         finish();
+                        startActivity(new Intent(this, HomeActivity.class));
                         return true;
                 }
             }
@@ -268,8 +268,8 @@ public class ConfigActivity
 
     @Override
     protected void onPause() {
-        if (isFinishing()) getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
         super.onPause();
+        if (isFinishing()) getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
     }
 
     /**
@@ -388,8 +388,8 @@ public class ConfigActivity
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
-                startActivity(intent);
                 getActivity().finish();
+                startActivity(intent);
                 return true;
             } return false;
         }
@@ -542,8 +542,8 @@ public class ConfigActivity
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
-                startActivity(intent);
                 getActivity().finish();
+                startActivity(intent);
                 return true;
             } return false;
         }
@@ -559,8 +559,8 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetSpawn(getActivity());
-                        startActivity(new Intent(getActivity(), IndexActivity.class));
                         getActivity().finish();
+                        startActivity(new Intent(getActivity(), IndexActivity.class));
                         break;
                     default:
                 }
@@ -674,8 +674,8 @@ public class ConfigActivity
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
-                startActivity(intent);
                 getActivity().finish();
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -738,8 +738,8 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetTarget(getActivity());
-                        startActivity(new Intent(getActivity(), HomeActivity.class));
                         getActivity().finish();
+                        startActivity(new Intent(getActivity(), HomeActivity.class));
                         break;
                     default:
                 }
@@ -824,8 +824,8 @@ public class ConfigActivity
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
-                startActivity(intent);
                 getActivity().finish();
+                startActivity(intent);
                 return false;
             }
             return false;
@@ -842,8 +842,8 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetRecord(getActivity());
-                        startActivity(new Intent(getActivity(), JournalActivity.class));
                         getActivity().finish();
+                        startActivity(new Intent(getActivity(), JournalActivity.class));
                         break;
                     default:
                 }
@@ -950,8 +950,8 @@ public class ConfigActivity
             if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
-                startActivity(intent);
                 getActivity().finish();
+                startActivity(intent);
                 return true;
             } return false;
         }
@@ -966,8 +966,8 @@ public class ConfigActivity
                         mDeleteDialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
-                        startActivity(new Intent(getActivity(), AuthActivity.class).setAction(AuthActivity.ACTION_DELETE_ACCOUNT));
                         getActivity().finish();
+                        startActivity(new Intent(getActivity(), AuthActivity.class).setAction(AuthActivity.ACTION_DELETE_ACCOUNT));
                         break;
                     default:
                 }

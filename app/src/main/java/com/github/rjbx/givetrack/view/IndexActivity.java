@@ -138,8 +138,8 @@ public class IndexActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
-                startActivity(new Intent(this, HomeActivity.class));
                 finish();
+                startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_filter):
                 AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
@@ -284,11 +284,11 @@ public class IndexActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
+        super.onPause();
         if (isFinishing()) {
             getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
             getLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_SPAWN);
         }
-        super.onPause();
     }
 
     /**

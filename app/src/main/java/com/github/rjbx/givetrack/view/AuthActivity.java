@@ -109,8 +109,8 @@ public class AuthActivity extends AppCompatActivity implements
 
     @Override
     protected void onPause() {
-        if (isFinishing()) getSupportLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
         super.onPause();
+        if (isFinishing()) getSupportLoaderManager().destroyLoader(DatabaseContract.LOADER_ID_USER);
     }
 
     @Override
@@ -216,8 +216,8 @@ public class AuthActivity extends AppCompatActivity implements
                 mUsers = null;
                 mActiveUser = null;
                 mProcessStage = 0;
-                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 finish();
+                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG).show();
             }
         } else {
@@ -233,8 +233,8 @@ public class AuthActivity extends AppCompatActivity implements
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
                         if (isPersisted) {
                             Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             finish();
+                            startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             break;
                         }
                     }
@@ -246,9 +246,9 @@ public class AuthActivity extends AppCompatActivity implements
                     }
                     break;
                 case 3:
-                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                     finish();
+                    startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
+                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
             }
         }
     }
