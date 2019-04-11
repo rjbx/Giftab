@@ -250,12 +250,15 @@ public class ConfigActivity
                 switch (action) {
                     case JournalActivity.ACTION_JOURNAL_INTENT:
                         startActivity(new Intent(this, JournalActivity.class));
+                        finish();
                         return true;
                     case IndexActivity.ACTION_INDEX_INTENT:
                         startActivity(new Intent(this, IndexActivity.class));
+                        finish();
                         return true;
                     case HomeActivity.ACTION_HOME_INTENT:
                         startActivity(new Intent(this, HomeActivity.class));
+                        finish();
                         return true;
                 }
             }
@@ -386,6 +389,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
+                getActivity().finish();
                 return true;
             } return false;
         }
@@ -539,6 +543,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
+                getActivity().finish();
                 return true;
             } return false;
         }
@@ -555,6 +560,7 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetSpawn(getActivity());
                         startActivity(new Intent(getActivity(), IndexActivity.class));
+                        getActivity().finish();
                         break;
                     default:
                 }
@@ -669,6 +675,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
+                getActivity().finish();
                 return true;
             }
             return false;
@@ -732,6 +739,7 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetTarget(getActivity());
                         startActivity(new Intent(getActivity(), HomeActivity.class));
+                        getActivity().finish();
                         break;
                     default:
                 }
@@ -817,6 +825,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
+                getActivity().finish();
                 return false;
             }
             return false;
@@ -834,6 +843,7 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_NEGATIVE:
                         DatabaseManager.startActionResetRecord(getActivity());
                         startActivity(new Intent(getActivity(), JournalActivity.class));
+                        getActivity().finish();
                         break;
                     default:
                 }
@@ -941,6 +951,7 @@ public class ConfigActivity
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
                 startActivity(intent);
+                getActivity().finish();
                 return true;
             } return false;
         }
@@ -956,6 +967,7 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_NEGATIVE:
                         startActivity(new Intent(getActivity(), AuthActivity.class).setAction(AuthActivity.ACTION_DELETE_ACCOUNT));
+                        getActivity().finish();
                         break;
                     default:
                 }

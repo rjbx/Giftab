@@ -139,6 +139,7 @@ public class IndexActivity extends AppCompatActivity implements
         switch(id) {
             case (android.R.id.home):
                 startActivity(new Intent(this, HomeActivity.class));
+                finish();
                 return true;
             case (R.id.action_filter):
                 AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);

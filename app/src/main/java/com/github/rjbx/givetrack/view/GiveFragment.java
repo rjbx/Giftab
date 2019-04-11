@@ -492,6 +492,7 @@ public class GiveFragment extends Fragment implements
                 addButton.setOnClickListener(clickedView -> {
                     Intent spawnIntent = new Intent(mContext, IndexActivity.class);
                     startActivity(spawnIntent);
+                    getActivity().finish();
                 });
                 return;
             }
