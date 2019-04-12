@@ -42,6 +42,7 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
@@ -222,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_TARGET:
                 if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
-                    DatabaseManager.startActionFetchTarget(this);
+                    AppExecutors.getInstance().getDiskIO().execute(() -> DatabaseManager.startActionFetchTarget(this));
                 } else {
                     mTargetLock = false;
                     mTargetArray = new Target[data.getCount()];
@@ -238,7 +239,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_RECORD:
                 if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
-                    DatabaseManager.startActionFetchRecord(this);
+                    AppExecutors.getInstance().getDiskIO().execute(() -> DatabaseManager.startActionFetchRecord(this));
                 } else {
                     mRecordLock = false;
                     mRecordArray = new Record[data.getCount()];
