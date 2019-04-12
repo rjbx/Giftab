@@ -25,14 +25,14 @@ public class User implements Entry, Parcelable, Cloneable {
     private String giveMagnitude;
     private boolean giveReset;
     private int giveRounding;
-    private long targetStamp;
+    private long targetStamp; // Time of most recent change to target table
     private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
     private int glanceTheme;
     private String journalOrder;
     private String journalSort;
-    private long recordStamp;
+    private long recordStamp; // Time of most recent change to record table
     private String indexCity;
     private String indexCompany;
     private boolean indexDialog;
@@ -51,7 +51,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String userBirthdate;
     private String userEmail;
     private String userGender;
-    private long userStamp;
+    private long userStamp; // Time of most recent change (save those to target or record stamps) to user table
 
     @Exclude public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
         @Override public User createFromParcel(Parcel source) { return new User(source); }
