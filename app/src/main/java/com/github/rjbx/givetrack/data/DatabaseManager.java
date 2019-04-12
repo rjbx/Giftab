@@ -445,30 +445,22 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action FetchSpawn on the service worker thread.
      */
-    private void handleActionFetchSpawn() {
-        DatabaseAccessor.fetchSpawn(this);
-    }
+    private void handleActionFetchSpawn() { NETWORK_IO.execute(() -> DatabaseAccessor.fetchSpawn(this)); }
 
     /**
      * Handles action FetchTarget on the service worker thread.
      */
-    private void handleActionFetchTarget() {
-        DatabaseAccessor.fetchTarget(this);
-    }
+    private void handleActionFetchTarget() { DISK_IO.execute(() -> DatabaseAccessor.fetchTarget(this)); }
 
     /**
      * Handles action FetchRecord on the service worker thread.
      */
-    private void handleActionFetchRecord() {
-        DatabaseAccessor.fetchRecord(this);
-    }
+    private void handleActionFetchRecord() { DISK_IO.execute(() -> DatabaseAccessor.fetchRecord(this)); }
 
     /**
      * Handles action FetchUser on the service worker thread.
      */
-    private void handleActionFetchUser() {
-        DatabaseAccessor.fetchUser(this);
-    }
+    private void handleActionFetchUser() { DISK_IO.execute(() -> DatabaseAccessor.fetchUser(this)); }
 
     /**
      * Handles action GiveSpawn on the service worker thread.
