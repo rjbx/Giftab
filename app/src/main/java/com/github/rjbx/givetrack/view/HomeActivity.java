@@ -215,6 +215,7 @@ public class HomeActivity extends AppCompatActivity implements
     /**
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
+    // Sets target and record stamps to 0 after validation (pulls remote to local)
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         int id = loader.getId();
         switch (id) {

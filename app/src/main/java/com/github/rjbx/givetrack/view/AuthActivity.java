@@ -335,6 +335,7 @@ public class AuthActivity extends AppCompatActivity implements
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
+                // Sets remote user stamps to 0 after identified actions locking UI after signout on remote restore
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
                 mProcessStage = -1;
                 break;
