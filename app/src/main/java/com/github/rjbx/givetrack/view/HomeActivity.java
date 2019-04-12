@@ -61,6 +61,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+// TODO: Resolve async User stamp local and remote stamps causing all target updates to lock UI on signout and remote restore
 /**
  * Provides the application home screen; manages {@link CursorLoader} and {@link ViewPager} for
  * {@link GlanceFragment} and {@link GiveFragment}.
