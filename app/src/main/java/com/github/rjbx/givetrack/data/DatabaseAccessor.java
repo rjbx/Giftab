@@ -476,6 +476,7 @@ public final class DatabaseAccessor {
                     T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
                         // Prevents HomeActivity SectionsPagerAdapter lock on validation due to equivalent stamps
+                        // Resets User stamps
                         ((User) entry).setRecordStamp(0);
                         ((User) entry).setTargetStamp(0);
 

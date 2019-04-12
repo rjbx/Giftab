@@ -459,6 +459,7 @@ public class User implements Entry, Parcelable, Cloneable {
         } return clone;
     }
 
+    // Resets User stamps
     public static User getDefault() {
         User user = new User();
         user.uid = "";
