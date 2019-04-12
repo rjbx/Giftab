@@ -610,7 +610,7 @@ public class GiveFragment extends Fragment implements
          * Syncs donations to database.
          */
         private void syncDonations() {
-            DatabaseManager.startActionRecordTarget(mContext, mTargetList.toArray(new Target[0]));
+            DatabaseManager.startActionRecordTarget(mContext, mTargetList.toArray(new Target[0])); // Locks UI on signout and remote launch
         }
 
         /**

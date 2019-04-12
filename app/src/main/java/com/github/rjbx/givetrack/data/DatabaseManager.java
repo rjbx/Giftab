@@ -163,6 +163,22 @@ public final class DatabaseManager extends IntentService {
     }
 
     /**
+     * Starts this service to perform action RecordTarget with the given parameters.
+     * If the service is already performing a task this action will be queued.
+     *
+     * @see IntentService
+     */
+    public static void startActionRecordTarget(Context context, Target... target) {
+        if (context == null) return;
+        // Update from list
+        Intent intent = new Intent(context, DatabaseManager.class);
+        intent.setAction(ACTION_RECORD_TARGET);
+        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
+        intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
+        context.startService(intent);
+    }
+
+    /**
      * Starts this service to perform action GiveSpawn with the given parameters.
      * If the service is already performing a task this action will be queued.
      *
@@ -189,21 +205,6 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UNTARGET_COMPANY);
         intent.putExtra(EXTRA_ITEM_VALUES, company.getEin());
-        context.startService(intent);
-    }
-
-    /**
-     * Starts this service to perform action RecordTarget with the given parameters.
-     * If the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    public static void startActionRecordTarget(Context context, Target... target) {
-        if (context == null) return;
-        Intent intent = new Intent(context, DatabaseManager.class);
-        intent.setAction(ACTION_RECORD_TARGET);
-        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
-        intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
         context.startService(intent);
     }
 
