@@ -653,7 +653,7 @@ public class GiveFragment extends Fragment implements
                             int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseManager.startActionRemoveTarget(mContext, mTargetList.get(position)); // Locks UI on signout and remote launch
+                            DatabaseManager.startActionUntargetCompany(mContext, mTargetList.get(position)); // Locks UI on signout and remote launch
                             break;
                         default:
                     }
