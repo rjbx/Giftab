@@ -371,7 +371,7 @@ public final class DatabaseManager extends IntentService {
                 handleActionFetchUser();
                 break;
             case ACTION_TARGET_SPAWN:
-                handleActionGiveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                handleActionTargetSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
                 break;
             case ACTION_TARGET_RECORD:
                 handleActionTargetRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
@@ -469,7 +469,7 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action GiveSpawn on the service worker thread.
      */
-    private void handleActionGiveSpawn(Spawn spawn) {
+    private void handleActionTargetSpawn(Spawn spawn) {
 
         float impact = 0f;
         int frequency = 0;
