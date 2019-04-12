@@ -478,7 +478,7 @@ public final class DatabaseManager extends IntentService {
         float impact = 0f;
         int frequency = 0;
 
-        DatabaseAccessor.addSpawn(this, spawn);
+//        DatabaseAccessor.addSpawn(this, spawn);
 
         List<Record> records = DatabaseAccessor.getRecord(this);
         for (Record record : records) {
