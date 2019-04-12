@@ -505,7 +505,7 @@ public final class DatabaseManager extends IntentService {
         String socialHandle = DataUtilities.urlToSocialHandle(target);
         target.setSocial(socialHandle);
 
-        DatabaseAccessor.addTarget(this, target);
+        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
     }
 
     /**
@@ -524,7 +524,7 @@ public final class DatabaseManager extends IntentService {
         for (Target t : targetList)
             if (t.getEin().equals(ein)) {
                 t.setImpact(String.valueOf(impact));
-                DatabaseAccessor.addTarget(this, t);
+                DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, t));
                 return;
             }
     }
@@ -559,7 +559,7 @@ public final class DatabaseManager extends IntentService {
                 default: impactStr = String.valueOf(totalImpact);
             }
             t.setImpact(impactStr);
-        } DatabaseAccessor.addTarget(this, target);
+        } DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < target.length; i++) {
@@ -579,12 +579,12 @@ public final class DatabaseManager extends IntentService {
             }
             record.setImpact(impactStr);
             records.add(record);
-        } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
+        } DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records.toArray(new Record[0])));
 
         if (activeUser.getGiveTiming() == 1) {
             activeUser.setGiveAnchor(System.currentTimeMillis());
             activeUser.setGiveTiming(0);
-        } DatabaseAccessor.addUser(this, activeUser);
+        } DISK_IO.execute(() -> DatabaseAccessor.addUser(this, activeUser));
     }
 
     /**
@@ -594,21 +594,21 @@ public final class DatabaseManager extends IntentService {
 
         Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
         List<Target> targetList = DatabaseAccessor.getTarget(this, where);
-        DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0]));
+        DISK_IO.execute(() ->  DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0])));
     }
 
     /**
      * Handles action RemoveSpawn on the service worker thread.
      */
     private void handleActionRemoveSpawn(Spawn... spawns) {
-        DatabaseAccessor.removeSpawn(this, spawns);
+        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawns));
     }
 
     /**
      * Handles action RemoveTarget on the service worker thread.
      */
-    private void handleActionRemoveTarget(Target... target) {
-        DatabaseAccessor.removeTarget(this, target);
+    private void handleActionRemoveTarget(Target... targets) {
+        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
     }
 
     /**
@@ -616,7 +616,7 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionRemoveRecord(Record... records) {
 
-        DatabaseAccessor.removeRecord(this, records);
+        DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this, records));
 
         List<Target> targets = DatabaseAccessor.getTarget(this);
         for (Target target : targets) {
@@ -625,7 +625,7 @@ public final class DatabaseManager extends IntentService {
                     target.setFrequency(target.getFrequency() - 1);
                     float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
                     target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                    DatabaseAccessor.addTarget(this, target);
+                    DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
                     break;
                 }
             }
@@ -644,29 +644,29 @@ public final class DatabaseManager extends IntentService {
         for (User user : users) {
             for (Spawn spawn : spawns)
                 if (!spawn.getUid().equals(user.getUid()))
-                    DatabaseAccessor.removeSpawn(this, spawn);
+                    DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawn));
             for (Target target : targets)
                 if (!target.getUid().equals(user.getUid()))
-                    DatabaseAccessor.removeTarget(this, target);
+                    DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, target));
             for (Record record : records)
                 if (!record.getUid().equals(user.getUid()))
-                    DatabaseAccessor.removeRecord(this, record);
+                    DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this, record));
         }
-        DatabaseAccessor.removeUser(this, users);
+        DISK_IO.execute(() -> DatabaseAccessor.removeUser(this, users));
     }
 
     /**
      * Handles action ResetSpawn on the service worker thread.
      */
     private void handleActionResetSpawn() {
-        DatabaseAccessor.removeSpawn(this);
+        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this));
     }
 
     /**
      * Handles action ResetTarget on the service worker thread.
      */
     private void handleActionResetTarget() {
-        DatabaseAccessor.removeTarget(this);
+        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
     }
 
     /**
@@ -674,54 +674,58 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionResetRecord() {
 
-        DatabaseAccessor.removeRecord(this);
+        DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this));
         List<Target> targets = DatabaseAccessor.getTarget(this);
         for (Target target : targets) {
             target.setImpact("0");
             target.setFrequency(0);
         }
-        DatabaseAccessor.addTarget(this, targets.toArray(new Target[0]));
+        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets.toArray(new Target[0])));
     }
 
     /**
      * Handles action ResetUser on the service worker thread.
      */
     private void handleActionResetUser() {
-        DatabaseAccessor.removeSpawn(this);
-        DatabaseAccessor.removeTarget(this);
-        DatabaseAccessor.removeRecord(this);
-        DatabaseAccessor.removeUser(this);
+        DISK_IO.execute(() -> {
+            DatabaseAccessor.removeSpawn(this);
+            DatabaseAccessor.removeTarget(this);
+            DatabaseAccessor.removeRecord(this);
+            DatabaseAccessor.removeUser(this);
+        });
     }
 
     /**
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-       DatabaseAccessor.addTarget(this, targets);
+        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     /**
      * Handles action UpdateRecord on the service worker thread.
      */
     private void handleActionUpdateRecord(Record... records) {
-        DatabaseAccessor.addRecord(this, records);
+        DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records));
     }
 
     /**
      * Handles action UpdateUser on the service worker thread.
      */
     private void handleActionUpdateUser(User... user) {
-        DatabaseAccessor.addUser(this, user);
+        DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
     }
 
     /**
      * Handles action ResetData on the service worker thread.
      */
     private void handleActionResetData() {
-        DatabaseAccessor.removeSpawn(this);
-        DatabaseAccessor.removeTarget(this);
-        DatabaseAccessor.removeRecord(this);
-        DatabaseAccessor.removeUser(this);
+        DISK_IO.execute(() -> {
+                    DatabaseAccessor.removeSpawn(this);
+                    DatabaseAccessor.removeTarget(this);
+                    DatabaseAccessor.removeRecord(this);
+                    DatabaseAccessor.removeUser(this);
+                });
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
     }
 }

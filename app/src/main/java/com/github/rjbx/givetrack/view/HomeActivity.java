@@ -223,7 +223,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_TARGET:
                 if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
-                    AppExecutors.getInstance().getDiskIO().execute(() -> DatabaseManager.startActionFetchTarget(this));
+                    DatabaseManager.startActionFetchTarget(this);
                 } else {
                     mTargetLock = false;
                     mTargetArray = new Target[data.getCount()];
@@ -239,7 +239,7 @@ public class HomeActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_RECORD:
                 if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
-                    AppExecutors.getInstance().getDiskIO().execute(() -> DatabaseManager.startActionFetchRecord(this));
+                    DatabaseManager.startActionFetchRecord(this);
                 } else {
                     mRecordLock = false;
                     mRecordArray = new Record[data.getCount()];
