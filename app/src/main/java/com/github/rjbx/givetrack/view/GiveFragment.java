@@ -602,7 +602,7 @@ public class GiveFragment extends Fragment implements
 //            sValuesArray[i].setPercent(sPercentages[i]);
 //            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
 //        }
-            DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0]));
+            DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0])); // Locks UI on signout
             sPercentagesAdjusted = false;
         }
 
@@ -653,7 +653,7 @@ public class GiveFragment extends Fragment implements
                             int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseManager.startActionRemoveTarget(mContext, mTargetList.get(position));
+                            DatabaseManager.startActionRemoveTarget(mContext, mTargetList.get(position)); // Locks UI on signout
                             break;
                         default:
                     }

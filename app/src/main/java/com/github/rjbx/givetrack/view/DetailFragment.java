@@ -244,7 +244,7 @@ public class DetailFragment extends Fragment {
 //        drawActionButton();
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany);
+            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany); // Does not lock UI on signout
             else DatabaseManager.startActionUntargetCompany(mContext, sCompany);
             mEnabled = false;
         }
