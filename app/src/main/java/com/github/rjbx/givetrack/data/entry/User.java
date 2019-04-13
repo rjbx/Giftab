@@ -17,6 +17,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  * persisted locally with {@link android.content.ContentProvider}
  * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
+// TODO: Convert giveTiming attribute to String
 @IgnoreExtraProperties
 public class User implements Entry, Parcelable, Cloneable {
 
@@ -26,7 +27,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private boolean giveReset;
     private int giveRounding;
     private long targetStamp; // Time of most recent change to target table
-    private String giveTiming;
+    private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
     private int glanceTheme;
@@ -67,7 +68,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeString(giveImpact);
         dest.writeString(giveMagnitude);
         dest.writeLong(giveAnchor);
-        dest.writeString(giveTiming);
+        dest.writeInt(giveTiming);
         dest.writeInt(giveRounding);
         dest.writeLong(glanceAnchor);
         dest.writeInt(glanceSince ? 1 : 0);
@@ -104,7 +105,7 @@ public class User implements Entry, Parcelable, Cloneable {
         giveImpact = source.readString();
         giveMagnitude = source.readString();
         giveAnchor = source.readLong();
-        giveTiming = source.readString();
+        giveTiming = source.readInt();
         giveRounding = source.readInt();
         glanceAnchor = source.readLong();
         glanceSince = source.readInt() == 1;
@@ -180,7 +181,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String userBirthdate,
             String userGender,
             long giveAnchor,
-            String giveTiming,
+            int giveTiming,
             int giveRounding,
             long glanceAnchor,
             boolean glanceSince,
@@ -256,8 +257,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGiveMagnitude(String giveMagnitude) { this.giveMagnitude = giveMagnitude; }
     public long getGiveAnchor() { return giveAnchor; }
     public void setGiveAnchor(long giveAnchor) { this.giveAnchor = giveAnchor; }
-    public String getGiveTiming() { return giveTiming; }
-    public void setGiveTiming(String giveTiming) { this.giveTiming = giveTiming; }
+    public int getGiveTiming() { return giveTiming; }
+    public void setGiveTiming(int giveTiming) { this.giveTiming = giveTiming; }
     public int getGiveRounding() { return giveRounding; }
     public void setGiveRounding(int giveRounding) { this.giveRounding = giveRounding; }
     public long getGlanceAnchor() { return glanceAnchor; }
@@ -348,7 +349,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
         if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
-        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (String) map.get(COLUMN_GIVE_TIMING);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
         if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) map.get(COLUMN_GIVE_ROUNDING);
         if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
         if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
@@ -425,7 +426,7 @@ public class User implements Entry, Parcelable, Cloneable {
         giveImpact = values.getAsString(COLUMN_GIVE_IMPACT);
         giveMagnitude = values.getAsString(COLUMN_GIVE_MAGNITUDE);
         giveAnchor = values.getAsLong(COLUMN_GIVE_ANCHOR);
-        giveTiming = values.getAsString(COLUMN_GIVE_TIMING);
+        giveTiming = values.getAsInteger(COLUMN_GIVE_TIMING);
         giveRounding = values.getAsInteger(COLUMN_GIVE_ROUNDING);
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
         glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
@@ -469,7 +470,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.giveImpact = "0";
         user.giveMagnitude = "0.01";
         user.giveAnchor = 0;
-        user.giveTiming = "2";
+        user.giveTiming = 0;
         user.giveRounding = 0;
         user.glanceAnchor = 0;
         user.glanceSince = false;
