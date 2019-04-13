@@ -534,6 +534,7 @@ public class ConfigActivity
                         sp.edit().remove(k).apply();
                     }
                 }
+                // TODO: Map frompreferences to User and persist
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
