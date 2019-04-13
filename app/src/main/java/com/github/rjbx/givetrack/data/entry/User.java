@@ -345,6 +345,7 @@ public class User implements Entry, Parcelable, Cloneable {
         return map;
     }
 
+    // TODO: Add helper method for converting preference values from String to attribute type
     @Override public void fromParameterMap(Map<String, Object> map) {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
