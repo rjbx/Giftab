@@ -82,6 +82,16 @@ public final class AppUtilities {
         }
     }
 
+
+    public static Object stringToNumerical(Object value, Class type) {
+        if (value instanceof String) {
+            if (type == Integer.class) return Integer.valueOf((String) value);
+            else if (type == Long.class) return Long.valueOf((String) value);
+            else if (type == Boolean.class) return Boolean.valueOf((String) value);
+        }
+        return value;
+    }
+
     public static String[] getArgs(String... strings) {
         int arrayLength = strings.length;
         String[] stringArray = new String[arrayLength];

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.github.rjbx.givetrack.AppUtilities;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -349,16 +350,16 @@ public class User implements Entry, Parcelable, Cloneable {
     @Override public void fromParameterMap(Map<String, Object> map) {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
-        if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) convertStringToType(map.get(COLUMN_GIVE_ANCHOR), Long.class);
-        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) convertStringToType(map.get(COLUMN_GIVE_TIMING), Integer.class);
-        if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) convertStringToType(map.get(COLUMN_GIVE_ROUNDING), Integer.class);
-        if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) convertStringToType(map.get(COLUMN_GIVE_RESET), Boolean.class);
-        if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) convertStringToType(map.get(COLUMN_GLANCE_ANCHOR), Long.class);
-        if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) convertStringToType(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
-        if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) convertStringToType(map.get(COLUMN_GLANCE_THEME), Integer.class);
-        if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) convertStringToType(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
-        if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) convertStringToType(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
-        if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) convertStringToType(map.get(COLUMN_INDEX_FILTER), Boolean.class);
+        if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) AppUtilities.stringToNumerical(map.get(COLUMN_GIVE_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) AppUtilities.stringToNumerical(map.get(COLUMN_GIVE_TIMING), Integer.class);
+        if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) AppUtilities.stringToNumerical(map.get(COLUMN_GIVE_ROUNDING), Integer.class);
+        if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_GIVE_RESET), Boolean.class);
+        if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) AppUtilities.stringToNumerical(map.get(COLUMN_GLANCE_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
+        if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.stringToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
+        if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
+        if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
+        if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_INDEX_FILTER), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_COMPANY)) indexCompany = (String) map.get(COLUMN_INDEX_COMPANY);
         if (map.containsKey(COLUMN_INDEX_TERM)) indexTerm = (String) map.get(COLUMN_INDEX_TERM);
         if (map.containsKey(COLUMN_INDEX_CITY)) indexCity = (String) map.get(COLUMN_INDEX_CITY);
@@ -371,23 +372,14 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_INDEX_ORDER)) indexOrder = (String) map.get(COLUMN_INDEX_ORDER);
         if (map.containsKey(COLUMN_JOURNAL_SORT)) journalSort = (String) map.get(COLUMN_JOURNAL_SORT);
         if (map.containsKey(COLUMN_JOURNAL_ORDER)) journalOrder = (String) map.get(COLUMN_JOURNAL_ORDER);
-        if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) convertStringToType(map.get(COLUMN_RECORD_STAMP), Long.class);
-        if (map.containsKey(COLUMN_TARGET_STAMP)) targetStamp = (long) convertStringToType(map.get(COLUMN_TARGET_STAMP), Long.class);
-        if (map.containsKey(COLUMN_USER_STAMP)) userStamp = (long) convertStringToType(map.get(COLUMN_USER_STAMP), Long.class);
+        if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) AppUtilities.stringToNumerical(map.get(COLUMN_RECORD_STAMP), Long.class);
+        if (map.containsKey(COLUMN_TARGET_STAMP)) targetStamp = (long) AppUtilities.stringToNumerical(map.get(COLUMN_TARGET_STAMP), Long.class);
+        if (map.containsKey(COLUMN_USER_STAMP)) userStamp = (long) AppUtilities.stringToNumerical(map.get(COLUMN_USER_STAMP), Long.class);
         if (map.containsKey(COLUMN_UID)) uid = (String) map.get(COLUMN_UID);
         if (map.containsKey(COLUMN_USER_EMAIL)) userEmail = (String) map.get(COLUMN_USER_EMAIL);
-        if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) convertStringToType(map.get(COLUMN_USER_ACTIVE), Boolean.class);
+        if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) AppUtilities.stringToNumerical(map.get(COLUMN_USER_ACTIVE), Boolean.class);
         if (map.containsKey(COLUMN_USER_BIRTHDATE)) userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
         if (map.containsKey(COLUMN_USER_GENDER)) userGender = (String) map.get(COLUMN_USER_GENDER);
-    }
-
-    public static Object convertStringToType(Object value, Class type) {
-        if (value instanceof String) {
-            if (type == Integer.class) return Integer.valueOf((String) value);
-            else if (type == Long.class) return Long.valueOf((String) value);
-            else if (type == Boolean.class) return Boolean.valueOf((String) value);
-        }
-        return value;
     }
 
     @Override public ContentValues toContentValues() {
