@@ -345,38 +345,38 @@ public class User implements Entry, Parcelable, Cloneable {
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
-        giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
-        giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
-        giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
-        giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
-        giveRounding = (int) map.get(COLUMN_GIVE_ROUNDING);
-        giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
-        glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
-        glanceSince = (boolean) map.get(COLUMN_GLANCE_SINCE);
-        glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
-        indexDialog = (boolean) map.get(COLUMN_INDEX_DIALOG);
-        indexFocus = (boolean) map.get(COLUMN_INDEX_FOCUS);
-        indexFilter = (boolean) map.get(COLUMN_INDEX_FILTER);
-        indexCompany = (String) map.get(COLUMN_INDEX_COMPANY);
-        indexTerm = (String) map.get(COLUMN_INDEX_TERM);
-        indexCity = (String) map.get(COLUMN_INDEX_CITY);
-        indexState = (String) map.get(COLUMN_INDEX_STATE);
-        indexZip = (String) map.get(COLUMN_INDEX_ZIP);
-        indexMinrating = (String) map.get(COLUMN_INDEX_MINRATING);
-        indexPages = (String) map.get(COLUMN_INDEX_PAGES);
-        indexRows = (String) map.get(COLUMN_INDEX_ROWS);
-        indexSort = (String) map.get(COLUMN_INDEX_SORT);
-        indexOrder = (String) map.get(COLUMN_INDEX_ORDER);
-        journalSort = (String) map.get(COLUMN_JOURNAL_SORT);
-        journalOrder = (String) map.get(COLUMN_JOURNAL_ORDER);
-        recordStamp = (long) map.get(COLUMN_RECORD_STAMP);
-        targetStamp = (long) map.get(COLUMN_TARGET_STAMP);
-        userStamp = (long) map.get(COLUMN_USER_STAMP);
-        uid = (String) map.get(COLUMN_UID);
-        userEmail = (String) map.get(COLUMN_USER_EMAIL);
-        userActive = (boolean) map.get(COLUMN_USER_ACTIVE);
-        userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
-        userGender = (String) map.get(COLUMN_USER_GENDER);
+        if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
+        if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
+        if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
+        if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) map.get(COLUMN_GIVE_ROUNDING);
+        if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
+        if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
+        if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) map.get(COLUMN_GLANCE_SINCE);
+        if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
+        if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) map.get(COLUMN_INDEX_DIALOG);
+        if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) map.get(COLUMN_INDEX_FOCUS);
+        if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) map.get(COLUMN_INDEX_FILTER);
+        if (map.containsKey(COLUMN_INDEX_COMPANY)) indexCompany = (String) map.get(COLUMN_INDEX_COMPANY);
+        if (map.containsKey(COLUMN_INDEX_TERM)) indexTerm = (String) map.get(COLUMN_INDEX_TERM);
+        if (map.containsKey(COLUMN_INDEX_CITY)) indexCity = (String) map.get(COLUMN_INDEX_CITY);
+        if (map.containsKey(COLUMN_INDEX_STATE)) indexState = (String) map.get(COLUMN_INDEX_STATE);
+        if (map.containsKey(COLUMN_INDEX_ZIP)) indexZip = (String) map.get(COLUMN_INDEX_ZIP);
+        if (map.containsKey(COLUMN_INDEX_MINRATING)) indexMinrating = (String) map.get(COLUMN_INDEX_MINRATING);
+        if (map.containsKey(COLUMN_INDEX_PAGES)) indexPages = (String) map.get(COLUMN_INDEX_PAGES);
+        if (map.containsKey(COLUMN_INDEX_ROWS)) indexRows = (String) map.get(COLUMN_INDEX_ROWS);
+        if (map.containsKey(COLUMN_INDEX_SORT)) indexSort = (String) map.get(COLUMN_INDEX_SORT);
+        if (map.containsKey(COLUMN_INDEX_ORDER)) indexOrder = (String) map.get(COLUMN_INDEX_ORDER);
+        if (map.containsKey(COLUMN_JOURNAL_SORT)) journalSort = (String) map.get(COLUMN_JOURNAL_SORT);
+        if (map.containsKey(COLUMN_JOURNAL_ORDER)) journalOrder = (String) map.get(COLUMN_JOURNAL_ORDER);
+        if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) map.get(COLUMN_RECORD_STAMP);
+        if (map.containsKey(COLUMN_TARGET_STAMP)) targetStamp = (long) map.get(COLUMN_TARGET_STAMP);
+        if (map.containsKey(COLUMN_USER_STAMP)) userStamp = (long) map.get(COLUMN_USER_STAMP);
+        if (map.containsKey(COLUMN_UID)) uid = (String) map.get(COLUMN_UID);
+        if (map.containsKey(COLUMN_USER_EMAIL)) userEmail = (String) map.get(COLUMN_USER_EMAIL);
+        if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) map.get(COLUMN_USER_ACTIVE);
+        if (map.containsKey(COLUMN_USER_BIRTHDATE)) userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
+        if (map.containsKey(COLUMN_USER_GENDER)) userGender = (String) map.get(COLUMN_USER_GENDER);
     }
 
     @Override public ContentValues toContentValues() {
