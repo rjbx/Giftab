@@ -17,6 +17,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  * persisted locally with {@link android.content.ContentProvider}
  * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
+// TODO: Convert giveTiming attribute to String
 @IgnoreExtraProperties
 public class User implements Entry, Parcelable, Cloneable {
 
