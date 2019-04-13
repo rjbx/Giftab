@@ -422,7 +422,7 @@ public final class DatabaseAccessor {
 
         User u = User.getDefault();
 
-        // TODO: Offset empty database default values
+        // TODO: Persist default user if none retrieved and escape validation pull sequence where both local and remote are default user
         u.setUserStamp(-2);
         u.setTargetStamp(-2);
         u.setRecordStamp(-2);
