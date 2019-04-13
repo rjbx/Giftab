@@ -144,7 +144,7 @@
     <string name="pref_indexPages_key" translatable="false">indexPages</string>
     <string name="pref_indexSize_key" translatable="false">indexRows</string>
     <string name="pref_indexMinrating_key" translatable="false">indexMinrating</string>
-    <string name="pref_indexFilter_key" translatable="false">indexFundraising</string>
+    <string name="pref_indexFilter_key" translatable="false">indexFilter</string>
     <string name="pref_indexSort_key" translatable="false">indexSort</string>
     <string name="pref_indexOrder_key" translatable="false">indexOrder</string>
     <string name="pref_journalSort_key" translatable="false">journalSort</string>
