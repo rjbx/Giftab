@@ -404,6 +404,7 @@ public final class DatabaseAccessor {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
+        // TODO: Set condition for breakout of retrieval attempt
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -418,6 +419,8 @@ public final class DatabaseAccessor {
         catch (ExecutionException|InterruptedException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
+
+        // TODO: Offset empty database default values
         u.setUserStamp(-1);
         u.setTargetStamp(-1);
         u.setRecordStamp(-1);
