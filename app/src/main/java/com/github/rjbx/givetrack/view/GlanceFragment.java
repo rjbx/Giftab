@@ -231,7 +231,7 @@ public class GlanceFragment extends Fragment implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sUser.setGlanceAnchor(mAnchorDate);
-                    if (sUser.getGiveTiming().equals("0")) sUser.setGiveAnchor(System.currentTimeMillis());
+                    if (sUser.getGiveTiming() == 0) sUser.setGiveAnchor(System.currentTimeMillis());
                     DatabaseManager.startActionUpdateUser(getContext(), sUser);
                     break;
                 default:

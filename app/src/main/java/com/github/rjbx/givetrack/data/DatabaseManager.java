@@ -531,7 +531,7 @@ public final class DatabaseManager extends IntentService {
         if (userList.size() > 1) { startActionFetchUser(this); return; }
         else activeUser = userList.get(0);
 
-        if (activeUser.getGiveTiming().equals("0") && !AppUtilities.dateIsCurrent(activeUser.getGiveAnchor())) {
+        if (activeUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(activeUser.getGiveAnchor())) {
             activeUser.setGiveAnchor(System.currentTimeMillis());
             DatabaseManager.startActionUpdateUser(this, activeUser);
         }
@@ -573,9 +573,9 @@ public final class DatabaseManager extends IntentService {
             records.add(record);
         } DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records.toArray(new Record[0])));
 
-        if (activeUser.getGiveTiming().equals("1")) {
+        if (activeUser.getGiveTiming() == 1) {
             activeUser.setGiveAnchor(System.currentTimeMillis());
-            activeUser.setGiveTiming("0");
+            activeUser.setGiveTiming(0);
         } DISK_IO.execute(() -> DatabaseAccessor.addUser(this, activeUser));
     }
 

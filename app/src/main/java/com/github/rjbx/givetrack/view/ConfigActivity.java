@@ -735,7 +735,7 @@ public class ConfigActivity
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
                         sUser.setGiveAnchor(System.currentTimeMillis());
-                        sUser.setGiveTiming("0");
+                        sUser.setGiveTiming(0);
                         DatabaseManager.startActionUpdateUser(getActivity(), sUser);
                         break;
                     default:
