@@ -382,12 +382,12 @@ public class User implements Entry, Parcelable, Cloneable {
     }
 
     public static Object convertStringToType(Object value, Class type) {
-
         if (value instanceof String) {
             if (type == Integer.class) return Integer.valueOf((String) value);
             else if (type == Long.class) return Long.valueOf((String) value);
             else if (type == Boolean.class) return Boolean.valueOf((String) value);
         }
+        return value;
     }
 
     @Override public ContentValues toContentValues() {
