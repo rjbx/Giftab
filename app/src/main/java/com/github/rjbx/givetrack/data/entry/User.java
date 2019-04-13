@@ -381,6 +381,15 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_USER_GENDER)) userGender = (String) map.get(COLUMN_USER_GENDER);
     }
 
+    public static Object convertStringToType(Object value, Class type) {
+
+        if (value instanceof String) {
+            if (type == Integer.class) return Integer.valueOf((String) value);
+            else if (type == Long.class) return Long.valueOf((String) value);
+            else if (type == Boolean.class) return Boolean.valueOf((String) value);
+        }
+    }
+
     @Override public ContentValues toContentValues() {
         ContentValues values = new ContentValues();
         values.put(COLUMN_UID, uid);
