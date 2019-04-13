@@ -48,7 +48,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SPAWN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Prevent WebView and Button from flickering when adding target
-// TODO: Resolve preferences to disassociated API request query
 /**
  * Presents a list of entities spawned from a remote data API with toggleable detail pane.
  */

@@ -62,6 +62,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options
 // TODO: Add option to convert guest with account linking
+// TODO: Ensure preference summaries are refereshed when updating preferences handled by click listeners
 /**
  * Presents the application settings.
  */
@@ -524,7 +525,6 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
-                // TODO: Either clear or reset to default values all user index preferences
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 Map map = sp.getAll();
                 Set<Map.Entry<String, Object>> entrySet = map.entrySet();
