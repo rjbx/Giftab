@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
@@ -415,15 +417,15 @@ public final class DatabaseAccessor {
         });
 
         Task<User> task = taskSource.getTask();
-        try { Tasks.await(task); }
-        catch (ExecutionException|InterruptedException e) { task = Tasks.forException(e); }
+        try { Tasks.await(task, 5, TimeUnit.SECONDS); }
+        catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
 
         // TODO: Offset empty database default values
-        u.setUserStamp(-1);
-        u.setTargetStamp(-1);
-        u.setRecordStamp(-1);
+        u.setUserStamp(-2);
+        u.setTargetStamp(-2);
+        u.setRecordStamp(-2);
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
