@@ -349,16 +349,16 @@ public class User implements Entry, Parcelable, Cloneable {
     @Override public void fromParameterMap(Map<String, Object> map) {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
-        if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) map.get(COLUMN_GIVE_ANCHOR);
-        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) map.get(COLUMN_GIVE_TIMING);
-        if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) map.get(COLUMN_GIVE_ROUNDING);
-        if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) map.get(COLUMN_GIVE_RESET);
-        if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) map.get(COLUMN_GLANCE_ANCHOR);
-        if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) map.get(COLUMN_GLANCE_SINCE);
-        if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) map.get(COLUMN_GLANCE_THEME);
-        if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) map.get(COLUMN_INDEX_DIALOG);
-        if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) map.get(COLUMN_INDEX_FOCUS);
-        if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) map.get(COLUMN_INDEX_FILTER);
+        if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) convertStringToType(map.get(COLUMN_GIVE_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) convertStringToType(map.get(COLUMN_GIVE_TIMING), Integer.class);
+        if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) convertStringToType(map.get(COLUMN_GIVE_ROUNDING), Integer.class);
+        if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) convertStringToType(map.get(COLUMN_GIVE_RESET), Boolean.class);
+        if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) convertStringToType(map.get(COLUMN_GLANCE_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) convertStringToType(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
+        if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) convertStringToType(map.get(COLUMN_GLANCE_THEME), Integer.class);
+        if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) convertStringToType(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
+        if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) convertStringToType(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
+        if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) convertStringToType(map.get(COLUMN_INDEX_FILTER), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_COMPANY)) indexCompany = (String) map.get(COLUMN_INDEX_COMPANY);
         if (map.containsKey(COLUMN_INDEX_TERM)) indexTerm = (String) map.get(COLUMN_INDEX_TERM);
         if (map.containsKey(COLUMN_INDEX_CITY)) indexCity = (String) map.get(COLUMN_INDEX_CITY);
@@ -371,12 +371,12 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_INDEX_ORDER)) indexOrder = (String) map.get(COLUMN_INDEX_ORDER);
         if (map.containsKey(COLUMN_JOURNAL_SORT)) journalSort = (String) map.get(COLUMN_JOURNAL_SORT);
         if (map.containsKey(COLUMN_JOURNAL_ORDER)) journalOrder = (String) map.get(COLUMN_JOURNAL_ORDER);
-        if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) map.get(COLUMN_RECORD_STAMP);
-        if (map.containsKey(COLUMN_TARGET_STAMP)) targetStamp = (long) map.get(COLUMN_TARGET_STAMP);
-        if (map.containsKey(COLUMN_USER_STAMP)) userStamp = (long) map.get(COLUMN_USER_STAMP);
+        if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) convertStringToType(map.get(COLUMN_RECORD_STAMP), Long.class);
+        if (map.containsKey(COLUMN_TARGET_STAMP)) targetStamp = (long) convertStringToType(map.get(COLUMN_TARGET_STAMP), Long.class);
+        if (map.containsKey(COLUMN_USER_STAMP)) userStamp = (long) convertStringToType(map.get(COLUMN_USER_STAMP), Long.class);
         if (map.containsKey(COLUMN_UID)) uid = (String) map.get(COLUMN_UID);
         if (map.containsKey(COLUMN_USER_EMAIL)) userEmail = (String) map.get(COLUMN_USER_EMAIL);
-        if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) map.get(COLUMN_USER_ACTIVE);
+        if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) convertStringToType(map.get(COLUMN_USER_ACTIVE), Boolean.class);
         if (map.containsKey(COLUMN_USER_BIRTHDATE)) userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
         if (map.containsKey(COLUMN_USER_GENDER)) userGender = (String) map.get(COLUMN_USER_GENDER);
     }
