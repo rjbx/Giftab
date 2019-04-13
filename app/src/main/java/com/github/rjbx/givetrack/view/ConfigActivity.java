@@ -492,6 +492,7 @@ public class ConfigActivity
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexFocus_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexFilter_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexTerm_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCity_key)), this);
@@ -503,7 +504,6 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
-            handlePreferenceClick(findPreference(getString(R.string.pref_indexFocus_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -512,13 +512,6 @@ public class ConfigActivity
          * Defines behavior on change of each preference value.
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
-            String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
-                if ((boolean) newValue) {
-                    preference.setEnabled(true);
-                } else preference.setEnabled(false);
-                return true;
-            }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
