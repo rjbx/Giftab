@@ -376,7 +376,6 @@ public class ConfigActivity
             } else if (getString(R.string.pref_userBirthdate_key).equals(preferenceKey)) {
                 mCalendar = Calendar.getInstance();
                 String birthdate = sUser.getUserBirthdate();
-                preference.setSummary(sUser.getUserBirthdate());
                 String[] birthdateParams = birthdate.split("/");
                 mCalendar.set(Integer.parseInt(birthdateParams[2]), Integer.parseInt(birthdateParams[0]) - 1, Integer.parseInt(birthdateParams[1]));
                 DatePickerDialog datePicker = new DatePickerDialog(

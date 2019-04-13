@@ -239,11 +239,11 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                     }
                     if (!isPersisted) {
-                        AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                         mUsers.add(mActiveUser);
                         DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                         mProcessStage++;
                     }
+                    AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                     break;
                 case 3:
                     finish();
