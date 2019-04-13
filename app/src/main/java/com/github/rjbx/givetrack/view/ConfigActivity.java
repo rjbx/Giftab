@@ -451,6 +451,7 @@ public class ConfigActivity
         }
     }
 
+    // TODO: Add preference reset option
     /**
      * Fragment bound to preference header for updating spawn settings.
      */
