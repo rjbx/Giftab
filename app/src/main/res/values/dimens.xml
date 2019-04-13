@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--TODO: Update font sizes to maintain visibility at lower resolutions-->
+<!-- until scaling layout dimensions with ConstraintLayout-->
+<!-- test for smallest widths: 320dp, 480dp, 600dp, 720dp-->
+
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -26,6 +29,8 @@
     <dimen name="text_size_symbol">48sp</dimen>
     <dimen name="text_size_bitmap_overlay_message">50sp</dimen>
     <dimen name="text_size_bitmap_overlay_indicator">75sp</dimen>
+
+    <!--Fonts are density independent and will adapt size to device dimensions-->
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="toggle_padding">10dp</dimen>
     <dimen name="description_text">6sp</dimen>

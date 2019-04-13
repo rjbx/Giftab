@@ -2,5 +2,4 @@
 
 <resources>
     <dimen name="activity_horizontal_margin">64dp</dimen>
-    <dimen name="label_text">6.63sp</dimen>
 </resources>
