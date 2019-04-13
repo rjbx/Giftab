@@ -459,7 +459,6 @@ public class User implements Entry, Parcelable, Cloneable {
         } return clone;
     }
 
-    // Resets User stamps
     public static User getDefault() {
         User user = new User();
         user.uid = "";
@@ -491,9 +490,9 @@ public class User implements Entry, Parcelable, Cloneable {
         user.indexOrder = "DESC";
         user.journalSort = "time";
         user.journalOrder = "DESC";
-        user.targetStamp = 0;
-        user.recordStamp = 0;
-        user.userStamp = 0;
+        user.targetStamp = 0; // Resets User stamps
+        user.recordStamp = 0; // Resets User stamps
+        user.userStamp = 0; // Resets User stamps
         return user;
     }
 }

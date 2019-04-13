@@ -353,7 +353,8 @@ public final class DatabaseAccessor {
                 local.delete(rowUri, null, null);
             }
         }
-        updateLocalTableTime(local, entryType, stamp, uid);
+        // Do not update user stamp to prevent recreating user entry on account deletion
+        if (entryType != User.class) updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
@@ -380,8 +381,8 @@ public final class DatabaseAccessor {
                 entryReference.removeValue();
             }
         }
-        // Do not update user stamp to prevent creating user entry on account deletion
-        updateRemoteTableTime(remote, entryType, stamp, uid);
+        // Do not update user stamp to prevent recreating user entry on account deletion
+        if (entryType != User.class) updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
     private static User getActiveUserFromLocal(FirebaseAuth auth, ContentResolver local) {
@@ -432,11 +433,6 @@ public final class DatabaseAccessor {
         ContentValues companyValues = new ContentValues();
         companyValues.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         local.update(uri, companyValues, null,null);
-
-//        if (entryType == User.class) return;
-//        ContentValues entryMap = new ContentValues();
-//        entryMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
-//        local.update(uri, entryMap, null, null);
     }
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
@@ -445,11 +441,6 @@ public final class DatabaseAccessor {
         entryMap.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         userReference.child(uid).updateChildren(entryMap);
-
-//        if (entryType == User.class) return;
-//        Map<String, Object> userMap = new HashMap<>();
-//        userMap.put(DataUtilities.getTimeTableColumn(User.class), stamp);
-//        userReference.child(uid).updateChildren(userMap);
     }
 
     private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
@@ -473,10 +464,8 @@ public final class DatabaseAccessor {
                 if (entryType == User.class) {
                     T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
-                        // Prevents HomeActivity SectionsPagerAdapter lock on validation due to equivalent stamps
-                        // Resets User stamps
-                        ((User) entry).setRecordStamp(0);
-                        ((User) entry).setTargetStamp(0);
+                        ((User) entry).setRecordStamp(0);     // Resets User stamps
+                        ((User) entry).setTargetStamp(0);     // Resets User stamps
 
                         ((User) entry).setUserActive(true);
                     }
