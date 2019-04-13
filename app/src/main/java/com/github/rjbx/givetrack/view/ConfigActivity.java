@@ -524,8 +524,17 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
-
                 // TODO: Either clear or reset to default values all user index preferences
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                Map map = sp.getAll();
+                Set<Map.Entry<String, Object>> entrySet = map.entrySet();
+                for (Map.Entry<String, Object> entry : entrySet) {
+                    String k = entry.getKey();
+                    if (k.contains("index")) {
+                        sp.edit().remove(k).apply();
+                    }
+                }
+                PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
