@@ -73,7 +73,7 @@
       "giveMagnitude" : "0.1",
       "giveReset" : false,
       "giveRounding" : 0,
-      "giveTiming" : 0,
+      "giveTiming" : "0",
       "glanceAnchor" : 0,
       "glanceSince" : false,
       "glanceTheme" : 0,

@@ -122,7 +122,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_GIVE_IMPACT + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GIVE_MAGNITUDE + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GIVE_ANCHOR + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GIVE_TIMING + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GIVE_TIMING + " STRING NOT NULL, "             +
                         UserEntry.COLUMN_GIVE_ROUNDING + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +

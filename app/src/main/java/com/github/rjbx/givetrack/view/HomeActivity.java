@@ -170,12 +170,12 @@ public class HomeActivity extends AppCompatActivity implements
                 AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
-                if (mUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(mUser.getGiveAnchor())) {
+                if (mUser.getGiveTiming().equals("0") && !AppUtilities.dateIsCurrent(mUser.getGiveAnchor())) {
                     mUser.setGiveAnchor(System.currentTimeMillis());
                     DatabaseManager.startActionUpdateUser(this, mUser);
                 }
                 Calendar calendar = Calendar.getInstance();
-                if (mUser.getGiveTiming() != 0) calendar.setTimeInMillis(mUser.getGiveAnchor());
+                if (mUser.getGiveTiming().equals("0")) calendar.setTimeInMillis(mUser.getGiveAnchor());
                 DatePickerDialog datePicker = new DatePickerDialog(
                         this,
                         this,
@@ -353,7 +353,7 @@ public class HomeActivity extends AppCompatActivity implements
                         mCurrentDialog.show();
                         mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                         mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
-                    } else mUser.setGiveTiming(0);
+                    } else mUser.setGiveTiming("0");
                     DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 default:
@@ -361,11 +361,11 @@ public class HomeActivity extends AppCompatActivity implements
         } else if (dialog == mCurrentDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
-                    mUser.setGiveTiming(2);
+                    mUser.setGiveTiming("2");
                     DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    mUser.setGiveTiming(1);
+                    mUser.setGiveTiming("1");
                     DatabaseManager.startActionUpdateUser(this, mUser);
                     break;
                 default:
