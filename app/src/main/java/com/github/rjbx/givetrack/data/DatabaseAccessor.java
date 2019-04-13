@@ -50,6 +50,7 @@ public final class DatabaseAccessor {
         User user =  getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
 
         Map<String, String> request = new HashMap<>();
+        // TODO: Persist focus preference selection
         if (user.getIndexFocus()) request.put(DatasourceContract.PARAM_EIN, user.getIndexCompany());
         else {
             request.put(DatasourceContract.PARAM_SPAWN, user.getIndexTerm());
