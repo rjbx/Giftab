@@ -504,8 +504,8 @@ public final class DatabaseAccessor {
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else if (localTableStamp != -1 && remoteTableStamp != -1) local.notifyChange(DataUtilities.getContentUri(entryType), null);
         else if (entryType == User.class) {
-            addEntriesToLocal(local, entryType, System.currentTimeMillis(), true, localUser);
-            addEntriesToRemote(remote, entryType, System.currentTimeMillis(), true, remoteUser);
+            addEntriesToLocal(local, User.class, System.currentTimeMillis(), true, localUser);
+            addEntriesToRemote(remote, User.class, System.currentTimeMillis(), true, remoteUser);
         }
     }
 }
