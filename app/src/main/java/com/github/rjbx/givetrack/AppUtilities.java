@@ -83,13 +83,14 @@ public final class AppUtilities {
     }
 
 
-    public static Object stringToNumerical(Object value, Class type) {
+    public static Object preferenceValueToNumerical(Object value, Class type) {
         if (value instanceof String) {
-            if (type == Integer.class) return Integer.valueOf((String) value);
+            if (type == Boolean.class) return Boolean.valueOf((String) value);
+            else if (type == Integer.class) return Integer.valueOf((String) value);
             else if (type == Long.class) return Long.valueOf((String) value);
-            else if (type == Boolean.class) return Boolean.valueOf((String) value);
-        }
-        return value;
+            else if (type == Float.class) return Float.valueOf((String) value);
+            else if (type == Double.class) return Double.valueOf((String) value);
+        } return value;
     }
 
     public static String[] getArgs(String... strings) {
