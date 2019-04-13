@@ -58,7 +58,6 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
-// TODO: Handle resetting of User targetStamp on sign out after removing target or adjusting its percent and thereafter preventing pull from remote to local during validation
 /**
  * Provides the logic and views for a user activity management screen.
  */
