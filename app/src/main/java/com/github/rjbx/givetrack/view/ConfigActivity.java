@@ -451,7 +451,6 @@ public class ConfigActivity
         }
     }
 
-    // TODO: Add preference reset option
     /**
      * Fragment bound to preference header for updating spawn settings.
      */
@@ -505,6 +504,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -523,7 +523,10 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
+            if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
+
+                // TODO: Either clear or reset to default values all user index preferences
+            } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
                 mClearDialog.setMessage(getString(R.string.message_clear_all, entryName, "fetchinng", entryName));

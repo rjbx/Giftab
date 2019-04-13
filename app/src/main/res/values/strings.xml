@@ -160,6 +160,7 @@
     <string name="pref_giveRounding_key" translatable="false">giveRounding</string>
     <string name="pref_indexCompany_key" translatable="false">indexCompany</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
+    <string name="pref_reset_key" translatable="false">resetSearch</string>
     <string name="pref_show_key" translatable="false">showAll</string>
     <string name="pref_payments_key" translatable="false">payments</string>
     <string name="pref_indexTerm_label">Keywords</string>
@@ -181,6 +182,7 @@
     <string name="pref_giveCurrent_label">Reset Date</string>
     <string name="pref_magnitude_label">Adjust Magnitude</string>
     <string name="pref_clear_label">Clear Data</string>
+    <string name="pref_reset_label">Reset Search</string>
     <string name="pref_show_label">Show All</string>
     <string name="pref_payments_label">Process Gifts</string>
 
