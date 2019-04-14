@@ -229,7 +229,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case 2:
                     // TODO: Ensure processing when validation does not update local database preventing callback
                     // Locks on sign in with new User instance
-                    boolean isPersisted = false;
+                    boolean isPersisted = data.getCount() > 0;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
                         if (isPersisted) {
