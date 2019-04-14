@@ -482,7 +482,7 @@ public final class DatabaseAccessor {
         });
     }
 
-    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
+    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType, boolean forcePull) {
 
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
