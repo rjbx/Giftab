@@ -57,13 +57,11 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options
 // TODO: Add option to convert guest with account linking
-// TODO: Ensure preference summaries are refereshed when updating preferences handled by click listeners
 // TODO: Explicity update and invoke listener callback for all custom preferences
 /**
  * Presents the application settings.
@@ -157,24 +155,6 @@ public class ConfigActivity
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
-    public static void setSummaries(PreferenceFragment pGroup) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(pGroup.getContext());
-        Set<String> keySet = sharedPreferences.getAll().keySet();
-        for (String key : keySet) changeSummary((pGroup.findPreference(key)), sharedPreferences.getAll().get(key));
-    }
-
-    /**
-     * Sets up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle("Settings");
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary, null)));
-        }
-    }
-
     /**
      * Fragment bound to preference header for updating advanced settings.
      */
@@ -227,6 +207,12 @@ public class ConfigActivity
         }
     }
 
+    public static void changeSummaries(PreferenceFragment pGroup) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(pGroup.getContext());
+        Set<String> keySet = sharedPreferences.getAll().keySet();
+        for (String key : keySet) changeSummary((pGroup.findPreference(key)), sharedPreferences.getAll().get(key));
+    }
+
     /**
      * Binds value change listener to and initializes preference.
      */
@@ -241,6 +227,18 @@ public class ConfigActivity
     private static void handlePreferenceClick(Preference preference, Preference.OnPreferenceClickListener listener) {
         if (preference == null) return;
         preference.setOnPreferenceClickListener(listener);
+    }
+
+    /**
+     * Sets up the {@link android.app.ActionBar}, if the API is available.
+     */
+    private void setupActionBar() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Settings");
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary, null)));
+        }
     }
 
     /**
@@ -301,7 +299,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
@@ -474,7 +472,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
@@ -541,7 +539,7 @@ public class ConfigActivity
                 }
                 // TODO: Map frompreferences to User and persist
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
-                setSummaries(this);
+                changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
                 DatabaseManager.startActionUpdateUser(getContext(), sUser);
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
@@ -606,7 +604,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
@@ -787,7 +785,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
@@ -879,7 +877,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
@@ -915,7 +913,7 @@ public class ConfigActivity
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
-            setSummaries(this);
+            changeSummaries(this);
         }
 
         /**
