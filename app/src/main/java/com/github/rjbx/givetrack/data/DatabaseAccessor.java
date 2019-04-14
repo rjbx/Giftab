@@ -505,6 +505,7 @@ public final class DatabaseAccessor {
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else if (localTableStamp > -1 || remoteTableStamp > -1) local.notifyChange(DataUtilities.getContentUri(entryType), null);
         else if (entryType == User.class) {
+            // TODO: Consider replacing with notifydatasetchanged as will be replaced in AuthActivity callback
             localUser.setUserStamp(0);
             localUser.setTargetStamp(0);
             localUser.setRecordStamp(0);
