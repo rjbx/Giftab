@@ -322,7 +322,7 @@ public class ConfigActivity
             //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
+//            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
