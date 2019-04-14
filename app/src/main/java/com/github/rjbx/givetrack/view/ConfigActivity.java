@@ -333,7 +333,6 @@ public class ConfigActivity
             mCalendar.set(year, month, dayOfMonth);
             String birthdate = String.format("%s/%s/%s", month + 1, dayOfMonth, year);
             PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
-            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
         }
 
         /**
