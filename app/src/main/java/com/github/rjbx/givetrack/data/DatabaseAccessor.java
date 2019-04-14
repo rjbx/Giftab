@@ -482,7 +482,7 @@ public final class DatabaseAccessor {
         });
     }
 
-    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType, boolean forcePull) {
+    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
@@ -494,6 +494,7 @@ public final class DatabaseAccessor {
         if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else {
             if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+            else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
             local.notifyChange(DataUtilities.getContentUri(entryType), null);
         }
     }
