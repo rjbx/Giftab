@@ -57,6 +57,7 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -122,6 +123,12 @@ public class ConfigActivity
                 || JournalPreferenceFragment.class.getName().equals(fragmentName)
                 || AdvancedPreferenceFragment.class.getName().equals(fragmentName)
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Timber.v(data.toString());
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**
@@ -332,7 +339,10 @@ public class ConfigActivity
         @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mCalendar.set(year, month, dayOfMonth);
             String birthdate = String.format("%s/%s/%s", month + 1, dayOfMonth, year);
-            findPreference(getString(R.string.pref_userBirthdate_key)).getEditor().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
+
+            Preference preference = findPreference(getString(R.string.pref_userBirthdate_key));
+            preference.getEditor().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
+            onPreferenceChange(preference, birthdate);
         }
 
         /**
