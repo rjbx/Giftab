@@ -492,8 +492,8 @@ public final class DatabaseAccessor {
 
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
-        // TODO: For credentialed users, generate pingback from remote call to lock UI if connection unavailable to prevent overwriting existing remote with default data
-        // TODO: Enforce same process on in-app updates for signed-in users with no remote connection
+        // TODO: If connection unavailable block first-time sign-in to prevent overwriting existing remote with default data
+        // TODO: If connection unavailable block in-app database updates but allow navigation for signed-in users with no remote connection
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
 
