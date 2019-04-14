@@ -227,7 +227,7 @@ public class AuthActivity extends AppCompatActivity implements
                     handleAction(getIntent().getAction());
                     break;
                 case 2:
-                    // Reached from validation callback
+                    // Reached from validation guaranteed callback
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
@@ -240,7 +240,6 @@ public class AuthActivity extends AppCompatActivity implements
                     }
                     if (!isPersisted) {
                         mUsers.add(mActiveUser);
-                        // TODO: Prevent UI lock on HomeActivity load caused by equivalent User stamps passed to remote and local on update
                         DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                         mProcessStage++;
                     }
