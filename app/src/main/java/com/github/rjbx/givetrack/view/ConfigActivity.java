@@ -550,6 +550,7 @@ public class ConfigActivity
                         sp.edit().remove(k).apply();
                     }
                 }
+                // TODO: Factor out reliance on sharedpreferences
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
                 changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
