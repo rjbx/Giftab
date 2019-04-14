@@ -423,9 +423,9 @@ public final class DatabaseAccessor {
         User u = User.getDefault();
 
         // TODO: Persist default user if none retrieved and escape validation pull sequence where both local and remote are default user
-        u.setUserStamp(-2);
-        u.setTargetStamp(-2);
-        u.setRecordStamp(-2);
+        u.setUserStamp(-1);
+        u.setTargetStamp(-1);
+        u.setRecordStamp(-1);
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
@@ -505,6 +505,9 @@ public final class DatabaseAccessor {
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else if (localTableStamp > -1 || remoteTableStamp > -1) local.notifyChange(DataUtilities.getContentUri(entryType), null);
         else if (entryType == User.class) {
+            localUser.setUserStamp(0);
+            localUser.setTargetStamp(0);
+            localUser.setRecordStamp(0);
             addEntriesToLocal(local, User.class, System.currentTimeMillis(), true, localUser);
             addEntriesToRemote(remote, User.class, System.currentTimeMillis(), true, remoteUser);
         }
