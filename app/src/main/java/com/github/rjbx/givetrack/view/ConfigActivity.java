@@ -195,6 +195,7 @@ public class ConfigActivity
         preference.setOnPreferenceChangeListener(listener);
         Object preferenceValue = preference.getPreferenceManager().getSharedPreferences().getAll().get(preference.getKey());
         changeSummary(preference, preferenceValue);
+        changeUser(preference, preferenceValue);
     }
 
     /**
