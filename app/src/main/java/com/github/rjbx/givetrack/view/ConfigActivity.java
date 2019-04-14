@@ -616,7 +616,6 @@ public class ConfigActivity
             if (roundingPref != null && roundingPref.getValue() == null)
                 roundingPref.setValueIndex(roundingPref.getEntries().length - 1);
             handlePreferenceChange(findPreference(getString(R.string.pref_giveRounding_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_giveMagnitude_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_giveReset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_giveCurrent_key)), this);
