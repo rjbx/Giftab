@@ -537,7 +537,7 @@ public class ConfigActivity
                         sp.edit().remove(k).apply();
                     }
                 }
-                // TODO: Map frompreferences to User and persist
+                // TODO: Modify activity to implement OnSharedPreferenceListener to sync changes
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
                 changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
