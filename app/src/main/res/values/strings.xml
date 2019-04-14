@@ -223,6 +223,7 @@
         <item>4</item>
     </string-array>
     <string-array name="list_preference_state">
+        <!--TODO: Rearrange labels to correspond to keys-->
         <item>Alabama</item>
         <item>Alaska</item>
         <item>Arizona</item>
