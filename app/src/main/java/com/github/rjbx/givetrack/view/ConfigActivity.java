@@ -57,6 +57,7 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -459,7 +460,7 @@ public class ConfigActivity
      * Fragment bound to preference header for updating spawn settings.
      */
     public static class IndexPreferenceFragment extends PreferenceFragment implements
-            SharedPreferences.OnSharedPreferenceChangeListener,
+/*            SharedPreferences.OnSharedPreferenceChangeListener,*/
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
@@ -476,11 +477,11 @@ public class ConfigActivity
             changeSummaries(this);
         }
 
-        @Override
+/*        @Override
         public void onStart() {
-            super.onStart();
             PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-        }
+            super.onStart();
+        }*/
 
         /**
          * Initializes preferences with defaults and listeners for value changes and view clicks.
@@ -515,16 +516,16 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
-            handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
+//            handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
-        @Override
+/*        @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             ConfigActivity.changeSummary(findPreference(key), sharedPreferences.getAll().get(key));
             ConfigActivity.changeUser(findPreference(key), sharedPreferences.getAll().get(key));
-        }
+        }*/
 
         /**
          * Defines behavior on change of each preference value.
@@ -540,8 +541,9 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
+            // TODO: Implement with SharedPreferences
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+/*                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 Map map = sp.getAll();
                 Set<Map.Entry<String, Object>> entrySet = map.entrySet();
                 for (Map.Entry<String, Object> entry : entrySet) {
@@ -550,11 +552,11 @@ public class ConfigActivity
                         sp.edit().remove(k).apply();
                     }
                 }
-                // TODO: Factor out reliance on sharedpreferences
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
                 changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
                 DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                this.onCreate(null);*/
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
@@ -593,11 +595,11 @@ public class ConfigActivity
             }
         }
 
-        @Override
-        public void onStop() {
-            PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-            super.onStop();
-        }
+//        @Override
+//        public void onStop() {
+//            PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+//            super.onStop();
+//        }
     }
 
     /**
