@@ -125,12 +125,6 @@ public class ConfigActivity
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Timber.v(data.toString());
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
     /**
      * Defines the data to be returned from {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
