@@ -188,15 +188,6 @@ public class ConfigActivity
     }
 
     /**
-     * Binds value change listener to and initializes preference.
-     */
-    private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
-        if (preference == null) return;
-        preference.setOnPreferenceChangeListener(listener);
-        Object preferenceValue = preference.getPreferenceManager().getSharedPreferences().getAll().get(preference.getKey());
-    }
-
-    /**
      * Updates the preference summary to reflect its new value.
      */
     private static void changeSummary(Preference changedPreference, Object newValue) {
@@ -231,6 +222,14 @@ public class ConfigActivity
                 } else changedPreference.setSummary(stringValue);
             } else if (newValue instanceof Integer || newValue instanceof Float) changedPreference.setSummary(String.valueOf(newValue));
         }
+    }
+
+    /**
+     * Binds value change listener to and initializes preference.
+     */
+    private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
+        if (preference == null) return;
+        preference.setOnPreferenceChangeListener(listener);
     }
 
     /**
