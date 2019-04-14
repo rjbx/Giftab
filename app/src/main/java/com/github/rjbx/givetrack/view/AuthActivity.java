@@ -241,6 +241,7 @@ public class AuthActivity extends AppCompatActivity implements
                     }
                     if (!isPersisted) {
                         mUsers.add(mActiveUser);
+                        // TODO: Prevent UI lock on HomeActivity load caused by equivalent User stamps passed to remote and local on update
                         DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                         mProcessStage++;
                     }
