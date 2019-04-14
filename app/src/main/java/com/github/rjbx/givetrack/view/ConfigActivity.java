@@ -713,10 +713,11 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        sUser.setGiveMagnitude(percentIntToDecimalString(mSeekProgress));
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_giveMagnitude_key), sUser.getGiveMagnitude()).apply();
+                        String magnitude = percentIntToDecimalString(mSeekProgress);
+                        sUser.setGiveMagnitude(magnitude);
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
-                        handlePreferenceChange(magnitudePreference, this);
+                        magnitudePreference.getEditor().putString(magnitudePreference.getKey(), magnitude).apply();
+                        onPreferenceChange(magnitudePreference, magnitude);
                         break;
                     default:
                 }
