@@ -403,7 +403,6 @@ public final class DatabaseAccessor {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
-        // TODO: Set condition for breakout of retrieval attempt
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -414,12 +413,11 @@ public final class DatabaseAccessor {
         });
 
         Task<User> task = taskSource.getTask();
-        try { Tasks.await(task, 5, TimeUnit.SECONDS); }
+        try { Tasks.await(task, 3, TimeUnit.SECONDS); } // Breakout of retrieval attempt after 3 seconds if data unavailable
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
 
-        // TODO: Persist default user if none retrieved and escape validation pull sequence where both local and remote are default user
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
