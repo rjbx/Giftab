@@ -64,6 +64,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 // TODO: Fully implement removed and add other options
 // TODO: Add option to convert guest with account linking
 // TODO: Ensure preference summaries are refereshed when updating preferences handled by click listeners
+// TODO: Explicity update and invoke listener callback for all custom preferences
 /**
  * Presents the application settings.
  */
@@ -182,6 +183,7 @@ public class ConfigActivity
         String preferenceKey = changedPreference.getKey();
         Map<String, Object> map = sUser.toParameterMap();
         if (!map.containsKey(preferenceKey)) return;
+        // TODO: Adapt to rely on type conversion helper
         if (preferenceKey.equals(DatabaseContract.UserEntry.COLUMN_GIVE_ROUNDING)) map.put(preferenceKey, Integer.parseInt((String) newValue));
         else map.put(preferenceKey, newValue);
         sUser.fromParameterMap(map);
