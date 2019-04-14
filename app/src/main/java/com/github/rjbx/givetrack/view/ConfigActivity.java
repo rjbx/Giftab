@@ -344,7 +344,7 @@ public class ConfigActivity
         @Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
             mCalendar.set(year, month, dayOfMonth);
             String birthdate = String.format("%s/%s/%s", month + 1, dayOfMonth, year);
-            PreferenceManager.getDefaultSharedPreferences(getContext()).edit().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
+            findPreference(getString(R.string.pref_userBirthdate_key)).getEditor().putString(getString(R.string.pref_userBirthdate_key), birthdate).apply();
         }
 
         /**
