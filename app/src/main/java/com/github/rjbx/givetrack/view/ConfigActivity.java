@@ -193,6 +193,8 @@ public class ConfigActivity
     private static void handlePreferenceChange(Preference preference, Preference.OnPreferenceChangeListener listener) {
         if (preference == null) return;
         preference.setOnPreferenceChangeListener(listener);
+        Object preferenceValue = preference.getPreferenceManager().getSharedPreferences().getAll().get(preference.getKey()));
+        changeSummary(preference, preferenceValue);
     }
 
     /**
