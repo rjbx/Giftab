@@ -520,6 +520,12 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+            ConfigActivity.changeSummary(findPreference(key), sharedPreferences.getAll().get(key));
+            ConfigActivity.changeUser(findPreference(key), sharedPreferences.getAll().get(key));
+        }
+
         /**
          * Defines behavior on change of each preference value.
          */
