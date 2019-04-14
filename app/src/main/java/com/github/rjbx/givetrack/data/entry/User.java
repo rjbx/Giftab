@@ -18,7 +18,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
  * persisted locally with {@link android.content.ContentProvider}
  * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
-// TODO: Convert giveTiming attribute to String
 @IgnoreExtraProperties
 public class User implements Entry, Parcelable, Cloneable {
 
@@ -346,7 +345,6 @@ public class User implements Entry, Parcelable, Cloneable {
         return map;
     }
 
-    // TODO: Add helper method for converting preference values from String to attribute type
     @Override public void fromParameterMap(Map<String, Object> map) {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
