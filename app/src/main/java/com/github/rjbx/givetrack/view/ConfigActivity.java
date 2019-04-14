@@ -301,18 +301,6 @@ public class ConfigActivity
             setSummaries(this);
         }
 
-        @Override
-        public void onStart() {
-            super.onStart();
-            PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        public void onStop() {
-            super.onStop();
-            PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
-        }
-
         /**
          * Initializes preferences with defaults and listeners for value changes and view clicks.
          */
