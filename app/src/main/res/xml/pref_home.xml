@@ -17,7 +17,7 @@
     <Preference
         android:key="@string/pref_giveCurrent_key"
         android:title="@string/pref_giveCurrent_label"
-        android:summary="Allocate the same percentage of donations to each charity"/>
+        android:summary="Set the date applied to newly-created records to that of current"/>
 
     <Preference
         android:key="@string/pref_giveMagnitude_key"
