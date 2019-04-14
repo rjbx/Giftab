@@ -459,6 +459,7 @@ public class ConfigActivity
      * Fragment bound to preference header for updating spawn settings.
      */
     public static class IndexPreferenceFragment extends PreferenceFragment implements
+            SharedPreferences.OnSharedPreferenceChangeListener,
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
@@ -473,6 +474,12 @@ public class ConfigActivity
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
             changeSummaries(this);
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
         }
 
         /**
@@ -537,7 +544,6 @@ public class ConfigActivity
                         sp.edit().remove(k).apply();
                     }
                 }
-                // TODO: Modify activity to implement OnSharedPreferenceListener to sync changes
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
                 changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
@@ -578,6 +584,12 @@ public class ConfigActivity
                     default:
                 }
             }
+        }
+
+        @Override
+        public void onStop() {
+            PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
+            super.onStop();
         }
     }
 
