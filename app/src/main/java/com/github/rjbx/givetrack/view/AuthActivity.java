@@ -131,6 +131,7 @@ public class AuthActivity extends AppCompatActivity implements
                 DatabaseManager.startActionFetchUser(this);
                 mProcessStage++;
             } else {
+                // Block sign-in to prevent overwriting existing remote with default data
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
                 String message;
