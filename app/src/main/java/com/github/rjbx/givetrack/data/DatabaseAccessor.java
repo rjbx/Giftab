@@ -325,6 +325,7 @@ public final class DatabaseAccessor {
         String uid = entries == null || entries.length == 0 ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
+        // TODO: Must update User from AuthActivity onActivityResult to obtain UID and not default value
         DatabaseReference userReference = typeReference.child(uid);
 
         if (reset) userReference.removeValue();
