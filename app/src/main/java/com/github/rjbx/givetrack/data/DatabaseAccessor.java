@@ -391,6 +391,9 @@ public final class DatabaseAccessor {
 
         String uid = auth.getUid();
         User u = User.getDefault();
+        u.setUserStamp(-1);
+        u.setTargetStamp(-1);
+        u.setRecordStamp(-1);
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " = ?", new String[] { uid }, null);
         if (data == null) return u;
         if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
@@ -417,7 +420,9 @@ public final class DatabaseAccessor {
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
-
+        u.setUserStamp(-2);
+        u.setTargetStamp(-2);
+        u.setRecordStamp(-2);
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
@@ -490,10 +495,18 @@ public final class DatabaseAccessor {
         long localTableStamp = DataUtilities.getTableTime(entryType, localUser);
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
-
-        if (compareLocalToRemote > 0) {
-            pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
-            local.notifyChange(DataUtilities.getContentUri(entryType), null);
-        } else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+//
+//        if (compareLocalToRemote > 0) {
+//            pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+//            local.notifyChange(DataUtilities.getContentUri(entryType), null);
+//        } else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+//
+        if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+        else if (localTableStamp > -1 || remoteTableStamp > -1) local.notifyChange(DataUtilities.getContentUri(entryType), null);
+        else if (entryType == User.class) {
+            addEntriesToLocal(local, User.class, System.currentTimeMillis(), true, localUser);
+            addEntriesToRemote(remote, User.class, System.currentTimeMillis(), true, remoteUser);
+        }
     }
 }
