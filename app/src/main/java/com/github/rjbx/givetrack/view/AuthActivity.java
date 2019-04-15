@@ -169,7 +169,7 @@ public class AuthActivity extends AppCompatActivity implements
                 user.delete()
                     .addOnSuccessListener(deleteTask -> {
                         mReauthAttempts = 0;
-                        mFirebaseAuth.signOut();
+//                        mFirebaseAuth.signOut();
                         finish();
                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
@@ -194,7 +194,7 @@ public class AuthActivity extends AppCompatActivity implements
                                     if (refreshedUser != null) refreshedUser.delete()
                                             .addOnSuccessListener(retryDeleteTask -> {
                                                 mReauthAttempts = 0;
-                                                mFirebaseAuth.signOut();
+//                                                mFirebaseAuth.signOut();
                                                 finish();
                                                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
