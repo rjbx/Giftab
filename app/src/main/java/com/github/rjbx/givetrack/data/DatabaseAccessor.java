@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
-// TODO: Synchronize new threads openened from database operations on disk IO executor
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
  */
@@ -407,23 +406,26 @@ public final class DatabaseAccessor {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
+        // TODO: Set condition for breakout of retrieval attempt
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    User u = dataSnapshot.getValue(User.class);
-                    if (u != null) taskSource.trySetResult(u);
+                User u = dataSnapshot.getValue(User.class);
+                if (u != null) taskSource.trySetResult(u);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
 
         Task<User> task = taskSource.getTask();
-        try { Tasks.await(task, 3, TimeUnit.SECONDS); } // Breakout of retrieval attempt after 3 seconds if data unavailable
+        try { Tasks.await(task, 5, TimeUnit.SECONDS); }
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
-        u.setUserStamp(-2);
-        u.setTargetStamp(-2);
-        u.setRecordStamp(-2);
+
+        // TODO: Persist default user if none retrieved and escape validation pull sequence where both local and remote are default user
+        u.setUserStamp(-1);
+        u.setTargetStamp(-1);
+        u.setRecordStamp(-1);
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
@@ -469,6 +471,7 @@ public final class DatabaseAccessor {
                     if (entry instanceof User) {
                         ((User) entry).setRecordStamp(0);     // Resets User stamps
                         ((User) entry).setTargetStamp(0);     // Resets User stamps
+
                         ((User) entry).setUserActive(true);
                     }
                     entryList.add(entry);
@@ -486,22 +489,18 @@ public final class DatabaseAccessor {
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
-    // TODO: Handle hang on account deletion and sign up
 
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
+        // TODO: If connection unavailable block first-time sign-in to prevent overwriting existing remote with default data
+        // TODO: If connection unavailable block in-app database updates but allow navigation for signed-in users with no remote connection
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
 
         long localTableStamp = DataUtilities.getTableTime(entryType, localUser);
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
-//
-//        if (compareLocalToRemote > 0) {
-//            pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
-//            local.notifyChange(DataUtilities.getContentUri(entryType), null);
-//        } else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-//
+
         if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
         else if (localTableStamp > -1 || remoteTableStamp > -1) local.notifyChange(DataUtilities.getContentUri(entryType), null);
