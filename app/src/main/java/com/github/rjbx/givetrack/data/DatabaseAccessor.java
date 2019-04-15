@@ -507,6 +507,6 @@ public final class DatabaseAccessor {
         else if (entryType == User.class) {
             addEntriesToLocal(local, User.class, System.currentTimeMillis(), true, localUser);
             addEntriesToRemote(remote, User.class, System.currentTimeMillis(), true, remoteUser);
-        }
+        } else local.notifyChange(DataUtilities.getContentUri(entryType), null);
     }
 }
