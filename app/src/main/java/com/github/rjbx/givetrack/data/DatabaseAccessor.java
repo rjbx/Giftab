@@ -461,8 +461,8 @@ public final class DatabaseAccessor {
                 if (entryType == User.class) {
                     T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
-                        ((User) entry).setRecordStamp(0);     // Resets User stamps
-                        ((User) entry).setTargetStamp(0);     // Resets User stamps
+//                        ((User) entry).setRecordStamp(0);     // Resets User stamps
+//                        ((User) entry).setTargetStamp(0);     // Resets User stamps
 
                         ((User) entry).setUserActive(true);
                     }
@@ -494,6 +494,7 @@ public final class DatabaseAccessor {
         if (compareLocalToRemote > 0) {
             pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
             local.notifyChange(DataUtilities.getContentUri(entryType), null);
-        } else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+        } else if (compareLocalToRemote < 0 || localUser.getUserStamp() == 0)
+            pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
     }
 }
