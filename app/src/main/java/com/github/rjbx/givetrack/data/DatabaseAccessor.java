@@ -379,7 +379,7 @@ public final class DatabaseAccessor {
         } else {
             for (T entry : entries) {
                 entryReference = userReference;
-                if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
+                if (entry instanceof Company) entryReference = userReference.child(entry.getId());
                 entryReference.removeValue();
             }
         }
