@@ -333,7 +333,7 @@ public final class DatabaseAccessor {
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
                 entryReference = userReference;
-                if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
+                if (entry instanceof Company) entryReference = userReference.child(entry.getId());
                 entryReference.updateChildren(entry.toParameterMap());
             }
         }
