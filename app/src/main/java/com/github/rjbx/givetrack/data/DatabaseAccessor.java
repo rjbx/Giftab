@@ -491,6 +491,8 @@ public final class DatabaseAccessor {
         });
     }
 
+    // TODO: Resolve hang on signout and sign back in from same app instance
+    // TODO: Resolve crash on delete after multiple sign ins
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         // TODO: If connection unavailable block first-time sign-in to prevent overwriting existing remote with default data
