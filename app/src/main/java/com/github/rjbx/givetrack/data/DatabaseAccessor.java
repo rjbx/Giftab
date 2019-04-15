@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
+// TODO: Synchronize new threads openened from database operations on disk IO executor
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
  */
