@@ -461,9 +461,8 @@ public final class DatabaseAccessor {
                 if (entryType == User.class) {
                     T entry = dataSnapshot.getValue(entryType);
                     if (entry instanceof User) {
-//                        ((User) entry).setRecordStamp(0);     // Resets User stamps
-//                        ((User) entry).setTargetStamp(0);     // Resets User stamps
-
+                        ((User) entry).setRecordStamp(0);     // Resets User stamps
+                        ((User) entry).setTargetStamp(0);     // Resets User stamps
                         ((User) entry).setUserActive(true);
                     }
                     entryList.add(entry);
@@ -481,6 +480,7 @@ public final class DatabaseAccessor {
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
     }
+    // TODO: Handle hang on account deletion and sign up
 
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
@@ -494,7 +494,6 @@ public final class DatabaseAccessor {
         if (compareLocalToRemote > 0) {
             pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
             local.notifyChange(DataUtilities.getContentUri(entryType), null);
-        } else if (compareLocalToRemote < 0 || DataUtilities.getTableTime(entryType, localUser) == 0)
-            pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+        } else pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
     }
 }
