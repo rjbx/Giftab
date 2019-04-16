@@ -272,6 +272,7 @@ final class DataUtilities {
         return infoList;
     }
 
+    // TODO: Establish whether URL is valid before attempting to connect
     static List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
         List<String> emails = new ArrayList<>();
         for (int i = 0; i < anchors.size(); i++) {
