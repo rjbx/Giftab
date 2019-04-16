@@ -325,6 +325,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
 //            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
+            handlePreferenceClick(findPreference(getString(R.string.pref_userConvert_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
@@ -391,6 +392,9 @@ public class ConfigActivity
                         mCalendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
                 return true;
+            } else if (findPreference(getString(R.string.pref_userConvert_key))) {
+                launchAuthDialog();
+                return false;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
                 String action = getActivity().getIntent().getAction();
                 Intent intent = new Intent(getActivity(), ConfigActivity.class).setAction(action);
