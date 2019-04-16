@@ -371,8 +371,7 @@ public class ConfigActivity
                             launchAuthDialog();
                         });
                 return true;
-
-            else if (getString(R.string.pref_userConvert_key).equals(preference.getKey())) { return true;
+            } else if (getString(R.string.pref_userConvert_key).equals(preference.getKey())) { return true;
             } else {
                 ConfigActivity.changeSummary(preference, newValue);
                 ConfigActivity.changeUser(preference, newValue);
