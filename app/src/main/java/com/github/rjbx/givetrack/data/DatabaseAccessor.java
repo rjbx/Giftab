@@ -498,6 +498,6 @@ public final class DatabaseAccessor {
 
         if (localTableStamp == 0 && remoteTableStamp == 0) local.notifyChange(DataUtilities.getContentUri(entryType), null);
         else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-        else pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid());
+        else pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid()); // Ensures user active status is set to true where databases are initialized and equivalent
     }
 }
