@@ -1,6 +1,7 @@
 package com.github.rjbx.givetrack.data;
 
 import android.net.Uri;
+import android.webkit.URLUtil;
 
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Spawn;
@@ -272,7 +273,6 @@ final class DataUtilities {
         return infoList;
     }
 
-    // TODO: Establish whether URL is valid before attempting to connect
     static List<String> parseKeysFromPages(String homeUrl, Elements anchors, String pageName, List<String> visitedLinks, String key) throws IOException {
         List<String> emails = new ArrayList<>();
         for (int i = 0; i < anchors.size(); i++) {
@@ -283,10 +283,11 @@ final class DataUtilities {
                 if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
                 if (visitedLinks.contains(pageLink)) continue;
                 else visitedLinks.add(pageLink);
-                Document page = Jsoup.connect(pageLink).get();
-                Elements pageAnchors = page.select("a");
-
-                emails.addAll(parseKeys(pageAnchors, key, null, " "));
+                if (URLUtil.isValidUrl(pageLink)) {
+                    Document page = Jsoup.connect(pageLink).get();
+                    Elements pageAnchors = page.select("a");
+                    emails.addAll(parseKeys(pageAnchors, key, null, " "));
+                }
             }
         }
         return emails;
@@ -311,7 +312,8 @@ final class DataUtilities {
     }
 
     static Elements parseElements(String url, String cssQuery) throws IOException {
-        Document homepage = Jsoup.connect(url).get();
+        Document homepage;
+        if (URLUtil.isValidUrl(url)) homepage = Jsoup.connect(url).get();
         return homepage.select(cssQuery);
     }
 
