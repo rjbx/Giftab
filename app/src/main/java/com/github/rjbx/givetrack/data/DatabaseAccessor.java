@@ -40,7 +40,6 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
-// TODO: Remove event listeners from all other remote database callbacks
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
  */
@@ -414,6 +413,7 @@ public final class DatabaseAccessor {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
                 if (u != null) taskSource.trySetResult(u);
+                entryReference.removeEventListener(this);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
@@ -493,8 +493,6 @@ public final class DatabaseAccessor {
         });
     }
 
-    // TODO: Resolve hang on signout and sign back in from same app instance
-    // TODO: Resolve crash on delete after multiple sign ins
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         // TODO: If connection unavailable block first-time sign-in to prevent overwriting existing remote with default data
