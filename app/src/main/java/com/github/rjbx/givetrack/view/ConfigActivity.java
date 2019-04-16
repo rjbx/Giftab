@@ -63,8 +63,6 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options
 // TODO: Add option to convert guest with account linking
-
-// TODO: Prevent clear all from wiping out all remote database entries
 /**
  * Presents the application settings.
  */
