@@ -152,7 +152,7 @@
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
     <string name="pref_userGender_key" translatable="false">userGender</string>
     <string name="pref_userBirthdate_label">Birthdate</string>
-    <string name="pref_userConvert_label">Convert to credentialed user</string>
+    <string name="pref_userConvert_label">Keep guest account</string>
     <string name="pref_userEmail_key" translatable="false">userEmail</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_userConvert_key" translatable="false">userConvert</string>
