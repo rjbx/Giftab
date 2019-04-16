@@ -584,7 +584,18 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
-                //  TODO: Update preferences individually
+                findPreference(getString(R.string.pref_indexFocus_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexFilter_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexTerm_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexCity_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexState_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexZip_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexMinrating_key)).getEditor().clear().apply();
+//            findPreference(getString(R.string.pref_indexPages_key)).getEditor().clear().apply();
+//            findPreference(getString(R.string.pref_indexSize_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexSort_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexOrder_key)).getEditor().clear().apply();
+                findPreference(getString(R.string.pref_indexCompany_key)).getEditor().clear().apply();
                 return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
