@@ -397,7 +397,7 @@ public class ConfigActivity
                         mCalendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
                 return true;
-            } else if (findPreference(getString(R.string.pref_userConvert_key))) {
+            } else if (getString(R.string.pref_userConvert_key).equals(preferenceKey)) {
                 launchAuthDialog();
                 return false;
             } else if (getString(R.string.pref_show_key).equals(preferenceKey)) {
@@ -448,7 +448,7 @@ public class ConfigActivity
                                 isAnonymous = false;
                                 sUser.setUserEmail(mEmailInput);
                                 ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mEmailInput);
-                                ConfigActivity.changeUser(getString(R.string.pref_userEmail_key), mEmailInput);
+                                ConfigActivity.changeUser(findPreference(getString(R.string.pref_userEmail_key)), mEmailInput);
                             }
                         });
                     }
