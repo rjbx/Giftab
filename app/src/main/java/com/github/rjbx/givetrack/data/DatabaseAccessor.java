@@ -40,6 +40,7 @@ import com.google.firebase.database.ValueEventListener;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
+// TODO: Remove event listeners from all other remote database callbacks
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
  */
