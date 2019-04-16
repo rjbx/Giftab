@@ -24,7 +24,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,12 +57,10 @@ import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Fully implement removed and add other options
-// TODO: Add option to convert guest with account linking
+// TODO: Fully implement removed and add other options (reset index settings, etc.)
 /**
  * Presents the application settings.
  */
