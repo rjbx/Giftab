@@ -444,7 +444,12 @@ public class ConfigActivity
 //                                            }
 //                                        });
 //                            }
-                            if (authTask.isSuccessful()) isAnonymous = false;
+                            if (authTask.isSuccessful()) {
+                                isAnonymous = false;
+                                sUser.setUserEmail(mEmailInput);
+                                ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mEmailInput);
+                                ConfigActivity.changeUser(getString(R.string.pref_userEmail_key), mEmailInput);
+                            }
                         });
                     }
                     break;
