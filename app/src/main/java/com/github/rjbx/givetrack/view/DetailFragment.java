@@ -95,6 +95,7 @@ public class DetailFragment extends Fragment {
         mContext = context;
     }
 
+    // TODO: Resolve save and restore
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
 //        if (savedInstanceState != null) {
@@ -254,12 +255,6 @@ public class DetailFragment extends Fragment {
      * Defines a {@link WebViewClient} for displaying a webpage populated with organization details.
      */
     private class DetailViewClient extends WebViewClient {
-
-//        private int mScrollState;
-//
-//        public DetailViewClient(int state) {
-//            mScrollState = state;
-//        }
 
         /**
          * Displays a loading indicator while the page is loading.
