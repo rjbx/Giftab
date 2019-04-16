@@ -446,7 +446,7 @@ public final class DatabaseAccessor {
         if (cursor == null) return;
         List<T> entryList = AppUtilities.getEntryListFromCursor(cursor, entryType);
         cursor.close();
-        if (entryType == User.class) {
+        if (entryType == User.class && entryList.get(0) != null) {
             ((User) entryList.get(0)).setUserActive(true);
             local.update(UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build(), entryList.get(0).toContentValues(), null, null);
         }
