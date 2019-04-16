@@ -439,7 +439,7 @@ public final class DatabaseAccessor {
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         userReference.child(uid).updateChildren(entryMap);
     }
-
+    // TODO: Update source to ensure active status
     private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, null, null, null);
@@ -493,9 +493,7 @@ public final class DatabaseAccessor {
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
         if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-        else {
-            if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
-            local.notifyChange(DataUtilities.getContentUri(entryType), null);
-        }
+        else if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        else  local.notifyChange(DataUtilities.getContentUri(entryType), null);
     }
 }
