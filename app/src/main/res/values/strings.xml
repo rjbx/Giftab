@@ -153,6 +153,7 @@
     <string name="pref_userGender_key" translatable="false">userGender</string>
     <string name="pref_userEmail_key" translatable="false">userEmail</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
+    <string name="pref_userConvert_key" translatable="false">userConvert</string>
     <string name="pref_delete_key" translatable="false">deleteAccount</string>
     <string name="pref_giveReset_key" translatable="false">giveReset</string>
     <string name="pref_giveCurrent_key" translatable="false">giveCurrent</string>

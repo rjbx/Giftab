@@ -43,6 +43,13 @@
         android:title="@string/pref_indexBirthdate_label"
         android:defaultValue="1/1/2000"/>
 
+    <Preference
+        android:key="@string/pref_userBirthdate_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_indexBirthdate_label"
+        android:defaultValue="1/1/2000"/>
+
     <!--<ListPreference-->
         <!--android:defaultValue="-1"-->
         <!--android:entries="@array/pref_example_list_titles"-->
