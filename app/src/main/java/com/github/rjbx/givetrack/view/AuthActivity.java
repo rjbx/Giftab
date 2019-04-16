@@ -230,13 +230,19 @@ public class AuthActivity extends AppCompatActivity implements
                     // Reached from validation guaranteed callback
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
-                        User currentUser = mUsers.get(i);
-                        isPersisted = currentUser.getUid().equals(mActiveUser.getUid());
-                        if (isPersisted) currentUser.setUserActive(true);
+                        isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
+                        if (isPersisted) {
+                            Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                            finish();
+                            startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
+                            break;
+                        }
                     }
-                    if (!isPersisted) mUsers.add(mActiveUser);
-                    DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
-                    mProcessStage++;
+                    if (!isPersisted) {
+                        mUsers.add(mActiveUser);
+                        DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
+                        mProcessStage++;
+                    }
                     AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                     break;
                 case 3:
