@@ -47,7 +47,6 @@ import java.util.List;
 import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Test addition and removal of targets and records before and after sign out as well as restoring deleting app and without network connection
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
@@ -334,7 +333,6 @@ public class AuthActivity extends AppCompatActivity implements
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
-                // TODO: Resolve hang on account deletion
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
                     DatabaseManager.startActionRemoveUser(this, u);

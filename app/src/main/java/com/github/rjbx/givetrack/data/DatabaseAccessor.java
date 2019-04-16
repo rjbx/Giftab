@@ -325,8 +325,7 @@ public final class DatabaseAccessor {
         String uid = entries == null || entries.length == 0 ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
-        // TODO: Must update User from AuthActivity onActivityResult to obtain UID and not default value
-        DatabaseReference userReference = typeReference.child(uid);
+       DatabaseReference userReference = typeReference.child(uid);
 
         if (reset) userReference.removeValue();
 
@@ -341,7 +340,6 @@ public final class DatabaseAccessor {
         updateRemoteTableTime(remote, entryType, stamp, uid);
     }
 
-    // TODO: Handle account deletion to prevent updating User that was prior removed
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
@@ -392,9 +390,6 @@ public final class DatabaseAccessor {
 
         String uid = auth.getUid();
         User u = User.getDefault();
-        u.setUserStamp(-1);
-        u.setTargetStamp(-1);
-        u.setRecordStamp(-1);
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " = ?", new String[] { uid }, null);
         if (data == null) return u;
         if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
@@ -407,7 +402,6 @@ public final class DatabaseAccessor {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
-        // TODO: Set condition for breakout of retrieval attempt
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -423,11 +417,6 @@ public final class DatabaseAccessor {
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
-
-        // TODO: Persist default user if none retrieved and escape validation pull sequence where both local and remote are default user
-        u.setUserStamp(-1);
-        u.setTargetStamp(-1);
-        u.setRecordStamp(-1);
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }
