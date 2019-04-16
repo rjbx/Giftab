@@ -61,7 +61,7 @@ import androidx.annotation.Nullable;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Fully implement removed and add other options (reset index settings, etc.)
+// TODO: Fully implement removed and add other options
 /**
  * Presents the application settings.
  */
