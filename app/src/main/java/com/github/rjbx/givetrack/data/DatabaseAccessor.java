@@ -496,8 +496,11 @@ public final class DatabaseAccessor {
         long remoteTableStamp = DataUtilities.getTableTime(entryType, remoteUser);
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
-        if (localTableStamp == 0 && remoteTableStamp == 0) local.notifyChange(DataUtilities.getContentUri(entryType), null);
-        else if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-        else pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid()); // Ensures user active status is set to true where databases are initialized and equivalent
+        if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
+        else if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid()); // Ensures user active status is set to true where databases are initialized and equivalent
+        else if (entryType == User.class) {
+            if (localTableStamp == 0 && remoteTableStamp == 0) local.notifyChange(DataUtilities.getContentUri(entryType), null);
+            else pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid());
+        }
     }
 }
