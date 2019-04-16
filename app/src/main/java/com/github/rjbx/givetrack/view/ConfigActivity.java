@@ -419,12 +419,9 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        Editable emailText = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText();
-                        Editable passwordText = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText();
-                        if (emailText != null && passwordText != null) {
-                            mEmailInput = emailText.toString();
-                            mPasswordInput = passwordText.toString();
-                        } else {
+                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+                        if (mEmailInput.isEmpty() || mPasswordInput.isEmpty()) {
                             launchAuthDialog();
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
@@ -461,12 +458,9 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        Editable emailText = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText();
-                        Editable passwordText = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText();
-                        if (emailText != null && passwordText != null) {
-                            mEmailInput = emailText.toString();
-                            mPasswordInput = passwordText.toString();
-                        } else {
+                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+                        if (mEmailInput.isEmpty() || mPasswordInput.isEmpty()) {
                             launchAuthDialog();
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
