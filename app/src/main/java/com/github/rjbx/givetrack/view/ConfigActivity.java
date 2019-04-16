@@ -330,6 +330,7 @@ public class ConfigActivity
             //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userEmail_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_userConvert_key)), this);
 //            handlePreferenceChange(findPreference(getString(R.string.pref_userBirthdate_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userConvert_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_userBirthdate_key)), this);
@@ -369,7 +370,9 @@ public class ConfigActivity
                             Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
                         });
-                return false;
+                return true;
+
+            else if (getString(R.string.pref_userConvert_key).equals(preference.getKey())) { return true;
             } else {
                 ConfigActivity.changeSummary(preference, newValue);
                 ConfigActivity.changeUser(preference, newValue);
@@ -437,7 +440,6 @@ public class ConfigActivity
                                     ConfigActivity.changeUser(emailPreference, mEmailInput);
                                     emailPreference.setEnabled(true);
                                     findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                                    UserPreferenceFragment.this.notifyAll();
                                 })
                                 .addOnFailureListener(failTask -> {
                                     if (mAuthAttempts < 5) {
