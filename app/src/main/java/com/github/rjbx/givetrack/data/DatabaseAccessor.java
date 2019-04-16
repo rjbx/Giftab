@@ -439,13 +439,18 @@ public final class DatabaseAccessor {
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
         userReference.child(uid).updateChildren(entryMap);
     }
-    // TODO: Update source to ensure active status
-    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp) {
+
+    private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
-        Cursor cursor = local.query(contentUri, null, null, null, null);
+        Cursor cursor = local.query(contentUri, null, UserEntry.COLUMN_UID " = ? ", new String[]{ uid }, null);
         if (cursor == null) return;
         List<T> entryList = AppUtilities.getEntryListFromCursor(cursor, entryType);
         cursor.close();
+        if (entryType == User.class) {
+            T entry = entryList.get(0);
+            ((User) entry).setUserActive(true);
+            local.update(UserEntry.CONTENT_URI_USER, ((User) entry).toContentValues(), null, null);
+        }
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
         addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
@@ -463,7 +468,6 @@ public final class DatabaseAccessor {
                     if (entry instanceof User) {
                         ((User) entry).setRecordStamp(0);     // Resets User stamps
                         ((User) entry).setTargetStamp(0);     // Resets User stamps
-
                         ((User) entry).setUserActive(true);
                     }
                     entryList.add(entry);
@@ -478,6 +482,7 @@ public final class DatabaseAccessor {
                 if (entryList.isEmpty()) return;
                 addEntriesToLocal(local, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
                 pathReference.removeEventListener(this);
+                if (entryType == User.class) pathReference.child("userActive").setValue(true);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
@@ -493,7 +498,7 @@ public final class DatabaseAccessor {
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
         if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-        else if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp);
+        else if (compareLocalToRemote > 0) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid());
         else  local.notifyChange(DataUtilities.getContentUri(entryType), null);
     }
 }
