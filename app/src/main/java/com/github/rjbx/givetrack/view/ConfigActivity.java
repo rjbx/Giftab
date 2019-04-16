@@ -412,38 +412,39 @@ public class ConfigActivity
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (isAnonymous) {
-            switch (which) {
-                case AlertDialog.BUTTON_NEGATIVE:
-                    mAuthAttempts = 0;
-                    dialog.dismiss();
-                    break;
-                case AlertDialog.BUTTON_POSITIVE:
-                    mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-                    mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                    if (sUser != null) {
-                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        user.linkWithCredential(credential)
-                            .addOnSuccessListener(authTask -> {
-                                isAnonymous = false;
-                                Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
-                                ConfigActivity.changeSummary(emailPreference, mEmailInput);
-                                ConfigActivity.changeUser(emailPreference, mEmailInput);
-                                emailPreference.setEnabled(true);
-                                findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                            })
-                    .       addOnFailureListener(failTask -> {
-                                if (mAuthAttempts < 5) {
-                                    launchAuthDialog();
-                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    mAuthAttempts = 0;
-                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                }
-                            });
-                    }
-                    break;
-            }
+                switch (which) {
+                    case AlertDialog.BUTTON_NEGATIVE:
+                        mAuthAttempts = 0;
+                        dialog.dismiss();
+                        break;
+                    case AlertDialog.BUTTON_POSITIVE:
+                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
+                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+                        if (sUser != null) {
+                            AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            user.linkWithCredential(credential)
+                                .addOnSuccessListener(authTask -> {
+                                    isAnonymous = false;
+                                    Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+                                    ConfigActivity.changeSummary(emailPreference, mEmailInput);
+                                    ConfigActivity.changeUser(emailPreference, mEmailInput);
+                                    emailPreference.setEnabled(true);
+                                    findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
+                                    UserPreferenceFragment.this.finalize();
+                                })
+                                .addOnFailureListener(failTask -> {
+                                    if (mAuthAttempts < 5) {
+                                        launchAuthDialog();
+                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        mAuthAttempts = 0;
+                                        Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                            break;
+                }
             } else if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
