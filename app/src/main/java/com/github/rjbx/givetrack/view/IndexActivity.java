@@ -51,6 +51,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 /**
  * Presents a list of entities spawned from a remote data API with toggleable detail pane.
  */
+// TODO: Add logic to limit number of API data requests
 public class IndexActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
