@@ -24,6 +24,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -418,9 +419,17 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                        if (!mEmailInput.isEmpty() && !mPasswordInput.isEmpty() && sUser != null) {
+                        Editable emailText = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText();
+                        Editable passwordText = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText();
+                        if (emailText != null && passwordText != null) {
+                            mEmailInput = emailText.toString();
+                            mPasswordInput = passwordText.toString();
+                        } else {
+                            launchAuthDialog();
+                            Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             user.linkWithCredential(credential)
@@ -452,9 +461,17 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-                        mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                        if (mEmailInput.isEmpty() && !mPasswordInput.isEmpty() && sUser != null) {
+                        Editable emailText = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText();
+                        Editable passwordText = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText();
+                        if (emailText != null && passwordText != null) {
+                            mEmailInput = emailText.toString();
+                            mPasswordInput = passwordText.toString();
+                        } else {
+                            launchAuthDialog();
+                            Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             user.reauthenticate(credential).addOnCompleteListener(authTask -> {

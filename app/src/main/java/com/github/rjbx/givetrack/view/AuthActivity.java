@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -264,8 +265,18 @@ public class AuthActivity extends AppCompatActivity implements
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (dialog == mAuthDialog) {
-            String email = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-            String password = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
+            String email;
+            String password;
+            Editable emailText = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText();
+            Editable passwordText = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText();
+            if (emailText != null && passwordText != null) {
+                email = emailText.toString();
+                password = passwordText.toString();
+            } else {
+                launchAuthDialog();
+                Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                return;
+            }
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
