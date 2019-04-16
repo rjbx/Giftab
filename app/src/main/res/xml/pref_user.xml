@@ -46,6 +46,7 @@
     <Preference
         android:key="@string/pref_userConvert_key"
         android:title="@string/pref_userConvert_label"
+        android:enabled="false"
         android:summary="Convert guest account into credentialed user"/>
 
     <!--<ListPreference-->

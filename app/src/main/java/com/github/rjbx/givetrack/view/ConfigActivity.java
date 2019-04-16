@@ -307,6 +307,7 @@ public class ConfigActivity
             super.onResume();
 
             Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+            Preference convertPreference = findPreference(getString(R.string.pref_userConvert_key));
 
             mFirebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mFirebaseAuth.getCurrentUser();
@@ -315,7 +316,10 @@ public class ConfigActivity
             for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
 
             if (providers.contains("password")) handlePreferenceClick(emailPreference, this);
-            else emailPreference.setEnabled(false);
+            else {
+                emailPreference.setEnabled(false);
+                convertPreference.setEnabled(true);
+            }
 
             //            handlePreferenceChange(findPreference("example_text"), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_userGender_key)), this);
