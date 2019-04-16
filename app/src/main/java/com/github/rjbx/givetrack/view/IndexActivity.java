@@ -100,8 +100,6 @@ public class IndexActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
-        if (!sDialogShown) showDialog();
-
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -210,6 +208,7 @@ public class IndexActivity extends AppCompatActivity implements
                     } while (data.moveToNext());
                 }
                 sDialogShown = mUser.getIndexDialog();
+                if (!sDialogShown) showDialog();
                 break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
