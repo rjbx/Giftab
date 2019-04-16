@@ -423,15 +423,16 @@ public class ConfigActivity
                     if (sUser != null) {
                         AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        user.linkWithCredential(credential).addOnCompleteListener(authTask -> {
-                            if (authTask.isSuccessful()) {
+                        user.linkWithCredential(credential)
+                            .addOnSuccessListener(authTask -> {
                                 isAnonymous = false;
                                 Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
                                 ConfigActivity.changeSummary(emailPreference, mEmailInput);
                                 ConfigActivity.changeUser(emailPreference, mEmailInput);
                                 emailPreference.setEnabled(true);
                                 findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                            } else {
+                            })
+                    .       addOnFailureListener(failTask -> {
                                 if (mAuthAttempts < 5) {
                                     launchAuthDialog();
                                     Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
@@ -439,8 +440,7 @@ public class ConfigActivity
                                     mAuthAttempts = 0;
                                     Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                 }
-                            }
-                        });
+                            });
                     }
                     break;
             }
