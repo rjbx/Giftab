@@ -288,6 +288,7 @@ public class ConfigActivity
         private String mEmailInput;
         private String mPasswordInput;
         private View mDialogView;
+        private boolean isAnonymous;
         private int mAuthAttempts;
 
         /**
@@ -315,10 +316,14 @@ public class ConfigActivity
             List<String> providers = new ArrayList<>();
             for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
 
-            if (providers.contains("password")) handlePreferenceClick(emailPreference, this);
+            if (providers.contains("password")) {
+                handlePreferenceClick(emailPreference, this);
+                isAnonymous = false;
+            }
             else {
                 emailPreference.setEnabled(false);
                 convertPreference.setEnabled(true);
+                isAnonymous = true;
             }
 
             //            handlePreferenceChange(findPreference("example_text"), this);
@@ -406,7 +411,10 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (dialog == mAuthDialog) {
+            if (isAnonymous) {
+
+            }
+            else if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
                         mAuthAttempts = 0;
