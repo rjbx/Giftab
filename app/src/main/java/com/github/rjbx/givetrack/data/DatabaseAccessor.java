@@ -447,9 +447,8 @@ public final class DatabaseAccessor {
         List<T> entryList = AppUtilities.getEntryListFromCursor(cursor, entryType);
         cursor.close();
         if (entryType == User.class) {
-            T entry = entryList.get(0);
-            ((User) entry).setUserActive(true);
-            local.update(UserEntry.CONTENT_URI_USER, ((User) entry).toContentValues(), null, null);
+            ((User) entryList.get(0)).setUserActive(true);
+            local.update(UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build(), entryList.get(0).toContentValues(), null, null);
         }
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
