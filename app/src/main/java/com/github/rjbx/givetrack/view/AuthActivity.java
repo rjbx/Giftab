@@ -47,7 +47,6 @@ import java.util.List;
 import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Repair OAuth signin
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
