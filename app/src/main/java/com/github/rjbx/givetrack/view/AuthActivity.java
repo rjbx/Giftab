@@ -265,7 +265,7 @@ public class AuthActivity extends AppCompatActivity implements
     public void onClick(DialogInterface dialog, int which) {
         if (dialog == mAuthDialog) {
             String email = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
-            String password = ((EditText) mDialogView.findViewById(R.id.password)).getText().toString();
+            String password = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
