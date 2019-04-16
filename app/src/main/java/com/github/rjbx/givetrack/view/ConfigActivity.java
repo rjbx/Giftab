@@ -411,6 +411,7 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            if (isAnonymous) {
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE:
                     mAuthAttempts = 0;
@@ -453,6 +454,7 @@ public class ConfigActivity
                         });
                     }
                     break;
+                }
             } else if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
