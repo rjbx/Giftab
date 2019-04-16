@@ -442,7 +442,7 @@ public final class DatabaseAccessor {
 
     private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
         Uri contentUri = DataUtilities.getContentUri(entryType);
-        Cursor cursor = local.query(contentUri, null, UserEntry.COLUMN_UID " = ? ", new String[]{ uid }, null);
+        Cursor cursor = local.query(contentUri, null, UserEntry.COLUMN_UID + " = ? ", new String[]{ uid }, null);
         if (cursor == null) return;
         List<T> entryList = AppUtilities.getEntryListFromCursor(cursor, entryType);
         cursor.close();
