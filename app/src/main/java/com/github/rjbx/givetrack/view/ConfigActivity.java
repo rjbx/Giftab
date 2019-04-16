@@ -595,7 +595,7 @@ public class ConfigActivity
         @Override public boolean onPreferenceClick(Preference preference) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
-/*                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 Map map = sp.getAll();
                 Set<Map.Entry<String, Object>> entrySet = map.entrySet();
                 for (Map.Entry<String, Object> entry : entrySet) {
@@ -608,7 +608,7 @@ public class ConfigActivity
                 changeSummaries(this);
                 sUser.fromParameterMap((Map<String, Object>) sp.getAll());
                 DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                this.onCreate(null);*/
+                return true;
             } else if (getString(R.string.pref_clear_key).equals(preferenceKey)) {
                 String entryName = Spawn.class.getSimpleName().toLowerCase();
                 mClearDialog = new AlertDialog.Builder(getActivity()).create();
