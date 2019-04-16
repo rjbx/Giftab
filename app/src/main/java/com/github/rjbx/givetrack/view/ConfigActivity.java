@@ -424,37 +424,26 @@ public class ConfigActivity
                         AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
                         user.linkWithCredential(credential).addOnCompleteListener(authTask -> {
-//                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-//                            Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
-//                            if (refreshedUser != null) {
-//                                refreshedUser.updateEmail(mRequestedEmail)
-//                                        .addOnSuccessListener(failTask -> {
-//                                            mAuthAttempts = 0;
-//                                            ConfigActivity.changeSummary(emailPref, mRequestedEmail);
-//                                            ConfigActivity.changeUser(emailPref, mRequestedEmail);
-//                                            emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
-//                                            Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-//                                        })
-//                                        .addOnFailureListener(updateTask -> {
-//                                            if (mAuthAttempts < 5) {
-//                                                launchAuthDialog();
-//                                                Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-//                                            } else {
-//                                                mAuthAttempts = 0;
-//                                                Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-//                                            }
-//                                        });
-//                            }
                             if (authTask.isSuccessful()) {
                                 isAnonymous = false;
-                                sUser.setUserEmail(mEmailInput);
-                                ConfigActivity.changeSummary(findPreference(getString(R.string.pref_userEmail_key)), mEmailInput);
-                                ConfigActivity.changeUser(findPreference(getString(R.string.pref_userEmail_key)), mEmailInput);
+                                Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+                                ConfigActivity.changeSummary(emailPreference, mEmailInput);
+                                ConfigActivity.changeUser(emailPreference, mEmailInput);
+                                emailPreference.setEnabled(true);
+                                findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
+                            } else {
+                                if (mAuthAttempts < 5) {
+                                    launchAuthDialog();
+                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    mAuthAttempts = 0;
+                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                     }
                     break;
-                }
+            }
             } else if (dialog == mAuthDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
