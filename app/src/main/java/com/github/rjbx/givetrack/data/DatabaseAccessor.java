@@ -406,7 +406,8 @@ public final class DatabaseAccessor {
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User u = dataSnapshot.getValue(User.class);
-                if (u != null) taskSource.trySetResult(u);
+                if (u == null) u = User.getDefault();
+                taskSource.trySetResult(u);
                 entryReference.removeEventListener(this);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
