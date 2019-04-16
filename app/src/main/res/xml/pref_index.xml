@@ -95,10 +95,10 @@
         android:summaryOn="Spawn for single charity"
         android:summaryOff="Spawn for multiple charities"/>
 
-    <!--<Preference-->
-        <!--android:key="@string/pref_reset_key"-->
-        <!--android:title="@string/pref_reset_label"-->
-        <!--android:summary="Reset all search query preferences"/>-->
+    <Preference
+        android:key="@string/pref_reset_key"
+        android:title="@string/pref_reset_label"
+        android:summary="Reset all search query preferences"/>
 
     <Preference
         android:key="@string/pref_clear_key"
