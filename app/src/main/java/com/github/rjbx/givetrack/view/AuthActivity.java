@@ -279,8 +279,8 @@ public class AuthActivity extends AppCompatActivity implements
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {
                                         mReauthAttempts = 0;
-                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                                        mFirebaseAuth.signOut();
+//                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
+//                                        mFirebaseAuth.signOut();
                                         finish();
                                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
