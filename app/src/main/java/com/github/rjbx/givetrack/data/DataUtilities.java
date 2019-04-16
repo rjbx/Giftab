@@ -283,6 +283,7 @@ final class DataUtilities {
                 if (pageLink.startsWith("/")) pageLink = homeUrl + pageLink.substring(1);
                 if (visitedLinks.contains(pageLink)) continue;
                 else visitedLinks.add(pageLink);
+                // Establish whether URL is valid before attempting to connect
                 if (URLUtil.isValidUrl(pageLink)) {
                     Document page = Jsoup.connect(pageLink).get();
                     Elements pageAnchors = page.select("a");
@@ -313,6 +314,7 @@ final class DataUtilities {
 
     static Elements parseElements(String url, String cssQuery) throws IOException {
         Document homepage;
+        // Establish whether URL is valid before attempting to connect
         if (URLUtil.isValidUrl(url)) homepage = Jsoup.connect(url).get();
         return homepage.select(cssQuery);
     }
