@@ -163,7 +163,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (mProcessStage == -1) {
             mProcessStage = 0;
             FirebaseUser user = mFirebaseAuth.getCurrentUser();
-            if (user == null) return;
+            if (user == null);
             if (mActiveUser == null) {
                 user.delete()
                     .addOnSuccessListener(deleteTask -> {
@@ -269,7 +269,7 @@ public class AuthActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
+                    if (email.isEmpty() && !password.isEmpty() &&  mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();

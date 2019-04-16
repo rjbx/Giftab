@@ -420,7 +420,7 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_POSITIVE:
                         mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                        if (sUser != null) {
+                        if (!mEmailInput.isEmpty() && !mPasswordInput.isEmpty() && sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             user.linkWithCredential(credential)
@@ -431,7 +431,7 @@ public class ConfigActivity
                                     ConfigActivity.changeUser(emailPreference, mEmailInput);
                                     emailPreference.setEnabled(true);
                                     findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                                    UserPreferenceFragment.this.finalize();
+                                    UserPreferenceFragment.this.notifyAll();
                                 })
                                 .addOnFailureListener(failTask -> {
                                     if (mAuthAttempts < 5) {
@@ -454,7 +454,7 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_POSITIVE:
                         mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                        if (sUser != null) {
+                        if (mEmailInput.isEmpty() && !mPasswordInput.isEmpty() && sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             user.reauthenticate(credential).addOnCompleteListener(authTask -> {
