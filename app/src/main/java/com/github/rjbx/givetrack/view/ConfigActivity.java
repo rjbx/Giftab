@@ -24,6 +24,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.preference.SwitchPreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -599,7 +600,12 @@ public class ConfigActivity
                 for (Map.Entry<String, Object> entry : entrySet) {
                     String k = entry.getKey();
                     if (k.contains("index")) {
-                        // TODO: Replace value based on type
+                        Preference p = findPreference(k);
+                        SharedPreferences.Editor e = p.getEditor();
+                        if (p instanceof EditTextPreference) e.putString(k, "");
+                        else if (p instanceof SwitchPreference) e.putBoolean(k, false);
+                        else if (p instanceof ListPreference) e.putString(k, "0");
+                        e.apply();
                     }
                 }
                 PreferenceManager.setDefaultValues(getActivity(), R.xml.pref_index, true);
