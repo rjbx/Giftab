@@ -13,7 +13,6 @@ import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
-//TODO: Add attribute for remaining fetch count
 /**
  * Stores data about an end user; initialized from {@link com.google.firebase.auth.FirebaseUser},
  * persisted locally with {@link android.content.ContentProvider}
@@ -35,8 +34,8 @@ public class User implements Entry, Parcelable, Cloneable {
     private String journalOrder;
     private String journalSort;
     private long recordStamp; // Time of most recent change to record table
-    private long indexAnchor; // Store number of remaining fetches
-    private int indexCount;
+    private long indexAnchor; // Time of most recent fetch count reset
+    private int indexCount; // Store remaining fetch count
     private String indexCity;
     private String indexCompany;
     private boolean indexDialog;
