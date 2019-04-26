@@ -284,7 +284,7 @@ public class IndexActivity extends AppCompatActivity implements
     @OnClick(R.id.spawn_fab) public void refreshResults() {
         fetchResults();
         long currentTime = System.currentTimeMillis();
-        int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getGiveAnchor());
+        int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());
         if (days > 0) mUser.setIndexAnchor(currentTime);
     }
 
