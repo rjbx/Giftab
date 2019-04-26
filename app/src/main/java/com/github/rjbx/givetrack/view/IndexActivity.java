@@ -51,11 +51,9 @@ import java.util.concurrent.TimeUnit;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SPAWN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Prevent WebView and Button from flickering when adding target
 /**
  * Presents a list of entities spawned from a remote data API with toggleable detail pane.
  */
-// TODO: Add logic to limit number of API data requests
 public class IndexActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
