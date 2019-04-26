@@ -13,7 +13,6 @@ import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
-//TODO: Add attribute to store number of remaining fetches
 /**
  * Stores data about an end user; initialized from {@link com.google.firebase.auth.FirebaseUser},
  * persisted locally with {@link android.content.ContentProvider}
@@ -35,6 +34,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String journalOrder;
     private String journalSort;
     private long recordStamp; // Time of most recent change to record table
+    private long indexAnchor; // Store number of remaining fetches
     private String indexCity;
     private String indexCompany;
     private boolean indexDialog;
@@ -74,6 +74,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeLong(glanceAnchor);
         dest.writeInt(glanceSince ? 1 : 0);
         dest.writeInt(glanceTheme);
+        dest.writeLong(indexAnchor);
         dest.writeInt(indexDialog ? 1 : 0);
         dest.writeInt(indexFocus ? 1 : 0);
         dest.writeInt(indexFilter ? 1 : 0);
@@ -111,6 +112,7 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceAnchor = source.readLong();
         glanceSince = source.readInt() == 1;
         glanceTheme = source.readInt();
+        indexAnchor = source.readLong();
         indexDialog = source.readInt() == 1;
         indexFocus = source.readInt() == 1;
         indexFilter = source.readInt() == 1;
@@ -146,6 +148,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceAnchor = user.glanceAnchor;
         this.glanceSince = user.glanceSince;
         this.glanceTheme = user.glanceTheme;
+        this.indexAnchor = user.indexAnchor;
         this.indexDialog = user.indexDialog;
         this.indexFocus = user.indexFocus;
         this.indexFilter = user.indexFilter;
@@ -189,6 +192,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String giveImpact,
             String giveMagnitude,
             int glanceTheme,
+            long indexAnchor,
             boolean indexDialog,
             boolean indexFocus,
             boolean indexFilter,
@@ -221,6 +225,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceAnchor = glanceAnchor;
         this.glanceSince = glanceSince;
         this.glanceTheme = glanceTheme;
+        this.indexAnchor = indexAnchor;
         this.indexDialog = indexDialog;
         this.indexFocus = indexFocus;
         this.indexFilter = indexFilter;
@@ -268,6 +273,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGlanceSince(boolean glanceSince) { this.glanceSince = glanceSince; }
     public int getGlanceTheme() { return glanceTheme; }
     public void setGlanceTheme(int glanceTheme) { this.glanceTheme = glanceTheme; }
+    public long getIndexAnchor() { return indexAnchor; }
+    public void setIndexAnchor(long indexAnchor) { this.indexAnchor = indexAnchor; }
     public boolean getIndexDialog() { return indexDialog; }
     public void setIndexDialog(boolean indexDialog) { this.indexDialog = indexDialog; }
     public String getIndexCompany() { return indexCompany; }
@@ -322,6 +329,7 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         map.put(COLUMN_GLANCE_SINCE, glanceSince);
         map.put(COLUMN_GLANCE_THEME, glanceTheme);
+        map.put(COLUMN_INDEX_ANCHOR, indexAnchor);
         map.put(COLUMN_INDEX_DIALOG, indexDialog);
         map.put(COLUMN_INDEX_FOCUS, indexFocus);
         map.put(COLUMN_INDEX_FILTER, indexFilter);
@@ -356,6 +364,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
         if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
+        if (map.containsKey(COLUMN_INDEX_ANCHOR)) indexAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FILTER), Boolean.class);
@@ -400,6 +409,7 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_INDEX_COMPANY, indexCompany);
         values.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
         values.put(COLUMN_GIVE_IMPACT, giveImpact);
+        values.put(COLUMN_INDEX_ANCHOR, indexAnchor);
         values.put(COLUMN_INDEX_TERM, indexTerm);
         values.put(COLUMN_INDEX_CITY, indexCity);
         values.put(COLUMN_INDEX_STATE, indexState);
@@ -432,6 +442,7 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
         glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
         glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
+        indexAnchor = values.getAsLong(COLUMN_INDEX_ANCHOR);
         indexDialog = values.getAsBoolean(COLUMN_INDEX_DIALOG);
         indexFocus = values.getAsBoolean(COLUMN_INDEX_FOCUS);
         indexFilter = values.getAsBoolean(COLUMN_INDEX_FILTER);
@@ -476,6 +487,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.glanceAnchor = 0;
         user.glanceSince = false;
         user.glanceTheme = 0;
+        user.indexAnchor = 0;
         user.indexDialog = false;
         user.indexFocus = false;
         user.indexFilter = true;
