@@ -82,7 +82,7 @@
       "indexAnchor" : 0,
       "indexCity" : "",
       "indexCompany" : "",
-      "indexCount" : "0",
+      "indexCount" : 0,
       "indexDialog" : false,
       "indexFilter" : true,
       "indexFocus" : false,
