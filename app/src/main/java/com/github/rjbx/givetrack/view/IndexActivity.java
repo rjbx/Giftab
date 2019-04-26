@@ -282,12 +282,17 @@ public class IndexActivity extends AppCompatActivity implements
      * Populates {@link IndexActivity} {@link RecyclerView}.
      */
     @OnClick(R.id.spawn_fab) public void refreshResults() {
-        fetchResults();
+
+        int remainingFetches = mUser.getIndexCount();
+        if (remainingFetches > 0) fetchResults();
+
         long currentTime = System.currentTimeMillis();
         int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());
-        if (days > 0) mUser.setIndexAnchor(currentTime);
+        if (days > 0) {
+            mUser.setIndexAnchor(currentTime);
+            mUser.setIndexCount(5);
+        } else mUser.setIndexCount(--remainingFetches);
     }
-
 
     @Override
     protected void onPause() {
