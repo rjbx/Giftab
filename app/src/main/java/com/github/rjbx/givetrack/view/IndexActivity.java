@@ -284,7 +284,6 @@ public class IndexActivity extends AppCompatActivity implements
     @OnClick(R.id.spawn_fab) public void refreshResults() {
 
         int remainingFetches = mUser.getIndexCount();
-        if (remainingFetches > 0) fetchResults();
 
         long currentTime = System.currentTimeMillis();
         int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());
@@ -292,6 +291,8 @@ public class IndexActivity extends AppCompatActivity implements
             mUser.setIndexAnchor(currentTime);
             mUser.setIndexCount(5);
         } else mUser.setIndexCount(--remainingFetches);
+
+        if (remainingFetches > 0) fetchResults();
     }
 
     @Override
