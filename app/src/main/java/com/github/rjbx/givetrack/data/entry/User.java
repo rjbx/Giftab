@@ -36,6 +36,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String journalSort;
     private long recordStamp; // Time of most recent change to record table
     private long indexAnchor; // Store number of remaining fetches
+    private int indexCount;
     private String indexCity;
     private String indexCompany;
     private boolean indexDialog;
@@ -76,6 +77,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeInt(glanceSince ? 1 : 0);
         dest.writeInt(glanceTheme);
         dest.writeLong(indexAnchor);
+        dest.writeInt(indexCount);
         dest.writeInt(indexDialog ? 1 : 0);
         dest.writeInt(indexFocus ? 1 : 0);
         dest.writeInt(indexFilter ? 1 : 0);
@@ -114,6 +116,7 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceSince = source.readInt() == 1;
         glanceTheme = source.readInt();
         indexAnchor = source.readLong();
+        indexCount = source.readInt();
         indexDialog = source.readInt() == 1;
         indexFocus = source.readInt() == 1;
         indexFilter = source.readInt() == 1;
@@ -150,6 +153,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceSince = user.glanceSince;
         this.glanceTheme = user.glanceTheme;
         this.indexAnchor = user.indexAnchor;
+        this.indexCount = user.indexCount;
         this.indexDialog = user.indexDialog;
         this.indexFocus = user.indexFocus;
         this.indexFilter = user.indexFilter;
@@ -194,6 +198,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String giveMagnitude,
             int glanceTheme,
             long indexAnchor,
+            int indexCount,
             boolean indexDialog,
             boolean indexFocus,
             boolean indexFilter,
@@ -227,6 +232,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.glanceSince = glanceSince;
         this.glanceTheme = glanceTheme;
         this.indexAnchor = indexAnchor;
+        this.indexCount = indexCount;
         this.indexDialog = indexDialog;
         this.indexFocus = indexFocus;
         this.indexFilter = indexFilter;
@@ -276,6 +282,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGlanceTheme(int glanceTheme) { this.glanceTheme = glanceTheme; }
     public long getIndexAnchor() { return indexAnchor; }
     public void setIndexAnchor(long indexAnchor) { this.indexAnchor = indexAnchor; }
+    public int getIndexCount() { return indexCount; }
+    public void setIndexCount(int indexCount) { this.indexCount = indexCount; }
     public boolean getIndexDialog() { return indexDialog; }
     public void setIndexDialog(boolean indexDialog) { this.indexDialog = indexDialog; }
     public String getIndexCompany() { return indexCompany; }
@@ -331,6 +339,7 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_GLANCE_SINCE, glanceSince);
         map.put(COLUMN_GLANCE_THEME, glanceTheme);
         map.put(COLUMN_INDEX_ANCHOR, indexAnchor);
+        map.put(COLUMN_INDEX_COUNT, indexCount);
         map.put(COLUMN_INDEX_DIALOG, indexDialog);
         map.put(COLUMN_INDEX_FOCUS, indexFocus);
         map.put(COLUMN_INDEX_FILTER, indexFilter);
@@ -366,6 +375,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
         if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
         if (map.containsKey(COLUMN_INDEX_ANCHOR)) indexAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) indexCount = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
         if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FILTER), Boolean.class);
@@ -404,6 +414,7 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         values.put(COLUMN_GLANCE_SINCE, glanceSince);
         values.put(COLUMN_GLANCE_THEME, glanceTheme);
+        values.put(COLUMN_INDEX_COUNT, indexCount);
         values.put(COLUMN_INDEX_DIALOG, indexDialog);
         values.put(COLUMN_INDEX_FOCUS, indexFocus);
         values.put(COLUMN_INDEX_FILTER, indexFilter);
@@ -444,6 +455,7 @@ public class User implements Entry, Parcelable, Cloneable {
         glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
         glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
         indexAnchor = values.getAsLong(COLUMN_INDEX_ANCHOR);
+        indexCount = values.getAsInteger(COLUMN_INDEX_COUNT);
         indexDialog = values.getAsBoolean(COLUMN_INDEX_DIALOG);
         indexFocus = values.getAsBoolean(COLUMN_INDEX_FOCUS);
         indexFilter = values.getAsBoolean(COLUMN_INDEX_FILTER);
@@ -489,6 +501,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.glanceSince = false;
         user.glanceTheme = 0;
         user.indexAnchor = 0;
+        user.indexCount = 0;
         user.indexDialog = false;
         user.indexFocus = false;
         user.indexFilter = true;

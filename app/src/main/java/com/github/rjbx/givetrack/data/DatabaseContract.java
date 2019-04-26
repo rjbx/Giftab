@@ -77,6 +77,7 @@ public final class DatabaseContract {
         public static final String COLUMN_GLANCE_SINCE = "glanceSince";
         public static final String COLUMN_GLANCE_THEME = "glanceTheme";
         public static final String COLUMN_INDEX_ANCHOR = "indexAnchor";
+        public static final String COLUMN_INDEX_COUNT = "indexCount";
         public static final String COLUMN_INDEX_DIALOG = "indexDialog";
         public static final String COLUMN_INDEX_FOCUS = "indexFocus";
         public static final String COLUMN_INDEX_FILTER = "indexFilter";
