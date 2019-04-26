@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.DisplayMetrics;
+import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,9 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_SPAWN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -279,6 +283,9 @@ public class IndexActivity extends AppCompatActivity implements
      */
     @OnClick(R.id.spawn_fab) public void refreshResults() {
         fetchResults();
+        long currentTime = System.currentTimeMillis();
+        int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getGiveAnchor());
+        if (days > 0) mUser.setIndexAnchor(currentTime);
     }
 
 
