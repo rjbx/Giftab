@@ -13,6 +13,7 @@ import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
+//TODO: Add attribute to store number of remaining fetches
 /**
  * Stores data about an end user; initialized from {@link com.google.firebase.auth.FirebaseUser},
  * persisted locally with {@link android.content.ContentProvider}
