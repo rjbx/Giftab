@@ -437,8 +437,7 @@ public class GiveFragment extends Fragment implements
         private Rateraid.Objects mObjects;
         private List<Target> mTargetList;
 
-        // TODO: Option 2 - Define action handling inside mObjects default click listener, qualifying on remove button clicked view, initializing dialog, attaching individual view click listeners, and tagging button position to button inside method with which to dereference list value corresponding to message
-        // Downside - verbosity
+        // TODO: Override default behavior to prevent remove on click of remove button and apply on click of dialog button
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
@@ -449,16 +448,17 @@ public class GiveFragment extends Fragment implements
 //                for (double percentage : sPercentages) sum += percentage;
 //                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
 
-                if (mContext == null) return;
-                AlertDialog dialog = new AlertDialog.Builder(mContext).create();
-                dialog.setMessage(mContext.getString(R.string.message_remove_entry, mTargetList.get((int) clickedView.getTag()), "collection"));
-                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
-                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
-                dialog.show();
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(clickedNeutral -> dialog.dismiss());
-
+//                if (mContext == null) return;
+//                AlertDialog dialog = new AlertDialog.Builder(mContext).create();
+//                dialog.setMessage(mContext.getString(R.string.message_remove_entry, mTargetList.get((int) clickedView.getTag()), "collection"));
+//                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
+//                dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
+//                dialog.show();
+//                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+//                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+//                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(clickedNeutral -> dialog.dismiss());
+//                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(clickedNegative -> {});
+//
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
                 renderActionBar();
@@ -580,7 +580,7 @@ public class GiveFragment extends Fragment implements
             if (incrementButton != null && decrementButton != null && removeButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null)
-                        .addRemover(removeButton, adapterPosition);
+                        /*.addRemover(removeButton, adapterPosition)*/;
             }
         }
 
@@ -668,7 +668,6 @@ public class GiveFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
-                            // TODO: Superfluous listeners; either handle inside library method or pass in element attached to predefined listener
                             int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
@@ -677,6 +676,27 @@ public class GiveFragment extends Fragment implements
                         default:
                     }
                 }
+            }
+
+            /**
+             * Defines behavior on click of remove button.
+             */
+            @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
+
+                int position = (int) v.getTag();
+                Target target = mTargetList.get(position);
+                String name = target.getName();
+
+                if (mContext == null) return;
+                mRemoveDialog = new AlertDialog.Builder(mContext).create();
+                mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
+                mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+                mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+                mRemoveDialog.show();
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+//                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
+                mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTag(position);
             }
 
             /**
