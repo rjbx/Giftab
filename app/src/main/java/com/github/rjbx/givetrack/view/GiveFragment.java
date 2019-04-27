@@ -487,7 +487,6 @@ public class GiveFragment extends Fragment implements
             TextView incrementButton = holder.mIncrementButton;
             TextView decrementButton = holder.mDecrementButton;
             Button addButton = holder.mAddButton;
-            Button removeButton = holder.mRemoveButton;
             ImageButton inspectButton = holder.mInspectButton;
 
             if (position == getItemCount() - 1 && addButton != null) {
@@ -563,10 +562,10 @@ public class GiveFragment extends Fragment implements
             }
 
             final int adapterPosition = holder.getAdapterPosition();
-            if (incrementButton != null && decrementButton != null && percentageView != null && removeButton != null) {
+            if (incrementButton != null && decrementButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
-                        .addEditor(percentageView, adapterPosition, mMethodManager, null)
-                        .addRemover(removeButton, adapterPosition);
+                        .addEditor(percentageView, adapterPosition, mMethodManager, null);
+                        // TODO: Add remove button
             }
         }
 
@@ -629,7 +628,6 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
-            @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
