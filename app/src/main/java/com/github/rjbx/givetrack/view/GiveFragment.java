@@ -448,15 +448,17 @@ public class GiveFragment extends Fragment implements
                 //                float sum = 0;
 //                for (double percentage : sPercentages) sum += percentage;
 //                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
+
                 if (mContext == null) return;
                 AlertDialog dialog = new AlertDialog.Builder(mContext).create();
-                dialog.setMessage(mContext.getString(R.string.message_remove_entry, "", "collection"));
+                dialog.setMessage(mContext.getString(R.string.message_remove_entry, mTargetList.get((int) clickedView.getTag()), "collection"));
                 dialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
                 dialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(clickedNeutral -> dialog.dismiss());
+
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
                 renderActionBar();
@@ -498,6 +500,7 @@ public class GiveFragment extends Fragment implements
             TextView incrementButton = holder.mIncrementButton;
             TextView decrementButton = holder.mDecrementButton;
             Button addButton = holder.mAddButton;
+            Button removeButton = holder.mRemoveButton;
             ImageButton inspectButton = holder.mInspectButton;
 
             if (position == getItemCount() - 1 && addButton != null) {
@@ -572,10 +575,12 @@ public class GiveFragment extends Fragment implements
                 }
             }
 
+
             final int adapterPosition = holder.getAdapterPosition();
-            if (incrementButton != null && decrementButton != null && percentageView != null) {
+            if (incrementButton != null && decrementButton != null && removeButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
-                        .addEditor(percentageView, adapterPosition, mMethodManager, null);
+                        .addEditor(percentageView, adapterPosition, mMethodManager, null)
+                        .addRemover(removeButton, adapterPosition);
             }
         }
 
@@ -638,6 +643,7 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
+            @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
