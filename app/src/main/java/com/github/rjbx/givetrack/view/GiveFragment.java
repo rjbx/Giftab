@@ -560,6 +560,15 @@ public class GiveFragment extends Fragment implements
                 }
             }
 
+            if (mContext == null) return;
+//            mRemoveDialog = new AlertDialog.Builder(mContext).create();
+//            mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
+//            mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
+//            mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
+//            mRemoveDialog.show();
+//            mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+//            mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+
             final int adapterPosition = holder.getAdapterPosition();
             if (incrementButton != null && decrementButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
@@ -658,27 +667,6 @@ public class GiveFragment extends Fragment implements
                         default:
                     }
                 }
-            }
-
-            /**
-             * Defines behavior on click of remove button.
-             */
-            @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
-
-                int position = (int) v.getTag();
-                Target target = mTargetList.get(position);
-                String name = target.getName();
-
-                if (mContext == null) return;
-                mRemoveDialog = new AlertDialog.Builder(mContext).create();
-                mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
-                mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
-                mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), this);
-                mRemoveDialog.show();
-                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                Button button = mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
-                button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                button.setTag(position);
             }
 
             /**
