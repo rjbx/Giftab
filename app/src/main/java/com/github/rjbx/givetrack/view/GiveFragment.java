@@ -565,6 +565,7 @@ public class GiveFragment extends Fragment implements
             if (incrementButton != null && decrementButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null);
+                        // TODO: Add remove button
             }
         }
 
