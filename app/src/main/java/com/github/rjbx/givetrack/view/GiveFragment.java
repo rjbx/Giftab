@@ -650,6 +650,7 @@ public class GiveFragment extends Fragment implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_NEGATIVE:
+                            // TODO: Superfluous listeners; either handle inside library method or pass in element attached to predefined listener
                             int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
                             if (sDualPane) showSinglePane();
 //                                if (sValuesArray.length == 1) onDestroy();
