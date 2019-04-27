@@ -436,6 +436,11 @@ public class GiveFragment extends Fragment implements
         private Rateraid.Objects mObjects;
         private List<Target> mTargetList;
 
+        // TODO: Option 1 - Define remove button listener inside onBindViewHolder and action handling inside view holder dialog click listener implementation
+        // Downside - redundancy
+        // TODO: Option 2 - Define action handling inside mObjects default click listener, qualifying on remove button clicked view, initializing dialog, attaching individual view click listeners, and tagging button position to button inside method with which to dereference list value corresponding to message
+        // Downside - verbosity
+        // TODO: Option 3 - Provide a default remove dialog from the Rateraid interface with no options for customization
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
@@ -564,7 +569,6 @@ public class GiveFragment extends Fragment implements
             if (incrementButton != null && decrementButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null);
-                        // TODO: Decide whether to add listener parameter to addRemover where to define dialog and attach viewholder as listener
             }
         }
 
