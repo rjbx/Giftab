@@ -442,7 +442,7 @@ public class GiveFragment extends Fragment implements
         ListAdapter(List<Target> targetList) {
             mTargetList = targetList;
             mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
-            // TODO: Designate custom handling for remove button action
+            // TODO: Define and show dialog as well as define and attach button click listeners for initial remove button designation
                 //                float sum = 0;
 //                for (double percentage : sPercentages) sum += percentage;
 //                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
