@@ -561,6 +561,7 @@ public class GiveFragment extends Fragment implements
             }
 
             if (mContext == null) return;
+            // TODO: Create separate remove dialog for each view item or initialize dialog from within library method listener definition
 //            mRemoveDialog = new AlertDialog.Builder(mContext).create();
 //            mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
 //            mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
