@@ -442,7 +442,6 @@ public class GiveFragment extends Fragment implements
         ListAdapter(List<Target> targetList) {
             mTargetList = targetList;
             mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
-            // TODO: Define and show dialog as well as define and attach button click listeners for initial remove button designation
                 //                float sum = 0;
 //                for (double percentage : sPercentages) sum += percentage;
 //                Timber.d("List[%s] : Sum[%s]", Arrays.asList(sPercentages).toString(), sum);
@@ -565,7 +564,7 @@ public class GiveFragment extends Fragment implements
             if (incrementButton != null && decrementButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null);
-                        // TODO: Add remove button
+                        // TODO: Decide whether to add listener parameter to addRemover where to define dialog and attach viewholder as listener
             }
         }
 
