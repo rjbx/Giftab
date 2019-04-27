@@ -440,7 +440,7 @@ public class GiveFragment extends Fragment implements
         // Downside - redundancy
         // TODO: Option 2 - Define action handling inside mObjects default click listener, qualifying on remove button clicked view, initializing dialog, attaching individual view click listeners, and tagging button position to button inside method with which to dereference list value corresponding to message
         // Downside - verbosity
-        // TODO: Option 3 - Provide a default remove dialog from the Rateraid interface with no options for customization
+        // TODO: Option 3 - Provide a default remove dialog from the Rateraid interface with customization specified within mObjects default click listener, qualifying on remove button click view, and initializing default click listener inside dialog button click listener definition
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
