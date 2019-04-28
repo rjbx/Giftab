@@ -704,7 +704,7 @@ public class GiveFragment extends Fragment implements
 //                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
                 mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
-                // TODO: Handle UnsupportedOperationException on removal from AbstractList
+                // TODO: Assign reference to copy of result of Arrays.asList which returns immutable abstract List
             }
 
             /**
