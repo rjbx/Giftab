@@ -176,8 +176,8 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Target.class, stamp, false, entries);
-        addEntriesToRemote(remote, Target.class, stamp, false, entries);
+        addEntriesToLocal(local, Target.class, stamp, true, entries);
+        addEntriesToRemote(remote, Target.class, stamp, true, entries);
     }
 
     static void removeTarget(Context context, Target... target) {
