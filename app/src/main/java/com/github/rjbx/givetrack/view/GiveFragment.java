@@ -437,7 +437,9 @@ public class GiveFragment extends Fragment implements
         private Rateraid.Objects mObjects;
         private List<Target> mTargetList;
 
-        // TODO: Override default behavior to prevent remove on click of remove button and apply on click of dialog button
+        // TODO: Define dialog button click listener inside library method
+
+
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
