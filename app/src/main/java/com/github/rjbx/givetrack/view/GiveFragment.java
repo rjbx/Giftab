@@ -704,9 +704,6 @@ public class GiveFragment extends Fragment implements
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
                 mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position, mRemoveDialog);
-
-                // TODO: Either
-                //  A2. Replace full list on multiple element target additions by invoking remove accessor method on retrieving and comparing stored target list with argument list and detecting removal
             }
 
             /**
