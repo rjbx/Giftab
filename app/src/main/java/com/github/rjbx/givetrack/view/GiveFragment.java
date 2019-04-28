@@ -704,7 +704,7 @@ public class GiveFragment extends Fragment implements
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
 //                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
-                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
+                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position, null);
 
                 // TODO: Either
                 //  A. Dismiss dialog on negative button click by passing dialog reference for dismissal inside library method
