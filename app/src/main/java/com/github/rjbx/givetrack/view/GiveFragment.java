@@ -50,6 +50,7 @@ import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -126,7 +127,7 @@ public class GiveFragment extends Fragment implements
             Parcelable[] parcelableArray = savedInstanceState.getParcelableArray(TARGETS_STATE);
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
-                List<Target> targetList = Arrays.asList(valuesArray);
+                List<Target> targetList = new ArrayList<>(Arrays.asList(valuesArray));
                 if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
                 else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 mRecyclerView.setAdapter(mListAdapter);
@@ -154,7 +155,7 @@ public class GiveFragment extends Fragment implements
             Parcelable[] parcelableArray = args.getParcelableArray(HomeActivity.ARGS_TARGET_ATTRIBUTES);
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
-                List<Target> targetList = Arrays.asList(valuesArray);
+                List<Target> targetList = new ArrayList<>(Arrays.asList(valuesArray));
                 sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
                 if (sUser == null) mParentActivity.recreate();
                 else {
@@ -704,7 +705,6 @@ public class GiveFragment extends Fragment implements
 //                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
                 mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
-                // TODO: Assign reference to copy of result of Arrays.asList which returns immutable abstract List
             }
 
             /**
