@@ -143,8 +143,8 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_UPDATE_TARGET);
         intent.putExtra(EXTRA_ITEM_VALUES, target);
-        if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
-        else intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
+        if (target.length == 1) intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
+        else intent.putExtra(EXTRA_LIST_VALUES, target);
         context.startService(intent);
     }
 
@@ -703,7 +703,7 @@ public final class DatabaseManager extends IntentService {
                 else offset++;
             }
         }
-        if (matchCount == targetList.size() - 1 || targets.size() == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
+        if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
         else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 

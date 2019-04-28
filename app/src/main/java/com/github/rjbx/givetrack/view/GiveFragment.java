@@ -622,7 +622,7 @@ public class GiveFragment extends Fragment implements
          * Syncs donation percentage and amount mValues to database from which table is repopulated.
          */
         private void syncPercentages() {
-            if (mTargetList == null || mTargetList.size() == 0) return;
+            if (mTargetList == null) return;
 //        for (int i = 0; i < sValuesArray.length; i++) {
 //            sValuesArray[i].setPercent(sPercentages[i]);
 //            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
