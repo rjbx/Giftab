@@ -701,7 +701,7 @@ public final class DatabaseManager extends IntentService {
                 matchCount = -1;
                 break;
             }
-            if (targetList.get(i - offset).equals(targets[i])) matchCount++;
+            if (targetList.get(i - offset).getId().equals(targets[i].getId())) matchCount++;
             else offset++;
         }
         if (matchCount == targetList.size() - 1) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
