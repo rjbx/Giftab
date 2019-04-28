@@ -44,6 +44,7 @@ import timber.log.Timber;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseAccessor;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -466,10 +467,6 @@ public class GiveFragment extends Fragment implements
 //                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(clickedNeutral -> dialog.dismiss());
 //                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(clickedNegative -> {});
 //
-                // TODO: Identify remove button and handle
-                if (clickedView instanceof Button && ((Button) clickedView).getText().equals(getString(R.string.dialog_option_remove))) {
-
-                }
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
                 renderActionBar();
