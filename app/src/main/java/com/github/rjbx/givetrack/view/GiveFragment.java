@@ -705,7 +705,8 @@ public class GiveFragment extends Fragment implements
 //                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
                 mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
-                // TODO: Persist removal to target list before syncing
+                // TODO: Either replace full list on single element target additions or set reset to false, discern removal and invoke removeTarget from GiveFragment sync
+                // TODO: Dismiss dialog on negative button click
             }
 
             /**

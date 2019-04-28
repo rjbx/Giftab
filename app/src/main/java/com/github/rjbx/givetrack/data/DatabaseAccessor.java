@@ -176,7 +176,6 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        // TODO: Either replace full list on single element target editions or set reset to false, discern removal and invoke removeTarget from GiveFragment sync
         addEntriesToLocal(local, Target.class, stamp, true, entries);
         addEntriesToRemote(remote, Target.class, stamp, true, entries);
     }
