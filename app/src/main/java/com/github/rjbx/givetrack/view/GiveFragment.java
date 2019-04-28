@@ -702,12 +702,10 @@ public class GiveFragment extends Fragment implements
                 mRemoveDialog.show();
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-//                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
                 mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
-                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position, null);
+                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position, mRemoveDialog);
 
                 // TODO: Either
-                //  A. Dismiss dialog on negative button click by passing dialog reference for dismissal inside library method
                 //  A1. Replace full list on single element target additions by retrieving full target list on single element invocations to manager update method
                 //  A2. Replace full list on multiple element target additions by invoking remove accessor method on retrieving and comparing stored target list with argument list and detecting removal
                 //  B. Dismiss dialog on negative button click by defining additional button click listener and there identifying target list modification for sync handling
