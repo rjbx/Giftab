@@ -466,6 +466,7 @@ public class GiveFragment extends Fragment implements
 //                dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(clickedNeutral -> dialog.dismiss());
 //                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setOnClickListener(clickedNegative -> {});
 //
+                // TODO: Identify remove button and handle
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
                 renderActionBar();
