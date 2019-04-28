@@ -707,11 +707,12 @@ public class GiveFragment extends Fragment implements
                 mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position);
 
                 // TODO: Either
-                //  A2. Dismiss dialog on negative button click by passing dialog reference for dismissal inside library method
-                //  A1. Replace full list on single element target additions by retrieving full target list on single element invocations to manager update method
-                //  B1. Dismiss dialog on negative button click by defining additional button click listener and there identifying target list modification for sync handling
-                //  B2. Inside button click listener, set reset to false, discern removal and invoke removeTarget from GiveFragment sync
-
+                //  A. Dismiss dialog on negative button click by passing dialog reference for dismissal inside library method
+                //  A. Replace full list on single element target additions by retrieving full target list on single element invocations to manager update method
+                //  B. Dismiss dialog on negative button click by defining additional button click listener and there identifying target list modification for sync handling
+                //  B. Inside button click listener definition, set reset to false, discern removal and invoke removeTarget from GiveFragment sync
+                // A pro/con Less redundant
+                // B Less verbose
             }
 
             /**
