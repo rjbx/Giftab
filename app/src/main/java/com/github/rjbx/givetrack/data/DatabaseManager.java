@@ -693,23 +693,19 @@ public final class DatabaseManager extends IntentService {
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        if (targets.length <= 1) DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
-        else {
-            int matchCount = 0;
-            int offset = 0;
-            List<Target> targetList = DatabaseAccessor.getTarget(this);
-            for (int i = 0; i < targetList.size(); i++) {
-                if (i >= targets.length) {
-                    matchCount = -1;
-                    break;
-                }
-                if (targetList.get(i - offset).equals(targets[i])) matchCount++;
-                else offset++;
+        int matchCount = 0;
+        int offset = 0;
+        List<Target> targetList = DatabaseAccessor.getTarget(this);
+        for (int i = 0; i < targetList.size(); i++) {
+            if (i >= targets.length) {
+                matchCount = -1;
+                break;
             }
-            if (matchCount == targetList.size() - 1) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
-            else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
-
+            if (targetList.get(i - offset).equals(targets[i])) matchCount++;
+            else offset++;
         }
+        if (matchCount == targetList.size() - 1) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
+        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     /**
