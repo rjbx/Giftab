@@ -488,6 +488,7 @@ public final class DatabaseAccessor {
         });
     }
 
+    // TODO: Enforce validation against recent removals to prevent repopulating with removed entry
     private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
