@@ -438,7 +438,8 @@ public class GiveFragment extends Fragment implements
         private List<Target> mTargetList;
 
         // TODO: Define dialog button click listener inside library method
-
+        // Option 1: Pass dialog into library method
+        // Option 2: Pass button into library method
 
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
