@@ -699,7 +699,7 @@ public final class DatabaseManager extends IntentService {
         if (targetList.size() - 1 == targets.length) {
             for (int i = 0; i < targetList.size(); i++) {
                 if (i > targets.length) break;
-                if (targetList.get(i - offset).getId().equals(targets[i].getId())) matchCount++;
+                if (targetList.get(i).getId().equals(targets[i - offset].getId())) matchCount++;
                 else offset++;
             }
         }
