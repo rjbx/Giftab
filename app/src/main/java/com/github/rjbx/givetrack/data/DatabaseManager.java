@@ -703,7 +703,7 @@ public final class DatabaseManager extends IntentService {
                 else offset++;
             }
         }
-        if (matchCount == targetList.size() - 1) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
+        if (matchCount == targetList.size() - 1 || targets.size() == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
         else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
