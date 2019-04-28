@@ -16,8 +16,10 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.PrimitiveIterator;
 import java.util.concurrent.Executor;
 
 /**
@@ -696,9 +698,8 @@ public final class DatabaseManager extends IntentService {
             int matchCount = 0;
             int offset = 0;
             List<Target> targetList = DatabaseAccessor.getTarget(this);
-            for (int i = 0; i < targetList.size(); i++) {
-                if (i + offset > targets.length - 1) break;
-                else if (targetList.get(i).equals(targets[i + offset])) matchCount++;
+            for (int i = 0; i + offset < targetList.size(); i++) {
+                if (targetList.get(i).equals(targets[i + offset])) matchCount++;
                 else offset++;
             }
             if (matchCount == targetList.size() - 1) DatabaseAccessor.removeTarget(this, targets);
