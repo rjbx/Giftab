@@ -708,7 +708,8 @@ public class GiveFragment extends Fragment implements
 
                 // TODO: Either
                 //  A. Dismiss dialog on negative button click by passing dialog reference for dismissal inside library method
-                //  A. Replace full list on single element target additions by retrieving full target list on single element invocations to manager update method
+                //  A1. Replace full list on single element target additions by retrieving full target list on single element invocations to manager update method
+                //  A2. Replace full list on multiple element target additions by invoking remove accessor method
                 //  B. Dismiss dialog on negative button click by defining additional button click listener and there identifying target list modification for sync handling
                 //  B. Inside button click listener definition, set reset to false, discern removal and invoke removeTarget from GiveFragment sync
                 // A pro/con Less redundant
