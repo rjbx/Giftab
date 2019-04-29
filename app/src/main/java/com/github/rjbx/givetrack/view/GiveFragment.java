@@ -276,6 +276,7 @@ public class GiveFragment extends Fragment implements
         mRecyclerView.setLayoutParams(params);
         mDetailContainer.setVisibility(View.VISIBLE);
         mDetailContainer.setLayoutParams(params);
+        if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -500,9 +501,6 @@ public class GiveFragment extends Fragment implements
                 return;
             }
 
-            if (isDualPane()) if (inspectButton != mLastClicked) overview.setVisibility(View.GONE);
-            else overview.setVisibility(View.VISIBLE);
-
             if (mTargetList == null || mTargetList.size()== 0 || mTargetList.get(position) == null)
                 return;
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -515,6 +513,9 @@ public class GiveFragment extends Fragment implements
                         (int) getResources().getDimension(R.dimen.item_default_vertical_margin));
                 holder.itemView.setLayoutParams(params);
             }
+
+            if (isDualPane()) overview.setVisibility(View.GONE);
+            else overview.setVisibility(View.VISIBLE);
 
             Target target = mTargetList.get(position);
 
