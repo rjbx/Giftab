@@ -168,6 +168,7 @@ public class GiveFragment extends Fragment implements
                         mRecyclerView.setAdapter(mListAdapter);
                     } else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 }
+                mListAdapter.swapValues();
             }
         }
 
@@ -225,10 +226,6 @@ public class GiveFragment extends Fragment implements
             });
             mMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         }
-//        if (mListAdapter != null) {
-//            List<Target> targetList = Arrays.asList(sValuesArray)
-//            mListAdapter.swapValues(targetList);
-//        }
     }
 
     /**
