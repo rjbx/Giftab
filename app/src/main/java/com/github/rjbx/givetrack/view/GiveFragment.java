@@ -168,7 +168,7 @@ public class GiveFragment extends Fragment implements
                         mRecyclerView.setAdapter(mListAdapter);
                     } else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 }
-                mListAdapter.swapValues();
+                mListAdapter.swapValues(targetList);
             }
         }
 
