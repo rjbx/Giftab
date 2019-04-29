@@ -27,8 +27,9 @@
 
         <FrameLayout
             android:id="@+id/donation_detail_container"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight=".7"
             android:visibility="gone"
             android:background="@color/colorNeutral"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
