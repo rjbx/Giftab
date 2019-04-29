@@ -69,8 +69,8 @@ public class JournalActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
-
     public static final String ACTION_JOURNAL_INTENT = "com.github.rjbx.givetrack.ui.action.JOURNAL_INTENT";
+    private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private long mDeletedTime;
     private static boolean sDualPane;
@@ -79,6 +79,7 @@ public class JournalActivity extends AppCompatActivity implements
     private AlertDialog mRemoveDialog;
     private String mSnackbar;
     private User mUser;
+    private int mPanePosition;
     private boolean mLock = true;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
@@ -96,6 +97,7 @@ public class JournalActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
+            mPanePosition = savedInstanceState.getInt(POSITION_STATE);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
@@ -123,6 +125,7 @@ public class JournalActivity extends AppCompatActivity implements
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
+        outState.putInt(POSITION_STATE, mPanePosition);
     }
 
     /**
@@ -190,7 +193,7 @@ public class JournalActivity extends AppCompatActivity implements
                         AppUtilities.cursorRowToEntry(data, user);
                         if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);
+                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                             showDualPane(bundle);
                         }
                         if (user.getUserActive()) {
@@ -317,7 +320,6 @@ public class JournalActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private Record[] mValuesArray;
-        private int mLastPosition;
 
         ListAdapter() {
             super();
@@ -342,7 +344,7 @@ public class JournalActivity extends AppCompatActivity implements
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
             if (isDualPane()) {
-                if (position != mLastPosition) {
+                if (position != mPanePosition) {
                     holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                 } else {
                     holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
@@ -566,10 +568,10 @@ public class JournalActivity extends AppCompatActivity implements
             private void togglePane(View v) {
                 int position = (int) v.getTag();
                 Record values = mValuesArray[position];
-                if (mLastPosition == position) sDualPane = !sDualPane;
+                if (mPanePosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
-                mLastPosition = position;
+                mPanePosition = position;
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSuper());
                 if (sDualPane) showDualPane(arguments);
