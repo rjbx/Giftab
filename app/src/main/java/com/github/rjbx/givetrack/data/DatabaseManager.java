@@ -693,7 +693,7 @@ public final class DatabaseManager extends IntentService {
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-    /*    int matchCount = 0;
+        int matchCount = 0;
         int offset = 0;
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         if (targetList.size() - 1 == targets.length) {
@@ -704,8 +704,8 @@ public final class DatabaseManager extends IntentService {
             }
         }
         if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
-        else */
-        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
+        // TODO: Identify offset index and invoke remove
+        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     /**

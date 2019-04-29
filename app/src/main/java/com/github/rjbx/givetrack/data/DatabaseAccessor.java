@@ -175,45 +175,17 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
-        boolean forceReset = false;
-        int matchCount = 0;
-        int offset = 0;
-        List<Target> targetList = DatabaseAccessor.getTarget(context);
-        if (targetList.size() - 1 == entries.length) {
-            for (int i = 0; i < targetList.size(); i++) {
-                if (i - offset >= entries.length) break;
-                if (targetList.get(i).getId().equals(entries[i - offset].getId())) matchCount++;
-                else offset++;
-            }
-        }
-        if (matchCount == targetList.size() - 1 || entries.length == 0) forceReset = true;
-
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Target.class, stamp, forceReset, entries);
-        addEntriesToRemote(remote, Target.class, stamp, forceReset, entries);
+        addEntriesToLocal(local, Target.class, stamp, false, entries);
+        addEntriesToRemote(remote, Target.class, stamp, false, entries);
     }
 
     static void removeTarget(Context context, Target... target) {
-        // TODO: Account for removals from DetailFragmet
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
 
-//        if (target != null && target.length > 0) {
-//            List<Target> targetList = getTarget(context);
-//            int[] removalIndeces = new int[targetList.size()];
-//            for (Target t1 : target)
-//                for (Target t2 : targetList)
-//                    if (t2.getId().equals(t1.getId()))
-//                        removalIndeces[targetList.indexOf(t2)] = 1;
-//
-//            for (int i = 0; i < removalIndeces.length; i++)
-//                if (removalIndeces[i] == 1) targetList.remove(i);
-//
-//            if (!targetList.isEmpty()) Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
-//            target = targetList.toArray(new Target[0]);
-//        }
         removeEntriesFromLocal(local, Target.class, stamp, target);
         removeEntriesFromRemote(remote, Target.class, stamp, target);
     }
