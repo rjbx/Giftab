@@ -33,6 +33,7 @@ import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Company;
+import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -44,7 +45,7 @@ import java.util.List;
 /**
  * Provides the logic and views for a single detail screen.
  */
-// TODO: Update Master Detail interface with entry update callback
+// TODO: Update Master Detail interface with entry update callback and replace inner class updates with Master level handling
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
@@ -74,6 +75,8 @@ public class DetailFragment extends Fragment {
         boolean isDualPane();
         void showDualPane(Bundle args);
         void showSinglePane();
+//        void removeEntry(Entry entry);
+//        void addEntry(Entry entry);
     }
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
