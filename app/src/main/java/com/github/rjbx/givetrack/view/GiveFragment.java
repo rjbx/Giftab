@@ -514,13 +514,15 @@ public class GiveFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            if (isDualPane())
-                if (mLastClicked != inspectButton) removeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
-                else removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+            if (isDualPane()) {
+                if (mLastClicked != inspectButton)
+                    removeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
+                else
+                    removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
                 overview.setVisibility(View.GONE);
-            else {
-                overview.setVisibility(View.VISIBLE);
+            } else {
                 removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                overview.setVisibility(View.VISIBLE);
             }
 
             Target target = mTargetList.get(position);
