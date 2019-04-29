@@ -290,7 +290,7 @@ public class GiveFragment extends Fragment implements
     public void removeEntry(Spawn spawn) {
         if (mContext == null && mObjects != null) return;
         mRemoveDialog = new AlertDialog.Builder(mContext).create();
-//        mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, , "collection"));
+        mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, spawn.getName(), "collection"));
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
         mRemoveDialog.show();
