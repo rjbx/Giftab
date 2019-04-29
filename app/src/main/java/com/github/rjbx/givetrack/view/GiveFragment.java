@@ -60,7 +60,6 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 // TODO: Replace remove button with type toggle and restore target update from detail
-// TODO: Apply same detail toggle effect as that of records: remove/type + infobar + adjusters = 50% width
 /**
  * Provides the logic and views for a user activity management screen.
  */
