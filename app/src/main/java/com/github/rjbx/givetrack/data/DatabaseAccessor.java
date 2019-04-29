@@ -94,8 +94,8 @@ public final class DatabaseAccessor {
         // Store data
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Spawn.class, stamp);
-        addEntriesToLocal(local, Spawn.class, stamp, false, parsedResponse);
-        addEntriesToRemote(remote, Spawn.class, stamp, false, parsedResponse);
+        addEntriesToLocal(local, Spawn.class, stamp, parsedResponse);
+        addEntriesToRemote(remote, Spawn.class, stamp, parsedResponse);
     }
 
     @SafeVarargs static List<Spawn> getSpawn(Context context, Pair<String, String>... where) {
@@ -128,7 +128,7 @@ public final class DatabaseAccessor {
         ContentResolver local = context.getContentResolver();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Spawn.class, stamp, false, entries);
+        addEntriesToLocal(local, Spawn.class, stamp, entries);
     }
 
     static void removeSpawn(Context context, Spawn... spawns) {
@@ -176,8 +176,8 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Target.class, stamp, false, entries);
-        addEntriesToRemote(remote, Target.class, stamp, false, entries);
+        addEntriesToLocal(local, Target.class, stamp, entries);
+        addEntriesToRemote(remote, Target.class, stamp, entries);
     }
 
     static void removeTarget(Context context, Target... target) {
@@ -229,8 +229,8 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, Record.class, stamp, false, entries);
-        addEntriesToRemote(remote, Record.class, stamp, false, entries);
+        addEntriesToLocal(local, Record.class, stamp, entries);
+        addEntriesToRemote(remote, Record.class, stamp, entries);
     }
 
     static void removeRecord(Context context, Record... record) {
@@ -267,8 +267,8 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
-        addEntriesToLocal(local, User.class, stamp, false, entries);
-        addEntriesToRemote(remote, User.class, stamp, false, entries);
+        addEntriesToLocal(local, User.class, stamp, entries);
+        addEntriesToRemote(remote, User.class, stamp, entries);
     }
 
     static void removeUser(Context context, User... user) {
@@ -280,14 +280,14 @@ public final class DatabaseAccessor {
         removeEntriesFromRemote(remote, User.class, stamp, user);
     }
 
-    @SafeVarargs private static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> void addEntriesToLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
 
         String uid =  entries == null || entries.length == 0 ?
                 getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid() : entries[0].getUid();
 
-        if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
+//        if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
         if (entries != null && entries.length > 0) {
             ContentValues[] values = new ContentValues[entries.length];
@@ -300,7 +300,7 @@ public final class DatabaseAccessor {
         updateLocalTableTime(local, entryType, stamp, uid);
     }
 
-    @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  boolean reset, T... entries) {
+    @SafeVarargs private static <T extends Entry> void addEntriesToRemote(FirebaseDatabase remote, Class<T> entryType, long stamp,  T... entries) {
 
         if (entryType == Spawn.class) return;
 
@@ -312,7 +312,7 @@ public final class DatabaseAccessor {
 
        DatabaseReference userReference = typeReference.child(uid);
 
-        if (reset) userReference.removeValue();
+//        if (reset) userReference.removeValue();
 
         DatabaseReference entryReference;
         if (entries != null && entries.length > 0) {
@@ -438,7 +438,7 @@ public final class DatabaseAccessor {
         }
         removeEntriesFromRemote(remote, entryType, stamp);
         if (entryList.isEmpty()) return;
-        addEntriesToRemote(remote, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
+        addEntriesToRemote(remote, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
     }
 
     private static <T extends Entry> void pullRemoteToLocalEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
@@ -465,7 +465,7 @@ public final class DatabaseAccessor {
                 }
                 removeEntriesFromLocal(local, entryType, stamp);
                 if (entryList.isEmpty()) return;
-                addEntriesToLocal(local, entryType, stamp, false, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
+                addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
                 pathReference.removeEventListener(this);
                 if (entryType == User.class) pathReference.child("userActive").setValue(true);
             }
