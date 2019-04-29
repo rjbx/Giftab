@@ -709,8 +709,7 @@ public final class DatabaseManager extends IntentService {
         }
         Target removedTarget = targetList.get(offsetIndex);
         if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
-        // TODO: Identify offset index and invoke remove
-        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, removedTarget));
+        else DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, removedTarget));
     }
 
     /**
