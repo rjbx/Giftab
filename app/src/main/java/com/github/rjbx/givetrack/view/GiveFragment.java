@@ -293,7 +293,6 @@ public class GiveFragment extends Fragment implements
 
     @Override
     public void removeEntry(Company spawn) {
-        // TODO: Update DetailFragment entry status if dialog cancelled
         if (mContext == null && mObjects != null) return;
         mRemoveDialog = new AlertDialog.Builder(mContext).create();
         mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, spawn.getName(), "collection"));
