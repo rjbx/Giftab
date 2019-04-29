@@ -181,6 +181,7 @@ public final class DatabaseAccessor {
     }
 
     static void removeTarget(Context context, Target... target) {
+        // TODO: Account for removals from DetailFragmet
         ContentResolver local = context.getContentResolver();
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
