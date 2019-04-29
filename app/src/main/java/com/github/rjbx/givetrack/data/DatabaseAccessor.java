@@ -186,6 +186,22 @@ public final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         long stamp = System.currentTimeMillis();
+
+        if (target != null && target.length > 0) {
+            List<Target> targetList = getTarget(context);
+            int[] removalIndeces = new int[targetList.size()];
+            for (Target t1 : target)
+                for (Target t2 : targetList)
+                    if (t2.getId().equals(t1.getId()))
+                        removalIndeces[targetList.indexOf(t2)] = 1;
+
+            for (int i = 0; i < removalIndeces.length; i++)
+                if (removalIndeces[i] == 1) targetList.remove(i);
+
+            if (!targetList.isEmpty()) Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
+            target = targetList.toArray(new Target[0]);
+        }
+
         addEntriesToLocal(local, Target.class, stamp, true, target);
         addEntriesToRemote(remote, Target.class, stamp, true, target);
     }
