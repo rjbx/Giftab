@@ -76,7 +76,9 @@ public class GiveFragment extends Fragment implements
     private static final String PANE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_PANE";
     private static final String ADJUST_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_ADJUST";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
+    private Rateraid.Objects mObjects;
     private static User sUser;
+    private AlertDialog mRemoveDialog;
     private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
     private Context mContext;
@@ -286,7 +288,16 @@ public class GiveFragment extends Fragment implements
 
     @Override
     public void removeEntry(Spawn spawn) {
-        DatabaseManager.startActionTargetSpawn(getContext(), spawn);
+        if (mContext == null && mObjects != null) return;
+        mRemoveDialog = new AlertDialog.Builder(mContext).create();
+//        mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, , "collection"));
+        mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
+        mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
+        mRemoveDialog.show();
+        mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+        mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
+        mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
     }
 
     @Override
@@ -443,7 +454,6 @@ public class GiveFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-        private Rateraid.Objects mObjects;
         private List<Target> mTargetList;
 
         /**
