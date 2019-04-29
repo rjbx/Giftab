@@ -287,7 +287,12 @@ public class GiveFragment extends Fragment implements
     }
 
     @Override
-    public void removeEntry(Spawn spawn) {
+    public void addEntry(Spawn company) {
+        DatabaseManager.startActionUntargetCompany(getContext(), company);
+    }
+
+    @Override
+    public void removeEntry(Company spawn) {
         if (mContext == null && mObjects != null) return;
         mRemoveDialog = new AlertDialog.Builder(mContext).create();
         mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, spawn.getName(), "collection"));
@@ -298,11 +303,6 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
-    }
-
-    @Override
-    public void addEntry(Company company) {
-        DatabaseManager.startActionUntargetCompany(getContext(), company);
     }
 
     /**

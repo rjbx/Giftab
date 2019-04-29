@@ -75,8 +75,8 @@ public class DetailFragment extends Fragment {
         boolean isDualPane();
         void showDualPane(Bundle args);
         void showSinglePane();
-        void removeEntry(Spawn spawn);
-        void addEntry(Company company);
+        void removeEntry(Company company);
+        void addEntry(Spawn spawn);
     }
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}

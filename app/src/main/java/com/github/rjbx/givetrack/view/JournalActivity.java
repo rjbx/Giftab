@@ -242,12 +242,12 @@ public class JournalActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void removeEntry(Spawn spawn) {
+    public void addEntry(Spawn spawn) {
         DatabaseManager.startActionTargetSpawn(this, spawn);
     }
 
     @Override
-    public void addEntry(Company company) {
+    public void removeEntry(Company company) {
         DatabaseManager.startActionUntargetCompany(this, company);
     }
 
