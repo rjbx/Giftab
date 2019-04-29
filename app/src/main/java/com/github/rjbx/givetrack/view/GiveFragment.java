@@ -59,7 +59,6 @@ import java.util.TimerTask;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
-// TODO: Handle save and restore for selected item by replacing saved view reference with ID and persisting
 // TODO: Replace remove button with type toggle and restore target update from detail
 // TODO: Apply same detail toggle effect as that of records: remove/type + infobar + adjusters = 50% width
 /**
@@ -509,10 +508,8 @@ public class GiveFragment extends Fragment implements
             }
 
             if (isDualPane()) {
-                if (mLastClicked != inspectButton)
-                    removeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
-                else
-                    removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                if (mPanePosition != position) removeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
+                else removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
                 overview.setVisibility(View.GONE);
             } else {
                 removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
