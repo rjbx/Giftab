@@ -62,6 +62,7 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
 
 // TODO: Replace remove button with type toggle and restore target update from detail
+// TODO: Apply same detail toggle effect as that of records
 /**
  * Provides the logic and views for a user activity management screen.
  */
