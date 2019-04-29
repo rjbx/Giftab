@@ -695,17 +695,22 @@ public final class DatabaseManager extends IntentService {
     private void handleActionUpdateTarget(Target... targets) {
         int matchCount = 0;
         int offset = 0;
+        int offsetIndex = 0;
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         if (targetList.size() - 1 == targets.length) {
             for (int i = 0; i < targetList.size(); i++) {
                 if (i - offset >= targets.length) break;
                 if (targetList.get(i).getId().equals(targets[i - offset].getId())) matchCount++;
-                else offset++;
+                else {
+                    offsetIndex = i;
+                    offset++;
+                }
             }
         }
+        Target removedTarget = targetList.get(offsetIndex);
         if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
         // TODO: Identify offset index and invoke remove
-        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
+        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, removedTarget));
     }
 
     /**
