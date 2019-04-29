@@ -439,13 +439,6 @@ public class GiveFragment extends Fragment implements
         private Rateraid.Objects mObjects;
         private List<Target> mTargetList;
 
-        // TODO: Define dialog button click listener inside library method
-        // Inline invocation
-        // Option 1: Pass dialog into library method, initialize button and set listener inside method
-        // Option 2: Pass button into library method, set listener inside method
-        // Option 3: Pass dialog parameters into library method, initialize dialog and set listener inside method
-        // Inline (readability) or callback (efficiency( invocation
-
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.
          */
