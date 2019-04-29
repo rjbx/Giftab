@@ -39,6 +39,8 @@ import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
+import com.github.rjbx.givetrack.data.entry.Company;
+import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -252,6 +254,16 @@ public class IndexActivity extends AppCompatActivity implements
     @Override public void showSinglePane() {
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
+    }
+
+    @Override
+    public void removeEntry(Spawn spawn) {
+        DatabaseManager.startActionTargetSpawn(this, spawn);
+    }
+
+    @Override
+    public void addEntry(Company company) {
+        DatabaseManager.startActionUntargetCompany(this, company);
     }
 
     /**

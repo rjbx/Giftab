@@ -47,7 +47,10 @@ import com.github.rjbx.givetrack.R;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
+import com.github.rjbx.givetrack.data.entry.Company;
+import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -236,6 +239,16 @@ public class JournalActivity extends AppCompatActivity implements
         mItemContainer.setVisibility(View.VISIBLE);
         mItemContainer.setLayoutParams(params);
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void removeEntry(Spawn spawn) {
+        DatabaseManager.startActionTargetSpawn(this, spawn);
+    }
+
+    @Override
+    public void addEntry(Company company) {
+        DatabaseManager.startActionUntargetCompany(this, company);
     }
 
     /**

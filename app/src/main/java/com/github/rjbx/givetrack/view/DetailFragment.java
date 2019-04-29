@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Provides the logic and views for a single detail screen.
  */
-// TODO: Update Master Detail interface with entry update callback and replace inner class updates with Master level handling
+
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
@@ -75,8 +75,8 @@ public class DetailFragment extends Fragment {
         boolean isDualPane();
         void showDualPane(Bundle args);
         void showSinglePane();
-//        void removeEntry(Entry entry);
-//        void addEntry(Entry entry);
+        void removeEntry(Spawn spawn);
+        void addEntry(Company company);
     }
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -249,8 +249,8 @@ public class DetailFragment extends Fragment {
 //        drawActionButton();
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
-            if (sCurrentState) DatabaseManager.startActionTargetSpawn(getContext(), sCompany); // Does not lock UI on signout and remote launch
-            else DatabaseManager.startActionUntargetCompany(mContext, sCompany); // Does not lock UI on sign out and remote launch
+            if (sCurrentState) mMasterDetailFlow.addEntry(sCompany);
+            else mMasterDetailFlow.removeEntry(sCompany);
             mEnabled = false;
         }
     }
