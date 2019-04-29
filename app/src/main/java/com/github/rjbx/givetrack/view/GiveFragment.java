@@ -479,6 +479,7 @@ public class GiveFragment extends Fragment implements
          */
         @Override public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 
+            View overview = holder.mOverview;
             TextView nameView = holder.mNameView;
             TextView frequencyView = holder.mFrequencyView;
             TextView impactView = holder.mImpactView;
@@ -498,6 +499,9 @@ public class GiveFragment extends Fragment implements
                 });
                 return;
             }
+
+            if (isDualPane()) if (inspectButton != mLastClicked) overview.setVisibility(View.GONE);
+            else overview.setVisibility(View.VISIBLE);
 
             if (mTargetList == null || mTargetList.size()== 0 || mTargetList.get(position) == null)
                 return;
@@ -622,6 +626,7 @@ public class GiveFragment extends Fragment implements
          */
         class ViewHolder extends RecyclerView.ViewHolder implements DialogInterface.OnClickListener {
 
+            @BindView(R.id.target_overview) @Nullable View mOverview;
             @BindView(R.id.charity_primary) @Nullable TextView mNameView;
             @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
             @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;

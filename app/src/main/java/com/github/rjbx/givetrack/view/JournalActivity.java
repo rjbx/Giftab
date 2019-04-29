@@ -340,7 +340,6 @@ public class JournalActivity extends AppCompatActivity implements
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
-            // TODO: Replicate
             if (isDualPane()) {
                 if (position != mLastPosition) {
                     holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
