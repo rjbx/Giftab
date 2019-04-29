@@ -22,8 +22,9 @@
 
         <Button
             android:id="@+id/collection_remove_button"
-            android:layout_width="34dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight=".21"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
             android:background="@color/colorAttention"
@@ -32,8 +33,9 @@
             android:text="@string/symbol_decrement_button"/>
 
         <FrameLayout
-            android:layout_width="44dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight=".28"
             android:paddingTop="15dp"
             android:paddingBottom="10dp"
             android:paddingStart="10dp"
@@ -78,8 +80,9 @@
             android:layout_margin="10dp"/>
 
         <LinearLayout
-            android:layout_width="80dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_weight=".51"
             android:padding="4dp"
             android:orientation="vertical"
             android:background="@color/colorPrimaryLight"
