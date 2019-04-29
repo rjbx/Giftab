@@ -166,7 +166,7 @@ public class DetailFragment extends Fragment {
         mFrame.addView(mWebview);
         mWebview.loadUrl(sCompany.getNavigatorUrl());
 
-        if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
+//        if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
         return rootView;
     }
