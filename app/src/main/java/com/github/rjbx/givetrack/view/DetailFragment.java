@@ -44,7 +44,7 @@ import java.util.List;
 /**
  * Provides the logic and views for a single detail screen.
  */
-// TODO: Replicate Master Detail entry update as with Index and Journal for Give in order to delegate handling from Detail to Master
+// TODO: Update Master Detail interface with entry update callback
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
