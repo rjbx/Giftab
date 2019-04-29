@@ -16,10 +16,8 @@ import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.PrimitiveIterator;
 import java.util.concurrent.Executor;
 
 /**

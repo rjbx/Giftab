@@ -70,7 +70,6 @@ public class ConfigActivity
 
     public static final String ARG_ITEM_USER = "com.github.rjbx.givetrack.ui.arg.ITEM_USER";
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.CONFIG_USER";
-    private static List<Header> mTarget;
     private static User sUser;
 
     /**

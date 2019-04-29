@@ -43,7 +43,7 @@ import androidx.core.util.Pair;
 /**
  * Accesses and simultaneously operates on local and remote databases to manage user requests.
  */
-public final class DatabaseAccessor {
+final class DatabaseAccessor {
 
     static void fetchSpawn(Context context) {
         ContentResolver local = context.getContentResolver();
