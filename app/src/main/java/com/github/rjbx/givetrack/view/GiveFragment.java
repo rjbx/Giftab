@@ -59,8 +59,7 @@ import java.util.TimerTask;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
-
-// TODO: Handle save and restore for selected item
+// TODO: Handle save and restore for selected item by replacing saved view reference with ID and persisting
 // TODO: Replace remove button with type toggle and restore target update from detail
 // TODO: Apply same detail toggle effect as that of records: remove/type + infobar + adjusters = 50% width
 /**
@@ -168,10 +167,8 @@ public class GiveFragment extends Fragment implements
                         mRecyclerView.setAdapter(mListAdapter);
                     } else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 }
-                mListAdapter.swapValues(targetList);
             }
         }
-
 
         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
         mTotalText.setOnEditorActionListener(this);
