@@ -102,6 +102,9 @@
             android:layout_weight=".05"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:paddingStart="3dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:src="@drawable/altimeter"
             android:background="@color/colorSlate"
             android:contentDescription="@string/description_decrement_percentage_text"/>
@@ -124,13 +127,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".05"
-            android:padding="3dp"
+            android:paddingEnd="3dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:background="@color/colorSlate"
             android:textSize="@dimen/text_size_paragraph_title"
             android:textStyle="bold"
-            android:textColor="#fff"/>
+            android:textColor="#fff"
+            android:text="T"/>
 
         <FrameLayout
             android:layout_width="0dp"
