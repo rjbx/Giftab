@@ -67,6 +67,9 @@ import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
 // TODO: Add toggle for type as with interval attribute
+//  A: Replace tracked with type button and access tracked button from
+//   1: Click amount and transfer color change to header
+//   2: Long click tracked label
 /**
  * Provides the logic and views for a user activity overview screen.
  */
