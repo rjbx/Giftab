@@ -592,8 +592,8 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
-        String intervalLabel = "Average Transaction";
-        String donationLabel = "Average " + mGraphTypeContent;
+        String intervalLabel = "Average " + mIntervalContent;
+        String donationLabel = "Average Gift";
         float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
         String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalContent, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
