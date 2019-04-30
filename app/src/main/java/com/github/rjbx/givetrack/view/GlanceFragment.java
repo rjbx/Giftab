@@ -117,7 +117,9 @@ public class GlanceFragment extends Fragment implements
     private Unbinder mUnbinder;
     private AlertDialog mTimeDialog;
     private AlertDialog mChartDialog;
-    private String mIntervalLabel;
+    private String mIntervalContent;
+    private String mGraphTypeContent;
+    private String mHomeTypeContent;
     private String mTotal = "$0.00";
     private String mTracked = "$0.00";
     private String mTimeTracked;
@@ -281,11 +283,11 @@ public class GlanceFragment extends Fragment implements
             case 0:
                 return getString(R.string.axis_value_high);
             case 1:
-                return getString(R.string.axis_value_this, mIntervalLabel);
+                return getString(R.string.axis_value_this, mIntervalContent);
             case 2:
-                return getString(R.string.axis_value_yester, mIntervalLabel.toLowerCase());
+                return getString(R.string.axis_value_yester, mIntervalContent.toLowerCase());
             default:
-                return getString(R.string.axis_value_interval, (int) value - 1, mIntervalLabel);
+                return getString(R.string.axis_value_interval, (int) value - 1, mIntervalContent);
         }
     }
 
@@ -320,22 +322,50 @@ public class GlanceFragment extends Fragment implements
     /**
      * Defines behavior on click of toggle time button.
      */
-    @OnClick(R.id.home_time_button)
+    @OnClick(R.id.interval_text)
     void toggleTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         mShowYears = !mShowYears;
         switch (mInterval) {
             case Calendar.YEAR:
-                mIntervalLabel = "Year";
+                mIntervalContent = "Year";
                 renderCharts();
                 break;
             case Calendar.MONTH:
-                mIntervalLabel = "Month";
+                mIntervalContent = "Month";
                 renderCharts();
                 break;
             case Calendar.WEEK_OF_YEAR:
-                mIntervalLabel = "Week";
+                mIntervalContent = "Week";
+                renderCharts();
+                break;
+        }
+    }
+
+    /**
+     * Defines behavior on click of toggle time button.
+     */
+    @OnClick(R.id.type_text)
+    void toggleHomeType() {
+        if (mInterval < 3) mInterval++;
+        else mInterval = 1;
+        mShowYears = !mShowYears;
+        switch (mInterval) {
+            case 0:
+                mGraphTypeContent = "Monetary";
+                renderCharts();
+                break;
+            case 1:
+                mGraphTypeContent = "Goods";
+                renderCharts();
+                break;
+            case 2:
+                mGraphTypeContent = "Service";
+                renderCharts();
+                break;
+            case 3:
+                mGraphTypeContent = "Total";
                 renderCharts();
                 break;
         }
@@ -420,7 +450,10 @@ public class GlanceFragment extends Fragment implements
 
         if (mContext == null) return;
 
-        mTitleText.setText(getString(R.string.charts_title, mIntervalLabel));
+        mIntervalText.setText(mIntervalContent);
+        mTypeText.setText(mGraphTypeContent);
+
+        mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
 
         mDescFontSize = (int) getResources().getDimension(R.dimen.description_text);
         mValueFontSize = mContext.getResources().getDimension(R.dimen.value_text);
@@ -479,7 +512,7 @@ public class GlanceFragment extends Fragment implements
             if (i < 8) donationAmount += a;
         }
 
-        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n", mIntervalLabel));
+        StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n", mIntervalContent));
 
         mTotal = CURRENCY_FORMATTER.format(recordsTotal);
         mAmountView.setText(mTotal);
@@ -557,11 +590,11 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mPercentageChart));
         mPercentageChart.invalidate();
 
-        String intervalLabel = "Average " + mIntervalLabel;
+        String intervalLabel = "Average " + mIntervalContent;
         String donationLabel = "Average Donation";
         float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
-        String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalLabel, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
+        String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalContent, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
         averageEntries.add(new PieEntry(perInterval, intervalLabel));
@@ -590,12 +623,12 @@ public class GlanceFragment extends Fragment implements
         mAverageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mAverageChart));
         mAverageChart.invalidate();
 
-        String highLabel = getString(R.string.axis_value_alltime, mIntervalLabel);
+        String highLabel = getString(R.string.axis_value_alltime, mIntervalContent);
         String currentLabel = getFormattedValue(1, null);
-        String usageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalLabel, highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
+        String usageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalContent, highLabel, CURRENCY_FORMATTER.format(high), currentLabel, CURRENCY_FORMATTER.format(intervalAggregates[0]));
 
         List<PieEntry> usageEntries = new ArrayList<>();
-        usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalLabel)));
+        usageEntries.add(new PieEntry(high, getString(R.string.axis_value_alltime, mIntervalContent)));
         if (intervalAggregates[0] > 0f) usageEntries.add(new PieEntry(intervalAggregates[0], getFormattedValue(1, null)));
 
         PieDataSet usageSet = new PieDataSet(usageEntries, "");
@@ -621,15 +654,15 @@ public class GlanceFragment extends Fragment implements
         mUsageChart.setOnChartGestureListener(new OnSelectedChartOnGestureListener(mUsageChart));
         mUsageChart.invalidate();
 
-        String recentLabel = String.format("Within 7 %ss", mIntervalLabel);
-        String oldLabel = String.format("Over 7 %ss", mIntervalLabel);
+        String recentLabel = String.format("Within 7 %ss", mIntervalContent);
+        String oldLabel = String.format("Over 7 %ss", mIntervalContent);
         float percentRecent = donationAmount / recordsTotal;
         float percentOld = 1f - percentRecent;
-        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s\n", mIntervalLabel, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s\n", mIntervalContent, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
-        if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalLabel)));
-        if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalLabel)));
+        if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalContent)));
+        if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalContent)));
 
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
@@ -664,7 +697,7 @@ public class GlanceFragment extends Fragment implements
         activityEntries.add(new BarEntry(6f, intervalAggregates[5]));
         activityEntries.add(new BarEntry(7f, intervalAggregates[6]));
 
-        StringBuilder activityMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n\n", mIntervalLabel));
+        StringBuilder activityMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n\n", mIntervalContent));
         for (int i = 0; i < activityEntries.size(); i++) {
             String label = getFormattedValue(i, null);
             String amount = CURRENCY_FORMATTER.format(i < 1 ? high : intervalAggregates[i - 1]);
