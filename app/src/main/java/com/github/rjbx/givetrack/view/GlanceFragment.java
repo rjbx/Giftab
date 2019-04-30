@@ -230,6 +230,7 @@ public class GlanceFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         toggleTime();
+        toggleGraphType();
     }
 
     /**
@@ -346,9 +347,9 @@ public class GlanceFragment extends Fragment implements
      * Defines behavior on click of toggle time button.
      */
     @OnClick(R.id.type_text)
-    void toggleHomeType() {
+    void toggleGraphType() {
         if (mType < 3) mType++;
-        else mInterval = 1;
+        else mType = 1;
         switch (mInterval) {
             case 0:
                 mGraphTypeContent = "Monetary";
@@ -661,7 +662,6 @@ public class GlanceFragment extends Fragment implements
         List<PieEntry> timingEntries = new ArrayList<>();
         if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalContent)));
         if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalContent)));
-
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
 
