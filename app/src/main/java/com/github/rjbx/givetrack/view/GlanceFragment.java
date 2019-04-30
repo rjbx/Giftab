@@ -87,6 +87,7 @@ public class GlanceFragment extends Fragment implements
     private static final String RECORDS_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_RECORDS";
     private static final String SINCE_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_SINCE";
     private static final String THEMe_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_THEME";
+    private static String[] GIFT_TYPES = { "monetary", "goods", "service" };
     private static final int[] COLORS = new int[]{
             R.color.colorAttention,
             R.color.colorAccent,
