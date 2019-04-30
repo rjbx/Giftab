@@ -674,22 +674,22 @@ public class GiveFragment extends Fragment implements
             /**
              * Defines behavior on click of remove button.
              */
-            @Optional @OnClick(R.id.type_button) void removeGive(View v) {
+            @Optional @OnClick(R.id.type_button) void toggleType(View v) {
 
                 int position = (int) v.getTag();
                 Target target = mTargetList.get(position);
-                String name = target.getName();
 
-                if (mContext == null) return;
-                mRemoveDialog = new AlertDialog.Builder(mContext).create();
-                mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, name, "collection"));
-                mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
-                mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
-                mRemoveDialog.show();
-                mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
-                mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), position, mRemoveDialog);
+                int type = target.getType() + 1;
+                target.setType(type);
+
+                switch (type) {
+                    case 0: break;
+                    case 1: break;
+                    case 2: break;
+                    default;
+                }
+
+                DatabaseManager.startActionUpdateTarget(getContext(), mTargetList.toArray(new Target[0]));
             }
 
             /**
