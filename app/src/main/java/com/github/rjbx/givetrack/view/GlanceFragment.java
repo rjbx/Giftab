@@ -74,6 +74,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 //   4: Button placement to left of amount (with type indicator to right of amount)
 //  B: Replace share with type button and access share button from header lower right corner
 //  C: Replace date with type button and access date from header lower right corner
+//  D: Constrict unused space in amount view to accomodate extra buttons
 /**
  * Provides the logic and views for a user activity overview screen.
  */
