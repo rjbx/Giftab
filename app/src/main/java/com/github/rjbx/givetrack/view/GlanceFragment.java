@@ -108,8 +108,8 @@ public class GlanceFragment extends Fragment implements
     private static int sThemeIndex;
     private long mAnchorDate;
     private int mInterval;
-    private int mGraphType;
-    private int mHomeType;
+    private int mGraphType = -1;
+    private int mHomeType = -1;
     private int mDescFontSize;
     private float mAxisFontSize;
     private float mValueFontSize;
@@ -479,7 +479,7 @@ public class GlanceFragment extends Fragment implements
 
         mIntervalText.setText(mIntervalContent + "ly");
         mTypeText.setText(mGraphTypeContent);
-        mTypeLabel.setText(mHomeTypeContent);
+        mTypeLabel.setText(mHomeTypeContent.toUpperCase());
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
 
