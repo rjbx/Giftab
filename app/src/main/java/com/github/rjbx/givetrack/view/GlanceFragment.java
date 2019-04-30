@@ -279,16 +279,21 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
-    /**
-     * Defines behavior on click of toggle color button.
-     */
-    @OnClick(R.id.home_amount_text)
+    @OnClick(R.id.home_title)
     void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
         sUser.setGlanceTheme(sThemeIndex);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
+    }
+
+    /**
+     * Defines behavior on click of toggle color button.
+     */
+    @OnClick(R.id.home_amount_text)
+    void toggleType() {
+
     }
 
     /**
