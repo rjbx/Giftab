@@ -162,6 +162,7 @@ public class GiveFragment extends Fragment implements
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
                 List<Target> targetList = new ArrayList<>(Arrays.asList(valuesArray));
+                mListLength = targetList.size();
                 sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
                 if (sUser == null) mParentActivity.recreate();
                 else {
