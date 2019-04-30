@@ -132,7 +132,7 @@
     <string name="chart_title_activity">Recent Activity</string>
     <string name="chart_title_usage">High Comparison</string>
     <string name="chart_title_percentage">Your Charities</string>
-    <string name="charts_title"><u>%sly Giving</u></string>
+    <string name="charts_title"><u>Giving</u></string>
     <string name="symbol_increment_button">+</string>
     <string name="symbol_decrement_button">—</string>
 

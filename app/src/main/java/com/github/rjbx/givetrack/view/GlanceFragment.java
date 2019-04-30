@@ -465,8 +465,6 @@ public class GlanceFragment extends Fragment implements
         mTypeText.setText(mGraphTypeContent);
         mTypeLabel.setText(mHomeTypeContent);
 
-        mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
-
         mDescFontSize = (int) getResources().getDimension(R.dimen.description_text);
         mValueFontSize = mContext.getResources().getDimension(R.dimen.value_text);
         mAxisFontSize = mContext.getResources().getDimension(R.dimen.axis_text);
