@@ -352,7 +352,7 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void updateGraphTyoe() {
-        if (mGraphType < 3) mGraphType++;
+        if (mGraphType < 4) mGraphType++;
         else mGraphType = 1;
         switch (mGraphType) {
             case 1: mGraphTypeContent = "Total"; break;
@@ -372,7 +372,7 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void updateHomeType() {
-        if (mHomeType < 3) mHomeType++;
+        if (mHomeType < 4) mHomeType++;
         else mHomeType = 1;
         switch (mHomeType) {
             case 1: mHomeTypeContent = "TOTAL"; break;
