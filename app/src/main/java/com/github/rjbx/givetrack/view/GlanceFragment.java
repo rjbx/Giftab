@@ -381,19 +381,19 @@ public class GlanceFragment extends Fragment implements
         else mHomeType = -1;
         switch (mHomeType) {
             case -1:
-                mHomeTypeContent = "Total";
+                mHomeTypeContent = "TOTAL";
                 renderCharts();
                 break;
             case 0:
-                mHomeTypeContent = "Monetary";
+                mHomeTypeContent = "MONETARY";
                 renderCharts();
                 break;
             case 1:
-                mHomeTypeContent = "Goods";
+                mHomeTypeContent = "GOODS";
                 renderCharts();
                 break;
             case 2:
-                mHomeTypeContent = "Service";
+                mHomeTypeContent = "SERVICE";
                 renderCharts();
                 break;
         }
@@ -480,7 +480,7 @@ public class GlanceFragment extends Fragment implements
 
         mIntervalText.setText(mIntervalContent + "ly");
         mTypeText.setText(mGraphTypeContent);
-        mTypeLabel.setText(mHomeTypeContent.toUpperCase());
+        mTypeLabel.setText(mHomeTypeContent);
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
 
