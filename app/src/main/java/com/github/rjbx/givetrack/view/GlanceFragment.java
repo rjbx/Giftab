@@ -350,7 +350,7 @@ public class GlanceFragment extends Fragment implements
     void toggleGraphType() {
         if (mType < 3) mType++;
         else mType = 0;
-        switch (mInterval) {
+        switch (mType) {
             case 0:
                 mGraphTypeContent = "Monetary";
                 renderCharts();
