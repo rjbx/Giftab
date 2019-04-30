@@ -92,7 +92,7 @@ public class GlanceFragment extends Fragment implements
     private static Record[] sValuesArray;
     private static User sUser;
     private static boolean mViewTracked;
-    private static int mInterval;
+    private static int mInterval = 1;
     private static int mGraphType;
     private static int mHomeType;
     private static int sThemeIndex;
@@ -223,7 +223,7 @@ public class GlanceFragment extends Fragment implements
         updateTime();
         updateGraphTyoe();
         updateHomeType();
-        renderCharts();
+        if (sUser != null) renderCharts();
     }
 
     /**
@@ -310,14 +310,14 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.interval_text)
     void toggleTime() {
+        if (mInterval < 3) mInterval++;
+        else mInterval = 1;
         updateTime();
         sUser.setGlanceInterval(mInterval);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateTime() {
-        if (mInterval < 3) mInterval++;
-        else mInterval = 1;
         switch (mInterval) {
             case Calendar.YEAR: mIntervalContent = "Year"; break;
             case Calendar.MONTH: mIntervalContent = "Month"; break;
@@ -330,19 +330,19 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.type_text)
     void toggleGraphType() {
+        if (mGraphType < 3) mGraphType++;
+        else mGraphType = 0;
         updateGraphTyoe();
         sUser.setGlanceGraphtype(mGraphType);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateGraphTyoe() {
-        if (mGraphType < 4) mGraphType++;
-        else mGraphType = 1;
         switch (mGraphType) {
-            case 1: mGraphTypeContent = "Total"; break;
-            case 2: mGraphTypeContent = "Monetary"; break;
-            case 3: mGraphTypeContent = "Goods"; break;
-            case 4: mGraphTypeContent = "Service"; break;
+            case 0: mGraphTypeContent = "Total"; break;
+            case 1: mGraphTypeContent = "Monetary"; break;
+            case 2: mGraphTypeContent = "Goods"; break;
+            case 3: mGraphTypeContent = "Service"; break;
         }
     }
 
@@ -351,19 +351,19 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
+        if (mHomeType < 3) mHomeType++;
+        else mHomeType = 0;
         updateHomeType();
         sUser.setGlanceHometype(mHomeType);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateHomeType() {
-        if (mHomeType < 4) mHomeType++;
-        else mHomeType = 1;
         switch (mHomeType) {
-            case 1: mHomeTypeContent = "TOTAL"; break;
-            case 2: mHomeTypeContent = "MONETARY"; break;
-            case 3: mHomeTypeContent = "GOODS"; break;
-            case 4: mHomeTypeContent = "SERVICE"; break;
+            case 0: mHomeTypeContent = "TOTAL"; break;
+            case 1: mHomeTypeContent = "MONETARY"; break;
+            case 2: mHomeTypeContent = "GOODS"; break;
+            case 3: mHomeTypeContent = "SERVICE"; break;
         }
     }
 
