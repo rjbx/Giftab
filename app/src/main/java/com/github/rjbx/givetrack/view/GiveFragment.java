@@ -537,7 +537,16 @@ public class GiveFragment extends Fragment implements
                 overview.setVisibility(View.VISIBLE);
             }
 
+
             Target target = mTargetList.get(position);
+
+            int type = target.getType();
+            switch (type) {
+                case 0: typeButton.setText("M"); break;
+                case 1: typeButton.setText("V"); break;
+                case 2: typeButton.setText("G"); break;
+                default:
+            }
 
             String name = target.getName();
             if (name.length() > 30) {
@@ -681,20 +690,6 @@ public class GiveFragment extends Fragment implements
 
                 int type = target.getType() + 1;
                 target.setType(type);
-
-                switch (type) {
-                    case 0:
-                        ((Button) v).setText('M');
-                        break;
-                    case 1:
-                        ((Button) v).setText('V');
-                        break;
-                    case 2:
-                        ((Button) v).setText('G');
-                        break;
-                    default:
-                }
-
                 DatabaseManager.startActionUpdateTarget(getContext(), mTargetList.toArray(new Target[0]));
             }
 
