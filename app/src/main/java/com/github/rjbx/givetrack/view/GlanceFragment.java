@@ -107,9 +107,9 @@ public class GlanceFragment extends Fragment implements
     private static boolean mViewTracked;
     private static int sThemeIndex;
     private long mAnchorDate;
-    private int mInterval = 1;
-    private int mGraphType = -1;
-    private int mHomeType = -1;
+    private int mInterval;
+    private int mGraphType;
+    private int mHomeType;
     private int mDescFontSize;
     private float mAxisFontSize;
     private float mValueFontSize;
@@ -352,13 +352,13 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void updateGraphTyoe() {
-        if (mGraphType < 2) mGraphType++;
-        else mGraphType = -1;
+        if (mGraphType < 3) mGraphType++;
+        else mGraphType = 1;
         switch (mGraphType) {
-            case -1: mGraphTypeContent = "Total"; break;
-            case 0: mGraphTypeContent = "Monetary"; break;
-            case 1: mGraphTypeContent = "Goods"; break;
-            case 2: mGraphTypeContent = "Service"; break;
+            case 1: mGraphTypeContent = "Total"; break;
+            case 2: mGraphTypeContent = "Monetary"; break;
+            case 3: mGraphTypeContent = "Goods"; break;
+            case 4: mGraphTypeContent = "Service"; break;
         }
     }
 
@@ -372,13 +372,13 @@ public class GlanceFragment extends Fragment implements
     }
 
     private void updateHomeType() {
-        if (mHomeType < 2) mHomeType++;
-        else mHomeType = -1;
+        if (mHomeType < 3) mHomeType++;
+        else mHomeType = 1;
         switch (mHomeType) {
-            case -1: mHomeTypeContent = "TOTAL"; break;
-            case 0: mHomeTypeContent = "MONETARY"; break;
-            case 1: mHomeTypeContent = "GOODS"; break;
-            case 2: mHomeTypeContent = "SERVICE"; break;
+            case 1: mHomeTypeContent = "TOTAL"; break;
+            case 2: mHomeTypeContent = "MONETARY"; break;
+            case 3: mHomeTypeContent = "GOODS"; break;
+            case 4: mHomeTypeContent = "SERVICE"; break;
         }
     }
 
