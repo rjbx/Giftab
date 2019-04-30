@@ -67,19 +67,6 @@ import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
-// TODO: Add toggle for type as with interval attribute
-//  A: Replace tracked with type button and access tracked button from
-//   1: Click amount and transfer color change to header
-//   2: Long click tracked label
-//   3: Options menu
-//   4: Button placement to left of amount (with type indicator to right of amount)
-//  B: Replace share with type button and access share button from header lower right corner
-//  C: Replace date with type button and access date from header lower right corner
-//  D: Constrict unused space in amount view to accomodate extra buttons
-//  E: Replace color with type toggle on click of amount view and toggle color on click of header
-//  F: Replace bottom bar left button series with type text for toggling amount, move share and date buttons to either side of amount, and
-//   1: Add time and type buttons to header for distinctly toggling graph amounts
-//   2: Replace single header title view with individual views for type, date, and suffix, with the former two distinctly toggling graph amounts on click highlighted with bottom border
 /**
  * Provides the logic and views for a user activity overview screen.
  */

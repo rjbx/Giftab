@@ -61,7 +61,7 @@ import java.util.TimerTask;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
-// TODO: Replace remove button with type toggle and restore target update from detail
+
 /**
  * Provides the logic and views for a user activity management screen.
  */
