@@ -475,7 +475,6 @@ public class GlanceFragment extends Fragment implements
             String name = record.getName();
             int type = record.getType();
 
-            recordsTotal += amount;
 
             if (mHomeType == 0 || type + 1 == mHomeType) {
                 typeTotal += amount;
@@ -483,6 +482,7 @@ public class GlanceFragment extends Fragment implements
             }
             if (mGraphType != 0 && type + 1 != mGraphType) continue;
 
+            recordsTotal += amount;
             Float recordAggregate = recordAggregates.get(name);
             float recordAmount = amount + (recordAggregate != null ? recordAggregate : 0f);
 
