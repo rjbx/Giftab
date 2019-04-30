@@ -107,7 +107,7 @@ public class GlanceFragment extends Fragment implements
     private static boolean mViewTracked;
     private static int sThemeIndex;
     private long mAnchorDate;
-    private int mInterval;
+    private int mInterval = 1;
     private int mGraphType = -1;
     private int mHomeType = -1;
     private int mDescFontSize;
@@ -230,9 +230,10 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        toggleTime();
-        toggleGraphType();
-        toggleHomeType();
+        updateTime();
+        updateGraphTyoe();
+        updateHomeType();
+        renderCharts();
     }
 
     /**
@@ -327,21 +328,17 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.interval_text)
     void toggleTime() {
+        updateTime();
+        renderCharts();
+    }
+
+    private void updateTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         switch (mInterval) {
-            case Calendar.YEAR:
-                mIntervalContent = "Year";
-                renderCharts();
-                break;
-            case Calendar.MONTH:
-                mIntervalContent = "Month";
-                renderCharts();
-                break;
-            case Calendar.WEEK_OF_YEAR:
-                mIntervalContent = "Week";
-                renderCharts();
-                break;
+            case Calendar.YEAR: mIntervalContent = "Year"; break;
+            case Calendar.MONTH: mIntervalContent = "Month"; break;
+            case Calendar.WEEK_OF_YEAR: mIntervalContent = "Week"; break;
         }
     }
 
@@ -350,25 +347,18 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.type_text)
     void toggleGraphType() {
+        updateGraphTyoe();
+        renderCharts();
+    }
+
+    private void updateGraphTyoe() {
         if (mGraphType < 2) mGraphType++;
         else mGraphType = -1;
         switch (mGraphType) {
-            case -1:
-                mGraphTypeContent = "Total";
-                renderCharts();
-                break;
-            case 0:
-                mGraphTypeContent = "Monetary";
-                renderCharts();
-                break;
-            case 1:
-                mGraphTypeContent = "Goods";
-                renderCharts();
-                break;
-            case 2:
-                mGraphTypeContent = "Service";
-                renderCharts();
-                break;
+            case -1: mGraphTypeContent = "Total"; break;
+            case 0: mGraphTypeContent = "Monetary"; break;
+            case 1: mGraphTypeContent = "Goods"; break;
+            case 2: mGraphTypeContent = "Service"; break;
         }
     }
 
@@ -377,25 +367,18 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
+        updateHomeType();
+        renderCharts();
+    }
+
+    private void updateHomeType() {
         if (mHomeType < 2) mHomeType++;
         else mHomeType = -1;
         switch (mHomeType) {
-            case -1:
-                mHomeTypeContent = "TOTAL";
-                renderCharts();
-                break;
-            case 0:
-                mHomeTypeContent = "MONETARY";
-                renderCharts();
-                break;
-            case 1:
-                mHomeTypeContent = "GOODS";
-                renderCharts();
-                break;
-            case 2:
-                mHomeTypeContent = "SERVICE";
-                renderCharts();
-                break;
+            case -1: mHomeTypeContent = "TOTAL"; break;
+            case 0: mHomeTypeContent = "MONETARY"; break;
+            case 1: mHomeTypeContent = "GOODS"; break;
+            case 2: mHomeTypeContent = "SERVICE"; break;
         }
     }
 
