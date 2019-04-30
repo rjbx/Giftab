@@ -295,14 +295,6 @@ public class GlanceFragment extends Fragment implements
     }
 
     /**
-     * Defines behavior on click of toggle color button.
-     */
-    @OnClick(R.id.home_amount_text)
-    void toggleType() {
-
-    }
-
-    /**
      * Defines behavior on click of toggle amount button.
      */
     @OnClick(R.id.home_amount_label)
@@ -319,7 +311,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.interval_text)
     void toggleTime() {
         updateTime();
-        renderCharts();
+        sUser.setGlanceInterval(mInterval);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateTime() {
@@ -338,7 +331,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.type_text)
     void toggleGraphType() {
         updateGraphTyoe();
-        renderCharts();
+        sUser.setGlanceGraphtype(mGraphType);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateGraphTyoe() {
@@ -358,7 +352,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
         updateHomeType();
-        renderCharts();
+        sUser.setGlanceSince(mHomeType);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
     private void updateHomeType() {
