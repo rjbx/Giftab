@@ -134,6 +134,7 @@ public class GiveFragment extends Fragment implements
                 if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
                 else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 mRecyclerView.setAdapter(mListAdapter);
+                mListAdapter.swapValues(targetList);
             }
         }
         super.onCreate(savedInstanceState);
@@ -167,6 +168,7 @@ public class GiveFragment extends Fragment implements
                     if (mListAdapter == null) {
                         mListAdapter = new ListAdapter(targetList);
                         mRecyclerView.setAdapter(mListAdapter);
+                        mListAdapter.swapValues(targetList);
                     } else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 }
             }
