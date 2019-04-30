@@ -108,7 +108,8 @@ public class GlanceFragment extends Fragment implements
     private static int sThemeIndex;
     private long mAnchorDate;
     private int mInterval;
-    private int mType;
+    private int mGraphType;
+    private int mHomeType;
     private int mDescFontSize;
     private float mAxisFontSize;
     private float mValueFontSize;
@@ -348,9 +349,13 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.type_text)
     void toggleGraphType() {
-        if (mType < 3) mType++;
-        else mType = 0;
-        switch (mType) {
+        if (mGraphType < 2) mGraphType++;
+        else mGraphType = 1;
+        switch (mGraphType) {
+            case -1:
+                mGraphTypeContent = "Total";
+                renderCharts();
+                break;
             case 0:
                 mGraphTypeContent = "Monetary";
                 renderCharts();
@@ -363,8 +368,31 @@ public class GlanceFragment extends Fragment implements
                 mGraphTypeContent = "Service";
                 renderCharts();
                 break;
-            case 3:
+        }
+    }
+
+    /**
+     * Defines behavior on click of toggle time button.
+     */
+    @OnClick(R.id.home_type_label)
+    void toggleHomeType() {
+        if (mHomeType < 2) mHomeType++;
+        else mHomeType = 1;
+        switch (mHomeType) {
+            case -1:
                 mGraphTypeContent = "Total";
+                renderCharts();
+                break;
+            case 0:
+                mGraphTypeContent = "Monetary";
+                renderCharts();
+                break;
+            case 1:
+                mGraphTypeContent = "Goods";
+                renderCharts();
+                break;
+            case 2:
+                mGraphTypeContent = "Service";
                 renderCharts();
                 break;
         }
