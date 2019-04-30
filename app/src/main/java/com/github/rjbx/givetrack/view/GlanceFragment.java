@@ -352,7 +352,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
         updateHomeType();
-        sUser.setGlanceSince(mHomeType);
+        sUser.setGlanceHometype(mHomeType);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
     }
 
