@@ -232,6 +232,7 @@ public class GlanceFragment extends Fragment implements
         super.onResume();
         toggleTime();
         toggleGraphType();
+        toggleHomeType();
     }
 
     /**
