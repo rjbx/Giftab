@@ -491,8 +491,8 @@ public class GlanceFragment extends Fragment implements
             String name = record.getName();
             int type = record.getType();
 
-            if (mHomeType == 1 || type == mHomeType + 2) recordsTotal += amount;
-            if (mGraphType != 1 && type != mGraphType + 2) continue;
+            if (mHomeType == 1 || type + 2 == mHomeType) recordsTotal += amount;
+            if (mGraphType != 1 && type + 2 != mGraphType) continue;
             if (time >= tracktime) tracked += amount;
 
             Float recordAggregate = recordAggregates.get(name);
