@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -130,6 +131,9 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.timing_chart) PieChart mTimingChart;
     @BindView(R.id.activity_chart) BarChart mActivityChart;
     @BindView(R.id.home_amount_label) TextView mAmountLabel;
+    @BindView(R.id.home_type_label) TextView mTypeLabel;
+    @BindView(R.id.interval_text) TextView mIntervalText;
+    @BindView(R.id.type_text) TextView mTypeText;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -181,6 +185,9 @@ public class GlanceFragment extends Fragment implements
 
         View rootView = inflater.inflate(R.layout.fragment_glance, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
+
+        mIntervalText.setPaintFlags(mIntervalText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mTypeText.setPaintFlags(mTypeText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         Bundle args = getArguments();
         if (args != null) {
