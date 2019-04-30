@@ -680,7 +680,7 @@ public class GiveFragment extends Fragment implements
             }
 
             /**
-             * Defines behavior on click of remove button.
+             * Defines behavior on click of type button.
              */
             @Optional @OnClick(R.id.type_button) void toggleType(View v) {
 

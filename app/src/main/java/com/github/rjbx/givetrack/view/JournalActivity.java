@@ -51,6 +51,7 @@ import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.Spawn;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -441,6 +442,20 @@ public class JournalActivity extends AppCompatActivity implements
                 super(view);
                 ButterKnife.bind(this, view);
                 mAmountView.setOnEditorActionListener(this);
+            }
+
+            /**
+             * Defines behavior on click of type button.
+             */
+            @Optional @OnClick(R.id.record_type_text) void toggleType(View v) {
+
+                int position = (int) v.getTag();
+                Record record = mValuesArray[position];
+
+                int type = record.getType() + 1;
+                if (type > 2) type = 0;
+                record.setType(type);
+                DatabaseManager.startActionUpdateRecord(JournalActivity.this, mValuesArray);
             }
 
             /**
