@@ -105,10 +105,10 @@ public class GlanceFragment extends Fragment implements
     private static Record[] sValuesArray;
     private static User sUser;
     private static boolean mViewTracked;
-    private static boolean mShowYears;
     private static int sThemeIndex;
     private long mAnchorDate;
     private int mInterval;
+    private int mType;
     private int mDescFontSize;
     private float mAxisFontSize;
     private float mValueFontSize;
@@ -326,7 +326,6 @@ public class GlanceFragment extends Fragment implements
     void toggleTime() {
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
-        mShowYears = !mShowYears;
         switch (mInterval) {
             case Calendar.YEAR:
                 mIntervalContent = "Year";
@@ -348,9 +347,8 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.type_text)
     void toggleHomeType() {
-        if (mInterval < 3) mInterval++;
+        if (mType < 3) mType++;
         else mInterval = 1;
-        mShowYears = !mShowYears;
         switch (mInterval) {
             case 0:
                 mGraphTypeContent = "Monetary";
