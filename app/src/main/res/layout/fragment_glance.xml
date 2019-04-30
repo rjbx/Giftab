@@ -101,16 +101,16 @@
             android:background="@color/colorSlate">
 
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/average_chart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_margin="10dp"/>
-
-            <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/percentage_chart"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:layout_marginTop="24dp" />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/average_chart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_margin="10dp"/>
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/usage_chart"
