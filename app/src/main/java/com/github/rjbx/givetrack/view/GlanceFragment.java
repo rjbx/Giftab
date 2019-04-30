@@ -473,6 +473,7 @@ public class GlanceFragment extends Fragment implements
         int backgroundColor = getResources().getColor(R.color.colorSlate, null);
 
         float recordsTotal = 0;
+        float typeTotal = 0;
         float[] intervalAggregates = new float[10000];
 
         int highDifference = 0;
@@ -491,7 +492,9 @@ public class GlanceFragment extends Fragment implements
             String name = record.getName();
             int type = record.getType();
 
-            if (mHomeType == 1 || type + 2 == mHomeType) recordsTotal += amount;
+            recordsTotal += amount;
+
+            if (mHomeType == 1 || type + 2 == mHomeType) typeTotal += amount;
             if (mGraphType != 1 && type + 2 != mGraphType) continue;
             if (time >= tracktime) tracked += amount;
 
@@ -528,7 +531,7 @@ public class GlanceFragment extends Fragment implements
 
         StringBuilder percentageMessageBuilder = new StringBuilder(String.format("Past 7 %ss\n", mIntervalContent));
 
-        mTotal = CURRENCY_FORMATTER.format(recordsTotal);
+        mTotal = CURRENCY_FORMATTER.format(typeTotal);
         mAmountView.setText(mTotal);
         toggleAmount(mAmountLabel, mViewTracked);
 
