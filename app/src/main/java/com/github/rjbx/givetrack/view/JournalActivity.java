@@ -145,7 +145,7 @@ public class JournalActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
-                navigateUpTo(new Intent(this, HomeActivity.class));
+                startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_record):
                 AppUtilities.launchPreferenceFragment(this, ACTION_JOURNAL_INTENT);
