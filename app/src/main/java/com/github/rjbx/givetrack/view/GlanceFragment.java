@@ -380,19 +380,19 @@ public class GlanceFragment extends Fragment implements
         else mHomeType = 1;
         switch (mHomeType) {
             case -1:
-                mGraphTypeContent = "Total";
+                mHomeTypeContent = "Total";
                 renderCharts();
                 break;
             case 0:
-                mGraphTypeContent = "Monetary";
+                mHomeTypeContent = "Monetary";
                 renderCharts();
                 break;
             case 1:
-                mGraphTypeContent = "Goods";
+                mHomeTypeContent = "Goods";
                 renderCharts();
                 break;
             case 2:
-                mGraphTypeContent = "Service";
+                mHomeTypeContent = "Service";
                 renderCharts();
                 break;
         }
