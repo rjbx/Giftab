@@ -86,7 +86,7 @@
             android:id="@+id/home_amount_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".375"
+            android:layout_weight=".3"
             android:padding="3.5dp"
             android:layout_gravity="center"
             android:gravity="center"
@@ -96,11 +96,34 @@
             android:textColor="#fff"
             android:text="ALL-TIME"/>
 
+        <ImageButton
+            android:id="@+id/home_config_button"
+            android:layout_width="0dp"
+            android:layout_weight=".05"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/altimeter"
+            android:background="@color/colorSlate"
+            android:contentDescription="@string/description_decrement_percentage_text"/>
+
         <TextView
             android:id="@+id/home_amount_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".25"
+            android:layout_weight=".3"
+            android:padding="3dp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@color/colorSlate"
+            android:textSize="@dimen/text_size_paragraph_title"
+            android:textStyle="bold"
+            android:textColor="#fff"/>
+
+        <TextView
+            android:id="@+id/home_type_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".05"
             android:padding="3dp"
             android:layout_gravity="center"
             android:gravity="center"
@@ -112,13 +135,22 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight=".375"
+            android:layout_weight=".3"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="2.5dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:background="@color/colorSlate"
             android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/home_type_button"
+                android:layout_width="18dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/altimeter"
+                android:background="@color/colorSlate"
+                android:contentDescription="@string/description_decrement_percentage_text"/>
 
             <ImageButton
                 android:id="@+id/home_time_button"
@@ -128,15 +160,6 @@
                 android:src="@android:drawable/ic_menu_recent_history"
                 android:background="@color/colorSlate"
                 android:contentDescription="@string/description_increment_percentage_text"/>
-
-            <ImageButton
-                android:id="@+id/home_config_button"
-                android:layout_width="18dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/altimeter"
-                android:background="@color/colorSlate"
-                android:contentDescription="@string/description_decrement_percentage_text"/>
 
             <ImageButton
                 android:id="@+id/home_share_button"
