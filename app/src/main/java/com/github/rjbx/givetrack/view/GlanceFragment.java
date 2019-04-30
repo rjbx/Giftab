@@ -70,6 +70,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 //  A: Replace tracked with type button and access tracked button from
 //   1: Click amount and transfer color change to header
 //   2: Long click tracked label
+//   3: Options menu
 //  B: Replace share with type button and access share button from header lower right corner
 /**
  * Provides the logic and views for a user activity overview screen.
