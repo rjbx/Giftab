@@ -350,7 +350,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.type_text)
     void toggleGraphType() {
         if (mGraphType < 2) mGraphType++;
-        else mGraphType = 1;
+        else mGraphType = -1;
         switch (mGraphType) {
             case -1:
                 mGraphTypeContent = "Total";
@@ -377,7 +377,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
         if (mHomeType < 2) mHomeType++;
-        else mHomeType = 1;
+        else mHomeType = -1;
         switch (mHomeType) {
             case -1:
                 mHomeTypeContent = "Total";
@@ -479,6 +479,7 @@ public class GlanceFragment extends Fragment implements
 
         mIntervalText.setText(mIntervalContent + "ly");
         mTypeText.setText(mGraphTypeContent);
+        mTypeLabel.setText(mHomeTypeContent);
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
 
