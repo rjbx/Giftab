@@ -593,7 +593,7 @@ public class GlanceFragment extends Fragment implements
         mPercentageChart.invalidate();
 
         String intervalLabel = "Average " + mIntervalContent;
-        String donationLabel = "Average Donation";
+        String donationLabel = "Average " + mGraphTypeContent;
         float perInterval = recordsTotal / (highDifference + 1);
         float perDonation = recordsTotal / sValuesArray.length;
         String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalContent, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
