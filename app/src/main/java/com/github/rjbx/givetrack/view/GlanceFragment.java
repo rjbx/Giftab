@@ -477,11 +477,11 @@ public class GlanceFragment extends Fragment implements
 
             recordsTotal += amount;
 
-            if (mHomeType == 1 || type + 2 == mHomeType) {
+            if (mHomeType == 0 || type + 1 == mHomeType) {
                 typeTotal += amount;
                 if (time >= tracktime) tracked += amount;
             }
-            if (mGraphType != 1 && type + 2 != mGraphType) continue;
+            if (mGraphType != 0 && type + 1 != mGraphType) continue;
 
             Float recordAggregate = recordAggregates.get(name);
             float recordAmount = amount + (recordAggregate != null ? recordAggregate : 0f);
