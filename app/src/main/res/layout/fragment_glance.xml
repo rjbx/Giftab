@@ -12,13 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorChalk"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/interval_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="25dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
@@ -28,9 +32,11 @@
 
         <TextView
             android:id="@+id/type_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="25dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
@@ -40,9 +46,11 @@
 
         <TextView
             android:id="@+id/home_title"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="25dp"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:layout_marginStart="5dp"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
@@ -93,16 +101,16 @@
             android:background="@color/colorSlate">
 
             <com.github.mikephil.charting.charts.PieChart
-                android:id="@+id/percentage_chart"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:layout_marginTop="24dp"/>
-
-            <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/average_chart"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_margin="10dp"/>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/percentage_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="24dp" />
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/usage_chart"
