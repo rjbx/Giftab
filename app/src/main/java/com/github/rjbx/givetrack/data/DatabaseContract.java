@@ -75,6 +75,9 @@ public final class DatabaseContract {
         public static final String COLUMN_GIVE_TIMING = "giveTiming";
         public static final String COLUMN_GLANCE_ANCHOR = "glanceAnchor";
         public static final String COLUMN_GLANCE_SINCE = "glanceSince";
+        public static final String COLUMN_GLANCE_HOMETYPE = "glanceHometype";
+        public static final String COLUMN_GLANCE_GRAPHTYPE = "glanceGraphtype";
+        public static final String COLUMN_GLANCE_INTERVAL = "glanceInterval";
         public static final String COLUMN_GLANCE_THEME = "glanceTheme";
         public static final String COLUMN_INDEX_ANCHOR = "indexAnchor";
         public static final String COLUMN_INDEX_COUNT = "indexCount";

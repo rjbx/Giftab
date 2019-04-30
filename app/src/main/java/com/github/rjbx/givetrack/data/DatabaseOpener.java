@@ -126,6 +126,9 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_GIVE_ROUNDING + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_HOMETYPE + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_GRAPHTYPE + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_INTERVAL + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_GLANCE_THEME + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_INDEX_ANCHOR + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_INDEX_COUNT + " INTEGER NOT NULL, "             +

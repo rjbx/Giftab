@@ -30,6 +30,9 @@ public class User implements Entry, Parcelable, Cloneable {
     private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
+    private int glanceHometype;
+    private int glanceGraphtype;
+    private int glanceInterval;
     private int glanceTheme;
     private String journalOrder;
     private String journalSort;
@@ -74,6 +77,9 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeInt(giveRounding);
         dest.writeLong(glanceAnchor);
         dest.writeInt(glanceSince ? 1 : 0);
+        dest.writeInt(glanceHometype);
+        dest.writeInt(glanceGraphtype);
+        dest.writeInt(glanceInterval);
         dest.writeInt(glanceTheme);
         dest.writeLong(indexAnchor);
         dest.writeInt(indexCount);
@@ -113,6 +119,9 @@ public class User implements Entry, Parcelable, Cloneable {
         giveRounding = source.readInt();
         glanceAnchor = source.readLong();
         glanceSince = source.readInt() == 1;
+        glanceHometype = source.readInt();
+        glanceGraphtype = source.readInt();
+        glanceInterval = source.readInt();
         glanceTheme = source.readInt();
         indexAnchor = source.readLong();
         indexCount = source.readInt();
@@ -150,6 +159,9 @@ public class User implements Entry, Parcelable, Cloneable {
         this.giveRounding = user.giveRounding;
         this.glanceAnchor = user.glanceAnchor;
         this.glanceSince = user.glanceSince;
+        this.glanceHometype = user.glanceHometype;
+        this.glanceGraphtype = user.glanceGraphtype;
+        this.glanceInterval = user.glanceInterval;
         this.glanceTheme = user.glanceTheme;
         this.indexAnchor = user.indexAnchor;
         this.indexCount = user.indexCount;
@@ -195,6 +207,9 @@ public class User implements Entry, Parcelable, Cloneable {
             boolean glanceSince,
             String giveImpact,
             String giveMagnitude,
+            int glanceHometype,
+            int glanceGraphtype,
+            int glanceInterval,
             int glanceTheme,
             long indexAnchor,
             int indexCount,
@@ -229,6 +244,9 @@ public class User implements Entry, Parcelable, Cloneable {
         this.giveRounding = giveRounding;
         this.glanceAnchor = glanceAnchor;
         this.glanceSince = glanceSince;
+        this.glanceHometype = glanceHometype;
+        this.glanceGraphtype = glanceGraphtype;
+        this.glanceInterval = glanceInterval;
         this.glanceTheme = glanceTheme;
         this.indexAnchor = indexAnchor;
         this.indexCount = indexCount;
@@ -277,6 +295,12 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGlanceAnchor(long glanceAnchor) { this.glanceAnchor = glanceAnchor; }
     public boolean getGlanceSince() { return glanceSince; }
     public void setGlanceSince(boolean glanceSince) { this.glanceSince = glanceSince; }
+    public int getGlanceHometype() { return glanceHometype; }
+    public void setGlanceHometype(int glanceHometype) { this.glanceHometype = glanceHometype; }
+    public int getGlanceGraphtype() { return glanceGraphtype; }
+    public void setGlanceGraphtype(int glanceGraphtype) { this.glanceGraphtype = glanceGraphtype; }
+    public int getGlanceInterval() { return glanceInterval; }
+    public void setGlanceInterval(int glanceInterval) { this.glanceInterval = glanceInterval; }
     public int getGlanceTheme() { return glanceTheme; }
     public void setGlanceTheme(int glanceTheme) { this.glanceTheme = glanceTheme; }
     public long getIndexAnchor() { return indexAnchor; }
@@ -336,6 +360,9 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_GIVE_ROUNDING, giveRounding);
         map.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         map.put(COLUMN_GLANCE_SINCE, glanceSince);
+        map.put(COLUMN_GLANCE_HOMETYPE, glanceHometype);
+        map.put(COLUMN_GLANCE_GRAPHTYPE, glanceGraphtype);
+        map.put(COLUMN_GLANCE_INTERVAL, glanceInterval);
         map.put(COLUMN_GLANCE_THEME, glanceTheme);
         map.put(COLUMN_INDEX_ANCHOR, indexAnchor);
         map.put(COLUMN_INDEX_COUNT, indexCount);
@@ -372,6 +399,9 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_RESET), Boolean.class);
         if (map.containsKey(COLUMN_GLANCE_ANCHOR)) glanceAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_GLANCE_SINCE)) glanceSince = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_SINCE), Boolean.class);
+        if (map.containsKey(COLUMN_GLANCE_HOMETYPE)) glanceHometype = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_HOMETYPE), Integer.class);
+        if (map.containsKey(COLUMN_GLANCE_GRAPHTYPE)) glanceGraphtype = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_GRAPHTYPE), Integer.class);
+        if (map.containsKey(COLUMN_GLANCE_INTERVAL)) glanceInterval = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_INTERVAL), Integer.class);
         if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
         if (map.containsKey(COLUMN_INDEX_ANCHOR)) indexAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_GIVE_TIMING)) indexCount = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
@@ -412,6 +442,9 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_GIVE_ROUNDING, giveRounding);
         values.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         values.put(COLUMN_GLANCE_SINCE, glanceSince);
+        values.put(COLUMN_GLANCE_HOMETYPE, glanceHometype);
+        values.put(COLUMN_GLANCE_GRAPHTYPE, glanceGraphtype);
+        values.put(COLUMN_GLANCE_INTERVAL, glanceInterval);
         values.put(COLUMN_GLANCE_THEME, glanceTheme);
         values.put(COLUMN_INDEX_COUNT, indexCount);
         values.put(COLUMN_INDEX_DIALOG, indexDialog);
@@ -452,6 +485,9 @@ public class User implements Entry, Parcelable, Cloneable {
         giveRounding = values.getAsInteger(COLUMN_GIVE_ROUNDING);
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
         glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
+        glanceHometype = values.getAsInteger(COLUMN_GLANCE_HOMETYPE);
+        glanceGraphtype = values.getAsInteger(COLUMN_GLANCE_GRAPHTYPE);
+        glanceInterval = values.getAsInteger(COLUMN_GLANCE_INTERVAL);
         glanceTheme = values.getAsInteger(COLUMN_GLANCE_THEME);
         indexAnchor = values.getAsLong(COLUMN_INDEX_ANCHOR);
         indexCount = values.getAsInteger(COLUMN_INDEX_COUNT);
@@ -498,6 +534,9 @@ public class User implements Entry, Parcelable, Cloneable {
         user.giveRounding = 0;
         user.glanceAnchor = 0;
         user.glanceSince = false;
+        user.glanceHometype = 0;
+        user.glanceGraphtype = 0;
+        user.glanceInterval = 0;
         user.glanceTheme = 0;
         user.indexAnchor = 0;
         user.indexCount = 0;

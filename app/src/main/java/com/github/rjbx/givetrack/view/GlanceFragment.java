@@ -70,7 +70,6 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 /**
  * Provides the logic and views for a user activity overview screen.
  */
-// TODO: Persist type and interval selections
 public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
         DatePickerDialog.OnDateSetListener,
@@ -193,6 +192,9 @@ public class GlanceFragment extends Fragment implements
             mTimeTracked = String.format("since %s", formattedDate);
 
             mViewTracked = sUser.getGlanceSince();
+            mHomeType = sUser.getGlanceHometype();
+            mGraphType = sUser.getGlanceGraphtype();
+            mInterval = sUser.getGlanceInterval();
             toggleAmount(mAmountLabel, mViewTracked);
 
             sThemeIndex = sUser.getGlanceTheme();
@@ -306,8 +308,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_amount_label)
     void toggleTracked() {
         mViewTracked = !mViewTracked;
-//        sUser.setGlanceSince(mViewTracked);
-//        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+        sUser.setGlanceSince(mViewTracked);
+        DatabaseManager.startActionUpdateUser(getContext(), sUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 
