@@ -318,8 +318,8 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.home_amount_label)
     void toggleTracked() {
         mViewTracked = !mViewTracked;
-        sUser.setGlanceSince(mViewTracked);
-        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+//        sUser.setGlanceSince(mViewTracked);
+//        DatabaseManager.startActionUpdateUser(getContext(), sUser);
         toggleAmount(mAmountLabel, mViewTracked);
     }
 
