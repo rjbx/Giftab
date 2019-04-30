@@ -92,12 +92,12 @@ public class GlanceFragment extends Fragment implements
     private static Record[] sValuesArray;
     private static User sUser;
     private static boolean mViewTracked;
+    private static int mInterval;
+    private static int mGraphType;
+    private static int mHomeType;
     private static int sThemeIndex;
-    private long mAnchorDate;
-    private int mInterval;
-    private int mGraphType;
-    private int mHomeType;
     private int mDescFontSize;
+    private long mAnchorDate;
     private float mAxisFontSize;
     private float mValueFontSize;
     private Context mContext;
