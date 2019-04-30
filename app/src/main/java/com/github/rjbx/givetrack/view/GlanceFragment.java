@@ -76,6 +76,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 //  C: Replace date with type button and access date from header lower right corner
 //  D: Constrict unused space in amount view to accomodate extra buttons
 //  E: Replace color with type toggle on click of amount view and toggle color on click of header
+//  F: Replace bottom bar left button series with type text for toggling amount, move share and date buttons to either side of amount, and add time and type buttons to header for distinctly toggling graph amounts
 /**
  * Provides the logic and views for a user activity overview screen.
  */
