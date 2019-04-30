@@ -21,7 +21,7 @@
         android:focusable="true">
 
         <Button
-            android:id="@+id/collection_remove_button"
+            android:id="@+id/type_button"
             android:layout_width="34dp"
             android:layout_height="match_parent"
             android:gravity="center"

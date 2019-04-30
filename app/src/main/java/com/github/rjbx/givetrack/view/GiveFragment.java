@@ -46,7 +46,6 @@ import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Company;
-import com.github.rjbx.givetrack.data.entry.Entry;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
@@ -504,7 +503,7 @@ public class GiveFragment extends Fragment implements
             TextView incrementButton = holder.mIncrementButton;
             TextView decrementButton = holder.mDecrementButton;
             Button addButton = holder.mAddButton;
-            Button removeButton = holder.mRemoveButton;
+            Button typeButton = holder.mTypeButton;
             ImageButton inspectButton = holder.mInspectButton;
 
             if (position == getItemCount() - 1 && addButton != null) {
@@ -530,11 +529,11 @@ public class GiveFragment extends Fragment implements
             }
 
             if (isDualPane()) {
-                if (mPanePosition != position) removeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
-                else removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                if (mPanePosition != position) typeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
+                else typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
                 overview.setVisibility(View.GONE);
             } else {
-                removeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
                 overview.setVisibility(View.VISIBLE);
             }
 
@@ -590,7 +589,7 @@ public class GiveFragment extends Fragment implements
 
 
             final int adapterPosition = holder.getAdapterPosition();
-            if (incrementButton != null && decrementButton != null && removeButton != null && percentageView != null) {
+            if (incrementButton != null && decrementButton != null && typeButton != null && percentageView != null) {
                 mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null)
                         /*.addRemover(removeButton, adapterPosition)*/;
@@ -646,7 +645,7 @@ public class GiveFragment extends Fragment implements
         /**
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
-        class ViewHolder extends RecyclerView.ViewHolder implements DialogInterface.OnClickListener {
+        class ViewHolder extends RecyclerView.ViewHolder {
 
             @BindView(R.id.target_overview) @Nullable View mOverview;
             @BindView(R.id.charity_primary) @Nullable TextView mNameView;
@@ -657,7 +656,7 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;
-            @BindView(R.id.collection_remove_button) @Nullable Button mRemoveButton;
+            @BindView(R.id.type_button) @Nullable Button mTypeButton;
             @BindView(R.id.share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
@@ -673,29 +672,9 @@ public class GiveFragment extends Fragment implements
             }
 
             /**
-             * Defines behaviors on click of DialogInterface buttons.
-             */
-            @Override public void onClick(DialogInterface dialog, int which) {
-                if (dialog == mRemoveDialog) {
-                    switch (which) {
-                        case AlertDialog.BUTTON_NEUTRAL:
-                            dialog.dismiss();
-                            break;
-                        case AlertDialog.BUTTON_NEGATIVE:
-                            int position = (int) mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).getTag();
-                            if (sDualPane) showSinglePane();
-//                                if (sValuesArray.length == 1) onDestroy();
-                            DatabaseManager.startActionRemoveTarget(mContext, mTargetList.get(position)); // Locks UI on signout and remote launch
-                            break;
-                        default:
-                    }
-                }
-            }
-
-            /**
              * Defines behavior on click of remove button.
              */
-            @Optional @OnClick(R.id.collection_remove_button) void removeGive(View v) {
+            @Optional @OnClick(R.id.type_button) void removeGive(View v) {
 
                 int position = (int) v.getTag();
                 Target target = mTargetList.get(position);
