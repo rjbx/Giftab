@@ -90,6 +90,7 @@ public class GiveFragment extends Fragment implements
     private int mPanePosition;
     private float mAmountTotal;
     private float mMagnitude;
+    private int mListLength;
     @BindView(R.id.save_progress_bar) ProgressBar mProgress;
     @BindView(R.id.action_bar) ImageButton mActionBar;
     @BindView(R.id.action_bar_wrapper) View mActionWrapper;
@@ -131,6 +132,7 @@ public class GiveFragment extends Fragment implements
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
                 List<Target> targetList = new ArrayList<>(Arrays.asList(valuesArray));
+                mListLength = targetList.size();
                 if (mListAdapter == null) mListAdapter = new ListAdapter(targetList);
                 else if (getFragmentManager() != null) getFragmentManager().popBackStack();
                 mRecyclerView.setAdapter(mListAdapter);
@@ -422,7 +424,7 @@ public class GiveFragment extends Fragment implements
             actionBarColor = R.color.colorAccent;
             actionBarIcon = R.drawable.action_save;
             progressBarVisibility = View.VISIBLE;
-        } else if (mAmountTotal == 0f) {
+        } else if (mAmountTotal / mListLength < .3f) {
             barWrapperColor = R.color.colorAttentionDark;
             actionBarColor = R.color.colorAttention;
             actionBarIcon = android.R.drawable.stat_sys_warning;
