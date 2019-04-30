@@ -369,6 +369,14 @@ public class JournalActivity extends AppCompatActivity implements
             }
 
             Record values = mValuesArray[position];
+            int type = values.getType();
+            switch (type) {
+                case 0: holder.mTypeView.setText("M"); break;
+                case 1: holder.mTypeView.setText("S"); break;
+                case 2: holder.mTypeView.setText("G"); break;
+                default:
+            }
+
             String ein = values.getEin();
             String name = values.getName();
             final float impact = Float.parseFloat(values.getImpact());
@@ -419,6 +427,7 @@ public class JournalActivity extends AppCompatActivity implements
             @BindView(R.id.record_secondary) TextView mIdView;
             @BindView(R.id.record_amount_text) EditText mAmountView;
             @BindView(R.id.record_time_text) TextView mTimeView;
+            @BindView(R.id.record_type_text) TextView mTypeView;
             @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
             private AlertDialog mContactDialog;

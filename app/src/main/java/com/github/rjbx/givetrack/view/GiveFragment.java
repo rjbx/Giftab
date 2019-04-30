@@ -542,7 +542,7 @@ public class GiveFragment extends Fragment implements
             int type = target.getType();
             switch (type) {
                 case 0: typeButton.setText("M"); break;
-                case 1: typeButton.setText("V"); break;
+                case 1: typeButton.setText("S"); break;
                 case 2: typeButton.setText("G"); break;
                 default:
             }
