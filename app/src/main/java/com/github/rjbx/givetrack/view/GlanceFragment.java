@@ -349,7 +349,7 @@ public class GlanceFragment extends Fragment implements
     @OnClick(R.id.type_text)
     void toggleGraphType() {
         if (mType < 3) mType++;
-        else mType = 1;
+        else mType = 0;
         switch (mInterval) {
             case 0:
                 mGraphTypeContent = "Monetary";
@@ -449,7 +449,7 @@ public class GlanceFragment extends Fragment implements
 
         if (mContext == null) return;
 
-        mIntervalText.setText(mIntervalContent);
+        mIntervalText.setText(mIntervalContent + "ly");
         mTypeText.setText(mGraphTypeContent);
 
         mTitleText.setText(getString(R.string.charts_title, mIntervalContent));
