@@ -537,7 +537,6 @@ public class GiveFragment extends Fragment implements
                 overview.setVisibility(View.VISIBLE);
             }
 
-
             Target target = mTargetList.get(position);
 
             int type = target.getType();
@@ -689,6 +688,7 @@ public class GiveFragment extends Fragment implements
                 Target target = mTargetList.get(position);
 
                 int type = target.getType() + 1;
+                if (type > 2) type = 0;
                 target.setType(type);
                 DatabaseManager.startActionUpdateTarget(getContext(), mTargetList.toArray(new Target[0]));
             }
