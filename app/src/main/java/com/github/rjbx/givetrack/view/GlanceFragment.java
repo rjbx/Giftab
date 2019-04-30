@@ -70,6 +70,7 @@ import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 /**
  * Provides the logic and views for a user activity overview screen.
  */
+// TODO: Persist type and interval selections
 public class GlanceFragment extends Fragment implements
         DialogInterface.OnClickListener,
         DatePickerDialog.OnDateSetListener,
