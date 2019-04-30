@@ -683,10 +683,16 @@ public class GiveFragment extends Fragment implements
                 target.setType(type);
 
                 switch (type) {
-                    case 0: break;
-                    case 1: break;
-                    case 2: break;
-                    default;
+                    case 0:
+                        ((Button) v).setText('M');
+                        break;
+                    case 1:
+                        ((Button) v).setText('V');
+                        break;
+                    case 2:
+                        ((Button) v).setText('G');
+                        break;
+                    default:
                 }
 
                 DatabaseManager.startActionUpdateTarget(getContext(), mTargetList.toArray(new Target[0]));
