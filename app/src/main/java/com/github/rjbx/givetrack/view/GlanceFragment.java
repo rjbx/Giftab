@@ -125,7 +125,7 @@ public class GlanceFragment extends Fragment implements
     private String mTracked = "$0.00";
     private String mTimeTracked;
     private String mTotalTime = "all-time";
-    @BindView(R.id.home_title) TextView mTitleText;
+    @BindView(R.id.title_text) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
@@ -295,7 +295,7 @@ public class GlanceFragment extends Fragment implements
         }
     }
 
-    @OnClick(R.id.home_title)
+    @OnClick(R.id.header_bar)
     void toggleColor() {
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
