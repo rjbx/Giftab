@@ -451,7 +451,6 @@ public class JournalActivity extends AppCompatActivity implements
 
                 String memo = record.getMemo();
                 mDetailView = new EditText(JournalActivity.this);
-                mDetailView.setOnEditorActionListener(this);
                 mMemoDialog = new AlertDialog.Builder(JournalActivity.this).create();
                 mDetailView.setText(memo);
                 mMemoDialog.setView(mDetailView);
@@ -570,8 +569,6 @@ public class JournalActivity extends AppCompatActivity implements
                             String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
                             mAmountView.setText(formattedAmount);
                             mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
-                        } else if (v == mDetailView) {
-                            mDetailView.setText(v.getText());
                         }
                         InputMethodManager inputMethodManager =
                                 (InputMethodManager) JournalActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
