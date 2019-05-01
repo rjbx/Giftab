@@ -397,7 +397,7 @@ final class DatabaseAccessor {
         });
 
         Task<User> task = taskSource.getTask();
-        try { Tasks.await(task, 5, TimeUnit.SECONDS); }
+        try { Tasks.await(task, 2, TimeUnit.SECONDS); }
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
         User u = User.getDefault();
