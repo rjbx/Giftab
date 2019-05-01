@@ -342,6 +342,8 @@ public class AuthActivity extends AppCompatActivity implements
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
+                DatabaseManager.startActionUpdateTarget(this);
+                DatabaseManager.startActionFetchRecord(this);
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
@@ -350,6 +352,8 @@ public class AuthActivity extends AppCompatActivity implements
                     DatabaseManager.startActionRemoveUser(this, u);
                     Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                 }
+                DatabaseManager.startActionUpdateTarget(this);
+                DatabaseManager.startActionFetchRecord(this);
                 mActiveUser = null;
                 mProcessStage = -1;
                 break;
