@@ -297,7 +297,7 @@ public class GiveFragment extends Fragment implements
 
     @Override
     public void removeEntry(Company spawn) {
-        if (mContext == null && mObjects != null) return;
+        if (mContext == null || mObjects == null) return;
         mRemoveDialog = new AlertDialog.Builder(mContext).create();
         mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, spawn.getName(), "collection"));
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
@@ -514,7 +514,7 @@ public class GiveFragment extends Fragment implements
             if (position == getItemCount() - 1 && addButton != null) {
                 addButton.setOnClickListener(clickedView -> {
                     Intent spawnIntent = new Intent(mContext, IndexActivity.class);
-                    getActivity().finish();
+                    mParentActivity.finish();
                     startActivity(spawnIntent);
                 });
                 return;
@@ -533,23 +533,29 @@ public class GiveFragment extends Fragment implements
                 holder.itemView.setLayoutParams(params);
             }
 
-            if (isDualPane()) {
-                if (mPanePosition != position) typeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
-                else typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
-                overview.setVisibility(View.GONE);
-            } else {
-                typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
-                overview.setVisibility(View.VISIBLE);
+            if (typeButton != null && overview != null) {
+                if (isDualPane()) {
+                    if (mPanePosition != position)
+                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
+                    else
+                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                    overview.setVisibility(View.GONE);
+                } else {
+                    typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                    overview.setVisibility(View.VISIBLE);
+                }
             }
 
             Target target = mTargetList.get(position);
 
             int type = target.getType();
-            switch (type) {
-                case 0: typeButton.setText("M"); break;
-                case 1: typeButton.setText("S"); break;
-                case 2: typeButton.setText("G"); break;
-                default:
+            if (typeButton != null) {
+                switch (type) {
+                    case 0: typeButton.setText("M"); break;
+                    case 1: typeButton.setText("S"); break;
+                    case 2: typeButton.setText("G"); break;
+                    default:
+                }
             }
 
             String name = target.getName();
@@ -674,7 +680,6 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.contact_button) @Nullable ImageButton mContactButton;
             @BindView(R.id.inspect_button) @Nullable ImageButton mInspectButton;
             private AlertDialog mContactDialog;
-            private AlertDialog mRemoveDialog;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.

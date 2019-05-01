@@ -436,7 +436,7 @@ public class GlanceFragment extends Fragment implements
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
         }
         amountLabel.setText(labelStr);
-        mAmountView.setText(String.valueOf(amountStr));
+        mAmountView.setText(amountStr);
     }
 
     /**

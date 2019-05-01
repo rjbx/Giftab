@@ -16,7 +16,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
@@ -26,7 +25,6 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
-import com.github.rjbx.rateraid.Rateraid;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
@@ -73,12 +71,12 @@ final class DatabaseAccessor {
         builder.appendQueryParameter(DatasourceContract.PARAM_APP_KEY, context.getString(R.string.cn_app_key));
 
         boolean single = request.containsKey(DatasourceContract.PARAM_EIN);
-        if (single) builder.appendPath((String) request.get(DatasourceContract.PARAM_EIN));
+        if (single) builder.appendPath(request.get(DatasourceContract.PARAM_EIN));
         else {
             // Append optional parameters
             for (String param : DatasourceContract.OPTIONAL_PARAMS) {
                 if (request.containsKey(param)) {
-                    String value = (String) request.get(param);
+                    String value = request.get(param);
                     if (value != null && !value.equals(""))
                         builder.appendQueryParameter(param, value);
                 }

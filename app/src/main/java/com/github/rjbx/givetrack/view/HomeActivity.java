@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,7 +43,6 @@ import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Target;
@@ -87,14 +87,13 @@ public class HomeActivity extends AppCompatActivity implements
     private boolean mUserLock = true;
     private boolean mTargetLock = true;
     private boolean mRecordLock = true;
+    private long mAnchorTime;
     private SectionsPagerAdapter mPagerAdapter;
     private Target[] mTargetArray;
     private Record[] mRecordArray;
-    private User mUser;
-    private long mAnchorTime;
-    private boolean mAnchorToday;
     private AlertDialog mAnchorDialog;
     private AlertDialog mCurrentDialog;
+    private User mUser;
     @BindView(R.id.main_navigation) NavigationView mNavigation;
     @BindView(R.id.main_drawer) DrawerLayout mDrawer;
     @BindView(R.id.main_toolbar) Toolbar mToolbar;
@@ -344,8 +343,8 @@ public class HomeActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     mUser.setGiveAnchor(mAnchorTime);
-                    mAnchorToday = AppUtilities.dateIsCurrent(mUser.getGiveAnchor());
-                    if (!mAnchorToday) {
+                    boolean anchorToday = AppUtilities.dateIsCurrent(mUser.getGiveAnchor());
+                    if (!anchorToday) {
                         mCurrentDialog = new AlertDialog.Builder(this).create();
                         mCurrentDialog.setMessage(getString(R.string.historical_dialog_message));
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
@@ -386,6 +385,7 @@ public class HomeActivity extends AppCompatActivity implements
      */
     public static class PlaceholderFragment extends Fragment {
 
+        private Activity mParentActivity;
         private Unbinder mUnbinder;
         @Nullable @BindView(R.id.launch_progress) ProgressBar mLaunchProgress;
         @Nullable @BindView(R.id.launch_icon) ImageView mLaunchIcon;
@@ -417,6 +417,14 @@ public class HomeActivity extends AppCompatActivity implements
             View rootView = inflater.inflate(rootResource, container, false);
             mUnbinder = ButterKnife.bind(this, rootView);
             return rootView;
+        }
+
+        @Override
+        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            super.onActivityCreated(savedInstanceState);
+            if (getActivity() == null || !(getActivity() instanceof HomeActivity)) return;
+            mParentActivity = getActivity();
         }
 
         /**
@@ -455,7 +463,7 @@ public class HomeActivity extends AppCompatActivity implements
          * Defines behavior on click of launch spawn button.
          */
         @Optional
-        @OnClick(R.id.placeholder_button) void launchSpawn()  { getActivity().finish(); startActivity(new Intent(getActivity(), IndexActivity.class)); }
+        @OnClick(R.id.placeholder_button) void launchSpawn()  { mParentActivity.finish(); startActivity(new Intent(getActivity(), IndexActivity.class)); }
     }
 
     /**

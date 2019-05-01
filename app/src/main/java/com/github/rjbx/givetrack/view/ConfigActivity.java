@@ -428,6 +428,7 @@ public class ConfigActivity
                         if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if (user == null) return;
                             user.linkWithCredential(credential)
                                 .addOnSuccessListener(authTask -> {
                                     isAnonymous = false;
@@ -466,6 +467,7 @@ public class ConfigActivity
                         if (sUser != null) {
                             AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                             FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if (user == null) return;
                             user.reauthenticate(credential).addOnCompleteListener(authTask -> {
                                 FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                                 Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
@@ -595,7 +597,8 @@ public class ConfigActivity
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
                 Map map = sp.getAll();
-                Set<Map.Entry<String, Object>> entrySet = map.entrySet();
+
+                Set<Map.Entry<String, Object>> entrySet = (Set<Map.Entry<String, Object>>) map.entrySet();
                 for (Map.Entry<String, Object> entry : entrySet) {
                     String k = entry.getKey();
                     if (k.contains("index")) {

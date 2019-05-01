@@ -163,7 +163,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (mProcessStage == -1) {
             mProcessStage = 0;
             FirebaseUser user = mFirebaseAuth.getCurrentUser();
-            if (user == null);
+            if (user == null) return;
             if (mActiveUser == null) {
                 user.delete()
                     .addOnSuccessListener(deleteTask -> {
@@ -188,6 +188,7 @@ public class AuthActivity extends AppCompatActivity implements
                                     String token = account.getIdToken();
                                     credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
                                 }
+                                if (credential == null) return;
                                 FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
                                     FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                                     if (refreshedUser != null) refreshedUser.delete()
@@ -199,7 +200,7 @@ public class AuthActivity extends AppCompatActivity implements
                                                 Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                             })
                                             .addOnFailureListener(retryFailTask -> {
-                                                Timber.e(retryFailTask.getMessage());
+                                                Timber.e(retryFailTask);
                                                 if (mReauthAttempts < 5) {
                                                     Toast.makeText(AuthActivity.this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                                 } else {
@@ -274,7 +275,7 @@ public class AuthActivity extends AppCompatActivity implements
             switch (which) {
                 case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    if (email.isEmpty() && !password.isEmpty() &&  mAction.equals(ACTION_DELETE_ACCOUNT)) {
+                    if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
