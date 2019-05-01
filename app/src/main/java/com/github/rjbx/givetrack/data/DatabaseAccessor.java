@@ -407,7 +407,7 @@ final class DatabaseAccessor {
 
     private static <T extends Entry> void updateLocalTableTime(ContentResolver local, Class<T> entryType, long stamp, String uid) {
 
-        if (entryType.equals(Spawn.class)) return;
+        if (entryType.equals(Spawn.class) || uid == null || uid.isEmpty()) return;
         Uri uri = UserEntry.CONTENT_URI_USER.buildUpon().appendPath(uid).build();
 
         ContentValues companyValues = new ContentValues();
@@ -417,6 +417,7 @@ final class DatabaseAccessor {
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
 
+        if (entryType.equals(Spawn.class) || uid == null || uid.isEmpty()) return;
         Map<String, Object> entryMap = new HashMap<>();
         entryMap.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         DatabaseReference userReference = remote.getReference(User.class.getSimpleName().toLowerCase());
