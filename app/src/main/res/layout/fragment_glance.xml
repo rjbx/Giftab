@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
-            android:textColor="#555"
+            android:textColor="#000"
             android:text="Annual"
             android:textStyle="bold"/>
 
@@ -41,7 +41,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="@dimen/text_size_paragraph_title"
-            android:textColor="#555"
+            android:textColor="#000"
             android:text="Total"
             android:textStyle="bold"/>
 
