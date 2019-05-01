@@ -96,19 +96,44 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/record_amount_text"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight=".5"
+                android:orientation="horizontal"
                 android:layout_gravity="center"
-                android:background="#fff"
-                android:textSize="@dimen/text_size_paragraph_title"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:imeOptions="actionDone"
-                android:importantForAutofill="no"
-                android:hint="Change the amount of this record"/>
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/record_memo_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".25"
+                    android:background="#fff"
+                    android:textSize="@dimen/text_size_paragraph_title"
+                    android:textColor="#000"
+                    android:gravity="center"
+                    android:text="✎"
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"
+                    android:importantForAutofill="no"
+                    android:hint="Toggle the type of this record"/>
+
+                <EditText
+                    android:id="@+id/record_amount_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".75"
+                    android:background="#fff"
+                    android:textSize="@dimen/text_size_paragraph_title"
+                    android:textColor="#000"
+                    android:gravity="center"
+                    android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"
+                    android:importantForAutofill="no"
+                    android:hint="Change the amount of this record"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 
