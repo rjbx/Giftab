@@ -285,6 +285,7 @@ final class DatabaseAccessor {
         String uid =  entries == null || entries.length == 0 ?
                 getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid() : entries[0].getUid();
 
+        if (uid == null || uid.isEmpty()) return;
 //        if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
 
         if (entries != null && entries.length > 0) {
@@ -308,7 +309,9 @@ final class DatabaseAccessor {
         String uid = entries == null || entries.length == 0 ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
-       DatabaseReference userReference = typeReference.child(uid);
+        if (uid == null || uid.isEmpty()) return;
+
+        DatabaseReference userReference = typeReference.child(uid);
 
 //        if (reset) userReference.removeValue();
 
