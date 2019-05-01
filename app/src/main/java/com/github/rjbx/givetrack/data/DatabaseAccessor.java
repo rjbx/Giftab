@@ -473,6 +473,8 @@ final class DatabaseAccessor {
 
    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
+        // TODO: Resolve entry persistence to improper paths
+       // TODO: Ensure local persists to remote where remote does not exist
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
 
