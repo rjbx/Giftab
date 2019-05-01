@@ -392,7 +392,7 @@ public class GlanceFragment extends Fragment implements
         mAnchorDate = calendar.getTimeInMillis();
         if (mContext == null) return;
         mTimeDialog = new AlertDialog.Builder(mContext).create();
-        mTimeDialog.setMessage(String.format("Do you want to display your total contributions %s?", DATE_FORMATTER.format(mAnchorDate)));
+        mTimeDialog.setMessage(String.format("Do you want to display your total contributions since %s? Toggle by tapping the adjacent label.", DATE_FORMATTER.format(mAnchorDate)));
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
