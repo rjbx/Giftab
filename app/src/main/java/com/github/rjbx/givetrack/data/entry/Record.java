@@ -10,6 +10,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.Map;
 
+// TODO: Implement memo
 /**
  * Stores data about a giving record; associated with a {@link com.google.firebase.auth.FirebaseUser},
  * persisted locally with {@link android.content.ContentProvider}
