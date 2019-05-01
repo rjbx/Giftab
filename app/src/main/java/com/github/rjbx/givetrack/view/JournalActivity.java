@@ -394,7 +394,13 @@ public class JournalActivity extends AppCompatActivity implements
             holder.mAmountView.setClickable(true);
             if (impact > 99999f &&
                 getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                holder.mAmountView.setTextScaleX(.9f);
+                float scaleFactor = .9f;
+                float impactDividend = impact;
+                while (impactDividend > 999999) {
+                    impactDividend /= 10;
+                    scaleFactor -= .05f;
+                }
+                holder.mAmountView.setTextScaleX(scaleFactor);
             }
 
             holder.itemView.setTag(position);
