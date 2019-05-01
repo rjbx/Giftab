@@ -398,7 +398,7 @@ public class JournalActivity extends AppCompatActivity implements
                 float impactDividend = impact;
                 while (impactDividend > 999999) {
                     impactDividend /= 10;
-                    scaleFactor -= .05f;
+                    scaleFactor *= .90f;
                 }
                 holder.mAmountView.setTextScaleX(scaleFactor);
             }
