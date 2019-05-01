@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -391,6 +392,10 @@ public class JournalActivity extends AppCompatActivity implements
             holder.mAmountView.setFocusableInTouchMode(!isDualPane());
             holder.mAmountView.setFocusable(!isDualPane());
             holder.mAmountView.setClickable(true);
+            if (impact > 99999f &&
+                getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                holder.mAmountView.setTextScaleX(.9f);
+            }
 
             holder.itemView.setTag(position);
             for (View view : holder.itemView.getTouchables()) view.setTag(position);
