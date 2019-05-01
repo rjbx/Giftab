@@ -77,7 +77,7 @@
       "glanceAnchor" : 0,
       "glanceHometype" : 0,
       "glanceGraphtype" : 0,
-      "glanceInterval" : 0,
+      "glanceInterval" : 1,
       "glanceSince" : false,
       "glanceTheme" : 0,
       "journalOrder" : "DESC",

@@ -342,8 +342,8 @@ public class AuthActivity extends AppCompatActivity implements
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
                 mActiveUser.setUserActive(false);
                 DatabaseManager.startActionUpdateUser(this, mActiveUser);
-                DatabaseManager.startActionFetchTarget(this);
-                DatabaseManager.startActionFetchRecord(this);
+//                DatabaseManager.startActionFetchTarget(this);
+//                DatabaseManager.startActionFetchRecord(this);
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:

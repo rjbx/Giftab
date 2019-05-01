@@ -66,6 +66,7 @@ import java.util.TimeZone;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.convertRemoteToLocalUser;
 
 /**
  * Provides the logic and views for a user activity overview screen.
@@ -220,10 +221,11 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (sUser == null) return;
         updateTime();
         updateGraphTyoe();
         updateHomeType();
-        if (sUser != null) renderCharts();
+        renderCharts();
     }
 
     /**
