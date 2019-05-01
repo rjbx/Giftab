@@ -473,7 +473,7 @@ final class DatabaseAccessor {
 
    private static <T extends Entry> void validateEntries(@NonNull ContentResolver local, @NonNull FirebaseDatabase remote, Class<T> entryType) {
 
-        // TODO: Resolve entry persistence to improper paths
+       // TODO: Resolve entry persistence to improper paths
        // TODO: Ensure local persists to remote where remote does not exist
         User localUser = getActiveUserFromLocal(FirebaseAuth.getInstance(), local);
         User remoteUser = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
@@ -483,7 +483,10 @@ final class DatabaseAccessor {
         int compareLocalToRemote = Long.compare(localTableStamp, remoteTableStamp);
 
         if (compareLocalToRemote < 0) pullRemoteToLocalEntries(local, remote, entryType, remoteTableStamp, remoteUser.getUid());
-        else if (compareLocalToRemote > 0 || (localTableStamp != 0 && entryType == User.class)) pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid()); // Ensures user active status is set to true where databases are initialized and equivalent
-        else local.notifyChange(DataUtilities.getContentUri(entryType), null);
+        else {
+            if (compareLocalToRemote > 0 || (localTableStamp != 0 && entryType == User.class))
+                pullLocalToRemoteEntries(local, remote, entryType, localTableStamp, localUser.getUid()); // Ensures user active status is set to true where databases are initialized and equivalent
+            local.notifyChange(DataUtilities.getContentUri(entryType), null);
+        }
     }
 }
