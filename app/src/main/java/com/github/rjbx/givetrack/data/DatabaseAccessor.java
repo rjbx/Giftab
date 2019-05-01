@@ -332,6 +332,7 @@ final class DatabaseAccessor {
         String uid;
         if (entries == null || entries.length == 0) {
             uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
+            if (uid == null || uid.isEmpty()) return;
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
         } else {
             uid = entries[0].getUid();
@@ -360,6 +361,7 @@ final class DatabaseAccessor {
         if (entries == null || entries.length == 0) {
             User user = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote);
             uid = user.getUid();
+            if (uid == null || uid.isEmpty()) return;
             userReference.removeValue();
         } else {
             for (T entry : entries) {
@@ -428,6 +430,7 @@ final class DatabaseAccessor {
     }
 
     private static <T extends Entry> void pullLocalToRemoteEntries(ContentResolver local, FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
+        if (uid == null || uid.isEmpty()) return;
         Uri contentUri = DataUtilities.getContentUri(entryType);
         Cursor cursor = local.query(contentUri, null, UserEntry.COLUMN_UID + " = ? ", new String[]{ uid }, null);
         if (cursor == null) return;
