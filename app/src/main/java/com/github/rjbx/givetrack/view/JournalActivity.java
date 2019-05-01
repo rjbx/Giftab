@@ -34,6 +34,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -425,11 +426,14 @@ public class JournalActivity extends AppCompatActivity implements
             @BindView(R.id.record_secondary) TextView mIdView;
             @BindView(R.id.record_amount_text) EditText mAmountView;
             @BindView(R.id.record_time_text) TextView mTimeView;
+            @BindView(R.id.record_memo_text) TextView mMemoView;
             @BindView(R.id.record_type_text) TextView mTypeView;
             @BindView(R.id.record_share_button) @Nullable ImageButton mShareButton;
             @BindView(R.id.record_contact_button) @Nullable ImageButton mContactButton;
             private AlertDialog mContactDialog;
             private AlertDialog mDateDialog;
+            private AlertDialog mMemoDialog;
+            private EditText mDetailView;
             private long mTime;
 
             /**
@@ -439,6 +443,26 @@ public class JournalActivity extends AppCompatActivity implements
                 super(view);
                 ButterKnife.bind(this, view);
                 mAmountView.setOnEditorActionListener(this);
+                mDetailView.setOnEditorActionListener(this);
+            }
+
+            @Optional @OnClick(R.id.record_memo_text) void editMemo(View v) {
+                int position = (int) v.getTag();
+                Record record = mValuesArray[position];
+
+                String memo = record.getMemo();
+                mDetailView = new EditText(JournalActivity.this);
+                mMemoDialog = new AlertDialog.Builder(JournalActivity.this).create();
+                mDetailView.setText(memo);
+                mMemoDialog.setView(mDetailView);
+                mMemoDialog.setMessage("Edit Memo");
+                mMemoDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                mMemoDialog.show();
+                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                button.setTag(position);
             }
 
             /**
@@ -529,21 +553,26 @@ public class JournalActivity extends AppCompatActivity implements
                 Record record = mValuesArray[(int) v.getTag()];
                 switch (actionId) {
                     case EditorInfo.IME_ACTION_DONE:
-                        float amountTotal;
-                        try {
-                            String viewText = mAmountView.getText().toString();
-                            if (viewText.contains("$")) amountTotal = CURRENCY_FORMATTER.parse(viewText).floatValue();
-                            else amountTotal = Float.parseFloat(viewText);
-                        } catch (ParseException e) {
-                            Timber.e(e);
-                            return false;
+                        if (v == mAmountView) {
+                            float amountTotal;
+                            try {
+                                String viewText = mAmountView.getText().toString();
+                                if (viewText.contains("$"))
+                                    amountTotal = CURRENCY_FORMATTER.parse(viewText).floatValue();
+                                else amountTotal = Float.parseFloat(viewText);
+                            } catch (ParseException e) {
+                                Timber.e(e);
+                                return false;
+                            }
+                            record.setImpact(String.valueOf(amountTotal));
+                            DatabaseManager.startActionUpdateRecord(JournalActivity.this, record);
+                            DatabaseManager.startActionTargetRecord(JournalActivity.this, record);
+                            String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
+                            mAmountView.setText(formattedAmount);
+                            mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
+                        } else if (v == mDetailView) {
+                            mDetailView.setText(v.getText());
                         }
-                        record.setImpact(String.valueOf(amountTotal));
-                        DatabaseManager.startActionUpdateRecord(JournalActivity.this, record);
-                        DatabaseManager.startActionTargetRecord(JournalActivity.this, record);
-                        String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);
-                        mAmountView.setText(formattedAmount);
-                        mAmountView.setContentDescription(getString(R.string.description_donation_text, formattedAmount));
                         InputMethodManager inputMethodManager =
                                 (InputMethodManager) JournalActivity.this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (inputMethodManager == null) return false;
@@ -592,6 +621,20 @@ public class JournalActivity extends AppCompatActivity implements
                             DatabaseManager.startActionUpdateRecord(JournalActivity.this, record);
                         default:
                     }
+                } else if (dialog == mMemoDialog) {
+                    switch(which) {
+                        case AlertDialog.BUTTON_NEUTRAL:
+                            dialog.dismiss();
+                            break;
+                        case AlertDialog.BUTTON_POSITIVE:
+                            String text = mDetailView.getText().toString();
+                            int position = (int) mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE).getTag();
+                            Record record = mValuesArray[position];
+                            record.setMemo(text);
+                            DatabaseManager.startActionUpdateRecord(JournalActivity.this, record);
+                            break;
+                    }
+
                 }
             }
 
