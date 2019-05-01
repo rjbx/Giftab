@@ -443,7 +443,6 @@ public class JournalActivity extends AppCompatActivity implements
                 super(view);
                 ButterKnife.bind(this, view);
                 mAmountView.setOnEditorActionListener(this);
-                mDetailView.setOnEditorActionListener(this);
             }
 
             @Optional @OnClick(R.id.record_memo_text) void editMemo(View v) {
@@ -452,6 +451,7 @@ public class JournalActivity extends AppCompatActivity implements
 
                 String memo = record.getMemo();
                 mDetailView = new EditText(JournalActivity.this);
+                mDetailView.setOnEditorActionListener(this);
                 mMemoDialog = new AlertDialog.Builder(JournalActivity.this).create();
                 mDetailView.setText(memo);
                 mMemoDialog.setView(mDetailView);
@@ -460,7 +460,7 @@ public class JournalActivity extends AppCompatActivity implements
                 mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mMemoDialog.show();
                 mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                Button button = mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 button.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
                 button.setTag(position);
             }
