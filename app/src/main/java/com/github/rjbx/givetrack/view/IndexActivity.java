@@ -185,6 +185,8 @@ public class IndexActivity extends AppCompatActivity implements
                     sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                     sb.show();
                     mFetching = false;
+                    sDialogShown = mUser.getIndexDialog();
+                    if (!sDialogShown) showDialog();
                 }
                 if (sDualPane) {
                     Bundle bundle = new Bundle();
@@ -211,8 +213,6 @@ public class IndexActivity extends AppCompatActivity implements
                         }
                     } while (data.moveToNext());
                 }
-                sDialogShown = mUser.getIndexDialog();
-                if (!sDialogShown) showDialog();
                 break;
             default:
                 throw new RuntimeException(getString(R.string.loader_error_message, id));
