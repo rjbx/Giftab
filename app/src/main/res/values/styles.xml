@@ -32,6 +32,7 @@
         <item name="colorAccent">@color/colorConversionDark</item>
     </style>
 
+    <!--TODO: Adapt for tablet smallest screen width-->
     <style name="FirebaseUI.AuthMethodPicker.Logo">
         <item name="android:adjustViewBounds">true</item>
     </style>
