@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--TODO: Update font sizes to maintain visibility when bound by different root view sizes -->
+<!-- Update font sizes to maintain visibility when bound by different root view sizes -->
 <!-- until scaling layout dimensions with ConstraintLayout-->
 <!-- test for smallest widths: 320dp, 480dp, 600dp, 720dp-->
 
