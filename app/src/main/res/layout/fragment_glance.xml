@@ -59,33 +59,6 @@
             android:text="@string/charts_title"
             android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <ImageButton
-                android:id="@+id/home_time_button"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_margin="3dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:src="@drawable/history_dark"
-                android:contentDescription="@string/description_increment_percentage_text"/>
-
-            <ImageButton
-                android:id="@+id/home_type_button"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:layout_margin="3dp"
-                android:layout_gravity="bottom|center_horizontal"
-                android:src="@drawable/menu_card_giftcard"
-                android:contentDescription="@string/description_increment_percentage_text"/>
-
-        </LinearLayout>
-
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
