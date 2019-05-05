@@ -37,15 +37,15 @@
         <item name="android:adjustViewBounds">true</item>
     </style>
 
-    <style name="FirebaseUI.TopProgressBar" parent="Widget.MaterialProgressBar.ProgressBar.Horizontal">
+    <style name="FirebaseUI.TopProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">10dp</item>
         <item name="android:indeterminate">true</item>
         <item name="android:indeterminateTintMode">src_atop</item>
         <item name="android:indeterminateTint">@color/colorConversion</item>
         <item name="android:visibility">invisible</item>
-        <item name="mpb_progressStyle">horizontal</item>
-        <item name="mpb_useIntrinsicPadding">false</item>
+        <item name="android:indeterminateProgressStyle">horizontal</item>
+        <item name="android:useIntrinsicSizeAsMinimum">false</item>
     </style>
 
     <style name="FirebaseUI.Text.T08" tools:ignore="UnusedResources">
