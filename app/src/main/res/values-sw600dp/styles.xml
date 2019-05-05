@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="FirebaseUI.Text.T08" tools:ignore="UnusedResources">
+        <item name="android:textSize">30sp</item>
+    </style>
+</resources>
