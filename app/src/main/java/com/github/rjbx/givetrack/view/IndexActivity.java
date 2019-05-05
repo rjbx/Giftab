@@ -178,7 +178,7 @@ public class IndexActivity extends AppCompatActivity implements
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
                 if (mFetching) {
-                    if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh);
+                    if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
                     Snackbar sb = Snackbar.make(mFab, mSnackbar, Snackbar.LENGTH_LONG);
                     sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                     sb.show();
