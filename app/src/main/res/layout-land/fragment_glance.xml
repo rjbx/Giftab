@@ -26,8 +26,10 @@
                 android:id="@+id/header_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/colorChalk"
+                android:paddingTop="75dp"
+                android:paddingBottom="25dp"
                 android:layout_gravity="center"
+                android:background="@color/colorChalk"
                 android:gravity="center"
                 android:orientation="horizontal">
 
