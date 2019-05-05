@@ -37,4 +37,7 @@
     <style name="FirebaseUI.Text.T13" ns1:ignore="UnusedResources">
         <item name="android:textSize">20sp</item>
     </style>
+    <style name="FirebaseUI.TextInputEditText">
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>
