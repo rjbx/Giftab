@@ -1,7 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="FirebaseUI.Text.T08" tools:ignore="UnusedResources">
-        <item name="android:textSize">30sp</item>
+<resources xmlns:ns1="http://schemas.android.com/apk/res-auto">
+    <style name="FirebaseUI.Text.T01" ns1:ignore="UnusedResources">
+        <item name="android:textSize">224sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T02" ns1:ignore="UnusedResources">
+        <item name="android:textSize">128sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T03" ns1:ignore="UnusedResources">
+        <item name="android:textSize">86sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T04" ns1:ignore="UnusedResources">
+        <item name="android:textSize">72sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T05" ns1:ignore="UnusedResources">
+        <item name="android:textSize">48sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T06" ns1:ignore="UnusedResources">
+        <item name="android:textSize">36sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T07" ns1:ignore="UnusedResources">
+        <item name="android:textSize">40sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T08" ns1:ignore="UnusedResources">
+        <item name="android:textSize">32sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T09" ns1:ignore="UnusedResources">
+        <item name="android:textSize">32sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T11" ns1:ignore="UnusedResources">
+        <item name="android:textSize">28sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T12" ns1:ignore="UnusedResources">
+        <item name="android:textSize">24sp</item>
+    </style>
+    <style name="FirebaseUI.Text.T13" ns1:ignore="UnusedResources">
+        <item name="android:textSize">20sp</item>
     </style>
 </resources>
