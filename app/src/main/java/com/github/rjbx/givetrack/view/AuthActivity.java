@@ -47,6 +47,7 @@ import java.util.List;
 import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+// TODO: Resolve crash on guest sign out and attempted sign in with existing user
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
@@ -77,6 +78,7 @@ public class AuthActivity extends AppCompatActivity implements
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        // TODO: Resolve default values for guest account
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
@@ -347,6 +349,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
+                // TODO: Enable deletion
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
                     DatabaseManager.startActionRemoveUser(this, u);
