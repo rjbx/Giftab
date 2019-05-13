@@ -585,7 +585,7 @@ public class ConfigActivity
 
             Preference dialogPreference = findPreference(getString(R.string.pref_indexDialog_key));
             handlePreferenceChange(dialogPreference, this);
-            dialogPreference.getEditor().putBoolean(dialogPreference.getKey(), true);
+            dialogPreference.getEditor().putBoolean(dialogPreference.getKey(), true).apply();
         }
 
         @Override
