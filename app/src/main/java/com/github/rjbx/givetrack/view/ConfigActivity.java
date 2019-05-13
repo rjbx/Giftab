@@ -579,10 +579,13 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexSort_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexOrder_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexdialog_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+
+            Preference dialogPreference = findPreference(getString(R.string.pref_indexDialog_key));
+            handlePreferenceChange(dialogPreference, this);
+            dialogPreference.getEditor().putBoolean(dialogPreference.getKey(), true);
         }
 
         @Override
@@ -593,7 +596,7 @@ public class ConfigActivity
          * Defines behavior on change of each preference value.
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
-            if (getString(R.string.pref_indexdialog_key).equals(preference.getKey())) changeUser(preference, true);
+            if (getString(R.string.pref_indexDialog_key).equals(preference.getKey())) sUser.setIndexDialog(true);
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;

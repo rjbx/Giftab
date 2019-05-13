@@ -163,7 +163,7 @@
     <string name="pref_giveMagnitude_key" translatable="false">giveMagnitude</string>
     <string name="pref_giveRounding_key" translatable="false">giveRounding</string>
     <string name="pref_indexCompany_key" translatable="false">indexCompany</string>
-    <string name="pref_indexdialog_key" translatable="false">indexdialog</string>
+    <string name="pref_indexDialog_key" translatable="false">indexdialog</string>
     <string name="pref_clear_key" translatable="false">clearData</string>
     <string name="pref_reset_key" translatable="false">resetSearch</string>
     <string name="pref_show_key" translatable="false">showAll</string>
