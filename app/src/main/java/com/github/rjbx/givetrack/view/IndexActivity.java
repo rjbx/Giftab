@@ -291,7 +291,13 @@ public class IndexActivity extends AppCompatActivity implements
     @OnClick(R.id.spawn_fab) public void refreshResults() {
 
         int remainingFetches = mUser.getIndexCount();
-        if (remainingFetches <= 0) return;
+        if (remainingFetches <= 0) {
+            mSnackbarMessage = getString(R.string.message_spawn_exhausted);
+            Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
+            sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+            sb.show();
+            return;
+        }
 
         long currentTime = System.currentTimeMillis();
         int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());

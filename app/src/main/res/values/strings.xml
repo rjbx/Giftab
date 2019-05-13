@@ -115,6 +115,7 @@
     <string name="message_empty_collection">Your charity collection is empty!\nAdd charities here:</string>
     <string name="message_record_refresh">Your records have been updated.</string>
     <string name="message_spawn_refresh">Your search results have been refreshed. You have %d searches remaining for today.</string>
+    <string name="message_spawn_exhausted">You have no searches remaining for today. Try again at least one day after your last search.</string>
     <string name="message_generated_remove">%s has been removed from your search results. </string>
     <string name="message_collected_add">"%s has been added to your collection"</string>
     <string name="message_collected_remove">"%s has been removed from your collection"</string>
