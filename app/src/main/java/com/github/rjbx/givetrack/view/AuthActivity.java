@@ -349,7 +349,6 @@ public class AuthActivity extends AppCompatActivity implements
                 mProcessStage = -1;
                 break;
             case ACTION_DELETE_ACCOUNT:
-                // TODO: Enable guest account deletion
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
                     DatabaseManager.startActionRemoveUser(this, u);
