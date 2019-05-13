@@ -78,7 +78,6 @@ public class AuthActivity extends AppCompatActivity implements
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        // TODO: Resolve default values for guest account
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
         ButterKnife.bind(this);
