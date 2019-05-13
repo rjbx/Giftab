@@ -585,7 +585,7 @@ public class ConfigActivity
 
             // If user either positively responds to dialog or enters PreferenceFragment after dialog has been shown
             sUser.setIndexDialog(true);
-            DatabaseManager.startActionUpdateUser(getContext(), sUser);
+            DatabaseManager.startActionUpdateUser(getActivity(), sUser);
         }
 
         @Override
