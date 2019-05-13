@@ -143,6 +143,7 @@ public class IndexActivity extends AppCompatActivity implements
                 return true;
             case (R.id.action_filter):
                 AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
+                sDialogShown = true;
                 mUser.setIndexDialog(sDialogShown);
                 DatabaseManager.startActionUpdateUser(this, mUser);
         }
