@@ -533,6 +533,12 @@ public class ConfigActivity
         }
 
         @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
+        }
+
+        @Override
         public void onStart() {
             super.onStart();
             PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
