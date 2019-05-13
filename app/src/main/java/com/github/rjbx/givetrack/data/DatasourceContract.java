@@ -16,8 +16,8 @@ final class DatasourceContract {
     static final String PARAM_EIN = "ein";
     static final String PARAM_PAGE_NUM = "pageNum";
     static final String PARAM_PAGE_SIZE = "pageSize";
-    static final String PARAM_SPAWN = "spawn";
-    static final String PARAM_SPAWN_TYPE ="spawnType";
+    static final String PARAM_SEARCH = "search";
+    static final String PARAM_SEARCH_TYPE ="searchType";
     static final String PARAM_RATED = "rated";
     static final String PARAM_CATEGORY_ID = "categoryID";
     static final String PARAM_CAUSE_ID = "causeID";
@@ -56,8 +56,8 @@ final class DatasourceContract {
     static final String[] OPTIONAL_PARAMS = {
             PARAM_PAGE_NUM,
             PARAM_PAGE_SIZE,
-            PARAM_SPAWN,
-            PARAM_SPAWN_TYPE,
+            PARAM_SEARCH,
+            PARAM_SEARCH_TYPE,
             PARAM_RATED,
             PARAM_CATEGORY_ID,
             PARAM_CAUSE_ID,

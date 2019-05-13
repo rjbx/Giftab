@@ -52,7 +52,7 @@ final class DatabaseAccessor {
         Map<String, String> request = new HashMap<>();
         if (user.getIndexFocus()) request.put(DatasourceContract.PARAM_EIN, user.getIndexCompany());
         else {
-            request.put(DatasourceContract.PARAM_SPAWN, user.getIndexTerm());
+            request.put(DatasourceContract.PARAM_SEARCH, user.getIndexTerm());
             request.put(DatasourceContract.PARAM_CITY, user.getIndexCity());
             request.put(DatasourceContract.PARAM_STATE, user.getIndexState());
             request.put(DatasourceContract.PARAM_ZIP, user.getIndexZip());
