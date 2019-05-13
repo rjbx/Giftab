@@ -607,7 +607,7 @@ public class ConfigActivity
                         SharedPreferences.Editor e = p.getEditor();
                         if (p instanceof EditTextPreference) e.putString(k, "");
                         else if (p instanceof SwitchPreference) e.putBoolean(k, false);
-                        else if (p instanceof ListPreference) e.putString(k, "0");
+                        else if (p instanceof ListPreference) e.putString(k, "");
                         e.apply();
                     }
                 }

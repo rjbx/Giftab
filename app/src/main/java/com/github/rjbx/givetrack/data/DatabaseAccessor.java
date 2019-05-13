@@ -77,7 +77,7 @@ final class DatabaseAccessor {
             for (String param : DatasourceContract.OPTIONAL_PARAMS) {
                 if (request.containsKey(param)) {
                     String value = request.get(param);
-                    if (value != null && !value.equals(""))
+                    if (value != null && !value.equals("") && !value.equals(":"))
                         builder.appendQueryParameter(param, value);
                 }
             }
