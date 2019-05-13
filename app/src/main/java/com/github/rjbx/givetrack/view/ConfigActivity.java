@@ -528,6 +528,7 @@ public class ConfigActivity
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_index);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             setHasOptionsMenu(true);
             changeSummaries(this);
         }
