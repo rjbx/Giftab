@@ -528,7 +528,6 @@ public class ConfigActivity
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_index);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             setHasOptionsMenu(true);
             changeSummaries(this);
         }
@@ -544,7 +543,6 @@ public class ConfigActivity
          */
         @Override public void onResume() {
             super.onResume();
-
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_indexState_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
@@ -659,6 +657,7 @@ public class ConfigActivity
         public void onStop() {
             PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
             super.onStop();
+
         }
     }
 
