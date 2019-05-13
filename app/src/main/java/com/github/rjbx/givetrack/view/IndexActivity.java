@@ -298,6 +298,7 @@ public class IndexActivity extends AppCompatActivity implements
             mUser.setIndexAnchor(currentTime);
             mUser.setIndexCount(5);
         } else mUser.setIndexCount(--remainingFetches);
+        DatabaseManager.startActionUpdateUser(this, mUser);
 
         if (remainingFetches > 0) fetchResults();
     }
