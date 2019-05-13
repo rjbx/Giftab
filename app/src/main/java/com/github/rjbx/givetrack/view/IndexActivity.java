@@ -143,6 +143,8 @@ public class IndexActivity extends AppCompatActivity implements
                 return true;
             case (R.id.action_filter):
                 AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
+                mUser.setIndexDialog(sDialogShown);
+                DatabaseManager.startActionUpdateUser(this, mUser);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -276,6 +278,8 @@ public class IndexActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     sDialogShown = true;
+                    mUser.setIndexDialog(sDialogShown);
+                    DatabaseManager.startActionUpdateUser(this, mUser);
                     AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
                     break;
                 default:

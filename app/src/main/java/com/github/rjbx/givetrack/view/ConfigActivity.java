@@ -534,12 +534,6 @@ public class ConfigActivity
         }
 
         @Override
-        public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(USER_STATE, sUser);
-            super.onSaveInstanceState(outState);
-        }
-
-        @Override
         public void onStart() {
             super.onStart();
             PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
@@ -582,10 +576,6 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
-
-            SwitchPreference dialogPreference = (SwitchPreference) findPreference(getString(R.string.pref_indexDialog_key));
-            handlePreferenceChange(dialogPreference, this);
-            dialogPreference.setChecked(true);
         }
 
         @Override
@@ -596,6 +586,7 @@ public class ConfigActivity
          * Defines behavior on change of each preference value.
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
+            if (getString(R.string.pref_indexDialog_key).equals(preference.getKey())) sUser.setIndexDialog(true);
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
