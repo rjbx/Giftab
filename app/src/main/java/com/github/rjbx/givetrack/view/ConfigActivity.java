@@ -586,7 +586,6 @@ public class ConfigActivity
          * Defines behavior on change of each preference value.
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
-            if (getString(R.string.pref_indexDialog_key).equals(preference.getKey())) sUser.setIndexDialog(true);
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
             return true;
