@@ -601,7 +601,7 @@ public class ConfigActivity
                 Set<Map.Entry<String, Object>> entrySet = (Set<Map.Entry<String, Object>>) map.entrySet();
                 for (Map.Entry<String, Object> entry : entrySet) {
                     String k = entry.getKey();
-                    if (k.contains("index")) {
+                    if (k.contains("index") && !k.equals("indexDialog")) {
                         Preference p = findPreference(k);
                         SharedPreferences.Editor e = p.getEditor();
                         if (p instanceof EditTextPreference) e.putString(k, "");
