@@ -583,9 +583,9 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 
-            Preference dialogPreference = findPreference(getString(R.string.pref_indexDialog_key));
+            SwitchPreference dialogPreference = (SwitchPreference) findPreference(getString(R.string.pref_indexDialog_key));
             handlePreferenceChange(dialogPreference, this);
-            dialogPreference.getEditor().putBoolean(dialogPreference.getKey(), true).apply();
+            dialogPreference.setChecked(true);
         }
 
         @Override

@@ -110,9 +110,9 @@
         android:title="@string/pref_show_label"
         android:summary="Navigate to the main preference screen"/>
 
-    <Preference
+    <SwitchPreference
         android:key="@string/pref_indexDialog_key"
-        android:shouldDisableView="true"
-        android:summary="Navigate to the main preference screen"/>
+        android:defaultValue="false"
+        android:visibility="gone" />
 
 </PreferenceScreen>
