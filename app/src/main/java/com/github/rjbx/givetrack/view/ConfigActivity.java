@@ -543,6 +543,7 @@ public class ConfigActivity
          */
         @Override public void onResume() {
             super.onResume();
+
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_indexState_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
@@ -574,6 +575,9 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+
+            sUser.setIndexDialog(true);
+            DatabaseManager.startActionUpdateUser(getContext(), sUser);
         }
 
         @Override
