@@ -583,9 +583,7 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 
-            // If user either positively responds to dialog or enters PreferenceFragment after dialog has been shown
-            sUser.setIndexDialog(true);
-            DatabaseManager.startActionUpdateUser(getActivity(), sUser);
+            changeUser(findPreference("indexDialog"), true);
         }
 
         @Override
@@ -669,7 +667,6 @@ public class ConfigActivity
         public void onStop() {
             PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
             super.onStop();
-
         }
     }
 
