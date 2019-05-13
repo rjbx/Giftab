@@ -605,7 +605,9 @@ public class ConfigActivity
                         Preference p = findPreference(k);
                         if (p == null) continue;
                         SharedPreferences.Editor e = p.getEditor();
-                        if (p instanceof EditTextPreference) e.putString(k, "");
+                        if (k.equals(getString(R.string.pref_indexSort_key))) e.putString(k, "RATING");
+                        else if (k.equals(getString(R.string.pref_indexOrder_key))) e.putString(k, "DESC");
+                        else if (p instanceof EditTextPreference) e.putString(k, "");
                         else if (p instanceof SwitchPreference) e.putBoolean(k, false);
                         else if (p instanceof ListPreference) e.putString(k, "");
                         e.apply();
