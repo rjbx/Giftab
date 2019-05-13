@@ -291,6 +291,7 @@ public class IndexActivity extends AppCompatActivity implements
     @OnClick(R.id.spawn_fab) public void refreshResults() {
 
         int remainingFetches = mUser.getIndexCount();
+        if (remainingFetches <= 0) return;
 
         long currentTime = System.currentTimeMillis();
         int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());
@@ -300,7 +301,7 @@ public class IndexActivity extends AppCompatActivity implements
         } else mUser.setIndexCount(--remainingFetches);
         DatabaseManager.startActionUpdateUser(this, mUser);
 
-        if (remainingFetches > 0) fetchResults();
+        fetchResults();
     }
 
     @Override
