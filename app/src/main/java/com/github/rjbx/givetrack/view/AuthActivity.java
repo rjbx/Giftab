@@ -378,7 +378,7 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     private String getGreeting(FirebaseUser firebaseUser) {
-        if (firebaseUser == null) return;
+        if (firebaseUser == null) return "";
         List<String> providers = new ArrayList<>();
         for (UserInfo uInfo : firebaseUser.getProviderData()) providers.add(uInfo.getProviderId());
 
