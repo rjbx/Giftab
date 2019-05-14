@@ -96,7 +96,7 @@
     <string name="dialog_description_account_deletion">Are you sure you want to delete your account? Your data will be erased and cannot be recovered.</string>
     <string name="message_logout">You successfully logged out</string>
     <string name="message_data_erase">Your account has been erased</string>
-    <string name="message_login">You successfully logged in</string>
+    <string name="message_login">You successfully logged in as %s</string>
     <string name="message_password_request">Please confirm your password to proceed.</string>
 
     <!-- Widget -->

@@ -377,11 +377,10 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     private String getGreeting(FirebaseUser firebaseUser) {
-        String email = "";
-        if (firebaseUser != null) email = firebaseUser.getEmail();
+        String userIdentifier = "";
+        if (firebaseUser != null) userIdentifier = firebaseUser.getEmail();
+        if (userIdentifier == null || userIdentifier.isEmpty()) userIdentifier = "guest";
 
-        String toastMessage = getString(R.string.message_login);
-        toastMessage += (email == null || email.isEmpty()) ? " as guest" : ", " + email;
-        return toastMessage;
+        return getString(R.string.message_login, userIdentifier);
     }
 }
