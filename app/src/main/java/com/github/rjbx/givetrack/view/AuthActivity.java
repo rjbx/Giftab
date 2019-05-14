@@ -132,6 +132,7 @@ public class AuthActivity extends AppCompatActivity implements
                 if (user == null) return;
                 List<String> providers = new ArrayList<>();
                 for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+
                 if (providers.size() <= 1) isGuest = true;
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
@@ -230,6 +231,12 @@ public class AuthActivity extends AppCompatActivity implements
             }
         } else {
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
+            FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+            String displayName = "";
+            String toastMessage = "";
+            if (firebaseUser != null) displayName = firebaseUser.getDisplayName();
+            toastMessage = getString(R.string.message_login);
+            toastMessage += (displayName == null || displayName.isEmpty()) ? "as guest" : ", " + displayName;
             switch (mProcessStage) {
                 case 0:
                     handleAction(getIntent().getAction());
@@ -239,8 +246,9 @@ public class AuthActivity extends AppCompatActivity implements
                     boolean isPersisted = false;
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
+
                         if (isPersisted) {
-                            Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
                             finish();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             break;
@@ -256,7 +264,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case 3:
                     finish();
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-                    Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
             }
         }
     }
