@@ -691,9 +691,10 @@ public final class DatabaseManager extends IntentService {
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        /*int matchCount = 0;
+        int matchCount = 0;
         int offset = 0;
         int offsetIndex = 0;
+        // If parameter list is identical to persisted list short one element, remove the element from the persisted lists
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         if (targetList.size() - 1 == targets.length) {
             for (int i = 0; i < targetList.size(); i++) {
@@ -706,13 +707,11 @@ public final class DatabaseManager extends IntentService {
             }
         }
         Target removedTarget = targetList.get(offsetIndex);
-        if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, removedTarget));
-        else */
-
-        DISK_IO.execute(() -> {
-                DatabaseAccessor.removeTarget(this);
-                DatabaseAccessor.addTarget(this, targets);
-        });
+        if (matchCount == targetList.size() - 1 || targets.length == 0) {
+            DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, removedTarget));
+        }
+        // Otherwise add targets
+        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     /**
