@@ -65,6 +65,7 @@ public class AuthActivity extends AppCompatActivity implements
 
     private int mProcessStage = 0;
     private int mReauthAttempts;
+    private boolean isGuest;
     private List<User> mUsers;
     private User mActiveUser;
     private FirebaseAuth mFirebaseAuth;
@@ -127,9 +128,14 @@ public class AuthActivity extends AppCompatActivity implements
         if (requestCode == REQUEST_SIGN_IN) {
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
-                mActiveUser = AppUtilities.convertRemoteToLocalUser(mFirebaseAuth.getCurrentUser());
-                DatabaseManager.startActionFetchUser(this);
+                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                if (user == null) return;
+                List<String> providers = new ArrayList<>();
+                for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+                if (providers.size() <= 1) isGuest = true;
                 mProcessStage++;
+                mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
+                DatabaseManager.startActionFetchUser(this);
             } else {
                 // Block sign-in to prevent overwriting existing remote with default data
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -234,7 +240,7 @@ public class AuthActivity extends AppCompatActivity implements
                     for (int i = 0; i < mUsers.size(); i++) {
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
                         if (isPersisted) {
-                            Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
                             finish();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             break;
@@ -250,7 +256,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case 3:
                     finish();
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -334,7 +340,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                 } else {
                     finish();
-                    Toast.makeText(this, getString(R.string.message_login), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                 }
                 break;
