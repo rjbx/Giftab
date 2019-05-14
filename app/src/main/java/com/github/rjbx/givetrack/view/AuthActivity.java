@@ -65,7 +65,6 @@ public class AuthActivity extends AppCompatActivity implements
 
     private int mProcessStage = 0;
     private int mReauthAttempts;
-    String mDisplayName;
     private List<User> mUsers;
     private User mActiveUser;
     private FirebaseAuth mFirebaseAuth;
@@ -382,7 +381,7 @@ public class AuthActivity extends AppCompatActivity implements
         List<String> providers = new ArrayList<>();
         for (UserInfo uInfo : firebaseUser.getProviderData()) providers.add(uInfo.getProviderId());
 
-        mDisplayName = "";
+        String displayName = "";
         if (providers.contains("password")) {
             int index = 0;
             if (providers.contains("email")) {
@@ -390,11 +389,11 @@ public class AuthActivity extends AppCompatActivity implements
             } else if (providers.contains("google")) {
                 index = providers.indexOf("google");
             }
-            mDisplayName = firebaseUser.getProviderData().get(index).getDisplayName();
-        } else mDisplayName = "guest";
+            displayName = firebaseUser.getProviderData().get(index).getDisplayName();
+        } else displayName = "guest";
 
         String toastMessage = getString(R.string.message_login);
-        toastMessage += (mDisplayName == null || mDisplayName.isEmpty()) ? "as guest" : ", " + mDisplayName;
+        toastMessage += (displayName == null || displayName.isEmpty()) ? "as guest" : ", " + displayName;
         return toastMessage;
     }
 }
