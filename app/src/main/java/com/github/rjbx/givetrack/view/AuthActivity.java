@@ -130,20 +130,6 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
                 if (user == null) return;
-                List<String> providers = new ArrayList<>();
-                for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
-
-                mDisplayName = "";
-                if (providers.contains("password")) {
-                    int index;
-                    if (providers.contains("email")) {
-                        index = providers.indexOf("email");
-                    } else if (providers.contains("google")) {
-                        index = providers.indexOf("google");
-                    }
-                    mDisplayName = user.getProviderData().get(index).getDisplayName();
-                } else mDisplayName = "guest";
-
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
                 DatabaseManager.startActionFetchUser(this);
@@ -392,6 +378,21 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     private String getGreeting(FirebaseUser firebaseUser) {
+        if (firebaseUser == null) return;
+        List<String> providers = new ArrayList<>();
+        for (UserInfo uInfo : firebaseUser.getProviderData()) providers.add(uInfo.getProviderId());
+
+        mDisplayName = "";
+        if (providers.contains("password")) {
+            int index = 0;
+            if (providers.contains("email")) {
+                index = providers.indexOf("email");
+            } else if (providers.contains("google")) {
+                index = providers.indexOf("google");
+            }
+            mDisplayName = firebaseUser.getProviderData().get(index).getDisplayName();
+        } else mDisplayName = "guest";
+
         String toastMessage = getString(R.string.message_login);
         toastMessage += (mDisplayName == null || mDisplayName.isEmpty()) ? "as guest" : ", " + mDisplayName;
         return toastMessage;
