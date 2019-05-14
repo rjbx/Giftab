@@ -380,7 +380,7 @@ public class AuthActivity extends AppCompatActivity implements
         if (firebaseUser != null) displayName = firebaseUser.getDisplayName();
 
         String toastMessage = getString(R.string.message_login);
-        toastMessage += (displayName == null || displayName.isEmpty()) ? "as guest" : ", " + displayName;
+        toastMessage += (displayName == null || displayName.isEmpty()) ? " as guest" : ", " + displayName;
         return toastMessage;
     }
 }
