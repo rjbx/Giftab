@@ -65,7 +65,6 @@ public class AuthActivity extends AppCompatActivity implements
 
     private int mProcessStage = 0;
     private int mReauthAttempts;
-    private boolean isGuest;
     private List<User> mUsers;
     private User mActiveUser;
     private FirebaseAuth mFirebaseAuth;
@@ -232,11 +231,6 @@ public class AuthActivity extends AppCompatActivity implements
         } else {
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-            String displayName = "";
-            String toastMessage = "";
-            if (firebaseUser != null) displayName = firebaseUser.getDisplayName();
-            toastMessage = getString(R.string.message_login);
-            toastMessage += (displayName == null || displayName.isEmpty()) ? "as guest" : ", " + displayName;
             switch (mProcessStage) {
                 case 0:
                     handleAction(getIntent().getAction());
@@ -248,7 +242,7 @@ public class AuthActivity extends AppCompatActivity implements
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
 
                         if (isPersisted) {
-                            Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
                             finish();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             break;
@@ -264,7 +258,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case 3:
                     finish();
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-                    Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -348,7 +342,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                 } else {
                     finish();
-                    Toast.makeText(this, getString(R.string.message_login) + (isGuest ? "as guest" : ""), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                 }
                 break;
@@ -384,5 +378,14 @@ public class AuthActivity extends AppCompatActivity implements
         mAuthDialog.show();
         mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+    }
+
+    private String getGreeting(FirebaseUser firebaseUser) {
+        String displayName = "";
+        if (firebaseUser != null) displayName = firebaseUser.getDisplayName();
+
+        String toastMessage = getString(R.string.message_login);
+        toastMessage += (displayName == null || displayName.isEmpty()) ? "as guest" : ", " + displayName;
+        return toastMessage;
     }
 }
