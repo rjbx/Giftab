@@ -1012,8 +1012,8 @@ public class ConfigActivity
             List<String> providers = new ArrayList<>();
             for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
 
-            if (providers.size() > 1) handlePreferenceClick(deletePreference, this);
-            else deletePreference.setEnabled(false);
+            /*if (providers.size() > 1) */handlePreferenceClick(deletePreference, this);
+//            else deletePreference.setEnabled(false);
 
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 //            handlePreferenceChange(findPreference("sync_frequency"), this);

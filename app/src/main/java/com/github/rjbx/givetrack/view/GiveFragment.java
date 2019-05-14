@@ -634,10 +634,12 @@ public class GiveFragment extends Fragment implements
 //            }
             mTargetList = targetList;
             if (sUser.getGiveReset()) {
-                Rateraid.resetRatings(mTargetList, true, Calibrater.STANDARD_PRECISION);
-                syncPercentages();
+                // Occurs before percent sync to prevent callback with reset still set to true
                 sUser.setGiveReset(false);
                 DatabaseManager.startActionUpdateUser(mContext, sUser);
+
+                Rateraid.resetRatings(mTargetList, true, Calibrater.STANDARD_PRECISION);
+                syncPercentages();
             }
             notifyDataSetChanged();
         }
