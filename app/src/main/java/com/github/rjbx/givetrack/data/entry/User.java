@@ -13,7 +13,6 @@ import java.util.Map;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 
-// TODO: Restore user name attribute to supplement AuthActivity greeting and enable updating from UserPreferenceFragment
 /**
  * Stores data about an end user; initialized from {@link com.google.firebase.auth.FirebaseUser},
  * persisted locally with {@link android.content.ContentProvider}
