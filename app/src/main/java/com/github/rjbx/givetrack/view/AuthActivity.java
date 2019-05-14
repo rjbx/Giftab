@@ -128,11 +128,6 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                if (user == null) return;
-                List<String> providers = new ArrayList<>();
-                for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
-
-                if (providers.size() <= 1) isGuest = true;
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
                 DatabaseManager.startActionFetchUser(this);
