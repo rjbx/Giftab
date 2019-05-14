@@ -238,7 +238,7 @@ public class AuthActivity extends AppCompatActivity implements
                         isPersisted = mUsers.get(i).getUid().equals(mActiveUser.getUid());
 
                         if (isPersisted) {
-                            Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
+                            ViewUtilities.centerToastMessage(Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT)).show();
                             finish();
                             startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
                             break;
