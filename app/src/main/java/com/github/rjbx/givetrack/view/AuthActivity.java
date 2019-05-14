@@ -65,6 +65,7 @@ public class AuthActivity extends AppCompatActivity implements
 
     private int mProcessStage = 0;
     private int mReauthAttempts;
+    String mDisplayName;
     private List<User> mUsers;
     private User mActiveUser;
     private FirebaseAuth mFirebaseAuth;
@@ -128,6 +129,21 @@ public class AuthActivity extends AppCompatActivity implements
             // If FirebaseAuth signin successful; FirebaseUser with UID available (irrespective of FirebaseDatabase content)
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                if (user == null) return;
+                List<String> providers = new ArrayList<>();
+                for (UserInfo uInfo : user.getProviderData()) providers.add(uInfo.getProviderId());
+
+                mDisplayName = "";
+                if (providers.contains("password")) {
+                    int index;
+                    if (providers.contains("email")) {
+                        index = providers.indexOf("email");
+                    } else if (providers.contains("google")) {
+                        index = providers.indexOf("google");
+                    }
+                    mDisplayName = user.getProviderData().get(index).getDisplayName();
+                } else mDisplayName = "guest";
+
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
                 DatabaseManager.startActionFetchUser(this);
@@ -376,11 +392,8 @@ public class AuthActivity extends AppCompatActivity implements
     }
 
     private String getGreeting(FirebaseUser firebaseUser) {
-        String displayName = "";
-        if (firebaseUser != null) displayName = firebaseUser.getDisplayName();
-
         String toastMessage = getString(R.string.message_login);
-        toastMessage += (displayName == null || displayName.isEmpty()) ? " as guest" : ", " + displayName;
+        toastMessage += (mDisplayName == null || mDisplayName.isEmpty()) ? "as guest" : ", " + mDisplayName;
         return toastMessage;
     }
 }
