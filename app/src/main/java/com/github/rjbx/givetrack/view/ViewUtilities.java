@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -35,6 +36,12 @@ final class ViewUtilities {
                 .setType("text/plain")
                 .setText(textMessage);
         launchingActivity.startActivity(intentBuilder.getIntent());
+    }
+
+    static Toast centerToastMessage(Toast toast) {
+        View view = toast.getView().findViewById(android.R.id.message);
+        if (view != null) view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        return toast;
     }
 
     /**

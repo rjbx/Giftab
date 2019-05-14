@@ -222,7 +222,7 @@ public class AuthActivity extends AppCompatActivity implements
                 mProcessStage = 0;
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG).show();
+                ViewUtilities.centerToastMessage(Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG)).show();
             }
         } else {
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
@@ -254,7 +254,7 @@ public class AuthActivity extends AppCompatActivity implements
                 case 3:
                     finish();
                     startActivity(new Intent(AuthActivity.this, HomeActivity.class).setAction(ACTION_SIGN_IN));
-                    Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
+                    ViewUtilities.centerToastMessage(Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT)).show();
             }
         }
     }
@@ -338,7 +338,7 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                 } else {
                     finish();
-                    Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT).show();
+                    ViewUtilities.centerToastMessage(Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT)).show();
                     startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                 }
                 break;
