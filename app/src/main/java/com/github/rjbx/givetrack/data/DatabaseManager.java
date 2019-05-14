@@ -698,7 +698,6 @@ public final class DatabaseManager extends IntentService {
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         if (targetList.size() - 1 == targets.length) {
             for (int i = 0; i < targetList.size(); i++) {
-                if (i - offset >= targets.length) break;
                 if (targetList.get(i).getId().equals(targets[i - offset].getId())) matchCount++;
                 else {
                     offsetIndex = i;
