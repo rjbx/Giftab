@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 
 import androidx.core.util.Pair;
 
+import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -14,8 +15,11 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.github.rjbx.rateraid.Rateraid;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
@@ -582,12 +586,17 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action UntargetCompany on the service worker thread.
      */
-    // TODO: Decide whether to recalibrate on removal as with GiveFragment
     private void handleActionUntargetCompany(String uid) {
 
         Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
-        List<Target> targetList = DatabaseAccessor.getTarget(this, where);
-        DISK_IO.execute(() ->  DatabaseAccessor.removeTarget(this, targetList.toArray(new Target[0])));
+        Target untarget = DatabaseAccessor.getTarget(this, where).get(0);
+        List<Target> targetList = DatabaseAccessor.getTarget(this);
+        targetList.remove(untarget);
+        Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
+        DISK_IO.execute(() ->  {
+            DatabaseAccessor.removeTarget(this, untarget);
+            DatabaseAccessor.addTarget(this, targetList.toArray(new Target[0]));
+        });
     }
 
     /**
