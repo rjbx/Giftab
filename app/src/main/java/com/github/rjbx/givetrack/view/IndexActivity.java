@@ -97,8 +97,8 @@ public class IndexActivity extends AppCompatActivity implements
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null && sDualPane) showDualPane(bundle);
+        Bundle arguments = getIntent().getExtras();
+        if (arguments != null && sDualPane) showDualPane(arguments);
 
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());

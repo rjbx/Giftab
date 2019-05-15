@@ -202,7 +202,8 @@ public class GiveFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
         if (getActivity() == null || !(getActivity() instanceof HomeActivity)) return;
         mParentActivity = (HomeActivity) getActivity();
-        if (sDualPane) showDualPane(getArguments());
+        Bundle arguments = getArguments();
+        if (arguments != null && sDualPane) showDualPane(arguments);
     }
 
     /**
