@@ -586,12 +586,15 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action UntargetCompany on the service worker thread.
      */
-    private void handleActionUntargetCompany(String uid) {
+    private void handleActionUntargetCompany(String ein) {
 
-        Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
+        Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", ein);
         Target untarget = DatabaseAccessor.getTarget(this, where).get(0);
         List<Target> targetList = DatabaseAccessor.getTarget(this);
-        targetList.remove(untarget);
+        int untargetIndex = 0;
+        for (int i = 0; i < targetList.size(); i++) if (targetList.get(0).getEin().equals(ein)) untargetIndex = i;
+        targetList.remove(untargetIndex);
+
         Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
         DISK_IO.execute(() ->  {
             DatabaseAccessor.removeTarget(this, untarget);
