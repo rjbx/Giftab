@@ -263,7 +263,7 @@ public class GiveFragment extends Fragment implements
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override public void showDualPane(Bundle args) {
+    @Override public void showDualPane(@NonNull Bundle args) {
 
         mDetailFragment = DetailFragment.newInstance(args);
         getChildFragmentManager().beginTransaction()

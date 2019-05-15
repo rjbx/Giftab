@@ -67,6 +67,7 @@ public class IndexActivity extends AppCompatActivity implements
     private AlertDialog mSpawnDialog;
     private String mSnackbarMessage;
     private User mUser;
+    private DetailFragment mDetailFragment;
     private boolean sDialogShown;
     private boolean mFetching = false;
     private boolean mLock = true;
@@ -235,9 +236,10 @@ public class IndexActivity extends AppCompatActivity implements
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override public void showDualPane(Bundle args) {
-        if (args != null) IndexActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.spawn_item_container, DetailFragment.newInstance(args))
+    @Override public void showDualPane(@NonNull Bundle args) {
+        mDetailFragment = DetailFragment.newInstance(args);
+        IndexActivity.this.getSupportFragmentManager().beginTransaction()
+                .replace(R.id.spawn_item_container, mDetailFragment)
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -254,8 +256,10 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
+        getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
