@@ -31,6 +31,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
@@ -71,26 +72,28 @@ public class GiveFragment extends Fragment implements
         TextView.OnEditorActionListener {
 
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_USER";
-    private static final String TARGETS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_TARGETS";
-    private static final String PERCENTS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_PERCENTS";
     private static final String PANE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_PANE";
+    private static final String TARGETS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_TARGETS";
     private static final String ADJUST_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_ADJUST";
+    private static final String UPDATE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_UPDATE";
+    private static final String PERCENTS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_PERCENTS";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
-    private Rateraid.Objects mObjects;
-    private static User sUser;
-    private AlertDialog mRemoveDialog;
-    private static boolean sDualPane;
     private static boolean sPercentagesAdjusted;
-    private Context mContext;
+    private static boolean sDualPane;
+    private static User sUser;
     private InputMethodManager mMethodManager;
-    private HomeActivity mParentActivity;
     private DetailFragment mDetailFragment;
+    private HomeActivity mParentActivity;
+    private Rateraid.Objects mObjects;
+    private AlertDialog mRemoveDialog;
     private ListAdapter mListAdapter;
     private Unbinder mUnbinder;
+    private Context mContext;
     private Timer mTimer;
-    private int mPanePosition;
+    private boolean mListUpdated;
     private float mAmountTotal;
     private float mMagnitude;
+    private int mPanePosition;
     private int mListLength;
     @BindView(R.id.save_progress_bar) ProgressBar mProgress;
     @BindView(R.id.action_bar) ImageButton mActionBar;
@@ -129,6 +132,7 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            mListUpdated = savedInstanceState.getBoolean(UPDATE_STATE);
             Parcelable[] parcelableArray = savedInstanceState.getParcelableArray(TARGETS_STATE);
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
@@ -186,9 +190,15 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            mListUpdated = savedInstanceState.getBoolean(UPDATE_STATE);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
+
+        if (mListUpdated) {
+            Toast.makeText(getContext(), "Test message", Toast.LENGTH_LONG).show();
+            mListUpdated = false;
+        }
 
         renderActionBar();
 
@@ -309,6 +319,7 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
+        mListUpdated = true;
     }
 
     /**
