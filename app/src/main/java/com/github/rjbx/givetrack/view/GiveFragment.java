@@ -62,6 +62,7 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
+// TODO: Ensure automatic reset and removal restoration do not occur on target list changes
 /**
  * Provides the logic and views for a user activity management screen.
  */
