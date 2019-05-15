@@ -249,7 +249,7 @@ public class DetailFragment extends Fragment {
         if (sInitialState != sCurrentState) {
             if (sCurrentState) mMasterDetailFlow.addEntry(sCompany);
             else mMasterDetailFlow.removeEntry(sCompany);
-            mEnabled = false;
+//            mEnabled = false;
         }
     }
 
