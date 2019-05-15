@@ -269,6 +269,7 @@ public class GiveFragment extends Fragment implements
         outState.putBoolean(PANE_STATE, sDualPane);
         outState.putBoolean(ADJUST_STATE, sPercentagesAdjusted);
         outState.putInt(POSITION_STATE, mPanePosition);
+        outState.putBoolean(UPDATE_STATE, mListUpdated);
     }
 
     /**
