@@ -100,12 +100,12 @@ public class DetailFragment extends Fragment {
     // TODO: Resolve save and restore
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-//        if (savedInstanceState != null) {
-//            mScrollState = savedInstanceState.getInt(SCROLL_STATE);
-//            mInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
-//            mCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
-//            mCompany = savedInstanceState.getParcelable(COMPANY_STATE);
-//        }
+        if (savedInstanceState != null) {
+//            sScrollState = savedInstanceState.getInt(SCROLL_STATE);
+//            sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
+//            sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
+//            sCompany = savedInstanceState.getParcelable(COMPANY_STATE);
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -244,8 +244,8 @@ public class DetailFragment extends Fragment {
         if (!mEnabled) return;
         sCurrentState = !sCurrentState;
         mFab.setVisibility(View.GONE);
-//        drawActionButton();
-//        drawSnackbar();
+        drawActionButton();
+        drawSnackbar();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) mMasterDetailFlow.addEntry(sCompany);
             else mMasterDetailFlow.removeEntry(sCompany);
