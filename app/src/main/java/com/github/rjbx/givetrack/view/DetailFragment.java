@@ -246,6 +246,7 @@ public class DetailFragment extends Fragment {
         mFab.setVisibility(View.GONE);
 //        drawActionButton();
         drawSnackbar();
+        if (mMasterDetailFlow == mParentActivity) mMasterDetailFlow.showSinglePane();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) mMasterDetailFlow.addEntry(sCompany);
             else mMasterDetailFlow.removeEntry(sCompany);
