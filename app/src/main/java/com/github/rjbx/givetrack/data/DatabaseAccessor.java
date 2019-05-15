@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.github.rjbx.givetrack.AppUtilities;
+import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract.*;
 import com.github.rjbx.givetrack.data.entry.Company;
@@ -176,6 +177,7 @@ final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Target.class, stamp, entries);
         addEntriesToRemote(remote, Target.class, stamp, entries);
+        AppWidget.refresh(context);
     }
 
     static void removeTarget(Context context, Target... target) {
@@ -186,6 +188,7 @@ final class DatabaseAccessor {
 
         removeEntriesFromLocal(local, Target.class, stamp, target);
         removeEntriesFromRemote(remote, Target.class, stamp, target);
+        AppWidget.refresh(context);
     }
 
     static void fetchRecord(Context context) {
