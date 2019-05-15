@@ -701,6 +701,8 @@ public final class DatabaseManager extends IntentService {
                 if (i - offset >= targets.length || !targetList.get(i).getId().equals(targets[i - offset].getId())) {
                     offsetIndex = i;
                     offset++;
+                } else {
+                    targetList.get(i).setPercent(targets[i].getPercent());
                 }
             }
         }
