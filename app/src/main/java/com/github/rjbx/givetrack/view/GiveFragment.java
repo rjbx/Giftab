@@ -31,7 +31,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
@@ -76,7 +75,7 @@ public class GiveFragment extends Fragment implements
     private static final String PANE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_PANE";
     private static final String TARGETS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_TARGETS";
     private static final String ADJUST_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_ADJUST";
-    private static final String UPDATE_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_UPDATE";
+    private static final String REMOVED_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_REMOVED";
     private static final String PERCENTS_STATE = "com.github.rjbx.givetrack.ui.arg.GIVE_PERCENTS";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static boolean sPercentagesAdjusted;
@@ -91,7 +90,7 @@ public class GiveFragment extends Fragment implements
     private Unbinder mUnbinder;
     private Context mContext;
     private Timer mTimer;
-    private boolean mListUpdated;
+    private String mRemovedName;
     private float mAmountTotal;
     private float mMagnitude;
     private int mPanePosition;
@@ -133,7 +132,7 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
-            mListUpdated = savedInstanceState.getBoolean(UPDATE_STATE);
+            mRemovedName = savedInstanceState.getString(REMOVED_STATE);
             Parcelable[] parcelableArray = savedInstanceState.getParcelableArray(TARGETS_STATE);
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
@@ -191,14 +190,14 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
-            mListUpdated = savedInstanceState.getBoolean(UPDATE_STATE);
+            mRemovedName = savedInstanceState.getString(REMOVED_STATE);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         if (mParentActivity != null && sDualPane) showDualPane(getArguments());
 
-        if (mListUpdated) {
-            Snackbar.make(mProgress, "Test message", Snackbar.LENGTH_SHORT).show();
-            mListUpdated = false;
+        if (mRemovedName != null) {
+            Snackbar.make(mProgress, getString(R.string.message_collected_remove, mRemovedName), Snackbar.LENGTH_SHORT).show();
+            mRemovedName = null;
         }
 
         renderActionBar();
@@ -270,7 +269,7 @@ public class GiveFragment extends Fragment implements
         outState.putBoolean(PANE_STATE, sDualPane);
         outState.putBoolean(ADJUST_STATE, sPercentagesAdjusted);
         outState.putInt(POSITION_STATE, mPanePosition);
-        outState.putBoolean(UPDATE_STATE, mListUpdated);
+        outState.putString(REMOVED_STATE, mRemovedName);
     }
 
     /**
@@ -321,7 +320,7 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
-        mListUpdated = true;
+        mRemovedName = spawn.getName();
     }
 
     /**
