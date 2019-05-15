@@ -11,6 +11,8 @@ import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.github.rjbx.givetrack.AppWidget;
+
 import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.*;
@@ -96,6 +98,8 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
+        if (rowsInserted > 0) AppWidget.refresh(getContext());
+
 //       notifyDataSetChange(uri, rowsInserted);
         return rowsInserted;
     }
@@ -126,6 +130,8 @@ public class DatabaseProvider extends ContentProvider {
             if (_id != -1) rowsInserted++;
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
+
+        if (rowsInserted > 0) AppWidget.refresh(getContext());
 
 //       notifyDataSetChange(uri, rowsInserted);
         return uri;
@@ -187,6 +193,8 @@ public class DatabaseProvider extends ContentProvider {
             rowsUpdated = db.update(tableName, values, selection, selectionArgs);
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
+
+        if (rowsUpdated > 0) AppWidget.refresh(getContext());
 
 //        notifyDataSetChange(uri, rowsUpdated);
         return rowsUpdated;
@@ -303,6 +311,8 @@ public class DatabaseProvider extends ContentProvider {
             rowsDeleted = db.delete(tableName, selection, selectionArgs);
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
+
+        if (rowsDeleted > 0) AppWidget.refresh(getContext());
 
 //       notifyDataSetChange(uri, rowsDeleted);
         return rowsDeleted;
