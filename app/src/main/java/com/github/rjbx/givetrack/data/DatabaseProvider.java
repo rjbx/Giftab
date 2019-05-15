@@ -9,8 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-import com.github.rjbx.givetrack.AppWidget;
-
 import androidx.annotation.NonNull;
 
 import timber.log.Timber;
@@ -98,7 +96,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-       notifyDataSetChange(uri, rowsInserted);
+//       notifyDataSetChange(uri, rowsInserted);
         return rowsInserted;
     }
 
@@ -129,7 +127,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-       notifyDataSetChange(uri, rowsInserted);
+//       notifyDataSetChange(uri, rowsInserted);
         return uri;
     }
 
@@ -190,7 +188,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-        notifyDataSetChange(uri, rowsUpdated);
+//        notifyDataSetChange(uri, rowsUpdated);
         return rowsUpdated;
     }
 
@@ -306,7 +304,7 @@ public class DatabaseProvider extends ContentProvider {
             db.setTransactionSuccessful();
         } finally { db.endTransaction(); }
 
-       notifyDataSetChange(uri, rowsDeleted);
+//       notifyDataSetChange(uri, rowsDeleted);
         return rowsDeleted;
     }
 
@@ -335,16 +333,16 @@ public class DatabaseProvider extends ContentProvider {
         super.shutdown();
     }
 
-    // TODO: Consider handling manually from accessor to prevent UI updates on multiple operations
-    /**
-     * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
-     * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
-     */
-    private void notifyDataSetChange(Uri uri, int rowsChanged) {
-        Context context = getContext();
-        if (context != null /*&& rowsChanged > 0*/) {
-            context.getContentResolver().notifyChange(uri, null);
-            if (rowsChanged > 0) AppWidget.refresh(context);
-        }
-    }
+//    // TODO: Consider handling manually from accessor to prevent UI updates on multiple operations
+//    /**
+//     * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
+//     * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
+//     */
+//    private void notifyDataSetChange(Uri uri, int rowsChanged) {
+//        Context context = getContext();
+//        if (context != null /*&& rowsChanged > 0*/) {
+//            context.getContentResolver().notifyChange(uri, null);
+//            if (rowsChanged > 0) AppWidget.refresh(context);
+//        }
+//    }
 }
