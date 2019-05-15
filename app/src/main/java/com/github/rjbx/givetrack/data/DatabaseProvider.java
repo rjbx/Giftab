@@ -335,7 +335,7 @@ public class DatabaseProvider extends ContentProvider {
         super.shutdown();
     }
 
-    // TODO Restore row qualifier after resolving initial Loader callback enforcement
+    // TODO: Consider handling manually from accessor to prevent UI updates on callbacks from multiple operations
     /**
      * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
      * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
