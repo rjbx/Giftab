@@ -278,6 +278,7 @@ public class IndexActivity extends AppCompatActivity implements
     @Override
     public void removeEntry(Company company) {
         DatabaseManager.startActionUntargetCompany(this, company);
+        mRemovedName = company.getName();
     }
 
     /**
