@@ -582,6 +582,7 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action UntargetCompany on the service worker thread.
      */
+    // TODO: Decide whether to recalibrate on removal as with GiveFragment
     private void handleActionUntargetCompany(String uid) {
 
         Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", uid);
