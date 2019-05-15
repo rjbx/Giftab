@@ -592,7 +592,7 @@ public final class DatabaseManager extends IntentService {
         Target untarget = DatabaseAccessor.getTarget(this, where).get(0);
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         int untargetIndex = 0;
-        for (int i = 0; i < targetList.size(); i++) if (targetList.get(0).getEin().equals(ein)) untargetIndex = i;
+        for (int i = 0; i < targetList.size(); i++) if (targetList.get(i).getEin().equals(ein)) untargetIndex = i;
         targetList.remove(untargetIndex);
 
         Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
