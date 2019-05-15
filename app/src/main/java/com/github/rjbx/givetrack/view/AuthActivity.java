@@ -47,7 +47,6 @@ import java.util.List;
 import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Resolve occasional crash (identify trigger) on app install > guest sign out > account sign in (nullex on passing uid child path from validation remote to local pull)
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
