@@ -702,7 +702,7 @@ public final class DatabaseManager extends IntentService {
                     offsetIndex = i;
                     offset++;
                 } else {
-                    targetList.get(i).setPercent(targets[i].getPercent());
+                    targetList.get(i).setPercent(targets[i - offset].getPercent());
                 }
             }
         }
