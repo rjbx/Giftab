@@ -61,13 +61,13 @@ public class IndexActivity extends AppCompatActivity implements
     public static final String ACTION_INDEX_INTENT = "com.github.rjbx.givetrack.ui.action.INDEX_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
     private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
-    private static boolean sDialogShown;
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mSpawnDialog;
     private String mSnackbarMessage;
     private User mUser;
+    private boolean sDialogShown;
     private boolean mFetching = false;
     private boolean mLock = true;
     @BindView(R.id.spawn_fab) FloatingActionButton mFab;
