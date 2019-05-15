@@ -294,6 +294,7 @@ final class DatabaseAccessor {
                 values[i] = entries[i].toContentValues();
             }
             local.bulkInsert(contentUri, values);
+            local.notifyChange(contentUri, null);
         }
 
         updateLocalTableTime(local, entryType, stamp, uid);
@@ -339,6 +340,7 @@ final class DatabaseAccessor {
             for (Entry entry : entries) {
                 Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
                 local.delete(rowUri, null, null);
+                local.notifyChange(rowUri, null);
             }
         }
         // Do not update user stamp to prevent recreating user entry on account deletion
