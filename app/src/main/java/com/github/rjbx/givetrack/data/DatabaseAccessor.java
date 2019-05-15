@@ -142,6 +142,7 @@ final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         validateEntries(local, remote, Target.class);
+        AppWidget.refresh(context);
     }
 
     @SafeVarargs static List<Target> getTarget(Context context, Pair<String, String>... where) {
