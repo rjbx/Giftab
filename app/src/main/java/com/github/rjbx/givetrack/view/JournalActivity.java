@@ -112,8 +112,8 @@ public class JournalActivity extends AppCompatActivity implements
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
-        Bundle bundle = getIntent().getExtras();
-        if (sDualPane) showDualPane(bundle);
+        Bundle arguments = getIntent().getExtras();
+        if (arguments != null && sDualPane) showDualPane(arguments);
 
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
@@ -252,7 +252,7 @@ public class JournalActivity extends AppCompatActivity implements
     @Override public void showDualPane(@NonNull Bundle args) {
 
         mDetailFragment = DetailFragment.newInstance(args);
-        if (args != null) JournalActivity.this.getSupportFragmentManager().beginTransaction()
+        JournalActivity.this.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.record_item_container, mDetailFragment)
                 .commit();
 
