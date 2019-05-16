@@ -222,7 +222,7 @@ public class IndexActivity extends AppCompatActivity implements
                             mLock = false;
                             mUser = user;
                             if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
-                            if (mRemovedName != null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            if (mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
                     } while (data.moveToNext());
