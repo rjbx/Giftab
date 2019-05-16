@@ -184,15 +184,13 @@ public class IndexActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_SPAWN:
                 mSpawnProgress.setVisibility(View.GONE);
                 mValuesArray = new Spawn[data.getCount()];
-                if (data.moveToFirst()) {
-                    int i = 0;
-                    do {
-                        Spawn spawn = Spawn.getDefault();
-                        AppUtilities.cursorRowToEntry(data, spawn);
-                        mValuesArray[i++] = spawn;
-                    } while (data.moveToNext());
-                    if (!mLock) mAdapter.swapValues(mValuesArray);
-                }
+                int i = 0;
+                do {
+                    Spawn spawn = Spawn.getDefault();
+                    AppUtilities.cursorRowToEntry(data, spawn);
+                    mValuesArray[i++] = spawn;
+                } while (data.moveToNext());
+                if (!mLock) mAdapter.swapValues(mValuesArray);
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
                     mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
