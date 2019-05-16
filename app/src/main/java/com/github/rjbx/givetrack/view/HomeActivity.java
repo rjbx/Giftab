@@ -62,6 +62,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+
+// TODO: Resolve date change with revert option
 /**
  * Provides the application home screen; manages {@link CursorLoader} and {@link ViewPager} for
  * {@link GlanceFragment} and {@link GiveFragment}.
