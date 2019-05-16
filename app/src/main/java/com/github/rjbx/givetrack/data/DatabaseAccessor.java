@@ -350,7 +350,7 @@ final class DatabaseAccessor {
             }
         }
         // Do not update user stamp to prevent recreating user entry on account deletion
-        if (entryType != User.class) updateLocalTableTime(local, entryType, stamp, uid);
+        /*if (entryType != User.class) */updateLocalTableTime(local, entryType, stamp, uid);
     }
 
     @SafeVarargs private static <T extends Entry> void removeEntriesFromRemote(FirebaseDatabase remote, Class<T> entryType, long stamp, T... entries) {
