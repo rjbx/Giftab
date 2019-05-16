@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 
 import java.lang.reflect.Array;
@@ -479,6 +480,7 @@ final class DatabaseAccessor {
                 addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
                 pathReference.removeEventListener(this);
                 if (entryType == User.class) pathReference.child("userActive").setValue(true);
+                local.notifyChange(DataUtilities.getContentUri(entryType), null);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
