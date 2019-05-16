@@ -90,7 +90,7 @@ public class IndexActivity extends AppCompatActivity implements
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
-        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, null);
+        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
             sDualPane = true;
