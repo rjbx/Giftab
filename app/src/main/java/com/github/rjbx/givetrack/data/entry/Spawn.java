@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
@@ -263,6 +265,11 @@ public class Spawn implements Company, Parcelable, Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new RuntimeException("Class must implement Cloneable interface");
         } return clone;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return obj instanceof Spawn && ((Spawn) obj).getId().equals(this.getId());
     }
 
     public static Spawn getDefault() {

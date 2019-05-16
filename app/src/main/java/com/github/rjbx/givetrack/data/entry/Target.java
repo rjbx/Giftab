@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.rateraid.Rateraid;
 import com.google.firebase.database.Exclude;
@@ -17,11 +19,11 @@ import java.util.Map;
  * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
 @IgnoreExtraProperties
-public class Target extends Spawn implements Company, Rateraid.Rateable<Target>, Parcelable, Cloneable {
+public class Target extends Spawn implements Company, Rateraid.Rateable<Target>, Cloneable {
 
     private int frequency;
     private String share;
-    
+
     @Exclude public static final Parcelable.Creator<Target> CREATOR = new Parcelable.Creator<Target>() {
         @Override public Target createFromParcel(Parcel source) {
             return new Target(source);
