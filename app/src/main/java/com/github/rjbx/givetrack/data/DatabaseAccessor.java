@@ -340,6 +340,7 @@ final class DatabaseAccessor {
             uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
             if (uid == null || uid.isEmpty()) return;
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
+            local.notifyChange(contentUri, null);
         } else {
             uid = entries[0].getUid();
             for (Entry entry : entries) {
