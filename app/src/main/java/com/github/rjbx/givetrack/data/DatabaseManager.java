@@ -709,17 +709,17 @@ public final class DatabaseManager extends IntentService {
         int offset = 0;
         int offsetIndex = 0;
         // If parameter list is identical to persisted list short one element, remove the element from the persisted lists
-        List<Target> targetList = DatabaseAccessor.getTarget(this);
-        if (targetList.size() - 1 == targets.length) {
-            for (int i = 0; i < targetList.size(); i++) {
-                if (i - offset >= targets.length || !targetList.get(i).getEin().equals(targets[i - offset].getEin())) {
-                    offsetIndex = i;
+        List<Target> persistedList = DatabaseAccessor.getTarget(this);
+        List<Target> updatedList = Arrays.asList(targets);
+        if (persistedList.size() - 1 == targets.length)
+            for (int i = 0; i < persistedList.size(); i++) {
+                if (!updatedList.contains(persistedList.get(i))) {
                     offset++;
+                    offsetIndex = i;
                 }
-            }
         }
-        Target removedTarget = targetList.get(offsetIndex);
         if (offset == 1) {
+            Target removedTarget = persistedList.get(offsetIndex);
             DISK_IO.execute(() -> {
                 DatabaseAccessor.removeTarget(this, removedTarget);
                 DatabaseAccessor.addTarget(this, targets);
