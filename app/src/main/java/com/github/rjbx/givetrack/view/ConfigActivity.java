@@ -722,13 +722,12 @@ public class ConfigActivity
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
                 String magnitudeStr = sUser.getGiveMagnitude();
-                mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
+                mSeekProgress = Math.round((Float.parseFloat(magnitudeStr) - 0.01f) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
-                seekbar.setMax(90);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
                 mSeekReadout = view.findViewById(R.id.main_readout);
-                mSeekReadout.setText(percentIntToDecimalString(mSeekProgress));
+                mSeekReadout.setText(percentIntToDecimalString(mSeekProgress + 10));
                 seekbar.setOnSeekBarChangeListener(this);
                 seekbar.setProgress(mSeekProgress);
                 mMagnitudeDialog.setView(view);
@@ -781,8 +780,8 @@ public class ConfigActivity
          * Updates dialog readout to reflect adjustment.
          */
         @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            mSeekProgress = progress + 10;
-            mSeekReadout.setText(percentIntToDecimalString(mSeekProgress));
+            mSeekProgress = progress;
+            mSeekReadout.setText(percentIntToDecimalString(mSeekProgress + 10));
         }
         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
         @Override public void onStopTrackingTouch(SeekBar seekBar) {}
@@ -797,7 +796,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        String magnitude = percentIntToDecimalString(mSeekProgress);
+                        String magnitude = percentIntToDecimalString(mSeekProgress + 10);
                         sUser.setGiveMagnitude(magnitude);
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
                         magnitudePreference.getEditor().putString(magnitudePreference.getKey(), magnitude).apply();
