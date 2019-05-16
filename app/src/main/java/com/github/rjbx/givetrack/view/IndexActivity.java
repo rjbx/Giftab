@@ -181,18 +181,19 @@ public class IndexActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null || !data.moveToFirst()) return;
         int id = loader.getId();
-        Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_SHORT);
+        Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
         sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
                 if (mAddedName != null) {
                     mSnackbarMessage = getString(R.string.message_collected_add, mAddedName);
+                    sb.setText(mSnackbarMessage).show();
                     mAddedName = null;
                 } else if (mRemovedName != null) {
                     mSnackbarMessage = getString(R.string.message_collected_remove, mRemovedName);
+                    sb.setText(mSnackbarMessage).show();
                     mRemovedName = null;
                 }
-                sb.setText(mSnackbarMessage).show();
                 break;
             case DatabaseContract.LOADER_ID_SPAWN:
                 mSpawnProgress.setVisibility(View.GONE);
