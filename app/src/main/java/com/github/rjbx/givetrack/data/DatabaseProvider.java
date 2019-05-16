@@ -333,7 +333,6 @@ public class DatabaseProvider extends ContentProvider {
         super.shutdown();
     }
 
-//    // TODO: Consider handling manually from accessor to prevent UI updates on multiple operations
 //    /**
 //     * Notifies {@link android.content.ContentResolver} of changes at {@link Uri};
 //     * initiates data reload with {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
