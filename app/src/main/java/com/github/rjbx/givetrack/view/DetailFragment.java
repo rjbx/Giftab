@@ -241,17 +241,17 @@ public class DetailFragment extends Fragment {
      * Defines behavior onClick of item collection status toggle Button.
      */
     @OnClick(R.id.detail_fab) void toggleSaved() {
-        if (!mEnabled) return;
+//        if (!mEnabled) return;
         sCurrentState = !sCurrentState;
         mFab.setVisibility(View.GONE);
 //        drawActionButton();
 //        drawSnackbar();
-        if (mMasterDetailFlow == mParentActivity) mMasterDetailFlow.showSinglePane();
         if (sInitialState != sCurrentState) {
             if (sCurrentState) mMasterDetailFlow.addEntry(sCompany);
             else mMasterDetailFlow.removeEntry(sCompany);
-            mEnabled = false;
+//            mEnabled = false;
         }
+        if (mMasterDetailFlow == mParentActivity) mMasterDetailFlow.showSinglePane();
     }
 
     /**

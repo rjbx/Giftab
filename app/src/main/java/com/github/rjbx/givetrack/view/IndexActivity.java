@@ -90,8 +90,10 @@ public class IndexActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
-        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
-        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+        if (mUser != null) {
+            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
+        }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
             sDualPane = true;
@@ -209,7 +211,6 @@ public class IndexActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
                     do {
-
                         User user = User.getDefault();
                         AppUtilities.cursorRowToEntry(data, user);
                         if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {

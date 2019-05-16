@@ -344,7 +344,7 @@ final class DatabaseAccessor {
             for (Entry entry : entries) {
                 Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
                 local.delete(rowUri, null, null);
-                local.notifyChange(rowUri, null);
+                local.notifyChange(contentUri, null);
             }
         }
         // Do not update user stamp to prevent recreating user entry on account deletion
