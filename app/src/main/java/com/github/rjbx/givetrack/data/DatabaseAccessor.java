@@ -425,6 +425,7 @@ final class DatabaseAccessor {
         ContentValues companyValues = new ContentValues();
         companyValues.put(DataUtilities.getTimeTableColumn(entryType), stamp);
         local.update(uri, companyValues, null,null);
+        local.notifyChange(uri, null);
     }
 
     private static <T extends Entry> void updateRemoteTableTime(FirebaseDatabase remote, Class<T> entryType, long stamp, String uid) {
