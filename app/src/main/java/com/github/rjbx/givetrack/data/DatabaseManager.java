@@ -704,25 +704,8 @@ public final class DatabaseManager extends IntentService {
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-            int matchCount = 0;
-        int offset = 0;
-        int offsetIndex = 0;
-        List<Target> targetList = DatabaseAccessor.getTarget(this);
-        if (targetList.size() - 1 == targets.length) {
-            for (int i = 0; i < targetList.size(); i++) {
-                if (i - offset >= targets.length) break;
-                if (targetList.get(i).getId().equals(targets[i - offset].getId())) matchCount++;
-                else {
-                    offsetIndex = i;
-                    offset++;
-                }
-            }
-        }
-        Target removedTarget = targetList.get(offsetIndex);
-        if (matchCount == targetList.size() - 1 || targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, removedTarget));
-     else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
-
-       /* int matchCount = 0;
+        // TODO: Implement Target Comparator for comparing out of order lists using contains()
+        int matchCount = 0;
         int offset = 0;
         int offsetIndex = 0;
         // If parameter list is identical to persisted list short one element, remove the element from the persisted lists
@@ -743,7 +726,7 @@ public final class DatabaseManager extends IntentService {
             });
         }
         else if (targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
-        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));*/
+        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
     }
 
     /**
