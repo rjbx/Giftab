@@ -66,7 +66,8 @@ import java.util.TimeZone;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
-import static com.github.rjbx.givetrack.AppUtilities.convertRemoteToLocalUser;
+
+// TODO: Apply truncated formatting to bar chart axes
 
 /**
  * Provides the logic and views for a user activity overview screen.
