@@ -780,8 +780,8 @@ public class ConfigActivity
          * Updates dialog readout to reflect adjustment.
          */
         @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            mSeekProgress = progress;
-            mSeekReadout.setText(percentIntToDecimalString(progress));
+            mSeekProgress = progress + 10;
+            mSeekReadout.setText(percentIntToDecimalString(mSeekProgress));
         }
         @Override public void onStartTrackingTouch(SeekBar seekBar) {}
         @Override public void onStopTrackingTouch(SeekBar seekBar) {}

@@ -20,7 +20,7 @@
            android:layout_weight=".1"
            android:layout_gravity="start"
            android:textSize="@dimen/text_size_paragraph"
-           android:text="0.0"/>
+           android:text="0.01"/>
 
        <SeekBar
            android:id="@+id/main_seekbar"
