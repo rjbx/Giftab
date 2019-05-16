@@ -725,6 +725,7 @@ public class ConfigActivity
                 mSeekProgress = Math.round(Float.parseFloat(magnitudeStr) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
+                seekbar.setMax(90);
                 mMagnitudeDialog = new AlertDialog.Builder(getActivity()).create();
                 mSeekReadout = view.findViewById(R.id.main_readout);
                 mSeekReadout.setText(percentIntToDecimalString(mSeekProgress));
