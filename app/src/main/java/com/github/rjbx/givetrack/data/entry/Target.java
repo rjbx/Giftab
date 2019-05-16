@@ -17,7 +17,7 @@ import java.util.Map;
  * and remotely with {@link com.google.firebase.database.FirebaseDatabase}.
  */
 @IgnoreExtraProperties
-public class Target extends Spawn implements Company, Rateraid.RatedObject<Target>, Parcelable, Cloneable {
+public class Target extends Spawn implements Company, Rateraid.Rateable<Target>, Parcelable, Cloneable {
 
     private int frequency;
     private String share;

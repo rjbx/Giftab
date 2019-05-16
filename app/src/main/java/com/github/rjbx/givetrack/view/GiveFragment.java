@@ -31,7 +31,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
@@ -83,7 +82,7 @@ public class GiveFragment extends Fragment implements
     private InputMethodManager mMethodManager;
     private DetailFragment mDetailFragment;
     private HomeActivity mParentActivity;
-    private Rateraid.Objects mObjects;
+    private Rateraid.RateableSeries mSeries;
     private AlertDialog mRemoveDialog;
     private ListAdapter mListAdapter;
     private Unbinder mUnbinder;
@@ -301,7 +300,7 @@ public class GiveFragment extends Fragment implements
 
     @Override
     public void removeEntry(Company spawn) {
-        if (mContext == null || mObjects == null) return;
+        if (mContext == null || mSeries == null) return;
         mRemoveDialog = new AlertDialog.Builder(mContext).create();
         mRemoveDialog.setMessage(mContext.getString(R.string.message_remove_entry, spawn.getName(), "collection"));
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
@@ -310,7 +309,7 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
-        mObjects.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
+        mSeries.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
     }
 
     /**
@@ -469,7 +468,7 @@ public class GiveFragment extends Fragment implements
          */
         ListAdapter(List<Target> targetList) {
             mTargetList = targetList;
-            mObjects = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
+            mSeries = Rateraid.with(mTargetList, mMagnitude, Calibrater.STANDARD_PRECISION, clickedView -> {
                 sPercentagesAdjusted = true;
                 scheduleSyncPercentages();
                 renderActionBar();
@@ -613,7 +612,7 @@ public class GiveFragment extends Fragment implements
 
             final int adapterPosition = holder.getAdapterPosition();
             if (incrementButton != null && decrementButton != null && typeButton != null && percentageView != null) {
-                mObjects.addShifters(incrementButton, decrementButton, adapterPosition)
+                mSeries.addShifters(incrementButton, decrementButton, adapterPosition)
                         .addEditor(percentageView, adapterPosition, mMethodManager, null)
                         /*.addRemover(removeButton, adapterPosition)*/;
             }
