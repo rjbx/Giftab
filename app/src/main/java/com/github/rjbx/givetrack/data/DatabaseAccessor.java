@@ -481,7 +481,6 @@ final class DatabaseAccessor {
                 addEntriesToLocal(local, entryType, stamp, entryList.toArray((T[]) Array.newInstance(entryType, entryList.size())));
                 pathReference.removeEventListener(this);
                 if (entryType == User.class) pathReference.child("userActive").setValue(true);
-                local.notifyChange(DataUtilities.getContentUri(entryType), null);
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) {}
         });
