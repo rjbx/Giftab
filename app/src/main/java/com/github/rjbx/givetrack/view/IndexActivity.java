@@ -92,10 +92,6 @@ public class IndexActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
-        if (mUser != null) {
-            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
-        }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
             sDualPane = true;
@@ -208,8 +204,7 @@ public class IndexActivity extends AppCompatActivity implements
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
                     mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
-                    sb.setText(mSnackbarMessage);
-                    sb.show();
+                    sb.setText(mSnackbarMessage).show();
                     mFetching = false;
                     sDialogShown = mUser.getIndexDialog();
                     if (!sDialogShown) showDialog();
@@ -233,7 +228,7 @@ public class IndexActivity extends AppCompatActivity implements
                             mLock = false;
                             mUser = user;
                             if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
-                            if (mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
                     } while (data.moveToNext());
@@ -282,7 +277,7 @@ public class IndexActivity extends AppCompatActivity implements
         getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
     @Override

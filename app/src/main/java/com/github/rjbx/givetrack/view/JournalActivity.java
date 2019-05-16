@@ -35,7 +35,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import butterknife.BindView;
@@ -62,6 +61,7 @@ import java.util.Date;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 /**
@@ -71,16 +71,22 @@ public class JournalActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
         DetailFragment.MasterDetailFlow,
         DialogInterface.OnClickListener {
+
     public static final String ACTION_JOURNAL_INTENT = "com.github.rjbx.givetrack.ui.action.JOURNAL_INTENT";
     private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
+    private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
+    private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private long mDeletedTime;
     private static boolean sDualPane;
+    private DetailFragment mDetailFragment;
     private Record[] mValuesArray;
     private ListAdapter mAdapter;
     private AlertDialog mRemoveDialog;
-    private String mSnackbar;
+    private String mSnackbarMessage;
     private User mUser;
+    private String mAddedName;
+    private String mRemovedName;
     private int mPanePosition;
     private boolean mLock = true;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
@@ -97,9 +103,12 @@ public class JournalActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            mAddedName = savedInstanceState.getString(STATE_ADDED);
+            mRemovedName = savedInstanceState.getString(STATE_REMOVED);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
@@ -128,6 +137,8 @@ public class JournalActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putInt(POSITION_STATE, mPanePosition);
+        outState.putString(STATE_ADDED, mAddedName);
+        outState.putString(STATE_REMOVED, mRemovedName);
     }
 
     /**
@@ -159,6 +170,7 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @NonNull @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
+            case LOADER_ID_TARGET: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_TARGET, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
             case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, mUser.getJournalSort() + " " + mUser.getJournalOrder());
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_USER_ACTIVE + " = ? ", new String[] { "1" }, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
@@ -171,7 +183,20 @@ public class JournalActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null || (!data.moveToFirst())) return;
         int id = loader.getId();
+      Snackbar sb = Snackbar.make(mToolbar, mSnackbarMessage, Snackbar.LENGTH_LONG);
+        sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
         switch (id) {
+            case DatabaseContract.LOADER_ID_TARGET:
+                if (mAddedName != null) {
+                    mSnackbarMessage = getString(R.string.message_collected_add, mAddedName);
+                    sb.setText(mSnackbarMessage).show();
+                    mAddedName = null;
+                } else if (mRemovedName != null) {
+                    mSnackbarMessage = getString(R.string.message_collected_remove, mRemovedName);
+                    sb.setText(mSnackbarMessage).show();
+                    mRemovedName = null;
+                }
+                break;
             case DatabaseContract.LOADER_ID_RECORD:
                 mValuesArray = new Record[data.getCount()];
                 if (data.moveToFirst()) {
@@ -183,10 +208,8 @@ public class JournalActivity extends AppCompatActivity implements
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
-                if (mSnackbar == null || mSnackbar.isEmpty()) mSnackbar = getString(R.string.message_record_refresh);
-                Snackbar sb = Snackbar.make(mToolbar, mSnackbar, Snackbar.LENGTH_LONG);
-                sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
-                sb.show();
+                if (mSnackbarMessage == null || mSnackbarMessage.isEmpty()) mSnackbarMessage = getString(R.string.message_record_refresh);
+                sb.setText(mSnackbarMessage).show();
                 break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
@@ -201,7 +224,8 @@ public class JournalActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+                            if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
                     } while (data.moveToNext());
@@ -225,9 +249,11 @@ public class JournalActivity extends AppCompatActivity implements
     /**
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
-    @Override public void showDualPane(Bundle args) {
+    @Override public void showDualPane(@NonNull Bundle args) {
+
+        mDetailFragment = DetailFragment.newInstance(args);
         if (args != null) JournalActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.record_item_container, DetailFragment.newInstance(args))
+                .replace(R.id.record_item_container, mDetailFragment)
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -241,23 +267,26 @@ public class JournalActivity extends AppCompatActivity implements
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Presents the list of items in a single vertical pane, hiding the item details.
+     */
+    @Override public void showSinglePane() {
+        getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
+        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        sDualPane = false;
+        if (mAdapter != null) mAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void addEntry(Spawn spawn) {
         DatabaseManager.startActionTargetSpawn(this, spawn);
+        mAddedName = spawn.getName();
     }
 
     @Override
     public void removeEntry(Company company) {
         DatabaseManager.startActionUntargetCompany(this, company);
-    }
-
-    /**
-     * Presents the list of items in a single vertical pane, hiding the item details.
-     */
-    @Override public void showSinglePane() {
-        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        sDualPane = false;
-        if (mAdapter != null) mAdapter.notifyDataSetChanged();
+        mRemovedName = company.getName();
     }
 
     /**
