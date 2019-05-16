@@ -221,7 +221,8 @@ public class IndexActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_SPAWN, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
+                            if (mRemovedName != null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
                     } while (data.moveToNext());
