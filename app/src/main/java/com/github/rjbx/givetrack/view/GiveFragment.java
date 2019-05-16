@@ -51,7 +51,6 @@ import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.github.rjbx.rateraid.Rateraid;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.text.ParseException;
 import java.util.ArrayList;

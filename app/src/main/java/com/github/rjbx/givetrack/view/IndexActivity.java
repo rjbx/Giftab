@@ -62,6 +62,7 @@ public class IndexActivity extends AppCompatActivity implements
     public static final String ACTION_INDEX_INTENT = "com.github.rjbx.givetrack.ui.action.INDEX_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
     private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
+    private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
@@ -70,6 +71,7 @@ public class IndexActivity extends AppCompatActivity implements
     private String mSnackbarMessage;
     private User mUser;
     private DetailFragment mDetailFragment;
+    private String mAddedName;
     private String mRemovedName;
     private boolean sDialogShown;
     private boolean mFetching = false;
@@ -100,6 +102,7 @@ public class IndexActivity extends AppCompatActivity implements
         } else if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
+            mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
@@ -129,6 +132,7 @@ public class IndexActivity extends AppCompatActivity implements
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putBoolean(STATE_SHOWN, sDialogShown);
+        outState.putString(STATE_ADDED, mAddedName);
         outState.putString(STATE_REMOVED, mRemovedName);
     }
 
@@ -177,9 +181,18 @@ public class IndexActivity extends AppCompatActivity implements
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         if (data == null || !data.moveToFirst()) return;
         int id = loader.getId();
+        Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_SHORT);
+        sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
-                Snackbar.make(mFab, getString(R.string.message_collected_remove, mRemovedName), Snackbar.LENGTH_LONG).show();
+                if (mAddedName != null) {
+                    mSnackbarMessage = getString(R.string.message_collected_add, mAddedName);
+                    mAddedName = null;
+                } else if (mRemovedName != null) {
+                    mSnackbarMessage = getString(R.string.message_collected_remove, mRemovedName);
+                    mRemovedName = null;
+                }
+                sb.setText(mSnackbarMessage).show();
                 break;
             case DatabaseContract.LOADER_ID_SPAWN:
                 mSpawnProgress.setVisibility(View.GONE);
@@ -194,8 +207,7 @@ public class IndexActivity extends AppCompatActivity implements
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
                     mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
-                    Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
-                    sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
+                    sb.setText(mSnackbarMessage);
                     sb.show();
                     mFetching = false;
                     sDialogShown = mUser.getIndexDialog();
@@ -275,6 +287,7 @@ public class IndexActivity extends AppCompatActivity implements
     @Override
     public void addEntry(Spawn spawn) {
         DatabaseManager.startActionTargetSpawn(this, spawn);
+        mAddedName = spawn.getName();
     }
 
     @Override
