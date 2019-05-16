@@ -165,6 +165,13 @@ public class JournalActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        startActivity(new Intent(this, HomeActivity.class));
+    }
+
     /**
      * Defines the data to be returned from {@link LoaderManager.LoaderCallbacks}.
      */
