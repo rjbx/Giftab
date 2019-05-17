@@ -40,7 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-// TODO: Restore WebView scroll state on lifecycle changes
+// TODO: Prevent parent activity from recreating list on rotation
 /**
  * Provides the logic and views for a single detail screen.
  */
@@ -189,7 +189,7 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(SCROLL_STATE, sScrollState);
+        if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
         outState.putBoolean(INITIAL_STATE, sInitialState);
         outState.putBoolean(CURRENT_STATE, sCurrentState);
         outState.putParcelable(COMPANY_STATE, sCompany);
