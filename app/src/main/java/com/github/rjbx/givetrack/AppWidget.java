@@ -13,6 +13,7 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
+import com.github.rjbx.givetrack.view.AuthActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
@@ -37,17 +38,23 @@ public class AppWidget extends AppWidgetProvider {
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        boolean signedIn = firebaseUser != null;
+
+        Intent authIntent = new Intent(context, AuthActivity.class);
+        PendingIntent authPendingIntent = PendingIntent.getActivity(context, 0, authIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         Intent listIntent = new Intent(context, HomeActivity.class);
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_list, signedIn ? listPendingIntent : authPendingIntent);
 
         Intent spawnIntent = new Intent(context, IndexActivity.class);
         PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_spawn, signedIn ? spawnPendingIntent : authPendingIntent);
 
         Intent recordIntent = new Intent(context, JournalActivity.class);
         PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_record, signedIn ? recordPendingIntent : authPendingIntent);
         
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
