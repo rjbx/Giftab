@@ -214,7 +214,6 @@ public class AuthActivity extends AppCompatActivity implements
                                 });
                         }
                     });
-                AppWidget.refresh(this);
             } else {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
@@ -225,6 +224,7 @@ public class AuthActivity extends AppCompatActivity implements
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                 ViewUtilities.centerToastMessage(Toast.makeText(AuthActivity.this, getString(R.string.message_logout), Toast.LENGTH_LONG)).show();
             }
+            AppWidget.refresh(this);
         } else {
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
