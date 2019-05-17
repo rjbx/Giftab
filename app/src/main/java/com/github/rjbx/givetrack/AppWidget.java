@@ -86,7 +86,6 @@ public class AppWidget extends AppWidgetProvider {
 
         Context mContext;
         Cursor mCursor;
-        String mUid;
 
         /**
          * Constructs an instance with the Application {@link Context} used to query the {@link android.content.ContentProvider}.
@@ -104,7 +103,7 @@ public class AppWidget extends AppWidgetProvider {
             if (mCursor != null) mCursor.close();
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
-                    null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { user != null ? user.getUid() : ""} : null, null);
+                    null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { user != null ? user.getUid() : ""}, null);
             Binder.restoreCallingIdentity(token);
         }
 
