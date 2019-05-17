@@ -198,6 +198,7 @@ final class DatabaseAccessor {
         FirebaseDatabase remote = FirebaseDatabase.getInstance();
 
         validateEntries(local, remote, Record.class);
+        AppWidget.refresh(context);
     }
 
     @SafeVarargs static List<Record> getRecord(Context context, Pair<String, String>... where) {
@@ -234,6 +235,7 @@ final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         addEntriesToLocal(local, Record.class, stamp, entries);
         addEntriesToRemote(remote, Record.class, stamp, entries);
+        AppWidget.refresh(context);
     }
 
     static void removeRecord(Context context, Record... record) {
@@ -243,6 +245,7 @@ final class DatabaseAccessor {
         long stamp = System.currentTimeMillis();
         removeEntriesFromLocal(local, Record.class, stamp, record);
         removeEntriesFromRemote(remote, Record.class, stamp,  record);
+        AppWidget.refresh(context);
     }
 
     static void fetchUser(Context context) {
