@@ -104,6 +104,7 @@ public class AppWidget extends AppWidgetProvider {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
                     null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { user != null ? user.getUid() : ""}, null);
+            mContext.getContentResolver().notifyChange(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET, null);
             Binder.restoreCallingIdentity(token);
         }
 
