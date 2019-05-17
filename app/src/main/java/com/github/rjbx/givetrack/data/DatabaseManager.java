@@ -704,8 +704,6 @@ public final class DatabaseManager extends IntentService {
      * Handles action UpdatePercent on the service worker thread.
      */
     private void handleActionUpdateTarget(Target... targets) {
-        // TODO: Implement Target Comparator for comparing out of order lists using contains()
-        int matchCount = 0;
         int offset = 0;
         int offsetIndex = 0;
         // If parameter list is identical to persisted list short one element, remove the element from the persisted lists
