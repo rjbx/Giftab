@@ -35,14 +35,15 @@ public class AppWidget extends AppWidgetProvider {
      */
 
 
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, @Nullable String uid) {
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
-        boolean signedIn = uid != null;
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        boolean signedIn = user != null;
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-        populateIntent.putExtra("a", signedIn ? uid : "");
+        populateIntent.putExtra("a", signedIn ? user.getUid() : "");
         views.setRemoteAdapter(R.id.widget, populateIntent);
 
         Intent listIntent = new Intent(context, AuthActivity.class);
@@ -67,7 +68,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
-        for (int appWidgetId : appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId, null);
+        for (int appWidgetId : appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId);
     }
 
     @Override public void onEnabled(Context context) {}
@@ -172,15 +173,9 @@ public class AppWidget extends AppWidgetProvider {
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         ComponentName awc = new ComponentName(context, AppWidget.class);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         int[] ids = awm.getAppWidgetIds(awc);
-        for (int id : ids) AppWidget.updateAppWidget(context, awm, id, firebaseUser != null ? firebaseUser.getUid() : null);
+        for (int id : ids) AppWidget.updateAppWidget(context, awm, id);
 
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-//        Intent intent = new Intent(context, AppWidget.class);
-//        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-//        context.sendBroadcast(intent);
     }
 }
