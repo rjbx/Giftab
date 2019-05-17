@@ -40,7 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-// TODO: Prevent parent activity from recreating list on rotation
+// TODO: Prevent parent adapter from recreating detail on rotation
 /**
  * Provides the logic and views for a single detail screen.
  */
@@ -60,7 +60,6 @@ public class DetailFragment extends Fragment {
     private MasterDetailFlow mMasterDetailFlow;
     private WebView mWebview;
     private Unbinder mUnbinder;
-    private boolean mEnabled = true;
     @BindView(R.id.detail_fab) FloatingActionButton mFab;
     @BindView(R.id.detail_progress) ProgressBar mProgress;
     @BindView(R.id.detail_frame) FrameLayout mFrame;
@@ -173,7 +172,6 @@ public class DetailFragment extends Fragment {
      * Forces garbage collection on {@link WebView} in addition to default behavior.
      */
     @Override public void onDestroyView() {
-        sScrollState = mWebview.getScrollY();
         mWebview.destroy();
         super.onDestroyView();
     }
