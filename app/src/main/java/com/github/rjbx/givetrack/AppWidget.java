@@ -112,7 +112,7 @@ public class AppWidget extends AppWidgetProvider {
          */
         @Override public RemoteViews getViewAt(int position) {
 
-            if (mCursor == null || mCursor.getCount() == 0) return null;
+            if (mCursor == null /*|| mCursor.getCount() == 0*/) return null;
             mCursor.moveToPosition(position);
             Target target = Target.getDefault();
             AppUtilities.cursorRowToEntry(mCursor, target);
