@@ -725,6 +725,7 @@ public class GlanceFragment extends Fragment implements
         mActivityChart.setTag(activityMessage);
         mActivityChart.setData(activityData);
         mActivityChart.setDescription(activityDesc);
+        mActivityChart.getXAxis().setDrawLabels(false);
         mActivityChart.getXAxis().setValueFormatter(this);
         mActivityChart.getXAxis().setTextSize(mAxisFontSize);
         mActivityChart.getXAxis().setTextColor(Color.WHITE);
@@ -763,6 +764,7 @@ public class GlanceFragment extends Fragment implements
             ((PieChart) chartClone).setEntryLabelTextSize(fontSize);
         } else if (chart instanceof HorizontalBarChart) {
             chartClone = new HorizontalBarChart(mContext);
+            chartClone.getXAxis().setDrawLabels(false);
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
             chartClone.getXAxis().setTextSize(mAxisFontSize);
             ((HorizontalBarChart) chartClone).setData(((HorizontalBarChart) chart).getData());
