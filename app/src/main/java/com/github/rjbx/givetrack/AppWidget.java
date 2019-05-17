@@ -30,8 +30,6 @@ public class AppWidget extends AppWidgetProvider {
     /**
      * Retrieves and sets {@link PendingIntent} on {@link RemoteViews} of a single {@link AppWidget}.
      */
-
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -39,23 +37,24 @@ public class AppWidget extends AppWidgetProvider {
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
-        Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-        populateIntent.putExtra("a", signedIn ? user.getUid() : "");
-        views.setRemoteAdapter(R.id.widget_list, populateIntent);
+        if (signedIn) {
+            Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
+            populateIntent.putExtra("a", user.getUid());
+            views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-        Intent listIntent = new Intent(context, AuthActivity.class);
-        PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
+            Intent listIntent = new Intent(context, AuthActivity.class);
+            PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
-        Intent spawnIntent = new Intent(context, signedIn ? IndexActivity.class : AuthActivity.class);
-        PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
+            Intent spawnIntent = new Intent(context, IndexActivity.class);
+            PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
 
-        Intent recordIntent = new Intent(context, signedIn ? JournalActivity.class : AuthActivity.class);
-        PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+            Intent recordIntent = new Intent(context, JournalActivity.class);
+            PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+        }
 
-        appWidgetManager.updateAppWidget(appWidgetId, null);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
@@ -76,7 +75,7 @@ public class AppWidget extends AppWidgetProvider {
      */
     public static class AppWidgetRemoteViewsService extends RemoteViewsService {
         @Override public RemoteViewsFactory onGetViewFactory(Intent intent) {
-            return new AppWidgetRemoteViewsFactory(getApplicationContext(), intent.getStringExtra("a"));
+            return new AppWidgetRemoteViewsFactory(getApplicationContext());
         }
     }
 
@@ -92,9 +91,8 @@ public class AppWidget extends AppWidgetProvider {
         /**
          * Constructs an instance with the Application {@link Context} used to query the {@link android.content.ContentProvider}.
          */
-        AppWidgetRemoteViewsFactory(Context context, String uid) {
+        AppWidgetRemoteViewsFactory(Context context) {
             mContext = context;
-            mUid = uid;
         }
 
         /**
@@ -147,7 +145,10 @@ public class AppWidget extends AppWidgetProvider {
             return remoteViews;
         }
 
-        @Override public void onCreate() {}
+        @Override public void onCreate() {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            mUid = user != null ? user.getUid() : "";
+        }
         @Override public void onDestroy() {}
         @Override public int getCount() {
             return mCursor == null ? 0 : mCursor.getCount();
@@ -162,7 +163,7 @@ public class AppWidget extends AppWidgetProvider {
             return position;
         }
         @Override public boolean hasStableIds() {
-            return true;
+            return false;
         }
     }
 
@@ -171,8 +172,8 @@ public class AppWidget extends AppWidgetProvider {
         ComponentName awc = new ComponentName(context, AppWidget.class);
 
         int[] ids = awm.getAppWidgetIds(awc);
-        for (int id : ids) AppWidget.updateAppWidget(context, awm, id);
 
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+        for (int id : ids) AppWidget.updateAppWidget(context, awm, id);
     }
 }
