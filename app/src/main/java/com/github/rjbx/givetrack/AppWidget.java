@@ -13,7 +13,6 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
-import com.github.rjbx.givetrack.view.AuthActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
@@ -41,6 +40,7 @@ public class AppWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
+        populateIntent.putExtra("a", firebaseUser.getUid());
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
         Intent listIntent = new Intent(context, HomeActivity.class);
@@ -75,7 +75,7 @@ public class AppWidget extends AppWidgetProvider {
      */
     public static class AppWidgetRemoteViewsService extends RemoteViewsService {
         @Override public RemoteViewsFactory onGetViewFactory(Intent intent) {
-            return new AppWidgetRemoteViewsFactory(getApplicationContext());
+            return new AppWidgetRemoteViewsFactory(getApplicationContext(), intent.getStringExtra("a"));
         }
     }
 
@@ -86,11 +86,15 @@ public class AppWidget extends AppWidgetProvider {
 
         Context mContext;
         Cursor mCursor;
+        String mUid;
 
         /**
          * Constructs an instance with the Application {@link Context} used to query the {@link android.content.ContentProvider}.
          */
-        AppWidgetRemoteViewsFactory(Context context) { mContext = context; }
+        AppWidgetRemoteViewsFactory(Context context, String uid) {
+            mContext = context;
+            mUid = uid;
+        }
 
         /**
          * Triggered when remote collection adapter invokes notifyDataSetChanged; synchronous processing
@@ -100,7 +104,7 @@ public class AppWidget extends AppWidgetProvider {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
             mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
-                    null, null, null/*DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { FirebaseAuth.getInstance().getCurrentUser().getUid() }*/, null);
+                    null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUid }, null);
             Binder.restoreCallingIdentity(token);
         }
 
