@@ -11,13 +11,10 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import androidx.annotation.Nullable;
-
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.view.AuthActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
-import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +41,7 @@ public class AppWidget extends AppWidgetProvider {
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
         populateIntent.putExtra("a", signedIn ? user.getUid() : "");
-        views.setRemoteAdapter(R.id.widget, populateIntent);
+        views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
         Intent listIntent = new Intent(context, AuthActivity.class);
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
