@@ -167,6 +167,12 @@ public class AppWidget extends AppWidgetProvider {
     public static void refresh(Context context) {
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
         int[] ids = awm.getAppWidgetIds(new ComponentName(context, AppWidget.class));
-        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+//        awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
+//
+//        Intent intent = new Intent(context, AppWidget.class);
+//        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+//        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+//        context.sendBroadcast(intent);
+        for (int id : ids) AppWidget.updateAppWidget(context, awm, id);
     }
 }
