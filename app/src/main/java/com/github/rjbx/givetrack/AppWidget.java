@@ -56,7 +56,6 @@ public class AppWidget extends AppWidgetProvider {
         views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
-        refresh(context);
     }
 
     /**
