@@ -11,6 +11,8 @@ import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import androidx.annotation.Nullable;
+
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.view.AuthActivity;
@@ -31,15 +33,16 @@ public class AppWidget extends AppWidgetProvider {
     /**
      * Retrieves and sets {@link PendingIntent} on {@link RemoteViews} of a single {@link AppWidget}.
      */
-    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
+
+
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, @Nullable String uid) {
+
+        boolean signedIn = uid != null;
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        boolean signedIn = firebaseUser != null;
-
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-        populateIntent.putExtra("a", signedIn ? firebaseUser.getUid() : "");
+        populateIntent.putExtra("a", signedIn ? uid : "");
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
         Intent listIntent = new Intent(context, AuthActivity.class);
@@ -63,7 +66,7 @@ public class AppWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
-        for (int appWidgetId : appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId);
+        for (int appWidgetId : appWidgetIds) updateAppWidget(context, appWidgetManager, appWidgetId, null);
     }
 
     @Override public void onEnabled(Context context) {}
@@ -166,13 +169,17 @@ public class AppWidget extends AppWidgetProvider {
 
     public static void refresh(Context context) {
         AppWidgetManager awm = AppWidgetManager.getInstance(context);
-        int[] ids = awm.getAppWidgetIds(new ComponentName(context, AppWidget.class));
+        ComponentName awc = new ComponentName(context, AppWidget.class);
+
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        int[] ids = awm.getAppWidgetIds(awc);
+        for (int id : ids) AppWidget.updateAppWidget(context, awm, id, firebaseUser != null ? firebaseUser.getUid() : null);
+
         awm.notifyAppWidgetViewDataChanged(ids, R.id.widget_list);
-//
 //        Intent intent = new Intent(context, AppWidget.class);
 //        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
 //        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
 //        context.sendBroadcast(intent);
-        for (int id : ids) AppWidget.updateAppWidget(context, awm, id);
     }
 }
