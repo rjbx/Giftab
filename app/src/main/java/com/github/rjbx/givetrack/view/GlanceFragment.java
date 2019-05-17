@@ -773,11 +773,15 @@ public class GlanceFragment extends Fragment implements
             ((HorizontalBarChart) chartClone).setFitBars(true);
             ((HorizontalBarChart) chartClone).setPinchZoom(true);
             chartClone.setMinimumWidth(500);
-            chartClone.setMinimumHeight(750);
+            chartClone.setMinimumHeight(1000);
         } else return;
 
+
         chartClone.getLegend().setEnabled(false);
-        chartClone.setDescription(chart.getDescription());
+        Description description = chart.getDescription();
+        description.setTextColor(Color.BLACK);
+        description.setYOffset(10);
+        chartClone.setDescription(description);
 
         int padding = (int) getResources().getDimension(R.dimen.button_padding);
         ScrollView scrollView = new ScrollView(mContext);
