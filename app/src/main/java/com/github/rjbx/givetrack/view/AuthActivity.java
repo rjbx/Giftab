@@ -214,6 +214,7 @@ public class AuthActivity extends AppCompatActivity implements
                                 });
                         }
                     });
+                AppWidget.refresh(this);
             } else {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
