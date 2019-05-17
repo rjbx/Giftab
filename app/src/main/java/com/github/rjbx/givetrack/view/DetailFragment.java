@@ -40,10 +40,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+// TODO: Restore WebView scroll state on lifecycle changes
 /**
  * Provides the logic and views for a single detail screen.
  */
-
 public class DetailFragment extends Fragment {
 
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
