@@ -189,7 +189,7 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(SCROLL_STATE, mWebview.getScrollY());
+        outState.putInt(SCROLL_STATE, sScrollState);
         outState.putBoolean(INITIAL_STATE, sInitialState);
         outState.putBoolean(CURRENT_STATE, sCurrentState);
         outState.putParcelable(COMPANY_STATE, sCompany);
