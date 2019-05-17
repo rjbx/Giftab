@@ -92,6 +92,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_TARGET);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -105,6 +106,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_RECORD);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -118,6 +120,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_FETCH_USER);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -132,6 +135,7 @@ public final class DatabaseManager extends IntentService {
         intent.setAction(ACTION_TARGET_RECORD);
         intent.putExtra(EXTRA_ITEM_VALUES, record);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -149,6 +153,7 @@ public final class DatabaseManager extends IntentService {
         if (target.length == 1) intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
         else intent.putExtra(EXTRA_LIST_VALUES, target);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -165,6 +170,7 @@ public final class DatabaseManager extends IntentService {
         if (targets.length > 1) intent.putExtra(EXTRA_LIST_VALUES, targets);
         else intent.putExtra(EXTRA_ITEM_VALUES, targets[0]);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -181,6 +187,7 @@ public final class DatabaseManager extends IntentService {
         if (target.length > 1) intent.putExtra(EXTRA_LIST_VALUES, target);
         intent.putExtra(EXTRA_ITEM_VALUES, target[0]);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -196,6 +203,7 @@ public final class DatabaseManager extends IntentService {
         intent.setAction(ACTION_TARGET_SPAWN);
         intent.putExtra(EXTRA_ITEM_VALUES, spawn);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -211,6 +219,7 @@ public final class DatabaseManager extends IntentService {
         intent.setAction(ACTION_UNTARGET_COMPANY);
         intent.putExtra(EXTRA_ITEM_VALUES, company.getEin());
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -226,6 +235,7 @@ public final class DatabaseManager extends IntentService {
         if (spawns.length > 1) intent.putExtra(EXTRA_LIST_VALUES, spawns);
         else intent.putExtra(EXTRA_ITEM_VALUES, spawns[0]);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -241,6 +251,7 @@ public final class DatabaseManager extends IntentService {
         if (record.length > 1) intent.putExtra(EXTRA_LIST_VALUES, record);
         else intent.putExtra(EXTRA_ITEM_VALUES, record[0]);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -256,6 +267,7 @@ public final class DatabaseManager extends IntentService {
         if (user.length > 1) intent.putExtra(EXTRA_LIST_VALUES, user);
         else intent.putExtra(EXTRA_ITEM_VALUES, user[0]);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -269,6 +281,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_SPAWN);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -282,6 +295,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_TARGET);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -295,6 +309,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_RECORD);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -308,6 +323,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_USER);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -325,6 +341,7 @@ public final class DatabaseManager extends IntentService {
         else intent.putExtra(EXTRA_ITEM_VALUES, record[0]);
 
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -342,6 +359,7 @@ public final class DatabaseManager extends IntentService {
         else intent.putExtra(EXTRA_ITEM_VALUES, user[0]);
 
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -355,6 +373,7 @@ public final class DatabaseManager extends IntentService {
         Intent intent = new Intent(context, DatabaseManager.class);
         intent.setAction(ACTION_RESET_DATA);
         context.startService(intent);
+        AppWidget.refresh(context);
     }
 
     /**
@@ -445,7 +464,6 @@ public final class DatabaseManager extends IntentService {
             case ACTION_RESET_DATA:
                 handleActionResetData();
         }
-        AppWidget.refresh(getBaseContext());
     }
 
     /**
