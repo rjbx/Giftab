@@ -43,7 +43,7 @@ public class AppWidget extends AppWidgetProvider {
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
         populateIntent.putExtra("a", signedIn ? uid : "");
-        views.setRemoteAdapter(R.id.widget_list, populateIntent);
+        views.setRemoteAdapter(R.id.widget, populateIntent);
 
         Intent listIntent = new Intent(context, AuthActivity.class);
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -57,6 +57,7 @@ public class AppWidget extends AppWidgetProvider {
         PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
 
+        appWidgetManager.updateAppWidget(appWidgetId, null);
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
