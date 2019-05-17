@@ -14,6 +14,7 @@ import android.widget.RemoteViewsService;
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.view.AuthActivity;
+import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +44,7 @@ public class AppWidget extends AppWidgetProvider {
         populateIntent.putExtra("a", signedIn ? user.getUid() : "");
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-        Intent listIntent = new Intent(context, AuthActivity.class);
+        Intent listIntent = signedIn ? new Intent(context, HomeActivity.class) : new Intent();
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
