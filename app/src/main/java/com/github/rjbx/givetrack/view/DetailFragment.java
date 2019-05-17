@@ -173,6 +173,7 @@ public class DetailFragment extends Fragment {
      * Forces garbage collection on {@link WebView} in addition to default behavior.
      */
     @Override public void onDestroyView() {
+        sScrollState = mWebview.getScrollY();
         mWebview.destroy();
         super.onDestroyView();
     }
@@ -188,7 +189,7 @@ public class DetailFragment extends Fragment {
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mWebview != null) outState.putInt(SCROLL_STATE, mWebview.getScrollY());
+        outState.putInt(SCROLL_STATE, mWebview.getScrollY());
         outState.putBoolean(INITIAL_STATE, sInitialState);
         outState.putBoolean(CURRENT_STATE, sCurrentState);
         outState.putParcelable(COMPANY_STATE, sCompany);
