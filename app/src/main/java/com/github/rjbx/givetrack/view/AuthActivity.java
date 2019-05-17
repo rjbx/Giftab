@@ -321,7 +321,25 @@ public class AuthActivity extends AppCompatActivity implements
         mAction = action;
         FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
         switch (action) {
-            case ACTION_MAIN:
+            case ACTION_SIGN_OUT:
+                if (firebaseUser == null) return;
+                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
+                mActiveUser.setUserActive(false);
+                DatabaseManager.startActionUpdateUser(this, mActiveUser);
+    //                DatabaseManager.startActionFetchTarget(this);
+    //                DatabaseManager.startActionFetchRecord(this);
+                mProcessStage = -1;
+                break;
+            case ACTION_DELETE_ACCOUNT:
+                if (firebaseUser == null) return;
+                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
+                    DatabaseManager.startActionRemoveUser(this, u);
+                    Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                }
+                mActiveUser = null;
+                mProcessStage = -1;
+                break;
+            default:
                 if (firebaseUser == null) {
                     List<AuthUI.IdpConfig> providers = new ArrayList<>();
                     providers.add(new AuthUI.IdpConfig.GoogleBuilder().build());
@@ -341,25 +359,6 @@ public class AuthActivity extends AppCompatActivity implements
                     ViewUtilities.centerToastMessage(Toast.makeText(this, getGreeting(firebaseUser), Toast.LENGTH_SHORT)).show();
                     startActivity(new Intent(this, HomeActivity.class).setAction(AuthActivity.ACTION_SIGN_IN));
                 }
-                break;
-            case ACTION_SIGN_OUT:
-                if (firebaseUser == null) return;
-                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) mActiveUser = u;
-                mActiveUser.setUserActive(false);
-                DatabaseManager.startActionUpdateUser(this, mActiveUser);
-//                DatabaseManager.startActionFetchTarget(this);
-//                DatabaseManager.startActionFetchRecord(this);
-                mProcessStage = -1;
-                break;
-            case ACTION_DELETE_ACCOUNT:
-                if (firebaseUser == null) return;
-                for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
-                    DatabaseManager.startActionRemoveUser(this, u);
-                    Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
-                }
-                mActiveUser = null;
-                mProcessStage = -1;
-                break;
         }
     }
 
