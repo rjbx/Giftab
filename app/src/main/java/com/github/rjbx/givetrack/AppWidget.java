@@ -35,25 +35,27 @@ public class AppWidget extends AppWidgetProvider {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         boolean signedIn = firebaseUser != null;
 
-        if (!signedIn) return;
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
-        Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-        populateIntent.putExtra("a", firebaseUser.getUid());
-        views.setRemoteAdapter(R.id.widget_list, populateIntent);
+        if (signedIn) {
 
-        Intent listIntent = new Intent(context, HomeActivity.class);
-        PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
+            Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
+            populateIntent.putExtra("a", firebaseUser.getUid());
+            views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-        Intent spawnIntent = new Intent(context, IndexActivity.class);
-        PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
+            Intent listIntent = new Intent(context, HomeActivity.class);
+            PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
-        Intent recordIntent = new Intent(context, JournalActivity.class);
-        PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+            Intent spawnIntent = new Intent(context, IndexActivity.class);
+            PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
+
+            Intent recordIntent = new Intent(context, JournalActivity.class);
+            PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
+
+        }
         
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
