@@ -33,28 +33,27 @@ public class AppWidget extends AppWidgetProvider {
      */
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
 
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        boolean signedIn = firebaseUser != null;
+
+        if (!signedIn) return;
+
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        boolean signedIn = firebaseUser != null;
-
-        Intent authIntent = new Intent(context, AuthActivity.class);
-        PendingIntent authPendingIntent = PendingIntent.getActivity(context, 0, authIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
         Intent listIntent = new Intent(context, HomeActivity.class);
         PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setPendingIntentTemplate(R.id.widget_list, signedIn ? listPendingIntent : authPendingIntent);
+        views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
         Intent spawnIntent = new Intent(context, IndexActivity.class);
         PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_spawn, signedIn ? spawnPendingIntent : authPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
 
         Intent recordIntent = new Intent(context, JournalActivity.class);
         PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_record, signedIn ? recordPendingIntent : authPendingIntent);
+        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
         
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
@@ -101,7 +100,7 @@ public class AppWidget extends AppWidgetProvider {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
             mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
-                    null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { FirebaseAuth.getInstance().getCurrentUser().getUid() }, null);
+                    null, null, null/*DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { FirebaseAuth.getInstance().getCurrentUser().getUid() }*/, null);
             Binder.restoreCallingIdentity(token);
         }
 
