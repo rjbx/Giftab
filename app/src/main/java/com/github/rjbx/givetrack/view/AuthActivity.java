@@ -26,6 +26,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 
 import com.github.rjbx.givetrack.AppUtilities;
+import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.BuildConfig;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;

@@ -10,6 +10,7 @@ import androidx.core.util.Pair;
 import com.github.rjbx.calibrater.Calibrater;
 import com.github.rjbx.givetrack.AppExecutors;
 import com.github.rjbx.givetrack.AppUtilities;
+import com.github.rjbx.givetrack.AppWidget;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.Target;
@@ -444,6 +445,7 @@ public final class DatabaseManager extends IntentService {
             case ACTION_RESET_DATA:
                 handleActionResetData();
         }
+        AppWidget.refresh(getBaseContext());
     }
 
     /**
