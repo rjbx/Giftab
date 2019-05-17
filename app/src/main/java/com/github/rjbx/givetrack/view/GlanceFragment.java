@@ -759,8 +759,6 @@ public class GlanceFragment extends Fragment implements
             ((PieChart) chartClone).setEntryLabelTypeface(Typeface.DEFAULT_BOLD);
             ((PieChart) chartClone).setHoleRadius(15f);
             ((PieChart) chartClone).setEntryLabelTextSize(fontSize);
-            chartClone.setMinimumWidth(500);
-            chartClone.setMinimumHeight(500);
         } else if (chart instanceof HorizontalBarChart) {
             chartClone = new HorizontalBarChart(mContext);
             chartClone.getXAxis().setValueFormatter(chart.getXAxis().getValueFormatter());
@@ -772,16 +770,14 @@ public class GlanceFragment extends Fragment implements
             ((HorizontalBarChart) chartClone).getBarData().setDrawValues(false);
             ((HorizontalBarChart) chartClone).setFitBars(true);
             ((HorizontalBarChart) chartClone).setPinchZoom(true);
-            chartClone.setMinimumWidth(500);
-            chartClone.setMinimumHeight(1000);
+
         } else return;
 
+        chartClone.setMinimumWidth(500);
+        chartClone.setMinimumHeight(1000);
 
         chartClone.getLegend().setEnabled(false);
-        Description description = chart.getDescription();
-        description.setTextColor(Color.BLACK);
-        description.setYOffset(10);
-        chartClone.setDescription(description);
+        chartClone.getDescription().setEnabled(false);
 
         int padding = (int) getResources().getDimension(R.dimen.button_padding);
         ScrollView scrollView = new ScrollView(mContext);
