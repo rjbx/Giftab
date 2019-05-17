@@ -35,25 +35,25 @@ public class AppWidget extends AppWidgetProvider {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         boolean signedIn = user != null;
 
+        appWidgetManager.updateAppWidget(appWidgetId, null);
+
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
-        if (signedIn) {
-            Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-            populateIntent.putExtra("a", user.getUid());
-            views.setRemoteAdapter(R.id.widget_list, populateIntent);
+        Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
+        populateIntent.putExtra("a", signedIn ? user.getUid() : "");
+        views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
-            Intent listIntent = new Intent(context, AuthActivity.class);
-            PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
+        Intent listIntent = new Intent(context, AuthActivity.class);
+        PendingIntent listPendingIntent = PendingIntent.getActivity(context, 0, listIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setPendingIntentTemplate(R.id.widget_list, listPendingIntent);
 
-            Intent spawnIntent = new Intent(context, IndexActivity.class);
-            PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
+        Intent spawnIntent = signedIn ? new Intent(context, IndexActivity.class) : new Intent();
+        PendingIntent spawnPendingIntent = PendingIntent.getActivity(context, 0, spawnIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_spawn, spawnPendingIntent);
 
-            Intent recordIntent = new Intent(context, JournalActivity.class);
-            PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
-        }
+        Intent recordIntent = signedIn ? new Intent(context, JournalActivity.class) : new Intent();
+        PendingIntent recordPendingIntent = PendingIntent.getActivity(context, 0, recordIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        views.setOnClickPendingIntent(R.id.widget_record, recordPendingIntent);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
