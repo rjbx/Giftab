@@ -102,7 +102,11 @@ public class JournalActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_journal);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
+        if (mUser != null) {
+            getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+            getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+        }
 
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);

@@ -91,7 +91,11 @@ public class IndexActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_index);
         ButterKnife.bind(this);
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
+        if (mUser != null) {
+            getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
+            getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+        }
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
             sDualPane = true;
