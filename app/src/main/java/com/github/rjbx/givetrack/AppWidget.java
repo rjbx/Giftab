@@ -16,6 +16,8 @@ import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
@@ -92,7 +94,7 @@ public class AppWidget extends AppWidgetProvider {
             long token = Binder.clearCallingIdentity();
             if (mCursor != null) mCursor.close();
             mCursor = mContext.getContentResolver().query(DatabaseContract.CompanyEntry.CONTENT_URI_TARGET,
-                    null, null, null, null);
+                    null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { FirebaseAuth.getInstance().getCurrentUser().getUid() }, null);
             Binder.restoreCallingIdentity(token);
         }
 
