@@ -11,7 +11,7 @@
         android:summaryOff="Show all organizations"/>
 
     <EditTextPreference
-        android:dependency="@string/pref_indexFocus_key"
+        android:dependency="@string/pref_indexAcclaimed_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
