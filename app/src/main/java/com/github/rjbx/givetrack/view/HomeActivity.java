@@ -182,7 +182,6 @@ public class HomeActivity extends AppCompatActivity implements
                         calendar.get(Calendar.MONTH),
                         calendar.get(Calendar.DAY_OF_MONTH));
                 datePicker.show();
-                datePicker.getDatePicker().setBackgroundColor(getColor(R.color.colorConversionDark));
                 break;
             case R.id.action_add: finish(); startActivity(new Intent(this, IndexActivity.class)); break;
             case R.id.action_history: finish(); startActivity(new Intent(this, JournalActivity.class)); break;

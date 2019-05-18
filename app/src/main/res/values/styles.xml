@@ -7,6 +7,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorCheer</item>
         <item name="popupMenuStyle">@style/AppTheme.PopupOverlay</item>
+        <item name="android:datePickerDialogTheme">@style/AppTheme.DataPicker</item>
+    </style>
+
+    <style name="AppTheme.DataPicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorConversionDark</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
