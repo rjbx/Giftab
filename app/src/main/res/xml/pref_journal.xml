@@ -16,7 +16,7 @@
         android:key="@string/pref_journalOrder_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_indexAcclaimed_label"/>
+        android:title="@string/pref_indexRanked_label"/>
 
     <Preference
         android:key="@string/pref_clear_key"

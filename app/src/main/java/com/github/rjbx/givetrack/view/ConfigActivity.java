@@ -558,7 +558,7 @@ public class ConfigActivity
 //            if (sortPref.getValue() == null)
 //                sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexAcclaimed_key));
+            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexRanked_key));
             if (orderPref.getValue() == null)
                 orderPref.setValueIndex(orderPref.getEntries().length - 1);
 
@@ -571,7 +571,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
 //            handlePreferenceChange(findPreference(getString(R.string.pref_indexPages_key)), this);
 //            handlePreferenceChange(findPreference(getString(R.string.pref_indexSize_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexAcclaimed_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexRanked_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
@@ -607,7 +607,7 @@ public class ConfigActivity
                         Preference p = findPreference(k);
                         if (p == null) continue;
                         SharedPreferences.Editor e = p.getEditor();
-                        if (k.equals(getString(R.string.pref_indexAcclaimed_key))) e.putString(k, "DESC");
+                        if (k.equals(getString(R.string.pref_indexRanked_key))) e.putString(k, "DESC");
                         else if (p instanceof EditTextPreference) e.putString(k, "");
                         else if (p instanceof SwitchPreference) e.putBoolean(k, false);
                         else if (p instanceof ListPreference) e.putString(k, "");

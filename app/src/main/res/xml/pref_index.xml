@@ -11,7 +11,7 @@
         android:summaryOff="Show all organizations"/>
 
     <EditTextPreference
-        android:dependency="@string/pref_indexAcclaimed_key"
+        android:dependency="@string/pref_indexRanked_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
@@ -30,20 +30,20 @@
         android:dependency="@string/pref_indexMinrating_key"
         android:entries="@array/list_preference_orderIndex"
         android:entryValues="@array/list_preference_orderIndex_values"
-        android:key="@string/pref_indexAcclaimed_key"
+        android:key="@string/pref_indexRanked_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_indexAcclaimed_label"/>
+        android:title="@string/pref_indexRanked_label"/>
 
     <EditTextPreference
-        android:dependency="@string/pref_indexAcclaimed_key"
+        android:dependency="@string/pref_indexRanked_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexCity_key"
         android:singleLine="true"
         android:title="@string/pref_indexCity_label"/>
 
     <ListPreference
-        android:dependency="@string/pref_indexAcclaimed_key"
+        android:dependency="@string/pref_indexRanked_key"
         android:entries="@array/list_preference_state"
         android:entryValues="@array/list_preference_state_values"
         android:key="@string/pref_indexState_key"
@@ -53,7 +53,7 @@
 
 
     <EditTextPreference
-        android:dependency="@string/pref_indexAcclaimed_key"
+        android:dependency="@string/pref_indexRanked_key"
         android:inputType="number"
         android:key="@string/pref_indexZip_key"
         android:singleLine="true"
