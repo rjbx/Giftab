@@ -461,7 +461,10 @@ public class IndexActivity extends AppCompatActivity implements
                 holder.mItemView.setBackgroundColor(Color.WHITE);
             } else {
                 holder.mItemDetails.setVisibility(View.GONE);
-                if (position != mPanePosition) holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorChalk));
+                if (position != mPanePosition) {
+                    holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorNeutral));
+                    holder.mLogoView.setVisibility(View.GONE);
+                }
                 else holder.mItemView.setBackgroundColor(Color.WHITE);
             }
 
