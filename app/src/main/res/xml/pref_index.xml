@@ -28,6 +28,7 @@
 
     <SwitchPreference
         android:dependency="@string/pref_indexMinrating_key"
+        android:disableDependentsState="false"
         android:defaultValue="false"
         android:key="@string/pref_indexRanked_key"
         android:title="@string/pref_indexRanked_label"
@@ -84,7 +85,7 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:disableDependentsState="true"
+        android:disableDependentsState="false"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
         android:summaryOn="Spawn for single charity"
