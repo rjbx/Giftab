@@ -552,10 +552,6 @@ public class ConfigActivity
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexRanked_key));
-            if (orderPref.getValue() == null)
-                orderPref.setValueIndex(orderPref.getEntries().length - 1);
-
             handlePreferenceChange(findPreference(getString(R.string.pref_indexFocus_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexFilter_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexTerm_key)), this);
