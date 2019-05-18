@@ -6,7 +6,7 @@
     android:id="@+id/spawn_item_view"
     android:layout_width="match_parent"
     android:layout_height="125dp"
-    android:layout_margin="1dp"
+    android:layout_margin="2dp"
     android:background="#fff">
 
     <TextView
