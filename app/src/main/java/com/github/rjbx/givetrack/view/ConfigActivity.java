@@ -543,6 +543,9 @@ public class ConfigActivity
          */
         @Override public void onResume() {
             super.onResume();
+
+
+
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_indexState_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
@@ -552,6 +555,15 @@ public class ConfigActivity
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
             ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_indexSort_key));
+
+            ListPreference ratingPreference = (ListPreference) findPreference(getString(R.string.pref_indexMinrating_key));
+            EditTextPreference searchPreference = (EditTextPreference) findPreference(getString(R.string.pref_indexTerm_key));
+            if (!ratingPreference.getValue().equals("")) {
+
+            }
+            if (!searchPreference.getText().equals("")) {
+
+            }
             if (sortPref.getValue() == null)
                 sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
