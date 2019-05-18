@@ -27,6 +27,7 @@
         android:title="@string/pref_indexMinrating_label"/>
 
     <SwitchPreference
+        android:dependency="@string/pref_indexFocus_key"
         android:disableDependentsState="true"
         android:defaultValue="false"
         android:key="@string/pref_indexRanked_key"
