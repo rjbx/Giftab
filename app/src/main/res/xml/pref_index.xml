@@ -11,6 +11,7 @@
         android:summaryOff="Show all organizations"/>
 
     <EditTextPreference
+        android:dependency="@string/pref_indexRanked_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
@@ -26,7 +27,6 @@
         android:title="@string/pref_indexMinrating_label"/>
 
     <SwitchPreference
-        android:dependency="@string/pref_indexMinrating_key"
         android:disableDependentsState="true"
         android:defaultValue="false"
         android:key="@string/pref_indexRanked_key"
