@@ -36,12 +36,9 @@ public class AppWidget extends AppWidgetProvider {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         boolean signedIn = user != null;
 
-        appWidgetManager.updateAppWidget(appWidgetId, null);
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_app);
 
         Intent populateIntent = new Intent(context, AppWidgetRemoteViewsService.class);
-        populateIntent.putExtra("a", signedIn ? user.getUid() : "");
         views.setRemoteAdapter(R.id.widget_list, populateIntent);
 
         Intent listIntent = signedIn ? new Intent(context, HomeActivity.class) : new Intent();
