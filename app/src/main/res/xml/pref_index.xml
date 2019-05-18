@@ -17,6 +17,15 @@
         android:singleLine="true"
         android:title="@string/pref_indexTerm_label"/>
 
+    <ListPreference
+        android:dependency="@string/pref_indexTerm_key"
+        android:entries="@array/list_preference_orderIndex"
+        android:entryValues="@array/list_preference_orderIndex_values"
+        android:key="@string/pref_indexRelevance_key"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_indexRelevance_label"/>
+
     <EditTextPreference
         android:dependency="@string/pref_indexFocus_key"
         android:inputType="textCapWords"
@@ -50,22 +59,14 @@
         android:title="@string/pref_indexMinrating_label"/>
 
     <!--<ListPreference-->
-        <!--android:dependency="@string/pref_indexFocus_key"-->
-        <!--android:entries="@array/list_preference_sortIndex"-->
-        <!--android:entryValues="@array/list_preference_sortIndex_values"-->
-        <!--android:key="@string/pref_indexSort_key"-->
-        <!--android:negativeButtonText="@null"-->
-        <!--android:positiveButtonText="@null"-->
-        <!--android:title="@string/pref_indexSort_label"/>-->
+    <!--android:dependency="@string/pref_indexFocus_key"-->
+    <!--android:entries="@array/list_preference_sortIndex"-->
+    <!--android:entryValues="@array/list_preference_sortIndex_values"-->
+    <!--android:key="@string/pref_indexSort_key"-->
+    <!--android:negativeButtonText="@null"-->
+    <!--android:positiveButtonText="@null"-->
 
-    <ListPreference
-        android:dependency="@string/pref_indexTerm_key"
-        android:entries="@array/list_preference_orderIndex"
-        android:entryValues="@array/list_preference_orderIndex_values"
-        android:key="@string/pref_indexOrder_key"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_indexOrder_label"/>
+        <!--android:title="@string/pref_indexSort_label"/>-->
 
     <!--<EditTextPreference-->
         <!--android:dependency="@string/pref_indexFocus_key"-->

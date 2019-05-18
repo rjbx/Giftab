@@ -146,8 +146,7 @@
     <string name="pref_indexSize_key" translatable="false">indexRows</string>
     <string name="pref_indexMinrating_key" translatable="false">indexMinrating</string>
     <string name="pref_indexFilter_key" translatable="false">indexFilter</string>
-    <string name="pref_indexSort_key" translatable="false">indexSort</string>
-    <string name="pref_indexOrder_key" translatable="false">indexOrder</string>
+    <string name="pref_indexRelevance_key" translatable="false">indexRelevance</string>
     <string name="pref_journalSort_key" translatable="false">journalSort</string>
     <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
@@ -176,8 +175,7 @@
     <string name="pref_indexRows_label">Rows</string>
     <string name="pref_indexMinrating_label">Minimum Rating</string>
     <string name="pref_indexFundraising_label">Advisory Filter</string>
-    <string name="pref_indexSort_label">Sort</string>
-    <string name="pref_indexOrder_label">Order</string>
+    <string name="pref_indexRelevance_label">Relevance Sort</string>
     <string name="pref_indexFocused_label">Focused Search</string>
     <string name="pref_indexEin_label">Employer Identification Number</string>
     <string name="pref_indexGender_label">Gender</string>
@@ -343,16 +341,6 @@
         <item>2</item>
         <item>1</item>
         <item>0</item>
-    </string-array>
-    <string-array name="list_preference_sortIndex">
-        <item>By rating</item>
-        <item>By relevance</item>
-        <item>By name</item>
-    </string-array>
-    <string-array name="list_preference_sortIndex_values">
-        <item>RATING</item>
-        <item>RELEVANCE</item>
-        <item>NAME</item>
     </string-array>
     <string-array name="list_preference_sortJournal">
         <item>By date</item>

@@ -144,8 +144,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_INDEX_PAGES + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_INDEX_ROWS + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_GIVE_RESET + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_SORT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_ORDER + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_RELEVANCE + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_JOURNAL_SORT + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_JOURNAL_ORDER + " TEXT NOT NULL, "                +
                         UserEntry.COLUMN_TARGET_STAMP + " INTEGER NOT NULL, "             +

@@ -8,7 +8,7 @@
         android:key="@string/pref_journalSort_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_indexSort_label"/>
+        android:title="Sort"/>
 
     <ListPreference
         android:entries="@array/list_preference_orderJournal"
@@ -16,7 +16,7 @@
         android:key="@string/pref_journalOrder_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_indexOrder_label"/>
+        android:title="@string/pref_indexRelevance_label"/>
 
     <Preference
         android:key="@string/pref_clear_key"
