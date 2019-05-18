@@ -59,7 +59,7 @@
         <!--android:title="@string/pref_indexSort_label"/>-->
 
     <ListPreference
-        android:dependency="@string/pref_indexFocus_key"
+        android:dependency="@string/pref_indexTerm_key"
         android:entries="@array/list_preference_orderIndex"
         android:entryValues="@array/list_preference_orderIndex_values"
         android:key="@string/pref_indexOrder_key"
