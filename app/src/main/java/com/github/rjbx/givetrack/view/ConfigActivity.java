@@ -553,19 +553,10 @@ public class ConfigActivity
             ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_indexMinrating_key));
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
-
-            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_indexSort_key));
-
-            ListPreference ratingPreference = (ListPreference) findPreference(getString(R.string.pref_indexMinrating_key));
-            EditTextPreference searchPreference = (EditTextPreference) findPreference(getString(R.string.pref_indexTerm_key));
-            if (!ratingPreference.getValue().equals("")) {
-
-            }
-            if (!searchPreference.getText().equals("")) {
-
-            }
-            if (sortPref.getValue() == null)
-                sortPref.setValueIndex(sortPref.getEntries().length - 1);
+//
+//            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_indexSort_key));
+//            if (sortPref.getValue() == null)
+//                sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
             ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexOrder_key));
             if (orderPref.getValue() == null)
