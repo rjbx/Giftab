@@ -76,11 +76,12 @@ final class DatabaseAccessor {
         else {
             // Append optional parameters
             for (String param : DatasourceContract.OPTIONAL_PARAMS) {
-                if (request.containsKey(param) && !request.containsKey(DatasourceContract.PARAM_SORT)) {
+                if (request.containsKey(param)) {
                     String value = request.get(param);
                     if (value != null && !value.equals("")) {
                         if (value.contains(" ")) value = value.replace(" ", "%20");
                         builder.appendQueryParameter(param, value);
+                        if (value.contains(DatasourceContract.PARAM_SEARCH)) builder.appendQueryParameter("sort", "RELEVANCE:DESC");
                     }
                 }
             }
