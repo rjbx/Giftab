@@ -3,14 +3,11 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/collection_add_bar"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="84dp"
-    android:layout_marginEnd="90dp"
+    android:background="@color/colorNeutral"
     android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
-    android:padding="4dp"
-    android:background="#fff">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <Button
         android:id="@+id/collection_add_button"
@@ -18,8 +15,7 @@
         android:layout_height="35dp"
         android:gravity="center"
         android:backgroundTint="@color/colorChalk"
-        android:textColor="#555"
-        android:textStyle="bold"
+        android:textColor="@color/colorSlate"
         android:textSize="@dimen/text_size_paragraph_title"
         android:padding="0dp"
         android:text="@string/symbol_increment_button"/>
