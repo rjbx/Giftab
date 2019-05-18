@@ -59,6 +59,7 @@ final class DatabaseAccessor {
             request.put(DatasourceContract.PARAM_ZIP, user.getIndexZip());
             request.put(DatasourceContract.PARAM_MIN_RATING, user.getIndexMinrating());
             request.put(DatasourceContract.PARAM_FILTER, user.getIndexFilter() ? "1" : "0");
+            request.put(DatasourceContract.PARAM_RATED, user.getIndexRanked()? "1" : "0");
             request.put(DatasourceContract.PARAM_PAGE_NUM, user.getIndexPages());
             request.put(DatasourceContract.PARAM_PAGE_SIZE, user.getIndexRows());
         }

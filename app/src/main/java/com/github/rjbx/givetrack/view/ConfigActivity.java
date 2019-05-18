@@ -515,7 +515,6 @@ public class ConfigActivity
      * Fragment bound to preference header for updating spawn settings.
      */
     public static class IndexPreferenceFragment extends PreferenceFragment implements
-            SharedPreferences.OnSharedPreferenceChangeListener,
             Preference.OnPreferenceChangeListener,
             Preference.OnPreferenceClickListener,
             Dialog.OnClickListener {
@@ -559,15 +558,11 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexState_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexRated_key)), this);
+            handlePreferenceChange(findPreference(getString(R.string.pref_indexRanked_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         }
 
         /**
@@ -595,7 +590,7 @@ public class ConfigActivity
                         Preference p = findPreference(k);
                         if (p == null) continue;
                         SharedPreferences.Editor e = p.getEditor();
-                        if (k.equals(getString(R.string.pref_indexRated_key))) e.putString(k, "DESC");
+                        if (k.equals(getString(R.string.pref_indexRanked_key))) e.putString(k, "DESC");
                         else if (p instanceof EditTextPreference) e.putString(k, "");
                         else if (p instanceof SwitchPreference) e.putBoolean(k, false);
                         else if (p instanceof ListPreference) e.putString(k, "");

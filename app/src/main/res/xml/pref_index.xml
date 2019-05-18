@@ -29,7 +29,7 @@
         android:dependency="@string/pref_indexMinrating_key"
         android:disableDependentsState="true"
         android:defaultValue="false"
-        android:key="@string/pref_indexRated_key"
+        android:key="@string/pref_indexRanked_key"
         android:title="@string/pref_indexRanked_label"
         android:summaryOn="Show organizations by ranking"
         android:summaryOff="Do not show organizations by ranking"/>
