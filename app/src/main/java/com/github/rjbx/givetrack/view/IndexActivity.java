@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -279,6 +280,8 @@ public class IndexActivity extends AppCompatActivity implements
         mListContainer.setLayoutParams(params);
         mItemContainer.setVisibility(View.VISIBLE);
         mItemContainer.setLayoutParams(params);
+
+        mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -448,8 +451,13 @@ public class IndexActivity extends AppCompatActivity implements
             String homepage = values.getHomepageUrl();
 
             holder.mNameView.setText(name);
-            holder.mIdView.setText(String.format("EIN: %s", ein));
-            holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
+            if (!isDualPane()) {
+                holder.mIdView.setText(String.format("EIN: %s", ein));
+                holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
+            } else {
+                holder.mAddressView.setVisibility(View.GONE);
+                holder.mIdView.setVisibility(View.GONE);
+            }
 
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
                     .into(holder.mLogoView);
