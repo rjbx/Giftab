@@ -281,7 +281,7 @@ public class IndexActivity extends AppCompatActivity implements
         mItemContainer.setVisibility(View.VISIBLE);
         mItemContainer.setLayoutParams(params);
 
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -454,9 +454,7 @@ public class IndexActivity extends AppCompatActivity implements
             if (!isDualPane()) {
                 holder.mIdView.setText(String.format("EIN: %s", ein));
                 holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
-            } else {
-                holder.mItemDetails.setVisibility(View.GONE);
-            }
+            } else holder.mItemDetails.setVisibility(View.GONE);
 
 
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
