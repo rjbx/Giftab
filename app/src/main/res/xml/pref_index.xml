@@ -84,14 +84,13 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:disableDependentsState="false"
+        android:disableDependentsState="true"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
         android:summaryOn="Spawn for single charity"
         android:summaryOff="Spawn for multiple charities"/>
 
     <EditTextPreference
-        android:dependency="@string/pref_indexFocus_key"
         android:inputType="number"
         android:key="@string/pref_indexCompany_key"
         android:singleLine="true"
