@@ -80,6 +80,7 @@ final class DatabaseAccessor {
                 if (request.containsKey(param)) {
                     String value = request.get(param);
                     if (value != null && !value.equals(""))
+                        if (value.contains(" ")) value = value.replace(" ", "%20");
                         builder.appendQueryParameter(param, value);
                 }
             }
