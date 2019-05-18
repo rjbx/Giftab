@@ -534,7 +534,6 @@ public class ConfigActivity
         @Override
         public void onStart() {
             super.onStart();
-            PreferenceManager.getDefaultSharedPreferences(getContext()).registerOnSharedPreferenceChangeListener(this);
         }
 
         /**
@@ -642,7 +641,6 @@ public class ConfigActivity
 
         @Override
         public void onStop() {
-            PreferenceManager.getDefaultSharedPreferences(getContext()).unregisterOnSharedPreferenceChangeListener(this);
             super.onStop();
 
         }
