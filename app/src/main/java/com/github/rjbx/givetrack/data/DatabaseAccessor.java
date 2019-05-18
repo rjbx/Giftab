@@ -81,8 +81,8 @@ final class DatabaseAccessor {
                     if (value != null && !value.equals("")) {
                         if (value.contains(" ")) value = value.replace(" ", "%20");
                         builder.appendQueryParameter(param, value);
-                        if (value.contains(DatasourceContract.PARAM_SEARCH)) builder.appendQueryParameter("sort", "RELEVANCE:DESC");
-                        if (value.contains(DatasourceContract.PARAM_RATED)) builder.appendQueryParameter("sort", "RATING:DESC");
+                        if (param.equals(DatasourceContract.PARAM_SEARCH)) builder.appendQueryParameter("sort", "RELEVANCE:DESC");
+                        if (param.equals(DatasourceContract.PARAM_RATED)) builder.appendQueryParameter("sort", "RATING:DESC");
                     }
                 }
             }
