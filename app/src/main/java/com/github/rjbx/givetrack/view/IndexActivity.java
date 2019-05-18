@@ -455,9 +455,9 @@ public class IndexActivity extends AppCompatActivity implements
                 holder.mIdView.setText(String.format("EIN: %s", ein));
                 holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
             } else {
-                holder.mAddressView.setVisibility(View.GONE);
-                holder.mIdView.setVisibility(View.GONE);
+                holder.mItemDetails.setVisibility(View.GONE);
             }
+
 
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
                     .into(holder.mLogoView);
@@ -489,6 +489,7 @@ public class IndexActivity extends AppCompatActivity implements
             @BindView(R.id.spawn_item_secondary) TextView mIdView;
             @BindView(R.id.spawn_item_tertiary) TextView mAddressView;
             @BindView(R.id.spawn_item_logo) ImageView mLogoView;
+            @BindView(R.id.spawn_item_details) View mItemDetails;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
