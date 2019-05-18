@@ -465,7 +465,10 @@ public class IndexActivity extends AppCompatActivity implements
                     holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorNeutral));
                     holder.mLogoView.setVisibility(View.GONE);
                 }
-                else holder.mItemView.setBackgroundColor(Color.WHITE);
+                else {
+                    holder.mItemView.setBackgroundColor(Color.WHITE);
+                    holder.mLogoView.setVisibility(View.VISIBLE);
+                }
             }
 
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
