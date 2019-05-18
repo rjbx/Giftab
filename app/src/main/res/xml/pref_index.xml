@@ -33,7 +33,7 @@
         android:key="@string/pref_indexAcclaimed_key"
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
-        android:title="@string/pref_indexRelevance_label"/>
+        android:title="@string/pref_indexAcclaimed_label"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexAcclaimed_key"

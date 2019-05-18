@@ -146,7 +146,7 @@
     <string name="pref_indexSize_key" translatable="false">indexRows</string>
     <string name="pref_indexMinrating_key" translatable="false">indexMinrating</string>
     <string name="pref_indexFilter_key" translatable="false">indexFilter</string>
-    <string name="pref_indexAcclaimed_key" translatable="false">indexRelevance</string>
+    <string name="pref_indexAcclaimed_key" translatable="false">indexAcclaimed</string>
     <string name="pref_journalSort_key" translatable="false">journalSort</string>
     <string name="pref_journalOrder_key" translatable="false">journalOrder</string>
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
@@ -175,7 +175,7 @@
     <string name="pref_indexRows_label">Rows</string>
     <string name="pref_indexMinrating_label">Minimum Rating</string>
     <string name="pref_indexFundraising_label">Advisory Filter</string>
-    <string name="pref_indexRelevance_label">Relevance Sort</string>
+    <string name="pref_indexAcclaimed_label">Top-Rated Search</string>
     <string name="pref_indexFocused_label">Focused Search</string>
     <string name="pref_indexEin_label">Employer Identification Number</string>
     <string name="pref_indexGender_label">Gender</string>

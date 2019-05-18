@@ -45,7 +45,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private boolean indexFilter;
     private boolean indexFocus;
     private String indexMinrating;
-    private String indexRelevance;
+    private String indexAcclaimed;
     private String indexPages;
     private String indexRows;
     private String indexState;
@@ -94,7 +94,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeString(indexPages);
         dest.writeString(indexRows);
         dest.writeInt(giveReset ? 1 : 0);
-        dest.writeString(indexRelevance);
+        dest.writeString(indexAcclaimed);
         dest.writeString(journalSort);
         dest.writeString(journalOrder);
         dest.writeLong(targetStamp);
@@ -135,7 +135,7 @@ public class User implements Entry, Parcelable, Cloneable {
         indexPages = source.readString();
         indexRows = source.readString();
         giveReset = source.readInt() == 1;
-        indexRelevance = source.readString();
+        indexAcclaimed = source.readString();
         journalSort = source.readString();
         journalOrder = source.readString();
         targetStamp = source.readLong();
@@ -174,7 +174,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.indexPages = user.indexPages;
         this.indexRows = user.indexRows;
         this.giveReset = user.giveReset;
-        this.indexRelevance = user.indexRelevance;
+        this.indexAcclaimed = user.indexAcclaimed;
         this.journalSort = user.journalSort;
         this.journalOrder = user.journalOrder;
         this.targetStamp = user.targetStamp;
@@ -221,7 +221,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String indexPages,
             String indexRows,
             boolean giveReset,
-            String indexRelevance,
+            String indexAcclaimed,
             String journalSort,
             String journalOrder,
             long targetStamp,
@@ -257,7 +257,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.indexPages = indexPages;
         this.indexRows = indexRows;
         this.giveReset = giveReset;
-        this.indexRelevance = indexRelevance;
+        this.indexAcclaimed = indexAcclaimed;
         this.journalSort = journalSort;
         this.journalOrder = journalOrder;
         this.targetStamp = targetStamp;
@@ -325,8 +325,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setIndexRows(String indexRows){ this.indexRows = indexRows; }
     public boolean getGiveReset() { return giveReset; }
     public void setGiveReset(boolean giveReset) { this.giveReset = giveReset; }
-    public String getIndexRelevance() { return indexRelevance; }
-    public void setIndexRelevance(String indexRelevance) { this.indexRelevance = indexRelevance; }
+    public String getIndexAcclaimed() { return indexAcclaimed; }
+    public void setIndexAcclaimed(String indexAcclaimed) { this.indexAcclaimed = indexAcclaimed; }
     public String getJournalSort() { return journalSort; }
     public void setJournalSort(String journalSort) { this.journalSort = journalSort; }
     public String getJournalOrder() { return journalOrder; }
@@ -372,7 +372,7 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_INDEX_PAGES, indexPages);
         map.put(COLUMN_INDEX_ROWS, indexRows);
         map.put(COLUMN_GIVE_RESET, giveReset);
-        map.put(COLUMN_INDEX_RELEVANCE, indexRelevance);
+        map.put(COLUMN_INDEX_ACCLAIMED, indexAcclaimed);
         map.put(COLUMN_JOURNAL_SORT, journalSort);
         map.put(COLUMN_JOURNAL_ORDER, journalOrder);
         map.put(COLUMN_TARGET_STAMP, targetStamp);
@@ -407,7 +407,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_INDEX_MINRATING)) indexMinrating = (String) map.get(COLUMN_INDEX_MINRATING);
         if (map.containsKey(COLUMN_INDEX_PAGES)) indexPages = (String) map.get(COLUMN_INDEX_PAGES);
         if (map.containsKey(COLUMN_INDEX_ROWS)) indexRows = (String) map.get(COLUMN_INDEX_ROWS);
-        if (map.containsKey(COLUMN_INDEX_RELEVANCE)) indexRelevance = (String) map.get(COLUMN_INDEX_RELEVANCE);
+        if (map.containsKey(COLUMN_INDEX_ACCLAIMED)) indexAcclaimed = (String) map.get(COLUMN_INDEX_ACCLAIMED);
         if (map.containsKey(COLUMN_JOURNAL_SORT)) journalSort = (String) map.get(COLUMN_JOURNAL_SORT);
         if (map.containsKey(COLUMN_JOURNAL_ORDER)) journalOrder = (String) map.get(COLUMN_JOURNAL_ORDER);
         if (map.containsKey(COLUMN_RECORD_STAMP)) recordStamp = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_RECORD_STAMP), Long.class);
@@ -452,7 +452,7 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_INDEX_PAGES, indexPages);
         values.put(COLUMN_INDEX_ROWS, indexRows);
         values.put(COLUMN_GIVE_RESET, giveReset);
-        values.put(COLUMN_INDEX_RELEVANCE, indexRelevance);
+        values.put(COLUMN_INDEX_ACCLAIMED, indexAcclaimed);
         values.put(COLUMN_JOURNAL_SORT, journalSort);
         values.put(COLUMN_JOURNAL_ORDER, journalOrder);
         values.put(COLUMN_TARGET_STAMP, targetStamp);
@@ -492,7 +492,7 @@ public class User implements Entry, Parcelable, Cloneable {
         indexPages = values.getAsString(COLUMN_INDEX_PAGES);
         indexRows = values.getAsString(COLUMN_INDEX_ROWS);
         giveReset = values.getAsBoolean(COLUMN_GIVE_RESET);
-        indexRelevance = values.getAsString(COLUMN_INDEX_RELEVANCE);
+        indexAcclaimed = values.getAsString(COLUMN_INDEX_ACCLAIMED);
         journalSort = values.getAsString(COLUMN_JOURNAL_SORT);
         journalOrder = values.getAsString(COLUMN_JOURNAL_ORDER);
         targetStamp = values.getAsLong(COLUMN_TARGET_STAMP);
@@ -540,7 +540,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.indexPages = "";
         user.indexRows = "";
         user.giveReset = false;
-        user.indexRelevance = "DESC";
+        user.indexAcclaimed = "DESC";
         user.journalSort = "time";
         user.journalOrder = "DESC";
         user.targetStamp = 0; // Resets User stamps

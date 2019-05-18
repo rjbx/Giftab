@@ -90,7 +90,7 @@
       "indexFilter" : true,
       "indexFocus" : false,
       "indexMinrating" : "0",
-      "indexRelevance" : "RATING",
+      "indexAcclaimed" : "RATING",
       "indexPages" : "1",
       "indexRows" : "20",
       "indexState" : "",
