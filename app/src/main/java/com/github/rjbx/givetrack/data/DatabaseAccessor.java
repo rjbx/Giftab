@@ -79,6 +79,7 @@ final class DatabaseAccessor {
                 if (request.containsKey(param)) {
                     String value = request.get(param);
                     if (value != null && !value.equals("")) {
+                        if (value.equals("0")) continue;
                         if (value.contains(" ")) value = value.replace(" ", "%20");
                         builder.appendQueryParameter(param, value);
                         if (param.equals(DatasourceContract.PARAM_SEARCH)) builder.appendQueryParameter(DatasourceContract.PARAM_SORT, "RELEVANCE:DESC");
