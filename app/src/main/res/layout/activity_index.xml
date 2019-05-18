@@ -55,7 +55,7 @@
                     android:id="@+id/spawn_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorNeutral"
+                    android:background="@color/colorSlate"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:context=".view.IndexActivity"
                     tools:listitem="@layout/item_index"/>
