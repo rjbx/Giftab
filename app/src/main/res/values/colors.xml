@@ -4,9 +4,9 @@
     <color name="colorPrimary">#00B0FF</color>
     <color name="colorPrimaryDark">#0081CB</color>
     <color name="colorPrimaryLight">#69E2FF</color>
-    <color name="colorAccent">#F7BA28</color>
-    <color name="colorAccentDark">#AC8100</color>
-    <color name="colorAccentLight">#FFDA70</color>
+    <color name="colorCheer">#F7BA28</color>
+    <color name="colorCheerDark">#AC8100</color>
+    <color name="colorCheerLight">#FFDA70</color>
     <color name="colorNeutral">#DDD</color>
     <color name="colorNeutralDark">#AAA</color>
     <color name="colorAttention">#EE4444</color>

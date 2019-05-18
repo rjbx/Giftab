@@ -28,7 +28,7 @@
             android:layout_height="140dp"
             android:visibility="gone"
             android:layout_gravity="center"
-            android:indeterminateTint="@color/colorAccentLight"/>
+            android:indeterminateTint="@color/colorCheerLight"/>
 
     </FrameLayout>
 

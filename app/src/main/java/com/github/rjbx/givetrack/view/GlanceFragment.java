@@ -83,7 +83,7 @@ public class GlanceFragment extends Fragment implements
     private static String[] GIFT_TYPES = { "monetary", "goods", "service" };
     private static final int[] COLORS = new int[]{
             R.color.colorAttention,
-            R.color.colorAccent,
+            R.color.colorCheer,
             R.color.colorPrimary,
             R.color.colorHeat,
             R.color.colorConversion,
@@ -546,8 +546,8 @@ public class GlanceFragment extends Fragment implements
                 getResources().getColor(R.color.colorAttentionDark, null),
                 getResources().getColor(R.color.colorNeutral, null),
                 getResources().getColor(R.color.colorNeutralDark, null),
-                getResources().getColor(R.color.colorAccent, null),
-                getResources().getColor(R.color.colorAccentDark, null),
+                getResources().getColor(R.color.colorCheer, null),
+                getResources().getColor(R.color.colorCheerDark, null),
                 getResources().getColor(R.color.colorHeat, null),
                 getResources().getColor(R.color.colorHeatDark, null),
                 getResources().getColor(R.color.colorComfort, null),

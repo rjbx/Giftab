@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/colorAccentDark">
+    android:background="@color/colorCheerDark">
 
 
     <ImageButton
@@ -16,7 +16,7 @@
         android:layout_weight=".4"
         android:layout_gravity="start|center_vertical"
         android:gravity="center"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="@color/colorCheer"
         android:src="@drawable/search_dark"
         style="@style/Widget.AppCompat.Button" />
 
@@ -27,7 +27,7 @@
         android:layout_weight=".4"
         android:layout_gravity="start|center_vertical"
         android:gravity="center"
-        android:backgroundTint="@color/colorAccent"
+        android:backgroundTint="@color/colorCheer"
         android:src="@drawable/history_dark"
         style="@style/Widget.AppCompat.Button" />
 

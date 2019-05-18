@@ -381,7 +381,7 @@ public class GiveFragment extends Fragment implements
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             if (mListAdapter != null) mListAdapter.syncPercentages();
-            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccentDark, null)));
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorCheerDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
             if (mListAdapter != null) mListAdapter.syncDonations();
@@ -423,8 +423,8 @@ public class GiveFragment extends Fragment implements
         int progressBarVisibility;
 
         if (sPercentagesAdjusted) {
-            barWrapperColor = R.color.colorAccentDark;
-            actionBarColor = R.color.colorAccent;
+            barWrapperColor = R.color.colorCheerDark;
+            actionBarColor = R.color.colorCheer;
             actionBarIcon = R.drawable.action_save;
             progressBarVisibility = View.VISIBLE;
         } else if (mAmountTotal / mListLength < .3f) {

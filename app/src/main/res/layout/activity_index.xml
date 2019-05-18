@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|end"
                     android:layout_marginEnd="@dimen/fab_margin"
-                    android:backgroundTint="@color/colorAccent"
+                    android:backgroundTint="@color/colorCheer"
                     app:srcCompat="@drawable/action_sync"
                     android:contentDescription="@string/description_refresh_button"/>
 
