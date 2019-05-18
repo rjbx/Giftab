@@ -18,7 +18,7 @@
         android:title="@string/pref_indexTerm_label"/>
 
     <ListPreference
-        android:dependency="@string/pref_indexFocus_key"
+        android:dependency="@string/pref_indexRanked_key"
         android:entries="@array/list_preference_indexMinrating"
         android:entryValues="@array/list_preference_indexMinrating_values"
         android:key="@string/pref_indexMinrating_key"
