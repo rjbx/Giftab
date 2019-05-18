@@ -11,7 +11,6 @@
         android:summaryOff="Show all organizations"/>
 
     <EditTextPreference
-        android:dependency="@string/pref_indexRanked_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
@@ -28,9 +27,9 @@
 
     <SwitchPreference
         android:dependency="@string/pref_indexMinrating_key"
-        android:disableDependentsState="false"
+        android:disableDependentsState="true"
         android:defaultValue="false"
-        android:key="@string/pref_indexRanked_key"
+        android:key="@string/pref_indexRated_key"
         android:title="@string/pref_indexRanked_label"
         android:summaryOn="Show organizations by ranking"
         android:summaryOff="Do not show organizations by ranking"/>
@@ -85,7 +84,7 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:disableDependentsState="false"
+        android:disableDependentsState="true"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
         android:summaryOn="Spawn for single charity"
