@@ -3,7 +3,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:dependency="@string/pref_indexFocus_key"
+        android:dependency="@string/pref_indexCompany_key"
         android:defaultValue="true"
         android:key="@string/pref_indexFilter_key"
         android:title="@string/pref_indexFundraising_label"
@@ -18,7 +18,7 @@
         android:title="@string/pref_indexTerm_label"/>
 
     <ListPreference
-        android:dependency="@string/pref_indexFocus_key"
+        android:dependency="@string/pref_indexCompany_key"
         android:entries="@array/list_preference_indexMinrating"
         android:entryValues="@array/list_preference_indexMinrating_values"
         android:key="@string/pref_indexMinrating_key"
@@ -35,12 +35,14 @@
         android:summaryOff="Do not show organizations by ranking"/>
 
     <EditTextPreference
+        android:dependency="@string/pref_indexCompany_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexCity_key"
         android:singleLine="true"
         android:title="@string/pref_indexCity_label"/>
 
     <ListPreference
+        android:dependency="@string/pref_indexCompany_key"
         android:entries="@array/list_preference_state"
         android:entryValues="@array/list_preference_state_values"
         android:key="@string/pref_indexState_key"
@@ -49,6 +51,7 @@
         android:title="@string/pref_indexState_label"/>
 
     <EditTextPreference
+        android:dependency="@string/pref_indexCompany_key"
         android:inputType="number"
         android:key="@string/pref_indexZip_key"
         android:singleLine="true"
@@ -81,7 +84,7 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:disableDependentsState="true"
+        android:disableDependentsState="false"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
         android:summaryOn="Spawn for single charity"
