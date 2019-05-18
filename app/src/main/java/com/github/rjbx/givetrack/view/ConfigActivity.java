@@ -544,8 +544,6 @@ public class ConfigActivity
         @Override public void onResume() {
             super.onResume();
 
-
-
             ListPreference statePref = (ListPreference) findPreference(getString(R.string.pref_indexState_key));
             if (statePref.getValue() == null)
                 statePref.setValueIndex(statePref.getEntries().length - 1);
@@ -553,10 +551,6 @@ public class ConfigActivity
             ListPreference ratingPref = (ListPreference) findPreference(getString(R.string.pref_indexMinrating_key));
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
-//
-//            ListPreference sortPref = (ListPreference) findPreference(getString(R.string.pref_indexSort_key));
-//            if (sortPref.getValue() == null)
-//                sortPref.setValueIndex(sortPref.getEntries().length - 1);
 
             ListPreference orderPref = (ListPreference) findPreference(getString(R.string.pref_indexRanked_key));
             if (orderPref.getValue() == null)
@@ -569,8 +563,6 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexState_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
-//            handlePreferenceChange(findPreference(getString(R.string.pref_indexPages_key)), this);
-//            handlePreferenceChange(findPreference(getString(R.string.pref_indexSize_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexRanked_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);

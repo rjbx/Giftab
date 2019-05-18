@@ -26,14 +26,13 @@
         android:positiveButtonText="OK"
         android:title="@string/pref_indexMinrating_label"/>
 
-    <ListPreference
+    <SwitchPreference
         android:dependency="@string/pref_indexMinrating_key"
-        android:entries="@array/list_preference_orderIndex"
-        android:entryValues="@array/list_preference_orderIndex_values"
+        android:defaultValue="false"
         android:key="@string/pref_indexRanked_key"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null"
-        android:title="@string/pref_indexRanked_label"/>
+        android:title="@string/pref_indexRanked_label"
+        android:summaryOn="Show organizations by ranking"
+        android:summaryOff="Do not show organizations by ranking"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexRanked_key"
@@ -50,7 +49,6 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_indexState_label"/>
-
 
     <EditTextPreference
         android:dependency="@string/pref_indexRanked_key"

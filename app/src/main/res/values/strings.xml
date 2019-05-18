@@ -175,7 +175,7 @@
     <string name="pref_indexRows_label">Rows</string>
     <string name="pref_indexMinrating_label">Minimum Rating</string>
     <string name="pref_indexFundraising_label">Advisory Filter</string>
-    <string name="pref_indexRanked_label">Top-Rated Search</string>
+    <string name="pref_indexRanked_label">Ranked Search</string>
     <string name="pref_indexFocused_label">Focused Search</string>
     <string name="pref_indexEin_label">Employer Identification Number</string>
     <string name="pref_indexGender_label">Gender</string>
