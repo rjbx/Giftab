@@ -77,9 +77,9 @@ final class DatabaseAccessor {
         else {
             // Append optional parameters
             for (String param : DatasourceContract.OPTIONAL_PARAMS) {
-                if (request.containsKey(param)) {
+                if (request.containsKey(param) && request.containsKey(DatasourceContract.PARAM_SORT)) {
                     String value = request.get(param);
-                    if (value != null && !value.equals("") && !value.equals("sort")) {
+                    if (value != null && !value.equals("")) {
                         if (value.contains(" ")) value = value.replace(" ", "%20");
                         builder.appendQueryParameter(param, value);
                     }
