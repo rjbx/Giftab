@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -20,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,9 +62,10 @@ public class IndexActivity extends AppCompatActivity implements
 
     public static final String ACTION_INDEX_INTENT = "com.github.rjbx.givetrack.ui.action.INDEX_INTENT";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
-    private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_PANE";
+    private static final String STATE_SHOWN = "com.github.rjbx.givetrack.ui.state.SPAWN_SHOWN";
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
+    private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.PANE_POSITION";
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
     private ListAdapter mAdapter;
@@ -74,6 +75,7 @@ public class IndexActivity extends AppCompatActivity implements
     private DetailFragment mDetailFragment;
     private String mAddedName;
     private String mRemovedName;
+    private int mPanePosition;
     private boolean sDialogShown;
     private boolean mFetching = false;
     private boolean mLock = true;
@@ -105,6 +107,7 @@ public class IndexActivity extends AppCompatActivity implements
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
+            mPanePosition = savedInstanceState.getInt(STATE_POSITION);
         } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
 
 
@@ -135,6 +138,7 @@ public class IndexActivity extends AppCompatActivity implements
         outState.putBoolean(STATE_SHOWN, sDialogShown);
         outState.putString(STATE_ADDED, mAddedName);
         outState.putString(STATE_REMOVED, mRemovedName);
+        outState.putInt(STATE_POSITION, mPanePosition);
     }
 
     /**
@@ -233,7 +237,7 @@ public class IndexActivity extends AppCompatActivity implements
                         AppUtilities.cursorRowToEntry(data, user);
                         if (mUser != null && user.getTargetStamp() != mUser.getTargetStamp() && isDualPane()) {
                             Bundle bundle = new Bundle();
-                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mAdapter.mLastPosition]);
+                            bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                             showDualPane(bundle);
                         }
                         if (user.getUserActive()) {
@@ -414,7 +418,6 @@ public class IndexActivity extends AppCompatActivity implements
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         private Spawn[] mValuesArray;
-        int mLastPosition;
 
         /**
          * Instantiates the {@link RecyclerView.Adapter} and locks requests to populate
@@ -452,10 +455,15 @@ public class IndexActivity extends AppCompatActivity implements
 
             holder.mNameView.setText(name);
             if (!isDualPane()) {
+                holder.mItemDetails.setVisibility(View.VISIBLE);
                 holder.mIdView.setText(String.format("EIN: %s", ein));
                 holder.mAddressView.setText(String.format("%s, %s %s", city, state, zip));
-            } else holder.mItemDetails.setVisibility(View.GONE);
-
+                holder.mItemView.setBackgroundColor(Color.WHITE);
+            } else {
+                holder.mItemDetails.setVisibility(View.GONE);
+                if (position == mPanePosition) holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorAttention));
+                if (position != mPanePosition) holder.mItemView.setBackgroundColor(Color.WHITE);
+            }
 
             Glide.with(IndexActivity.this).load("https://logo.clearbit.com/" + homepage)
                     .into(holder.mLogoView);
@@ -488,6 +496,7 @@ public class IndexActivity extends AppCompatActivity implements
             @BindView(R.id.spawn_item_tertiary) TextView mAddressView;
             @BindView(R.id.spawn_item_logo) ImageView mLogoView;
             @BindView(R.id.spawn_item_details) View mItemDetails;
+            @BindView(R.id.spawn_item_view) View mItemView;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
@@ -503,10 +512,10 @@ public class IndexActivity extends AppCompatActivity implements
             @OnClick(R.id.spawn_item_view) void togglePane(View v) {
                 int position = (int) v.getTag();
                 Spawn values = mValuesArray[position];
-                if (mLastPosition == position) sDualPane = !sDualPane;
+                if (mPanePosition == position) sDualPane = !sDualPane;
                 else sDualPane = true;
 
-                mLastPosition = position;
+                mPanePosition = position;
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
                 if (sDualPane) showDualPane(arguments);
