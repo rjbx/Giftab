@@ -521,7 +521,7 @@ public final class DatabaseManager extends IntentService {
             for (Target t : targetList)
                 if (t.getEin().equals(ein)) {
                     t.setImpact(String.valueOf(impact));
-                    DatabaseAccessor.addTarget(this, t));
+                    DatabaseAccessor.addTarget(this, t);
                     return;
                 }
         });
