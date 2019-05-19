@@ -356,7 +356,8 @@ public final class DatabaseManager extends IntentService {
     }
 
     /**
-     * Syncs data inside a worker thread on requests to process {@link Intent}.
+     * Syncs data inside a worker thread on requests to process {@link Intent}
+     * Enqueues and handles subsequent requests sequentially.
      *
      * @param intent launches this {@link IntentService}.
      */
