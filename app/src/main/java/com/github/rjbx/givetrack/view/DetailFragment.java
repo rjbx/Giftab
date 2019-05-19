@@ -40,7 +40,8 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-// TODO: Prevent parent adapter from recreating detail on rotation
+// TODO: Resolve save and restore
+//  1. Prevent parent adapter from recreating detail on rotation
 /**
  * Provides the logic and views for a single detail screen.
  */
@@ -96,7 +97,6 @@ public class DetailFragment extends Fragment {
         mContext = context;
     }
 
-    // TODO: Resolve save and restore
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
