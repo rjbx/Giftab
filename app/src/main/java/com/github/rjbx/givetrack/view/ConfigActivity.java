@@ -511,7 +511,6 @@ public class ConfigActivity
         }
     }
 
-    // TODO: Prevent User from being overwritten due to failure to update default user after validation callback
     /**
      * Fragment bound to preference header for updating spawn settings.
      */
