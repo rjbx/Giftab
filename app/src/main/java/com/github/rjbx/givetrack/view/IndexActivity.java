@@ -348,7 +348,7 @@ public class IndexActivity extends AppCompatActivity implements
         int days = (int) TimeUnit.MILLISECONDS.toDays(currentTime - mUser.getIndexAnchor());
         if (days > 0) {
             mUser.setIndexAnchor(currentTime);
-            mUser.setIndexCount(5);
+            mUser.setIndexCount(20);
         } else mUser.setIndexCount(--remainingFetches);
         DatabaseManager.startActionUpdateUser(this, mUser);
 
