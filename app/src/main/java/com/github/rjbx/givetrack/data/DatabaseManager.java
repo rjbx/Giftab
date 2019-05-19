@@ -508,20 +508,23 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionTargetRecord(Record record) {
 
-        double impact = 0d;
-        String ein = record.getEin();
-        List<Record> recordList = DatabaseAccessor.getRecord(this);
+        DISK_IO.execute(() -> {
 
-        for (Record r : recordList)
-            if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
+            double impact = 0d;
+            String ein = record.getEin();
+            List<Record> recordList = DatabaseAccessor.getRecord(this);
 
-        List<Target> targetList = DatabaseAccessor.getTarget(this);
-        for (Target t : targetList)
-            if (t.getEin().equals(ein)) {
-                t.setImpact(String.valueOf(impact));
-                DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, t));
-                return;
-            }
+            for (Record r : recordList)
+                if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
+
+            List<Target> targetList = DatabaseAccessor.getTarget(this);
+            for (Target t : targetList)
+                if (t.getEin().equals(ein)) {
+                    t.setImpact(String.valueOf(impact));
+                    DatabaseAccessor.addTarget(this, t));
+                    return;
+                }
+        });
     }
 
     /**
