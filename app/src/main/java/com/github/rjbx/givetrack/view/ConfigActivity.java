@@ -511,6 +511,7 @@ public class ConfigActivity
         }
     }
 
+    // TODO: Prevent preference reset on app restart
     /**
      * Fragment bound to preference header for updating spawn settings.
      */
