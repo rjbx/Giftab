@@ -251,7 +251,7 @@ public class AuthActivity extends AppCompatActivity implements
                         DatabaseManager.startActionUpdateUser(this, mUsers.toArray(new User[0]));
                         mProcessStage++;
                     }
-                    AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
+//                    AppUtilities.mapToSharedPreferences(mActiveUser.toParameterMap(), PreferenceManager.getDefaultSharedPreferences(this));
                     break;
                 case 3:
                     finish();
