@@ -286,7 +286,7 @@ public class GiveFragment extends Fragment implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
-        getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
+        if (mDetailFragment != null) getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
         mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
         mListAdapter.notifyDataSetChanged();

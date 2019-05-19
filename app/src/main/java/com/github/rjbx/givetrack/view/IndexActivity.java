@@ -292,7 +292,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
-        getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
+        if (mDetailFragment != null) getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
         mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
