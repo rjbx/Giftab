@@ -363,86 +363,88 @@ public final class DatabaseManager extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent == null || intent.getAction() == null) return;
-        final String action = intent.getAction();
-        switch (action) {
-            case ACTION_FETCH_SPAWN:
-                handleActionFetchSpawn();
-                break;
-            case ACTION_FETCH_TARGET:
-                handleActionFetchTarget();
-                break;
-            case ACTION_FETCH_RECORD:
-                handleActionFetchRecord();
-                break;
-            case ACTION_FETCH_USER:
-                handleActionFetchUser();
-                break;
-            case ACTION_TARGET_SPAWN:
-                handleActionTargetSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_TARGET_RECORD:
-                handleActionTargetRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_UNTARGET_COMPANY:
-                handleActionUntargetCompany(intent.getStringExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_RECORD_TARGET:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRecordTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
-                else handleActionRecordTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_REMOVE_SPAWN:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveSpawn(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Spawn.class));
-                else handleActionRemoveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_REMOVE_TARGET:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
-                else handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_REMOVE_RECORD:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
-                else handleActionRemoveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_REMOVE_USER:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionRemoveUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
-                else handleActionRemoveUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_RESET_SPAWN:
-                handleActionResetSpawn();
-                break;
-            case ACTION_RESET_TARGET:
-                handleActionResetTarget();
-                break;
-            case ACTION_RESET_RECORD:
-                handleActionResetRecord();
-                break;
-            case ACTION_RESET_USER:
-                handleActionResetUser();
-                break;
-            case ACTION_UPDATE_CONTACT:
-                break;
-            case ACTION_UPDATE_TARGET:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionUpdateTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
-                else handleActionUpdateTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_UPDATE_RECORD:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionUpdateRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
-                else handleActionUpdateRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_UPDATE_USER:
-                if (intent.hasExtra(EXTRA_LIST_VALUES))
-                    handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
-                else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
-                break;
-            case ACTION_RESET_DATA:
-                handleActionResetData();
-        }
+        DISK_IO.execute(() -> {
+            final String action = intent.getAction();
+            switch (action) {
+                case ACTION_FETCH_SPAWN:
+                    handleActionFetchSpawn();
+                    break;
+                case ACTION_FETCH_TARGET:
+                    handleActionFetchTarget();
+                    break;
+                case ACTION_FETCH_RECORD:
+                    handleActionFetchRecord();
+                    break;
+                case ACTION_FETCH_USER:
+                    handleActionFetchUser();
+                    break;
+                case ACTION_TARGET_SPAWN:
+                    handleActionTargetSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_TARGET_RECORD:
+                    handleActionTargetRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_UNTARGET_COMPANY:
+                    handleActionUntargetCompany(intent.getStringExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_RECORD_TARGET:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionRecordTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                    else handleActionRecordTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_REMOVE_SPAWN:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionRemoveSpawn(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Spawn.class));
+                    else handleActionRemoveSpawn(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_REMOVE_TARGET:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionRemoveTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                    else handleActionRemoveTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_REMOVE_RECORD:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionRemoveRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
+                    else handleActionRemoveRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_REMOVE_USER:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionRemoveUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
+                    else handleActionRemoveUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_RESET_SPAWN:
+                    handleActionResetSpawn();
+                    break;
+                case ACTION_RESET_TARGET:
+                    handleActionResetTarget();
+                    break;
+                case ACTION_RESET_RECORD:
+                    handleActionResetRecord();
+                    break;
+                case ACTION_RESET_USER:
+                    handleActionResetUser();
+                    break;
+                case ACTION_UPDATE_CONTACT:
+                    break;
+                case ACTION_UPDATE_TARGET:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionUpdateTarget(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Target.class));
+                    else handleActionUpdateTarget(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_UPDATE_RECORD:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionUpdateRecord(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), Record.class));
+                    else handleActionUpdateRecord(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_UPDATE_USER:
+                    if (intent.hasExtra(EXTRA_LIST_VALUES))
+                        handleActionUpdateUser(AppUtilities.getTypedArrayFromParcelables(intent.getParcelableArrayExtra(EXTRA_LIST_VALUES), User.class));
+                    else handleActionUpdateUser(intent.getParcelableExtra(EXTRA_ITEM_VALUES));
+                    break;
+                case ACTION_RESET_DATA:
+                    handleActionResetData();
+            }
+        });
     }
 
     /**
@@ -453,17 +455,17 @@ public final class DatabaseManager extends IntentService {
     /**
      * Handles action FetchTarget on the service worker thread.
      */
-    private void handleActionFetchTarget() { DISK_IO.execute(() -> DatabaseAccessor.fetchTarget(this)); }
+    private void handleActionFetchTarget() { DatabaseAccessor.fetchTarget(this); }
 
     /**
      * Handles action FetchRecord on the service worker thread.
      */
-    private void handleActionFetchRecord() { DISK_IO.execute(() -> DatabaseAccessor.fetchRecord(this)); }
+    private void handleActionFetchRecord() { DatabaseAccessor.fetchRecord(this); }
 
     /**
      * Handles action FetchUser on the service worker thread.
      */
-    private void handleActionFetchUser() { DISK_IO.execute(() -> DatabaseAccessor.fetchUser(this)); }
+    private void handleActionFetchUser() { DatabaseAccessor.fetchUser(this); }
 
     /**
      * Handles action GiveSpawn on the service worker thread.
@@ -500,7 +502,7 @@ public final class DatabaseManager extends IntentService {
         String socialHandle = DataUtilities.urlToSocialHandle(target);
         target.setSocial(socialHandle);
 
-        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
+        DatabaseAccessor.addTarget(this, target);
     }
 
     /**
@@ -508,23 +510,20 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionTargetRecord(Record record) {
 
-        DISK_IO.execute(() -> {
+        double impact = 0d;
+        String ein = record.getEin();
+        List<Record> recordList = DatabaseAccessor.getRecord(this);
 
-            double impact = 0d;
-            String ein = record.getEin();
-            List<Record> recordList = DatabaseAccessor.getRecord(this);
+        for (Record r : recordList)
+            if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
 
-            for (Record r : recordList)
-                if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
-
-            List<Target> targetList = DatabaseAccessor.getTarget(this);
-            for (Target t : targetList)
-                if (t.getEin().equals(ein)) {
-                    t.setImpact(String.valueOf(impact));
-                    DatabaseAccessor.addTarget(this, t);
-                    return;
-                }
-        });
+        List<Target> targetList = DatabaseAccessor.getTarget(this);
+        for (Target t : targetList)
+            if (t.getEin().equals(ein)) {
+                t.setImpact(String.valueOf(impact));
+                DatabaseAccessor.addTarget(this, t);
+                return;
+            }
     }
 
     /**
@@ -557,7 +556,7 @@ public final class DatabaseManager extends IntentService {
                 default: impactStr = String.valueOf(totalImpact);
             }
             t.setImpact(impactStr);
-        } DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
+        } DatabaseAccessor.addTarget(this, target);
 
         List<Record> records = new ArrayList<>();
         for (int i = 0; i < target.length; i++) {
@@ -577,12 +576,12 @@ public final class DatabaseManager extends IntentService {
             }
             record.setImpact(impactStr);
             records.add(record);
-        } DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records.toArray(new Record[0])));
+        } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
 
         if (activeUser.getGiveTiming() == 1) {
             activeUser.setGiveAnchor(System.currentTimeMillis());
             activeUser.setGiveTiming(0);
-        } DISK_IO.execute(() -> DatabaseAccessor.addUser(this, activeUser));
+        } DatabaseAccessor.addUser(this, activeUser);
     }
 
     /**
@@ -590,41 +589,38 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionUntargetCompany(String ein) {
 
-        DISK_IO.execute(() ->  {
+        Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", ein);
+        List<Target> untargetList = DatabaseAccessor.getTarget(this, where);
 
-            Pair<String, String> where = new Pair<>(DatabaseContract.CompanyEntry.COLUMN_EIN + " = ? ", ein);
-            List<Target> untargetList = DatabaseAccessor.getTarget(this, where);
+        if (!untargetList.isEmpty()) {
 
-            if (!untargetList.isEmpty()) {
+            Target untarget = untargetList.get(0);
 
-                Target untarget = untargetList.get(0);
+            List<Target> targetList = DatabaseAccessor.getTarget(this);
+            int untargetIndex = 0;
+            for (int i = 0; i < targetList.size(); i++)
+                if (targetList.get(i).getEin().equals(ein)) untargetIndex = i;
+            targetList.remove(untargetIndex);
 
-                List<Target> targetList = DatabaseAccessor.getTarget(this);
-                int untargetIndex = 0;
-                for (int i = 0; i < targetList.size(); i++)
-                    if (targetList.get(i).getEin().equals(ein)) untargetIndex = i;
-                targetList.remove(untargetIndex);
+            Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
 
-                Rateraid.recalibrateRatings(targetList, false, Calibrater.STANDARD_PRECISION);
-
-                DatabaseAccessor.removeTarget(this, untarget);
-                DatabaseAccessor.addTarget(this, targetList.toArray(new Target[0]));
-            }
-        });
+            DatabaseAccessor.removeTarget(this, untarget);
+            DatabaseAccessor.addTarget(this, targetList.toArray(new Target[0]));
+        }
     }
 
     /**
      * Handles action RemoveSpawn on the service worker thread.
      */
     private void handleActionRemoveSpawn(Spawn... spawns) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawns));
+        DatabaseAccessor.removeSpawn(this, spawns);
     }
 
     /**
      * Handles action RemoveTarget on the service worker thread.
      */
     private void handleActionRemoveTarget(Target... targets) {
-        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, targets));
+        DatabaseAccessor.removeTarget(this, targets);
     }
 
     /**
@@ -632,7 +628,7 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionRemoveRecord(Record... records) {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this, records));
+        DatabaseAccessor.removeRecord(this, records);
 
         List<Target> targets = DatabaseAccessor.getTarget(this);
         for (Target target : targets) {
@@ -641,7 +637,7 @@ public final class DatabaseManager extends IntentService {
                     target.setFrequency(target.getFrequency() - 1);
                     float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
                     target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
-                    DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, target));
+                    DatabaseAccessor.addTarget(this, target);
                     break;
                 }
             }
@@ -660,29 +656,29 @@ public final class DatabaseManager extends IntentService {
         for (User user : users) {
             for (Spawn spawn : spawns)
                 if (!spawn.getUid().equals(user.getUid()))
-                    DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this, spawn));
+                    DatabaseAccessor.removeSpawn(this, spawn);
             for (Target target : targets)
                 if (!target.getUid().equals(user.getUid()))
-                    DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this, target));
+                    DatabaseAccessor.removeTarget(this, target);
             for (Record record : records)
                 if (!record.getUid().equals(user.getUid()))
-                    DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this, record));
+                    DatabaseAccessor.removeRecord(this, record);
         }
-        DISK_IO.execute(() -> DatabaseAccessor.removeUser(this, users));
+        DatabaseAccessor.removeUser(this, users);
     }
 
     /**
      * Handles action ResetSpawn on the service worker thread.
      */
     private void handleActionResetSpawn() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeSpawn(this));
+        DatabaseAccessor.removeSpawn(this);
     }
 
     /**
      * Handles action ResetTarget on the service worker thread.
      */
     private void handleActionResetTarget() {
-        DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
+        DatabaseAccessor.removeTarget(this);
     }
 
     /**
@@ -690,25 +686,24 @@ public final class DatabaseManager extends IntentService {
      */
     private void handleActionResetRecord() {
 
-        DISK_IO.execute(() -> DatabaseAccessor.removeRecord(this));
+        DatabaseAccessor.removeRecord(this);
         List<Target> targets = DatabaseAccessor.getTarget(this);
         for (Target target : targets) {
             target.setImpact("0");
             target.setFrequency(0);
         }
-        DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets.toArray(new Target[0])));
+        DatabaseAccessor.addTarget(this, targets.toArray(new Target[0]));
     }
 
     /**
      * Handles action ResetUser on the service worker thread.
      */
     private void handleActionResetUser() {
-        DISK_IO.execute(() -> {
-            DatabaseAccessor.removeSpawn(this);
-            DatabaseAccessor.removeTarget(this);
-            DatabaseAccessor.removeRecord(this);
-            DatabaseAccessor.removeUser(this);
-        });
+
+        DatabaseAccessor.removeSpawn(this);
+        DatabaseAccessor.removeTarget(this);
+        DatabaseAccessor.removeRecord(this);
+        DatabaseAccessor.removeUser(this);
     }
 
     /**
@@ -729,39 +724,36 @@ public final class DatabaseManager extends IntentService {
         }
         if (offset == 1) {
             Target removedTarget = persistedList.get(offsetIndex);
-            DISK_IO.execute(() -> {
-                DatabaseAccessor.removeTarget(this, removedTarget);
-                DatabaseAccessor.addTarget(this, targets);
-            });
+            DatabaseAccessor.removeTarget(this, removedTarget);
+            DatabaseAccessor.addTarget(this, targets);
         }
-        else if (targets.length == 0) DISK_IO.execute(() -> DatabaseAccessor.removeTarget(this));
-        else DISK_IO.execute(() -> DatabaseAccessor.addTarget(this, targets));
+        else if (targets.length == 0) DatabaseAccessor.removeTarget(this);
+        else DatabaseAccessor.addTarget(this, targets);
     }
 
     /**
      * Handles action UpdateRecord on the service worker thread.
      */
     private void handleActionUpdateRecord(Record... records) {
-        DISK_IO.execute(() -> DatabaseAccessor.addRecord(this, records));
+        DatabaseAccessor.addRecord(this, records);
     }
 
     /**
      * Handles action UpdateUser on the service worker thread.
      */
     private void handleActionUpdateUser(User... user) {
-        DISK_IO.execute(() -> DatabaseAccessor.addUser(this, user));
+        DatabaseAccessor.addUser(this, user);
     }
 
     /**
      * Handles action ResetData on the service worker thread.
      */
     private void handleActionResetData() {
-        DISK_IO.execute(() -> {
-                    DatabaseAccessor.removeSpawn(this);
-                    DatabaseAccessor.removeTarget(this);
-                    DatabaseAccessor.removeRecord(this);
-                    DatabaseAccessor.removeUser(this);
-                });
+
+        DatabaseAccessor.removeSpawn(this);
+        DatabaseAccessor.removeTarget(this);
+        DatabaseAccessor.removeRecord(this);
+        DatabaseAccessor.removeUser(this);
         PreferenceManager.getDefaultSharedPreferences(this).edit().clear().apply();
     }
 }
