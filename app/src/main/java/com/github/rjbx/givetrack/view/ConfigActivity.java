@@ -589,8 +589,7 @@ public class ConfigActivity
                         Preference p = findPreference(k);
                         if (p == null) continue;
                         SharedPreferences.Editor e = p.getEditor();
-                        if (k.equals(getString(R.string.pref_indexRanked_key))) e.putString(k, "DESC");
-                        else if (p instanceof EditTextPreference) e.putString(k, "");
+                        if (p instanceof EditTextPreference) e.putString(k, "");
                         else if (p instanceof SwitchPreference) e.putBoolean(k, false);
                         else if (p instanceof ListPreference) e.putString(k, "");
                         e.apply();
@@ -642,8 +641,7 @@ public class ConfigActivity
         @Override
         public void onStop() {
             super.onStop();
-
-        }
+       }
     }
 
     /**
