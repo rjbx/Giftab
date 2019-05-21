@@ -285,8 +285,10 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @Override public void showSinglePane() {
         if (mDetailFragment != null) getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
-        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mDetailFragment = null;
         sDualPane = false;
+
+        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
@@ -294,12 +296,14 @@ public class JournalActivity extends AppCompatActivity implements
     public void addEntry(Spawn spawn) {
         DatabaseManager.startActionTargetSpawn(this, spawn);
         mAddedName = spawn.getName();
+        showSinglePane();
     }
 
     @Override
     public void removeEntry(Company company) {
         DatabaseManager.startActionUntargetCompany(this, company);
         mRemovedName = company.getName();
+        showSinglePane();
     }
 
     /**
