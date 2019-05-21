@@ -278,9 +278,9 @@ public class IndexActivity extends AppCompatActivity implements
             IndexActivity.this.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.spawn_detail_container, mDetailFragment)
                     .commit();
-
-            ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
         }
+
+        ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
 
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
