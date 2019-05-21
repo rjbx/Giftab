@@ -211,9 +211,6 @@ public class HomeActivity extends AppCompatActivity implements
      * Replaces old data that is to be subsequently released from the {@link Loader}.
      */
     @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        Intent intent = getIntent();
-        String action = intent.getAction();
-        if (action != null && action.equals(DetailFragment.ACTION_CUSTOM_TABS)) return;
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
