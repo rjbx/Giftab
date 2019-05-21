@@ -49,7 +49,7 @@ import java.util.List;
  */
 public class DetailFragment extends Fragment {
 
-    static final String ACTION_CUSTOM_TABS = "com.github.rjbx.ui.action.CUSTOM_TABS";
+    static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     static final String ARG_ITEM_COMPANY = "com.github.rjbx.givetrack.ui.arg.ITEM_NAME";
     private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_SCROLL";
     private static final String INITIAL_STATE = "com.github.rjbx.givetrack.ui.state.DETAIL_INITIAL";
