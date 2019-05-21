@@ -201,7 +201,7 @@ public class GiveFragment extends Fragment implements
         mParentActivity = (HomeActivity) getActivity();
         Bundle arguments = getArguments();
         if (isDualPane()) {
-            if (arguments != null && mDetailFragment == null) showDualPane(arguments);
+            if (arguments != null) showDualPane(arguments);
             else if (mRecyclerView != null && mDetailContainer != null)
                 ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
         }
