@@ -267,10 +267,12 @@ public class GiveFragment extends Fragment implements
      */
     @Override public void showDualPane(@NonNull Bundle args) {
 
-        mDetailFragment = DetailFragment.newInstance(args);
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.give_detail_container, mDetailFragment)
-                .commit();
+        if (mDetailFragment != null) {
+            mDetailFragment = DetailFragment.newInstance(args);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.give_detail_container, mDetailFragment)
+                    .commit();
+        }
 
         ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
 

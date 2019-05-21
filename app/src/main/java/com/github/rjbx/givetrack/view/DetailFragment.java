@@ -27,6 +27,7 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
@@ -169,6 +170,12 @@ public class DetailFragment extends Fragment {
 //        if (mMasterDetailFlow != mParentActivity) mFab.setVisibility(View.GONE);
 
         return rootView;
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        Timber.d("a");
+        super.onViewStateRestored(savedInstanceState);
     }
 
     /**

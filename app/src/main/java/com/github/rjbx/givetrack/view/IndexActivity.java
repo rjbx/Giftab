@@ -22,6 +22,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Parcelable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.AppUtilities;
@@ -270,12 +272,15 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
     @Override public void showDualPane(@NonNull Bundle args) {
-        mDetailFragment = DetailFragment.newInstance(args);
-        IndexActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.spawn_detail_container, mDetailFragment)
-                .commit();
 
-        ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
+        if (mDetailFragment != null) {
+            mDetailFragment = DetailFragment.newInstance(args);
+            IndexActivity.this.getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.spawn_detail_container, mDetailFragment)
+                    .commit();
+
+            ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
+        }
 
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
