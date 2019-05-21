@@ -147,12 +147,12 @@ public class DetailFragment extends Fragment {
             sInitialState = savedInstanceState.getBoolean(INITIAL_STATE);
             sCurrentState = savedInstanceState.getBoolean(CURRENT_STATE);
             sCompany = savedInstanceState.getParcelable(COMPANY_STATE);
-            drawActionButton();
         } else if (getArguments() != null && getArguments().getParcelable(ARG_ITEM_COMPANY) != null) {
             sCompany = getArguments().getParcelable(ARG_ITEM_COMPANY);
             sScrollState = 0;
-            new StatusAsyncTask(this).execute(sCompany);
+//            new StatusAsyncTask(this).execute(sCompany);
         }
+        drawActionButton();
 
         mWebview = new WebView(inflater.getContext().getApplicationContext());
         mWebview.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
