@@ -100,9 +100,7 @@ public class IndexActivity extends AppCompatActivity implements
             getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
         }
 
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)  {
-            sDualPane = true;
-        } else if (savedInstanceState != null) {
+        if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
             mAddedName = savedInstanceState.getString(STATE_ADDED);

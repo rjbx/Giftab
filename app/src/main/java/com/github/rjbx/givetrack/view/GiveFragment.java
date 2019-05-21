@@ -181,7 +181,7 @@ public class GiveFragment extends Fragment implements
         mTotalText.setOnEditorActionListener(this);
         mTotalLabel.setContentDescription(getString(R.string.description_donation_text, CURRENCY_FORMATTER.format(mAmountTotal)));
 
-        if (savedInstanceState != null) {
+       if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
@@ -289,7 +289,7 @@ public class GiveFragment extends Fragment implements
         if (mDetailFragment != null) getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
         mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         sDualPane = false;
-        mListAdapter.notifyDataSetChanged();
+        if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -710,7 +710,7 @@ public class GiveFragment extends Fragment implements
             /**
              * Defines behavior on click of inspect button.
              */
-            @Optional @OnClick(R.id.inspect_button) void inspectGive(View v) {
+            @Optional @OnClick(R.id.inspect_button) void togglePane(View v) {
 
                 int position = (int) v.getTag();
                 Target values = mTargetList.get(position);
