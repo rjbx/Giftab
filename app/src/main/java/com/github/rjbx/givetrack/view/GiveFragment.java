@@ -608,7 +608,7 @@ public class GiveFragment extends Fragment implements
             final int adapterPosition = holder.getAdapterPosition();
             if (incrementButton != null && decrementButton != null && typeButton != null && percentageView != null) {
                 mSeries.addShifters(incrementButton, decrementButton, adapterPosition)
-                        .addEditor(percentageView, adapterPosition, mMethodManager, null)
+                        .addEditor(percentageView, adapterPosition, mMethodManager)
                         /*.addRemover(removeButton, adapterPosition)*/;
             }
         }
