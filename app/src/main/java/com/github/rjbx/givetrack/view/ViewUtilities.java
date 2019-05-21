@@ -24,6 +24,10 @@ import butterknife.Optional;
 
 final class ViewUtilities {
 
+
+    /**
+     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
+     */
     static void launchBrowserIntent(Context context, Uri webUrl) {
         new CustomTabsIntent.Builder()
                 .setToolbarColor(context.getColor(R.color.colorPrimaryDark))

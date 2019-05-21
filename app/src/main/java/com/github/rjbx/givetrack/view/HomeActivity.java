@@ -266,7 +266,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         if (!mUserLock && !mTargetLock && !mRecordLock) {
             Intent intent = getIntent();
-            if (intent.getAction() == null || !intent.getAction().equals(ACTION_CUSTOM_TABS)) {
+            if (intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
             }
             else intent.setAction(null);
@@ -293,8 +293,8 @@ public class HomeActivity extends AppCompatActivity implements
             case (R.id.nav_record): finish(); startActivity(new Intent(this, JournalActivity.class)); break;
             case (R.id.nav_settings): finish(); startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_HOME_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
             case (R.id.nav_logout): finish(); startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
-            case (R.id.nav_cn): launchCustomTabs(getString(R.string.url_cn)); break;
-            case (R.id.nav_clearbit): launchCustomTabs(getString(R.string.url_clearbit)); break;
+            case (R.id.nav_cn): ViewUtilities.launchBrowserIntent(this, Uri.parse(getString(R.string.url_cn))); break;
+            case (R.id.nav_clearbit): ViewUtilities.launchBrowserIntent(this, Uri.parse(getString(R.string.url_clearbit))); break;
         }
 
         mDrawer.closeDrawer(GravityCompat.START);
@@ -369,14 +369,6 @@ public class HomeActivity extends AppCompatActivity implements
                 default:
             }
         }
-    }
-
-    /**
-     * Defines and launches {@link CustomTabsIntent} for displaying an integrated browser at the given URL.
-     */
-    private void launchCustomTabs(String url) {
-        ViewUtilities.launchBrowserIntent(this, Uri.parse(url));
-        getIntent().setAction(HomeActivity.ACTION_CUSTOM_TABS);
     }
 
     /**
@@ -522,7 +514,7 @@ public class HomeActivity extends AppCompatActivity implements
         @Override public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             String action = getIntent().getAction();
             if (object instanceof DetailFragment.MasterDetailFlow
-                    && ((DetailFragment.MasterDetailFlow) object).isDualPane() && (action != null && !action.equals(ACTION_CUSTOM_TABS)))
+                    && ((DetailFragment.MasterDetailFlow) object).isDualPane() && (action != null && !action.equals(DetailFragment.ACTION_CUSTOM_TABS)))
                 ((DetailFragment.MasterDetailFlow) object).showSinglePane();
             super.destroyItem(container, position, object);
         }
