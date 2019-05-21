@@ -172,12 +172,6 @@ public class DetailFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        Timber.d("a");
-        super.onViewStateRestored(savedInstanceState);
-    }
-
     /**
      * Forces garbage collection on {@link WebView} in addition to default behavior.
      */
