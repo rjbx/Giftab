@@ -127,15 +127,7 @@ public class IndexActivity extends AppCompatActivity implements
                 )).attachToRecyclerView(mRecyclerView);
 
 
-        if (isDualPane()) {
-            DisplayMetrics metrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(metrics);
-            int width = metrics.widthPixels;
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
-            mListContainer.setLayoutParams(params);
-            mDetailContainer.setVisibility(View.VISIBLE);
-            mDetailContainer.setLayoutParams(params);
-        }
+        if (isDualPane()) ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
     }
 
     /**

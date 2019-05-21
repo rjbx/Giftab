@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -33,6 +35,18 @@ final class ViewUtilities {
                 .setToolbarColor(context.getColor(R.color.colorPrimaryDark))
                 .build()
                 .launchUrl(context, webUrl);
+    }
+
+    static void launchDetailPane(Activity launchingActivity, View master, View detail) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        launchingActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
+        master.setLayoutParams(params);
+        detail.setVisibility(View.VISIBLE);
+        detail.setLayoutParams(params);
     }
 
     static void launchShareIntent(Activity launchingActivity, String textMessage) {
