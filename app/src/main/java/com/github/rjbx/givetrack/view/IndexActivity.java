@@ -224,7 +224,7 @@ public class IndexActivity extends AppCompatActivity implements
                     if (!sDialogShown) showDialog();
                 } else if (sDualPane) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[0]);
+                    bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                     showDualPane(bundle);
                 }
                 break;
