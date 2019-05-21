@@ -279,14 +279,7 @@ public class IndexActivity extends AppCompatActivity implements
                 .replace(R.id.spawn_detail_container, mDetailFragment)
                 .commit();
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
-        mListContainer.setLayoutParams(params);
-        mDetailContainer.setVisibility(View.VISIBLE);
-        mDetailContainer.setLayoutParams(params);
+        ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
 
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }

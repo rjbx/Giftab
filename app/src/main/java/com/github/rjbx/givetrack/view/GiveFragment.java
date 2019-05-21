@@ -187,8 +187,7 @@ public class GiveFragment extends Fragment implements
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
-        if (mParentActivity != null && sDualPane) showDualPane(getArguments());
-
+        if (isDualPane()) ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
 
         renderActionBar();
 
@@ -271,14 +270,8 @@ public class GiveFragment extends Fragment implements
                 .replace(R.id.give_detail_container, mDetailFragment)
                 .commit();
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        mParentActivity.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
+        ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
-        mRecyclerView.setLayoutParams(params);
-        mDetailContainer.setVisibility(View.VISIBLE);
-        mDetailContainer.setLayoutParams(params);
         if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 

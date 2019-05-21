@@ -277,14 +277,8 @@ public class JournalActivity extends AppCompatActivity implements
                 .replace(R.id.record_detail_container, mDetailFragment)
                 .commit();
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
+        ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
-        mListContainer.setLayoutParams(params);
-        mDetailContainer.setVisibility(View.VISIBLE);
-        mDetailContainer.setLayoutParams(params);
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 
