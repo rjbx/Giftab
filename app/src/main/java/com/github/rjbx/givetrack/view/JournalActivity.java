@@ -120,9 +120,6 @@ public class JournalActivity extends AppCompatActivity implements
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
-        Bundle arguments = getIntent().getExtras();
-        if (arguments != null && sDualPane) showDualPane(arguments);
-
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
@@ -136,6 +133,16 @@ public class JournalActivity extends AppCompatActivity implements
                 ItemTouchHelper.ACTION_STATE_IDLE,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
         )).attachToRecyclerView(mRecyclerView);
+
+        if (isDualPane()) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int width = metrics.widthPixels;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
+            mListContainer.setLayoutParams(params);
+            mDetailContainer.setVisibility(View.VISIBLE);
+            mDetailContainer.setLayoutParams(params);
+        }
     }
 
     /**

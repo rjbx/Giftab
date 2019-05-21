@@ -112,10 +112,6 @@ public class IndexActivity extends AppCompatActivity implements
             if (pSpawns != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pSpawns, Spawn.class);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
-
-        Bundle arguments = getIntent().getExtras();
-        if (arguments != null && sDualPane && !mLock) showDualPane(arguments);
-
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
 
@@ -129,6 +125,17 @@ public class IndexActivity extends AppCompatActivity implements
                 ItemTouchHelper.ACTION_STATE_IDLE,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
                 )).attachToRecyclerView(mRecyclerView);
+
+
+        if (isDualPane()) {
+            DisplayMetrics metrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int width = metrics.widthPixels;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
+            mListContainer.setLayoutParams(params);
+            mDetailContainer.setVisibility(View.VISIBLE);
+            mDetailContainer.setLayoutParams(params);
+        }
     }
 
     /**
