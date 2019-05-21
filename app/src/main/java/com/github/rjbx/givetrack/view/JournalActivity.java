@@ -219,6 +219,11 @@ public class JournalActivity extends AppCompatActivity implements
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
+                if (sDualPane) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
+                    showDualPane(bundle);
+                }
                 if (mSnackbarMessage == null || mSnackbarMessage.isEmpty()) mSnackbarMessage = getString(R.string.message_record_refresh);
                 sb.setText(mSnackbarMessage).show();
                 break;
