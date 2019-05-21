@@ -386,7 +386,6 @@ public class GiveFragment extends Fragment implements
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
-        showSinglePane();
     }
 
     /**
@@ -652,6 +651,7 @@ public class GiveFragment extends Fragment implements
 //            sValuesArray[i].setPercent(sPercentages[i]);
 //            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
 //        }
+            showSinglePane();
             DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0])); // Locks UI on signout and remote launch
             sPercentagesAdjusted = false;
         }
