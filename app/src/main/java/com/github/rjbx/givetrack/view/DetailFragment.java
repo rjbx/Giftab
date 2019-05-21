@@ -41,7 +41,9 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 // TODO: Resolve save and restore
-//  1. Prevent parent adapter from recreating detail on rotation
+//  - Prevent parent adapter from recreating detail on rotation
+//  - Prevent detail pane from being closed on rotation
+//  - Prevent list position from being set to initial element on rotation
 /**
  * Provides the logic and views for a single detail screen.
  */
