@@ -521,8 +521,9 @@ public class HomeActivity extends AppCompatActivity implements
          * Prevents persisting child past parent when navigating away from Fragment
          */
         @Override public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+            String action = getIntent().getAction();
             if (object instanceof DetailFragment.MasterDetailFlow
-                    && ((DetailFragment.MasterDetailFlow) object).isDualPane())
+                    && ((DetailFragment.MasterDetailFlow) object).isDualPane() && (action != null && !action.equals(ACTION_CUSTOM_TABS)))
                 ((DetailFragment.MasterDetailFlow) object).showSinglePane();
             super.destroyItem(container, position, object);
         }
