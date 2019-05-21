@@ -284,8 +284,9 @@ public class GiveFragment extends Fragment implements
      */
     @Override public void showSinglePane() {
         if (mDetailFragment != null) getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
-        mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mDetailFragment = null;
         sDualPane = false;
+        mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
@@ -306,7 +307,6 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mSeries.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
-        mDetailFragment = null;
     }
 
     /**
@@ -386,6 +386,7 @@ public class GiveFragment extends Fragment implements
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
+        showSinglePane();
     }
 
     /**
@@ -708,6 +709,7 @@ public class GiveFragment extends Fragment implements
              * Defines behavior on click of inspect button.
              */
             @Optional @OnClick(R.id.inspect_button) void togglePane(View v) {
+                mDetailFragment = null;
 
                 int position = (int) v.getTag();
                 Target values = mTargetList.get(position);
