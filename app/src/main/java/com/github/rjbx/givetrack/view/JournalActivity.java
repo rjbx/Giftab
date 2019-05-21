@@ -92,7 +92,7 @@ public class JournalActivity extends AppCompatActivity implements
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
     @BindView(R.id.record_list_container) View mListContainer;
-    @BindView(R.id.record_item_container) View mItemContainer;
+    @BindView(R.id.record_detail_container) View mDetailContainer;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -113,7 +113,7 @@ public class JournalActivity extends AppCompatActivity implements
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
-        } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
+        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
         Bundle arguments = getIntent().getExtras();
@@ -264,7 +264,7 @@ public class JournalActivity extends AppCompatActivity implements
 
         mDetailFragment = DetailFragment.newInstance(args);
         JournalActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.record_item_container, mDetailFragment)
+                .replace(R.id.record_detail_container, mDetailFragment)
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -273,8 +273,8 @@ public class JournalActivity extends AppCompatActivity implements
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
         mListContainer.setLayoutParams(params);
-        mItemContainer.setVisibility(View.VISIBLE);
-        mItemContainer.setLayoutParams(params);
+        mDetailContainer.setVisibility(View.VISIBLE);
+        mDetailContainer.setLayoutParams(params);
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 

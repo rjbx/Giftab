@@ -16,7 +16,7 @@
         android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/donation_list"
+            android:id="@+id/give_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/colorChalk"
@@ -24,7 +24,7 @@
             tools:listitem="@layout/item_index"/>
 
         <FrameLayout
-            android:id="@+id/donation_detail_container"
+            android:id="@+id/give_detail_container"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight=".7"
@@ -35,24 +35,24 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/save_progress_bar"
+        android:id="@+id/give_progress_bar"
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:indeterminate="true"
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/colorCheer"
         android:visibility="gone"
-        app:layout_anchor="@id/action_bar_wrapper"
+        app:layout_anchor="@id/give_action_wrapper"
         app:layout_anchorGravity="top|center_horizontal"
         style="?android:attr/progressBarStyleHorizontal" />
 
     <FrameLayout
-        android:id="@+id/action_bar_wrapper"
+        android:id="@+id/give_action_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/action_bar"
+            android:id="@+id/give_action_bar"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_gravity="start|center_vertical"
@@ -63,7 +63,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/donation_wrapper"
+        android:id="@+id/give_percent_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
@@ -86,14 +86,14 @@
             android:contentDescription="@string/description_decrement_donation_text"/>
 
         <FrameLayout
-            android:id="@+id/donation_amount_label"
+            android:id="@+id/give_total_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight=".4"
-            android:labelFor="@id/donation_amount_text">
+            android:labelFor="@id/give_total_text">
 
             <EditText
-                android:id="@+id/donation_amount_text"
+                android:id="@+id/give_total_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="3dp"

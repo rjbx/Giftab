@@ -91,14 +91,14 @@ public class GiveFragment extends Fragment implements
     private float mMagnitude;
     private int mPanePosition;
     private int mListLength;
-    @BindView(R.id.save_progress_bar) ProgressBar mProgress;
-    @BindView(R.id.action_bar) ImageButton mActionBar;
-    @BindView(R.id.action_bar_wrapper) View mActionWrapper;
-    @BindView(R.id.donation_wrapper) View mDonationWrapper;
-    @BindView(R.id.donation_amount_text) EditText mTotalText;
-    @BindView(R.id.donation_amount_label) View mTotalLabel;
-    @BindView(R.id.donation_detail_container) View mDetailContainer;
-    @BindView(R.id.donation_list) RecyclerView mRecyclerView;
+    @BindView(R.id.give_progress_bar) ProgressBar mProgress;
+    @BindView(R.id.give_action_bar) ImageButton mActionBar;
+    @BindView(R.id.give_action_wrapper) View mActionWrapper;
+    @BindView(R.id.give_percent_wrapper) View mPercentWrapper;
+    @BindView(R.id.give_total_text) EditText mTotalText;
+    @BindView(R.id.give_total_label) View mTotalLabel;
+    @BindView(R.id.give_list) RecyclerView mRecyclerView;
+    @BindView(R.id.give_detail_container) View mDetailContainer;
 
     /**
      * Provides default constructor required for the {@link androidx.fragment.app.FragmentManager}
@@ -222,10 +222,10 @@ public class GiveFragment extends Fragment implements
                 contentView.getWindowVisibleDisplayFrame(r);
 
                 if (100 < (contentView.getHeight() - (r.bottom - r.top))) {
-                    mDonationWrapper.setVisibility(View.GONE);
+                    mPercentWrapper.setVisibility(View.GONE);
                     mActionWrapper.setVisibility(View.GONE);
                 } else {
-                    mDonationWrapper.setVisibility(View.VISIBLE);
+                    mPercentWrapper.setVisibility(View.VISIBLE);
                     mActionWrapper.setVisibility(View.VISIBLE);
                 }
 
@@ -268,7 +268,7 @@ public class GiveFragment extends Fragment implements
 
         mDetailFragment = DetailFragment.newInstance(args);
         getChildFragmentManager().beginTransaction()
-                .replace(R.id.donation_detail_container, mDetailFragment)
+                .replace(R.id.give_detail_container, mDetailFragment)
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -377,7 +377,7 @@ public class GiveFragment extends Fragment implements
     /**
      * Defines behavior on click of sync adjustments button.
      */
-    @OnClick(R.id.action_bar) void syncAdjustments() {
+    @OnClick(R.id.give_action_bar) void syncAdjustments() {
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             if (mListAdapter != null) mListAdapter.syncPercentages();
@@ -675,7 +675,7 @@ public class GiveFragment extends Fragment implements
             @BindView(R.id.charity_secondary) @Nullable TextView mFrequencyView;
             @BindView(R.id.charity_tertiary) @Nullable TextView mImpactView;
             @BindView(R.id.donation_percentage_text) @Nullable EditText mPercentageView;
-            @BindView(R.id.donation_amount_text) @Nullable TextView mAmountView;
+            @BindView(R.id.give_total_text) @Nullable TextView mAmountView;
             @BindView(R.id.donation_increment_button) @Nullable TextView mIncrementButton;
             @BindView(R.id.donation_decrement_button) @Nullable TextView mDecrementButton;
             @BindView(R.id.collection_add_button) @Nullable Button mAddButton;

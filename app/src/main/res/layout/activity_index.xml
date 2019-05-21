@@ -80,7 +80,7 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/spawn_item_container"
+                android:id="@+id/spawn_detail_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="gone"

@@ -79,12 +79,12 @@ public class IndexActivity extends AppCompatActivity implements
     private boolean sDialogShown;
     private boolean mFetching = false;
     private boolean mLock = true;
+    @BindView(R.id.spawn_progress) View mSpawnProgress;
     @BindView(R.id.spawn_fab) FloatingActionButton mFab;
     @BindView(R.id.spawn_toolbar) Toolbar mToolbar;
     @BindView(R.id.spawn_list) RecyclerView mRecyclerView;
     @BindView(R.id.spawn_list_container) View mListContainer;
-    @BindView(R.id.spawn_item_container) View mItemContainer;
-    @BindView(R.id.spawn_progress) View mSpawnProgress;
+    @BindView(R.id.spawn_detail_container) View mDetailContainer;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -108,7 +108,7 @@ public class IndexActivity extends AppCompatActivity implements
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
             mPanePosition = savedInstanceState.getInt(STATE_POSITION);
-        } else sDualPane = mItemContainer.getVisibility() == View.VISIBLE;
+        } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
 
         Bundle arguments = getIntent().getExtras();
@@ -273,7 +273,7 @@ public class IndexActivity extends AppCompatActivity implements
     @Override public void showDualPane(@NonNull Bundle args) {
         mDetailFragment = DetailFragment.newInstance(args);
         IndexActivity.this.getSupportFragmentManager().beginTransaction()
-                .replace(R.id.spawn_item_container, mDetailFragment)
+                .replace(R.id.spawn_detail_container, mDetailFragment)
                 .commit();
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -282,8 +282,8 @@ public class IndexActivity extends AppCompatActivity implements
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) (width * .5f), ViewGroup.LayoutParams.MATCH_PARENT);
         mListContainer.setLayoutParams(params);
-        mItemContainer.setVisibility(View.VISIBLE);
-        mItemContainer.setLayoutParams(params);
+        mDetailContainer.setVisibility(View.VISIBLE);
+        mDetailContainer.setLayoutParams(params);
 
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
