@@ -187,8 +187,6 @@ public class GiveFragment extends Fragment implements
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
-        if (isDualPane()) ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
-
         renderActionBar();
 
         return rootView;
@@ -202,7 +200,11 @@ public class GiveFragment extends Fragment implements
         if (getActivity() == null || !(getActivity() instanceof HomeActivity)) return;
         mParentActivity = (HomeActivity) getActivity();
         Bundle arguments = getArguments();
-        if (arguments != null && sDualPane) showDualPane(arguments);
+        if (isDualPane()) {
+            if (arguments != null && mDetailFragment == null) showDualPane(arguments);
+            else if (mRecyclerView != null && mDetailContainer != null)
+                ViewUtilities.launchDetailPane(this, mRecyclerView, mDetailContainer);
+        }
     }
 
     /**
