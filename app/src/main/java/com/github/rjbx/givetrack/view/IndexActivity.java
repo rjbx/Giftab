@@ -222,7 +222,7 @@ public class IndexActivity extends AppCompatActivity implements
                     mFetching = false;
                     sDialogShown = mUser.getIndexDialog();
                     if (!sDialogShown) showDialog();
-                } else if (sDualPane) {
+                } else if (!mLock && sDualPane) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                     showDualPane(bundle);

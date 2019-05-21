@@ -219,7 +219,7 @@ public class JournalActivity extends AppCompatActivity implements
                     } while (data.moveToNext());
                     if (!mLock) mAdapter.swapValues(mValuesArray);
                 }
-                if (sDualPane) {
+                if (!mLock && sDualPane) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                     showDualPane(bundle);
