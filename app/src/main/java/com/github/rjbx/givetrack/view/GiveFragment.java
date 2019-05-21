@@ -709,6 +709,7 @@ public class GiveFragment extends Fragment implements
              * Defines behavior on click of inspect button.
              */
             @Optional @OnClick(R.id.inspect_button) void togglePane(View v) {
+                if (mDetailFragment != null) getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
                 mDetailFragment = null;
 
                 int position = (int) v.getTag();

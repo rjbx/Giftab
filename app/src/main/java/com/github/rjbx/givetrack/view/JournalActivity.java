@@ -697,6 +697,7 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of record item view.
              */
             private void togglePane(View v) {
+                if (mDetailFragment != null) getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
                 mDetailFragment = null;
 
                 int position = (int) v.getTag();
