@@ -203,7 +203,7 @@ public class GiveFragment extends Fragment implements
         if (isDualPane()) {
             if (arguments != null && mDetailFragment == null) showDualPane(arguments);
             else if (mRecyclerView != null && mDetailContainer != null)
-                ViewUtilities.launchDetailPane(this, mRecyclerView, mDetailContainer);
+                ViewUtilities.launchDetailPane(mParentActivity, mRecyclerView, mDetailContainer);
         }
     }
 
