@@ -518,6 +518,8 @@ public class IndexActivity extends AppCompatActivity implements
              * Defines behavior on click of spawn item view.
              */
             @OnClick(R.id.spawn_item_view) void togglePane(View v) {
+                mDetailFragment = null;
+
                 int position = (int) v.getTag();
                 Spawn values = mValuesArray[position];
                 if (mPanePosition == position) sDualPane = !sDualPane;

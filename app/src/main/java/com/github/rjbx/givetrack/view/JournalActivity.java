@@ -697,6 +697,8 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of record item view.
              */
             private void togglePane(View v) {
+                mDetailFragment = null;
+
                 int position = (int) v.getTag();
                 Record values = mValuesArray[position];
                 if (mPanePosition == position) sDualPane = !sDualPane;
