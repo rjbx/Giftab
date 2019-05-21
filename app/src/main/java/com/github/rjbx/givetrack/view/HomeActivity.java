@@ -129,9 +129,6 @@ public class HomeActivity extends AppCompatActivity implements
         mNavigation.setNavigationItemSelectedListener(this);
 
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
-        if (mUser == null) return;
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
     }
 
 

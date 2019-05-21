@@ -97,10 +97,6 @@ public class IndexActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
-        if (mUser != null) {
-            getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
-            getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
-        }
 
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
