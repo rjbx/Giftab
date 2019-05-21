@@ -266,7 +266,12 @@ public class HomeActivity extends AppCompatActivity implements
             if (intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS)) {
                 mPagerAdapter.notifyDataSetChanged();
             }
-            else intent.setAction(null);
+            else {
+                mUserLock = true;
+                mTargetLock = true;
+                mRecordLock = true;
+                intent.setAction(null);
+            }
         }
     }
 
