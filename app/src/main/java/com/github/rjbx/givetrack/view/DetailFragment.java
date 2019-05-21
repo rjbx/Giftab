@@ -42,8 +42,8 @@ import java.util.List;
 
 // TODO: Resolve save and restore
 //  - Prevent parent adapter from recreating detail on rotation
-//  - Prevent detail pane from being closed on rotation
-//  - Prevent list position from being set to initial element on rotation
+//  - Prevent detail pane from being closed on rotation (index and journal) and CustomTabs back navigation (give)
+//  - Prevent list position from being set to initial element on rotation (index and journal)
 /**
  * Provides the logic and views for a single detail screen.
  */
