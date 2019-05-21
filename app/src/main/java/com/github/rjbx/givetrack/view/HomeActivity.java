@@ -159,6 +159,9 @@ public class HomeActivity extends AppCompatActivity implements
      */
     @Override public boolean onOptionsItemSelected(MenuItem item) {
 
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        if (action != null && action.equals(DetailFragment.ACTION_CUSTOM_TABS)) return false;
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
