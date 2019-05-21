@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -77,6 +78,7 @@ public class JournalActivity extends AppCompatActivity implements
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
+    private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private long mDeletedTime;
     private static boolean sDualPane;
     private DetailFragment mDetailFragment;
@@ -113,6 +115,8 @@ public class JournalActivity extends AppCompatActivity implements
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
+            Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_ARRAY);
+            if (pRecords != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
         if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
@@ -143,6 +147,7 @@ public class JournalActivity extends AppCompatActivity implements
         outState.putInt(POSITION_STATE, mPanePosition);
         outState.putString(STATE_ADDED, mAddedName);
         outState.putString(STATE_REMOVED, mRemovedName);
+        outState.putParcelableArray(STATE_ARRAY, mValuesArray);
     }
 
     /**
@@ -209,6 +214,7 @@ public class JournalActivity extends AppCompatActivity implements
                 }
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
+                if (mLock) break;
                 mValuesArray = new Record[data.getCount()];
                 if (data.moveToFirst()) {
                     int i = 0;
@@ -217,9 +223,9 @@ public class JournalActivity extends AppCompatActivity implements
                         AppUtilities.cursorRowToEntry(data, record);
                         mValuesArray[i++] = record;
                     } while (data.moveToNext());
-                    if (!mLock) mAdapter.swapValues(mValuesArray);
+                    mAdapter.swapValues(mValuesArray);
                 }
-                if (!mLock && sDualPane) {
+                if (sDualPane) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                     showDualPane(bundle);

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Parcelable;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -66,6 +67,7 @@ public class IndexActivity extends AppCompatActivity implements
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.PANE_POSITION";
+    private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.SPAWN_ARRAY";
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
     private ListAdapter mAdapter;
@@ -106,11 +108,13 @@ public class IndexActivity extends AppCompatActivity implements
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
             mPanePosition = savedInstanceState.getInt(STATE_POSITION);
+            Parcelable[] pSpawns = savedInstanceState.getParcelableArray(STATE_ARRAY);
+            if (pSpawns != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pSpawns, Spawn.class);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
 
         Bundle arguments = getIntent().getExtras();
-        if (arguments != null && sDualPane) showDualPane(arguments);
+        if (arguments != null && sDualPane && !mLock) showDualPane(arguments);
 
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
@@ -137,6 +141,7 @@ public class IndexActivity extends AppCompatActivity implements
         outState.putString(STATE_ADDED, mAddedName);
         outState.putString(STATE_REMOVED, mRemovedName);
         outState.putInt(STATE_POSITION, mPanePosition);
+        outState.putParcelableArray(STATE_ARRAY, mValuesArray);
     }
 
     /**
@@ -206,6 +211,7 @@ public class IndexActivity extends AppCompatActivity implements
                 }
                 break;
             case DatabaseContract.LOADER_ID_SPAWN:
+                if (mLock) break;
                 mSpawnProgress.setVisibility(View.GONE);
                 mValuesArray = new Spawn[data.getCount()];
                 int i = 0;
@@ -214,7 +220,7 @@ public class IndexActivity extends AppCompatActivity implements
                     AppUtilities.cursorRowToEntry(data, spawn);
                     mValuesArray[i++] = spawn;
                 } while (data.moveToNext());
-                if (!mLock) mAdapter.swapValues(mValuesArray);
+                mAdapter.swapValues(mValuesArray);
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
                     mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
@@ -222,7 +228,7 @@ public class IndexActivity extends AppCompatActivity implements
                     mFetching = false;
                     sDialogShown = mUser.getIndexDialog();
                     if (!sDialogShown) showDialog();
-                } else if (!mLock && sDualPane) {
+                } else if (sDualPane) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
                     showDualPane(bundle);
