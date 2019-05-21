@@ -72,7 +72,6 @@ public class HomeActivity extends AppCompatActivity implements
         DialogInterface.OnClickListener,
         DatePickerDialog.OnDateSetListener {
 
-    public static final String ACTION_CUSTOM_TABS = "com.github.rjbx.givetrack.ui.action.CUSTOM_TABS";
     public static final String ACTION_HOME_INTENT = "com.github.rjbx.givetrack.ui.action.HOME_INTENT";
 
     public static final String ARGS_PLACEHOLDER_ATTRIBUTES = "com.github.rjbx.givetrack.ui.arg.PLACEHOLDER_ATTRIBUTES";
