@@ -268,7 +268,7 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @Override public void showDualPane(@NonNull Bundle args) {
 
-        if (mDetailFragment != null) {
+        if (mDetailFragment == null) {
             mDetailFragment = DetailFragment.newInstance(args);
             JournalActivity.this.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.record_detail_container, mDetailFragment)

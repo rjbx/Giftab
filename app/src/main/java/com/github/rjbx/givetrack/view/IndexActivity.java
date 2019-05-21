@@ -273,7 +273,7 @@ public class IndexActivity extends AppCompatActivity implements
      */
     @Override public void showDualPane(@NonNull Bundle args) {
 
-        if (mDetailFragment != null) {
+        if (mDetailFragment == null) {
             mDetailFragment = DetailFragment.newInstance(args);
             IndexActivity.this.getSupportFragmentManager().beginTransaction()
                     .replace(R.id.spawn_detail_container, mDetailFragment)
