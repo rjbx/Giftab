@@ -123,7 +123,7 @@ public class IndexActivity extends AppCompatActivity implements
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         assert mRecyclerView != null;
-        mAdapter = new ListAdapter();
+        mAdapter = new ListAdapter(mValuesArray);
         mRecyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(getSimpleCallback(
                 ItemTouchHelper.ACTION_STATE_IDLE,
@@ -427,8 +427,9 @@ public class IndexActivity extends AppCompatActivity implements
          * Instantiates the {@link RecyclerView.Adapter} and locks requests to populate
          * until active {@link User} is returned from {@link Loader} callback.
          */
-        ListAdapter() {
+        ListAdapter(Spawn[] valuesArray) {
             super();
+            mValuesArray = valuesArray;
             mLock = true;
         }
 

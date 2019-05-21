@@ -130,7 +130,7 @@ public class JournalActivity extends AppCompatActivity implements
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         assert mRecyclerView != null;
-        mAdapter = new ListAdapter();
+        mAdapter = new ListAdapter(mValuesArray);
         mRecyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(getSimpleCallback(
                 ItemTouchHelper.ACTION_STATE_IDLE,
@@ -384,8 +384,9 @@ public class JournalActivity extends AppCompatActivity implements
 
         private Record[] mValuesArray;
 
-        ListAdapter() {
+        ListAdapter(Record[] valuesArray) {
             super();
+            mValuesArray = valuesArray;
             mLock = true;
         }
 
