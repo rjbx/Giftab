@@ -255,7 +255,7 @@ public class DetailFragment extends Fragment {
             else mMasterDetailFlow.removeEntry(sCompany);
 //            mEnabled = false;
         }
-        if (mMasterDetailFlow == mParentActivity) mMasterDetailFlow.showSinglePane();
+        if (mMasterDetailFlow == mParentActivity && mMasterDetailFlow.isDualPane()) mMasterDetailFlow.showSinglePane();
     }
 
     /**

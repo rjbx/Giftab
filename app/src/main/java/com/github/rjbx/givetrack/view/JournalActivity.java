@@ -296,14 +296,14 @@ public class JournalActivity extends AppCompatActivity implements
     public void addEntry(Spawn spawn) {
         DatabaseManager.startActionTargetSpawn(this, spawn);
         mAddedName = spawn.getName();
-        showSinglePane();
+        if (isDualPane()) showSinglePane();
     }
 
     @Override
     public void removeEntry(Company company) {
         DatabaseManager.startActionUntargetCompany(this, company);
         mRemovedName = company.getName();
-        showSinglePane();
+        if (isDualPane()) showSinglePane();
     }
 
     /**
@@ -709,7 +709,7 @@ public class JournalActivity extends AppCompatActivity implements
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSuper());
                 if (sDualPane) showDualPane(arguments);
-                else showSinglePane();
+                else if (isDualPane()) showSinglePane();
             }
         }
     }
