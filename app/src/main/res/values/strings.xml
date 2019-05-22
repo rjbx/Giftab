@@ -181,7 +181,7 @@
     <string name="pref_indexGender_label">Gender</string>
     <string name="pref_delete_label">Delete Account</string>
     <string name="pref_giveReset_label">Equal Percents</string>
-    <string name="pref_giveCurrent_label">Record Date Reset</string>
+    <string name="pref_giveCurrent_label">Reset Record Date</string>
     <string name="pref_magnitude_label">Adjustment Magnitude</string>
     <string name="pref_clear_label">Clear Data</string>
     <string name="pref_reset_label">Reset Search</string>
