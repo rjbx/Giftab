@@ -406,7 +406,7 @@ public class JournalActivity extends AppCompatActivity implements
                 if (position != mPanePosition) {
                     holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
                 } else {
-                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                    holder.mStatsView.setBackgroundColor(getResources().getColor(R.color.colorHeat, null));
                 }
                 holder.mEntityView.setVisibility(View.GONE);
             }
