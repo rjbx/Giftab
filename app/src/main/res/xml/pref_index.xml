@@ -24,8 +24,8 @@
         android:disableDependentsState="true"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
-        android:summaryOn="Search for a single charity by EIN."
-        android:summaryOff="Search for multiple charities."/>
+        android:summaryOn="Search for a single organization by EIN."
+        android:summaryOff="Search for multiple organizations."/>
 
     <EditTextPreference
         android:enabled="false"
@@ -106,7 +106,7 @@
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all search results.\nClearing does not impact saved items."/>
+        android:summary="Clear all search results. Clearing does not impact saved items."/>
 
     <Preference
         android:key="@string/pref_show_key"

@@ -21,7 +21,7 @@
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all records and related data.\nClearing does not impact your saved collection."/>
+        android:summary="Clear all records and related data. Clearing does not impact your saved collection."/>
 
     <Preference
         android:key="@string/pref_show_key"

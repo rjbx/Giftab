@@ -12,12 +12,12 @@
     <Preference
         android:key="@string/pref_giveReset_key"
         android:title="@string/pref_giveReset_label"
-        android:summary="Allocate the same percentage of donations to each charity"/>
+        android:summary="Allocate the same percentage of donations to each organization"/>
 
     <Preference
         android:key="@string/pref_giveCurrent_key"
         android:title="@string/pref_giveCurrent_label"
-        android:summary="Set the date applied to newly-created records to that of current"/>
+        android:summary="Set the date applied to new records as today"/>
 
     <Preference
         android:key="@string/pref_giveMagnitude_key"
@@ -38,7 +38,7 @@
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all saved items and related data.\nClearing does not impact historical records."/>
+        android:summary="Clear all saved items and related data. Clearing does not impact historical records."/>
 
     <Preference
         android:key="@string/pref_show_key"
