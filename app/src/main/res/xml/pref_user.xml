@@ -47,7 +47,7 @@
         android:key="@string/pref_userConvert_key"
         android:title="@string/pref_userConvert_label"
         android:enabled="false"
-        android:summary="Convert guest account into credentialed user"/>
+        android:summary="Save your data by converting this guest account into a credentialed user. Once signed out, guest account data is not recoverable."/>
 
     <!--<ListPreference-->
         <!--android:defaultValue="-1"-->

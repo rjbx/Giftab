@@ -152,7 +152,7 @@
     <string name="pref_indexFocus_key" translatable="false">indexFocus</string>
     <string name="pref_userGender_key" translatable="false">userGender</string>
     <string name="pref_userBirthdate_label">Birthdate</string>
-    <string name="pref_userConvert_label">Keep guest account</string>
+    <string name="pref_userConvert_label">Convert Guest To User</string>
     <string name="pref_userEmail_key" translatable="false">userEmail</string>
     <string name="pref_userBirthdate_key" translatable="false">userBirthdate</string>
     <string name="pref_userConvert_key" translatable="false">userConvert</string>
@@ -175,14 +175,14 @@
     <string name="pref_indexRows_label">Rows</string>
     <string name="pref_indexMinrating_label">Minimum Rating</string>
     <string name="pref_indexFundraising_label">Advisory Filter</string>
-    <string name="pref_indexRanked_label">Ranked Search</string>
-    <string name="pref_indexFocused_label">Focused Search</string>
-    <string name="pref_indexEin_label">Employer Identification Number</string>
+    <string name="pref_indexRanked_label">CN Top Picks</string>
+    <string name="pref_indexFocused_label">Single Entity Search</string>
+    <string name="pref_indexEin_label">EIN</string>
     <string name="pref_indexGender_label">Gender</string>
     <string name="pref_delete_label">Delete Account</string>
-    <string name="pref_giveReset_label">Recalibrate Percentages</string>
-    <string name="pref_giveCurrent_label">Reset Date</string>
-    <string name="pref_magnitude_label">Adjust Magnitude</string>
+    <string name="pref_giveReset_label">Equal Percents</string>
+    <string name="pref_giveCurrent_label">Record Date Reset</string>
+    <string name="pref_magnitude_label">Adjustment Magnitude</string>
     <string name="pref_clear_label">Clear Data</string>
     <string name="pref_reset_label">Reset Search</string>
     <string name="pref_show_label">Show All</string>
@@ -373,7 +373,7 @@
 
     <string name="pref_header_give">Home</string>
 
-    <string name="pref_giveRounding_label">Round Amounts</string>
+    <string name="pref_giveRounding_label">Round Record Amounts</string>
     <string-array name="list_preference_giveRounding">
         <item>Down</item>
         <item>Up</item>

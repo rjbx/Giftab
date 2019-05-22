@@ -7,8 +7,8 @@
         android:defaultValue="true"
         android:key="@string/pref_indexFilter_key"
         android:title="@string/pref_indexFundraising_label"
-        android:summaryOn="Show approved fundraising organizations"
-        android:summaryOff="Show all organizations"/>
+        android:summaryOn="Show IRS-approved fundraising organizations"
+        android:summaryOff="Show organizations regardless of IRS approval"/>
 
     <SwitchPreference
         android:dependency="@string/pref_indexFocus_key"
@@ -16,30 +16,32 @@
         android:defaultValue="true"
         android:key="@string/pref_indexRanked_key"
         android:title="@string/pref_indexRanked_label"
-        android:summaryOn="Show organizations by ranking"
-        android:summaryOff="Do not show organizations by ranking"/>
+        android:summaryOn="Show the top-ranked organizations from Charity Navigator. Only geographic narrowing is enabled."
+        android:summaryOff="Show organizations narrowed by geography as well as keyword and rating."/>
 
     <SwitchPreference
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:key="@string/pref_indexFocus_key"
         android:title="@string/pref_indexFocused_label"
-        android:summaryOn="Spawn for single charity"
-        android:summaryOff="Spawn for multiple charities"/>
+        android:summaryOn="Search for a single charity by EIN."
+        android:summaryOff="Search for multiple charities."/>
 
     <EditTextPreference
         android:enabled="false"
         android:inputType="number"
         android:key="@string/pref_indexCompany_key"
         android:singleLine="true"
-        android:title="@string/pref_indexEin_label"/>
+        android:title="@string/pref_indexEin_label"
+        android:summary="Enter the organization's IRS Employer Identification Number"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexRanked_key"
         android:inputType="textCapWords"
         android:key="@string/pref_indexTerm_key"
         android:singleLine="true"
-        android:title="@string/pref_indexTerm_label"/>
+        android:title="@string/pref_indexTerm_label"
+        android:summary="Results will be ordered by relevance to the entered terms"/>
 
     <ListPreference
         android:dependency="@string/pref_indexRanked_key"
@@ -48,7 +50,8 @@
         android:key="@string/pref_indexMinrating_key"
         android:negativeButtonText="Clear Selection"
         android:positiveButtonText="OK"
-        android:title="@string/pref_indexMinrating_label"/>
+        android:title="@string/pref_indexMinrating_label"
+        android:summary="Filter out organizations with CN ratings below the selection"/>
 
     <EditTextPreference
         android:dependency="@string/pref_indexFocus_key"
@@ -103,7 +106,7 @@
     <Preference
         android:key="@string/pref_clear_key"
         android:title="@string/pref_clear_label"
-        android:summary="Clear all spawn results.\nClearing does not impact saved items."/>
+        android:summary="Clear all search results.\nClearing does not impact saved items."/>
 
     <Preference
         android:key="@string/pref_show_key"
