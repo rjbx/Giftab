@@ -293,7 +293,7 @@ public class IndexActivity extends AppCompatActivity implements
         mDetailFragment = null;
         sDualPane = false;
 
-        mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mListContainer != null) mListContainer.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mAdapter != null) mAdapter.notifyDataSetChanged();
     }
 

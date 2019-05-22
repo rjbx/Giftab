@@ -286,7 +286,7 @@ public class GiveFragment extends Fragment implements
         if (mDetailFragment != null) getChildFragmentManager().beginTransaction().remove(mDetailFragment).commit();
         mDetailFragment = null;
         sDualPane = false;
-        mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        if (mRecyclerView != null) mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         if (mListAdapter != null) mListAdapter.notifyDataSetChanged();
     }
 
