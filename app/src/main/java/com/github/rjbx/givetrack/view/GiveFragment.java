@@ -651,7 +651,7 @@ public class GiveFragment extends Fragment implements
 //            sValuesArray[i].setPercent(sPercentages[i]);
 //            Timber.d(sPercentages[i] + " " + mAmountTotal + " " + i + " " + sPercentages.length);
 //        }
-            showSinglePane();
+            if (isDualPane()) showSinglePane();
             DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0])); // Locks UI on signout and remote launch
             sPercentagesAdjusted = false;
         }
