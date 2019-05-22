@@ -216,7 +216,7 @@ public class DetailFragment extends Fragment {
                 R.drawable.minus: R.drawable.plus);
         mFab.setBackgroundTintList(sCurrentState ?
                 ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorAttentionDark, null)) :
-                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversionLight, null)));
+                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversionDark, null)));
         mFab.setContentDescription(sCurrentState ? mContext.getString(R.string.description_collected_remove_button) :
                 mContext.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();
