@@ -28,6 +28,7 @@
         android:summaryOff="Spawn for multiple charities"/>
 
     <EditTextPreference
+        android:enabled="false"
         android:inputType="number"
         android:key="@string/pref_indexCompany_key"
         android:singleLine="true"
