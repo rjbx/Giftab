@@ -550,15 +550,19 @@ public class ConfigActivity
             if (ratingPref.getValue() == null)
                 ratingPref.setValueIndex(ratingPref.getEntries().length - 1);
 
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexFocus_key)), this);
+            SwitchPreference focusPref = (SwitchPreference) findPreference(getString(R.string.pref_indexFocus_key));
+            EditTextPreference companyPref = (EditTextPreference) findPreference(getString(R.string.pref_indexCompany_key));
+            companyPref.setEnabled(focusPref.isChecked());
+
+            handlePreferenceChange(focusPref, this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexFilter_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexTerm_key)), this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexCity_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexState_key)), this);
+            handlePreferenceChange(statePref, this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexMinrating_key)), this);
+            handlePreferenceChange(ratingPref, this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexRanked_key)), this);
-            handlePreferenceChange(findPreference(getString(R.string.pref_indexCompany_key)), this);
+            handlePreferenceChange(findPreference(companyPref), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
@@ -570,8 +574,8 @@ public class ConfigActivity
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
-                Preference termPreference = findPreference(getString(R.string.pref_indexCompany_key));
-                termPreference.setEnabled((boolean) newValue);
+                Preference companyPref = findPreference(getString(R.string.pref_indexCompany_key));
+                companyPref.setEnabled((boolean) newValue);
             }
             ConfigActivity.changeSummary(preference, newValue);
             ConfigActivity.changeUser(preference, newValue);
