@@ -14,9 +14,9 @@
     <color name="colorHeat">#FF8800</color>
     <color name="colorHeatDark">#DD6600</color>
     <color name="colorHeatLight">#FFAA00</color>
-    <color name="colorConversionLight">#09DB50</color>
-    <color name="colorConversion">#05BB33</color>
-    <color name="colorConversionDark">#119944</color>
+    <color name="colorConversionLight">#48b53f</color>
+    <color name="colorConversion">#009900</color>
+    <color name="colorConversionDark">#007700</color>
     <color name="colorComfort">#AC59E1</color>
     <color name="colorComfortDark">#674EA7</color>
     <color name="colorComfortLight">#CE7AF0</color>
