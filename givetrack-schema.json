@@ -82,7 +82,7 @@
       "glanceTheme" : 0,
       "journalOrder" : "DESC",
       "journalSort" : "time",
-      "indexRanked" : false,
+      "indexRanked" : true,
       "indexAnchor" : 0,
       "indexCity" : "",
       "indexCompany" : "",

@@ -540,7 +540,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.indexPages = "";
         user.indexRows = "";
         user.giveReset = false;
-        user.indexRanked = false;
+        user.indexRanked = true;
         user.journalSort = "time";
         user.journalOrder = "DESC";
         user.targetStamp = 0; // Resets User stamps

@@ -29,7 +29,7 @@
     <SwitchPreference
         android:dependency="@string/pref_indexFocus_key"
         android:disableDependentsState="true"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:key="@string/pref_indexRanked_key"
         android:title="@string/pref_indexRanked_label"
         android:summaryOn="Show organizations by ranking"
@@ -59,14 +59,12 @@
         android:title="@string/pref_indexZip_label"/>
 
     <!--<ListPreference-->
-    <!--android:dependency="@string/pref_indexFocus_key"-->
-    <!--android:entries="@array/list_preference_sortIndex"-->
-    <!--android:entryValues="@array/list_preference_sortIndex_values"-->
-    <!--android:key="@string/pref_indexSort_key"-->
-    <!--android:negativeButtonText="@null"-->
-    <!--android:positiveButtonText="@null"-->
-
-        <!--android:title="@string/pref_indexSort_label"/>-->
+        <!--android:dependency="@string/pref_indexFocus_key"-->
+        <!--android:entries="@array/list_preference_sortIndex"-->
+        <!--android:entryValues="@array/list_preference_sortIndex_values"-->
+        <!--android:key="@string/pref_indexSort_key"-->
+        <!--android:negativeButtonText="@null"-->
+        <!--android:positiveButtonText="@null"-->
 
     <!--<EditTextPreference-->
         <!--android:dependency="@string/pref_indexFocus_key"-->
@@ -81,7 +79,6 @@
         <!--android:key="@string/pref_indexSize_key"-->
         <!--android:singleLine="true"-->
         <!--android:title="@string/pref_indexRows_label"/>-->
-
 
     <SwitchPreference
         android:defaultValue="false"
