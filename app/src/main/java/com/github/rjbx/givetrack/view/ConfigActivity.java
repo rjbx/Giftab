@@ -569,8 +569,8 @@ public class ConfigActivity
          */
         @Override public boolean onPreferenceChange(Preference preference, Object newValue) {
             String preferenceKey = preference.getKey();
-            if (getString(R.string.pref_indexCompany_key).equals(preferenceKey)) {
-                Preference termPreference = findPreference(getString(R.string.pref_indexTerm_key));
+            if (getString(R.string.pref_indexFocus_key).equals(preferenceKey)) {
+                Preference termPreference = findPreference(getString(R.string.pref_indexCompany_key));
                 termPreference.setEnabled((boolean) newValue);
             }
             ConfigActivity.changeSummary(preference, newValue);
