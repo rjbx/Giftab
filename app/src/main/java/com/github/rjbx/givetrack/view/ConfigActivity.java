@@ -562,7 +562,7 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_indexZip_key)), this);
             handlePreferenceChange(ratingPref, this);
             handlePreferenceChange(findPreference(getString(R.string.pref_indexRanked_key)), this);
-            handlePreferenceChange(findPreference(companyPref), this);
+            handlePreferenceChange(companyPref, this);
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
