@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <color name="colorPrimary">#048af1</color>
-    <color name="colorPrimaryDark">#0567cb</color>
-    <color name="colorPrimaryLight">#5fb7ff</color>
+    <color name="colorPrimary">#048AF1</color>
+    <color name="colorPrimaryDark">#0567CB</color>
+    <color name="colorPrimaryLight">#5FB7FF</color>
     <color name="colorCheer">#F7BA28</color>
     <color name="colorCheerDark">#AC8100</color>
     <color name="colorCheerLight">#FFDA70</color>
@@ -14,7 +14,7 @@
     <color name="colorHeat">#FF8800</color>
     <color name="colorHeatDark">#DD6600</color>
     <color name="colorHeatLight">#FFAA00</color>
-    <color name="colorConversionLight">#48b53f</color>
+    <color name="colorConversionLight">#48B53F</color>
     <color name="colorConversion">#009900</color>
     <color name="colorConversionDark">#007700</color>
     <color name="colorComfort">#AC59E1</color>
