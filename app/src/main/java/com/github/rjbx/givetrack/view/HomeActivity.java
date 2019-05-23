@@ -27,6 +27,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.core.view.GravityCompat;
 
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.widget.DatePicker;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -82,9 +83,14 @@ public class HomeActivity extends AppCompatActivity implements
     private static final String STATE_RECORD_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_TARGET_ARRAY = "com.github.rjbx.givetrack.ui.state.TARGET_ARRAY";
     private static final String STATE_ACTIVE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
+    private static final String STATE_USER_LOCK = "com.github.rjbx.givetrack.ui.state.USER_LOCK";
+    private static final String STATE_TARGET_LOCK = "com.github.rjbx.givetrack.ui.state.TARGET_LOCK";
+    private static final String STATE_RECORD_LOCK = "com.github.rjbx.givetrack.ui.state.RECORD_LOCK";
+
     private boolean mUserLock = true;
     private boolean mTargetLock = true;
     private boolean mRecordLock = true;
+
     private long mAnchorTime;
     private SectionsPagerAdapter mPagerAdapter;
     private Target[] mTargetArray;
@@ -108,6 +114,9 @@ public class HomeActivity extends AppCompatActivity implements
         setSupportActionBar(mToolbar);
 
         if (savedInstanceState != null) {
+            mUserLock = savedInstanceState.getBoolean(STATE_USER_LOCK);
+            mTargetLock = savedInstanceState.getBoolean(STATE_TARGET_LOCK);
+            mRecordLock = savedInstanceState.getBoolean(STATE_RECORD_LOCK);
             mUser = savedInstanceState.getParcelable(STATE_ACTIVE_USER);
             Parcelable[] pTargets = savedInstanceState.getParcelableArray(STATE_TARGET_ARRAY);
             Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
@@ -130,7 +139,13 @@ public class HomeActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
-
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        outState.putBoolean(STATE_USER_LOCK, mUserLock);
+        outState.putBoolean(STATE_TARGET_LOCK, mTargetLock);
+        outState.putBoolean(STATE_RECORD_LOCK, mRecordLock);
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
 
     public Context getContext() {
         return this;
