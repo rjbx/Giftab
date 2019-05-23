@@ -371,7 +371,7 @@ public class IndexActivity extends AppCompatActivity implements
         mSpawnDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         mSpawnDialog.show();
         mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
-        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
     }
 
     /**

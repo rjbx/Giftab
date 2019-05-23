@@ -656,7 +656,7 @@ public class JournalActivity extends AppCompatActivity implements
                 mDateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.dialog_option_cancel), this);
                 mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
                 mDateDialog.show();
-                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 button.setTextColor(getResources().getColor(R.color.colorConversion, null));
                 button.setTag(position);

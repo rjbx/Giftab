@@ -302,7 +302,7 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
         mRemoveDialog.show();
-        mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttention, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mSeries.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
