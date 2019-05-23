@@ -555,7 +555,7 @@ public class GlanceFragment extends Fragment implements
         };
 
         int overviewColors[] = {
-                getResources().getColor(R.color.colorConversion, null),
+                getResources().getColor(R.color.colorConversionLight, null),
                 getResources().getColor(R.color.colorConversionDark, null)
         };
 

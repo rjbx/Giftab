@@ -430,8 +430,8 @@ public class GiveFragment extends Fragment implements
             actionBarIcon = android.R.drawable.stat_sys_warning;
             progressBarVisibility = View.GONE;
         } else {
-            actionBarColor = R.color.colorConversionLight;
             barWrapperColor = R.color.colorConversion;
+            actionBarColor = R.color.colorConversionLight;
             actionBarIcon = R.drawable.action_download;
             progressBarVisibility = View.GONE;
         }
