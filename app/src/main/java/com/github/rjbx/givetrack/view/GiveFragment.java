@@ -524,7 +524,7 @@ public class GiveFragment extends Fragment implements
                     int left = (int) getResources().getDimension(R.dimen.list_margin);
                     int top = (int) getResources().getDimension(R.dimen.list_margin_top);
                     int right = (int) getResources().getDimension(R.dimen.list_margin);
-                    int bottom = (int) getResources().getDimension(R.dimen.list_margin);
+                    int bottom = 0;
                 if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     left = (int) getResources().getDimension(R.dimen.item_horizontal_margins);
                     top = (int) getResources().getDimension(R.dimen.item_initial_top_margin);
