@@ -98,7 +98,6 @@ public class GlanceFragment extends Fragment implements
     private static int mGraphType;
     private static int mHomeType;
     private static int sThemeIndex;
-    private int mScrollState;
     private int mDescFontSize;
     private long mAnchorDate;
     private float mAxisFontSize;
@@ -184,7 +183,8 @@ public class GlanceFragment extends Fragment implements
         mTypeText.setPaintFlags(mTypeText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         if (savedInstanceState != null) {
-            mScrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
+            int scrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
+            mScrollView.setScrollY(scrollState);
         }
 
         Bundle args = getArguments();
@@ -246,7 +246,7 @@ public class GlanceFragment extends Fragment implements
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt(SCROLL_STATE, mScrollState);
+        outState.putInt(SCROLL_STATE, mScrollView.getScrollY());
         super.onSaveInstanceState(outState);
     }
 
