@@ -555,8 +555,8 @@ public class GlanceFragment extends Fragment implements
         };
 
         int overviewColors[] = {
-                getResources().getColor(R.color.colorConversionLight, null),
-                getResources().getColor(R.color.colorConversionDark, null)
+                getResources().getColor(R.color.colorConversionDark, null),
+                getResources().getColor(R.color.colorConversionLight, null)
         };
 
         PieDataSet percentageSet = new PieDataSet(percentageEntries, "");
