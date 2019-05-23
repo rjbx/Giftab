@@ -554,11 +554,13 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of stats view.
              */
             @OnClick(R.id.record_time_text) void editTime(View v) {
+                int position = (int) v.getTag();
+                long time = mValuesArray[position].getTime();
                 if (isDualPane()) togglePane(v);
                 else {
                     Context context = v.getContext();
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(mUser.getGiveAnchor());
+                    calendar.setTimeInMillis(time);
                     DatePickerDialog datePicker = new DatePickerDialog(
                             context,
                             this,
