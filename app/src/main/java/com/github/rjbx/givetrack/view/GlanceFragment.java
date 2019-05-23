@@ -601,8 +601,8 @@ public class GlanceFragment extends Fragment implements
         String averageMessage = String.format(" %sly\n\n%s %s\n%s %s\n", mIntervalContent, intervalLabel, CURRENCY_FORMATTER.format(perInterval), donationLabel, CURRENCY_FORMATTER.format(perDonation));
 
         List<PieEntry> averageEntries = new ArrayList<>();
-        averageEntries.add(new PieEntry(perInterval, intervalLabel));
         averageEntries.add(new PieEntry(perDonation, donationLabel));
+        averageEntries.add(new PieEntry(perInterval, intervalLabel));
 
         PieDataSet averageSet = new PieDataSet(averageEntries, "");
         averageSet.setColors(overviewColors);
@@ -665,8 +665,8 @@ public class GlanceFragment extends Fragment implements
         String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s\n", mIntervalContent, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
-        if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalContent)));
         if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalContent)));
+        if (percentRecent > 0f) timingEntries.add(new PieEntry(percentRecent, String.format("Within 7 %ss", mIntervalContent)));
         PieDataSet timingSet = new PieDataSet(timingEntries, "");
         timingSet.setColors(overviewColors);
 
