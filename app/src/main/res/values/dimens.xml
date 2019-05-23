@@ -21,7 +21,7 @@
     <dimen name="piechart_diameter">300dp</dimen>
     <dimen name="list_margin_top">16dp</dimen>
     <dimen name="list_margin">12dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
+    <dimen name="text_margin">24dp</dimen>
     <dimen name="button_padding">32dp</dimen>
     <dimen name="text_size_description">2sp</dimen>
     <dimen name="text_size_subtitle">6sp</dimen>
