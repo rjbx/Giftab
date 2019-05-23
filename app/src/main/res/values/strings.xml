@@ -128,10 +128,10 @@
     <string name="axis_value_alltime">%sly High</string>
     <string name="axis_value_daily">Daily</string>
     <string name="axis_value_donation">Donated</string>
-    <string name="chart_title_timing">Timing Comparison</string>
-    <string name="chart_title_average">Average Comparison</string>
+    <string name="chart_title_timing">Timing</string>
+    <string name="chart_title_average">Averages</string>
     <string name="chart_title_activity">Recent Activity</string>
-    <string name="chart_title_usage">High Comparison</string>
+    <string name="chart_title_usage">Highs</string>
     <string name="chart_title_percentage">Gift Recipients</string>
     <string name="charts_title"><u>Giving</u></string>
     <string name="symbol_increment_button">+</string>
