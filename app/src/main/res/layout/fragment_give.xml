@@ -29,7 +29,7 @@
             android:layout_height="match_parent"
             android:layout_weight=".7"
             android:visibility="gone"
-            android:background="@color/colorNeutral"
+            android:background="@color/colorNeutralLight"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </LinearLayout>

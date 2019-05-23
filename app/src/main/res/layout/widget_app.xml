@@ -25,7 +25,7 @@
         android:layout_weight=".6"
         android:padding="4dp"
         tools:listitem="@layout/item_widget"
-        android:background="@color/colorNeutral"/>
+        android:background="@color/colorNeutralLight"/>
 
     <include layout="@layout/button_widget"/>
 

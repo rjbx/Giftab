@@ -34,7 +34,7 @@
     </style>
 
     <style name="AppTheme.AuthOverlay" parent="AppTheme">
-        <item name="colorAccent">@color/colorConversionDark</item>
+        <item name="colorAccent">@color/colorConversion</item>
     </style>
 
     <style name="FirebaseUI.AuthMethodPicker.Logo">
@@ -46,7 +46,7 @@
         <item name="android:layout_height">10dp</item>
         <item name="android:indeterminate">true</item>
         <item name="android:indeterminateTintMode">src_atop</item>
-        <item name="android:indeterminateTint">@color/colorConversion</item>
+        <item name="android:indeterminateTint">@color/colorConversionLight</item>
         <item name="android:visibility">invisible</item>
         <item name="mpb_progressStyle">horizontal</item>
         <item name="mpb_useIntrinsicPadding">false</item>

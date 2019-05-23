@@ -27,7 +27,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import butterknife.BindView;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
@@ -215,8 +214,8 @@ public class DetailFragment extends Fragment {
         mFab.setImageResource(sCurrentState ?
                 R.drawable.minus: R.drawable.plus);
         mFab.setBackgroundTintList(sCurrentState ?
-                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorAttentionDark, null)) :
-                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversionDark, null)));
+                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorAttention, null)) :
+                ColorStateList.valueOf(mContext.getResources().getColor(R.color.colorConversion, null)));
         mFab.setContentDescription(sCurrentState ? mContext.getString(R.string.description_collected_remove_button) :
                 mContext.getString(R.string.description_collected_add_button));
         mFab.refreshDrawableState();

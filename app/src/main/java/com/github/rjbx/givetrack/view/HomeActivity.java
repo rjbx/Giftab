@@ -21,7 +21,6 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.transition.Fade;
 import androidx.viewpager.widget.ViewPager;
@@ -329,8 +328,8 @@ public class HomeActivity extends AppCompatActivity implements
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAnchorDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAnchorDialog.show();
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mAnchorDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
     }
 
     /**
@@ -351,8 +350,8 @@ public class HomeActivity extends AppCompatActivity implements
                         mCurrentDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), this);
                         mCurrentDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_change), this);
                         mCurrentDialog.show();
-                        mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
-                        mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorAttention, null));
+                        mCurrentDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
                     } else mUser.setGiveTiming(0);
                     DatabaseManager.startActionUpdateUser(this, mUser);
                     break;

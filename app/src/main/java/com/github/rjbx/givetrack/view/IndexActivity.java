@@ -2,7 +2,6 @@ package com.github.rjbx.givetrack.view;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -21,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Parcelable;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +32,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
 import com.bumptech.glide.Glide;
 import com.github.rjbx.givetrack.AppUtilities;
@@ -374,8 +370,8 @@ public class IndexActivity extends AppCompatActivity implements
         mSpawnDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_start), this);
         mSpawnDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_later), this);
         mSpawnDialog.show();
-        mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark, null));
-        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
+        mSpawnDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
     }
 
     /**
@@ -464,7 +460,7 @@ public class IndexActivity extends AppCompatActivity implements
             } else {
                 holder.mItemDetails.setVisibility(View.GONE);
                 if (position != mPanePosition) {
-                    holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorNeutral));
+                    holder.mItemView.setBackgroundColor(getResources().getColor(R.color.colorNeutralLight));
                     holder.mLogoView.setVisibility(View.GONE);
                 }
                 else {

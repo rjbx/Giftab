@@ -398,8 +398,8 @@ public class GlanceFragment extends Fragment implements
         mTimeDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mTimeDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mTimeDialog.show();
-        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+        mTimeDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mTimeDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorAttention, null));
 
     }
 
@@ -556,7 +556,7 @@ public class GlanceFragment extends Fragment implements
 
         int overviewColors[] = {
                 getResources().getColor(R.color.colorConversion, null),
-                getResources().getColor(R.color.colorConversionLight, null)
+                getResources().getColor(R.color.colorConversionDark, null)
         };
 
         PieDataSet percentageSet = new PieDataSet(percentageEntries, "");
@@ -804,8 +804,8 @@ public class GlanceFragment extends Fragment implements
         scrollView.addView(linearLayout);
         mChartDialog.setView(scrollView);
         mChartDialog.show();
-        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-        mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutral, null));
         Window window = mChartDialog.getWindow();
         if (window == null) return;
         window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

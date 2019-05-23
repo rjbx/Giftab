@@ -113,7 +113,7 @@
         android:id="@+id/home_amount_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAttentionDark"
+        android:background="@color/colorAttention"
         android:paddingTop="4dp"
         android:paddingStart="2dp"
         android:paddingEnd="2dp"

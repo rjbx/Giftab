@@ -10,7 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center"
-        android:backgroundTint="@color/colorNeutral"/>
+        android:backgroundTint="@color/colorNeutralLight"/>
 
     <TextView
         android:layout_width="140dp"

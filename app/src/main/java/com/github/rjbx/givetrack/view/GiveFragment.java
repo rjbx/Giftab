@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Message;
 import android.os.Parcelable;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -303,8 +302,8 @@ public class GiveFragment extends Fragment implements
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), new Message());
         mRemoveDialog.setButton(AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), new Message());
         mRemoveDialog.show();
-        mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-        mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+        mRemoveDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mRemoveDialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.colorAttention, null));
         mRemoveDialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(clickedView -> mRemoveDialog.dismiss());
         mSeries.addRemover(mRemoveDialog.getButton(DialogInterface.BUTTON_NEGATIVE), mPanePosition, mRemoveDialog);
     }
@@ -383,7 +382,7 @@ public class GiveFragment extends Fragment implements
             mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
             if (mListAdapter != null) mListAdapter.syncDonations();
-            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
+            mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversion, null)));
             mActionBar.setImageResource(R.drawable.action_sync);
         }
     }
@@ -426,13 +425,13 @@ public class GiveFragment extends Fragment implements
             actionBarIcon = R.drawable.action_save;
             progressBarVisibility = View.VISIBLE;
         } else if (mAmountTotal / mListLength < .3f) {
-            barWrapperColor = R.color.colorAttentionDark;
-            actionBarColor = R.color.colorAttention;
+            barWrapperColor = R.color.colorAttention;
+            actionBarColor = R.color.colorAttentionLight;
             actionBarIcon = android.R.drawable.stat_sys_warning;
             progressBarVisibility = View.GONE;
         } else {
-            actionBarColor = R.color.colorConversion;
-            barWrapperColor = R.color.colorConversionDark;
+            actionBarColor = R.color.colorConversionLight;
+            barWrapperColor = R.color.colorConversion;
             actionBarIcon = R.drawable.action_download;
             progressBarVisibility = View.GONE;
         }
@@ -536,12 +535,12 @@ public class GiveFragment extends Fragment implements
             if (typeButton != null && overview != null) {
                 if (isDualPane()) {
                     if (mPanePosition != position)
-                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutralDark, null));
+                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorNeutral, null));
                     else
-                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                        typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttentionLight, null));
                     overview.setVisibility(View.GONE);
                 } else {
-                    typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttention, null));
+                    typeButton.setBackgroundColor(getResources().getColor(R.color.colorAttentionLight, null));
                     overview.setVisibility(View.VISIBLE);
                 }
             }
@@ -590,7 +589,7 @@ public class GiveFragment extends Fragment implements
             if (amountView != null) amountView.setText(amountStr);
             if (impactView != null) {
                 impactView.setText(String.format(Locale.US, getString(R.string.indicator_donation_impact), impactStr));
-                if (impact > 9999) impactView.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                if (impact > 9999) impactView.setTextColor(getResources().getColor(R.color.colorConversion, null));
                 if (impact > 999) impactView.setTextAppearance(R.style.AppTheme_TextEmphasis);
             }
 

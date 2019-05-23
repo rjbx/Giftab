@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Parcelable;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -358,9 +357,9 @@ public class JournalActivity extends AppCompatActivity implements
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), JournalActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), JournalActivity.this);
                         mRemoveDialog.show();
-                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
                         Button button = mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
-                        button.setTextColor(getResources().getColor(R.color.colorAttentionDark, null));
+                        button.setTextColor(getResources().getColor(R.color.colorAttention, null));
                         button.setTag(values);
                         break;
                     case ItemTouchHelper.RIGHT:
@@ -517,9 +516,9 @@ public class JournalActivity extends AppCompatActivity implements
                 mMemoDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mMemoDialog.show();
-                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
                 Button button = mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                button.setTextColor(getResources().getColor(R.color.colorConversion, null));
                 button.setTag(position);
             }
 
@@ -655,9 +654,9 @@ public class JournalActivity extends AppCompatActivity implements
                 mDateDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.dialog_option_cancel), this);
                 mDateDialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.dialog_option_confirm), this);
                 mDateDialog.show();
-                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                mDateDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
                 Button button = mDateDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setTextColor(getResources().getColor(R.color.colorConversionDark, null));
+                button.setTextColor(getResources().getColor(R.color.colorConversion, null));
                 button.setTag(position);
             }
 

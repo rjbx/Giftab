@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:orientation="horizontal"
-            android:background="@color/colorNeutral">
+            android:background="@color/colorNeutralLight">
 
             <ImageButton
                 android:id="@+id/browser_close_button"
