@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
 import android.os.Parcelable;
@@ -117,7 +118,7 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.title_text) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
-    @BindView(R.id.glance_scroll_view) ScrollView mScrollView;
+    @BindView(R.id.glance_scroll_view) NestedScrollView mScrollView;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
     @BindView(R.id.average_chart) PieChart mAverageChart;
     @BindView(R.id.usage_chart) PieChart mUsageChart;
