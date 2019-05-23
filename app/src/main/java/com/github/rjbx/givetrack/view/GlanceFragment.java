@@ -473,6 +473,8 @@ public class GlanceFragment extends Fragment implements
 
         float recordsTotal = 0;
         float typeTotal = 0;
+        float intervalTotal = 0;
+
         float[] intervalAggregates = new float[10000];
 
         int highDifference = 0;
@@ -517,7 +519,10 @@ public class GlanceFragment extends Fragment implements
                 if (intervalDifference > 10000) intervalAggregates = Arrays.copyOf(intervalAggregates, intervalDifference);
             } intervalAggregates[intervalDifference] += amount;
 
-            if (intervalDifference < 7) recordAggregates.put(name, recordAmount);
+            if (intervalDifference < 7) {
+                recordAggregates.put(name, recordAmount);
+                intervalTotal += amount;
+            }
             if (highDifference < intervalDifference) highDifference = intervalDifference;
         }
 
@@ -542,7 +547,7 @@ public class GlanceFragment extends Fragment implements
         for (Map.Entry<String, Float> entry : entries) {
             String name = entry.getKey();
             float value = entry.getValue();
-            float percent = value / recordsTotal;
+            float percent = value / intervalTotal;
             percentageMessageBuilder.append(String.format(Locale.getDefault(), "\n%s %s %s\n", PERCENT_FORMATTER.format(percent), name, CURRENCY_FORMATTER.format(value)));
             if (percent < .20f) name = "";
             if (name.length() > 20) {
