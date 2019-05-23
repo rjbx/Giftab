@@ -519,16 +519,20 @@ public class GiveFragment extends Fragment implements
                 return;
             }
 
-            if (mTargetList == null || mTargetList.size()== 0 || mTargetList.get(position) == null)
-                return;
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
-                    && position == 0) {
+            if (mTargetList == null || mTargetList.size()== 0 || mTargetList.get(position) == null) return;
+            if (position == 0) {
+                    int left = (int) getResources().getDimension(R.dimen.list_margin);
+                    int top = (int) getResources().getDimension(R.dimen.list_margin_top);
+                    int right = (int) getResources().getDimension(R.dimen.list_margin);
+                    int bottom = (int) getResources().getDimension(R.dimen.list_margin);
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    left = (int) getResources().getDimension(R.dimen.item_horizontal_margins);
+                    top = (int) getResources().getDimension(R.dimen.item_initial_top_margin);
+                    right = (int) getResources().getDimension(R.dimen.item_horizontal_margins);
+                    bottom = (int) getResources().getDimension(R.dimen.item_default_vertical_margin);
+                }
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) getResources().getDimension(R.dimen.donation_item_height));
-                params.setMargins(
-                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
-                        (int) getResources().getDimension(R.dimen.item_initial_top_margin),
-                        (int) getResources().getDimension(R.dimen.item_horizontal_margins),
-                        (int) getResources().getDimension(R.dimen.item_default_vertical_margin));
+                params.setMargins(left, top, right, bottom);
                 holder.itemView.setLayoutParams(params);
             }
 
