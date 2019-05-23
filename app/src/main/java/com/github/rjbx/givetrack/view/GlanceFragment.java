@@ -823,7 +823,7 @@ public class GlanceFragment extends Fragment implements
         scrollView.addView(linearLayout);
         mChartDialog.setView(scrollView);
         mChartDialog.show();
-        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+        mChartDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mChartDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorNeutral, null));
         Window window = mChartDialog.getWindow();
         if (window == null) return;

@@ -357,7 +357,7 @@ public class JournalActivity extends AppCompatActivity implements
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_keep), JournalActivity.this);
                         mRemoveDialog.setButton(android.app.AlertDialog.BUTTON_NEGATIVE, getString(R.string.dialog_option_remove), JournalActivity.this);
                         mRemoveDialog.show();
-                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+                        mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                         Button button = mRemoveDialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE);
                         button.setTextColor(getResources().getColor(R.color.colorAttention, null));
                         button.setTag(values);
@@ -516,7 +516,7 @@ public class JournalActivity extends AppCompatActivity implements
                 mMemoDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
                 mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
                 mMemoDialog.show();
-                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutral, null));
+                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
                 Button button = mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE);
                 button.setTextColor(getResources().getColor(R.color.colorConversion, null));
                 button.setTag(position);
