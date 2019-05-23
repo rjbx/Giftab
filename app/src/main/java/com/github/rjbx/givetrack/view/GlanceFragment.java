@@ -76,10 +76,11 @@ public class GlanceFragment extends Fragment implements
         DatePickerDialog.OnDateSetListener,
         IAxisValueFormatter {
 
+    private static final String SCROLL_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_SCROLL";
     private static final String USER_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_USER";
     private static final String RECORDS_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_RECORDS";
     private static final String SINCE_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_SINCE";
-    private static final String THEMe_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_THEME";
+    private static final String THEME_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_THEME";
     private static String[] GIFT_TYPES = { "monetary", "goods", "service" };
     private static final int[] COLORS = new int[]{
             R.color.colorAttention,
@@ -97,6 +98,7 @@ public class GlanceFragment extends Fragment implements
     private static int mGraphType;
     private static int mHomeType;
     private static int sThemeIndex;
+    private int mScrollState;
     private int mDescFontSize;
     private long mAnchorDate;
     private float mAxisFontSize;
@@ -116,6 +118,7 @@ public class GlanceFragment extends Fragment implements
     @BindView(R.id.title_text) TextView mTitleText;
     @BindView(R.id.home_amount_text) TextView mAmountView;
     @BindView(R.id.home_amount_wrapper) View mAmountWrapper;
+    @BindView(R.id.glance_scroll_view) ScrollView mScrollView;
     @BindView(R.id.percentage_chart) PieChart mPercentageChart;
     @BindView(R.id.average_chart) PieChart mAverageChart;
     @BindView(R.id.usage_chart) PieChart mUsageChart;
@@ -153,7 +156,7 @@ public class GlanceFragment extends Fragment implements
 //        if (savedInstanceState != null) {
 //            mUser = savedInstanceState.getParcelable(USER_STATE);
 //            mViewTracked = savedInstanceState.getBoolean(SINCE_STATE);
-//            mThemeIndex = savedInstanceState.getInt(THEMe_STATE);
+//            mThemeIndex = savedInstanceState.getInt(THEME_STATE);
 //            Parcelable[] parcelables = savedInstanceState.getParcelableArray(RECORDS_STATE);
 //            if (parcelables != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
 //        } else if (args != null) {
@@ -179,6 +182,10 @@ public class GlanceFragment extends Fragment implements
 
         mIntervalText.setPaintFlags(mIntervalText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mTypeText.setPaintFlags(mTypeText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
+        if (savedInstanceState != null) {
+            mScrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
+        }
 
         Bundle args = getArguments();
         if (args != null) {
@@ -235,6 +242,12 @@ public class GlanceFragment extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         mUnbinder.unbind();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt(SCROLL_STATE, mScrollState);
+        super.onSaveInstanceState(outState);
     }
 
     /**
