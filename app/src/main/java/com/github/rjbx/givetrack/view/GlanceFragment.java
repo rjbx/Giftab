@@ -676,7 +676,7 @@ public class GlanceFragment extends Fragment implements
         String oldLabel = String.format("Over 7 %ss", mIntervalContent);
         float percentRecent = donationAmount / recordsTotal;
         float percentOld = 1f - percentRecent;
-        String timingMessage = String.format("Past 7 %ss\n\n%s %s\n%s %s\n", mIntervalContent, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
+        String timingMessage = String.format("%sly\n\n%s %s\n%s %s\n", mIntervalContent, recentLabel, PERCENT_FORMATTER.format(percentRecent), oldLabel, PERCENT_FORMATTER.format(percentOld));
 
         List<PieEntry> timingEntries = new ArrayList<>();
         if (percentOld > 0f) timingEntries.add(new PieEntry(percentOld, String.format("Over 7 %ss", mIntervalContent)));
