@@ -294,7 +294,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -302,7 +305,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -387,7 +390,7 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
-
+            if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_userEmail_key).equals(preferenceKey)) {
                 ((EditTextPreference) preference).getEditText().setText("");
@@ -418,6 +421,7 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            if (sUser == null) return;
             if (isAnonymous) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
@@ -432,29 +436,29 @@ public class ConfigActivity
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        if (sUser != null) {
-                            AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            if (user == null) return;
-                            user.linkWithCredential(credential)
-                                .addOnSuccessListener(authTask -> {
-                                    isAnonymous = false;
-                                    Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
-                                    ConfigActivity.changeSummary(emailPreference, mEmailInput);
-                                    ConfigActivity.changeUser(emailPreference, mEmailInput);
-                                    emailPreference.setEnabled(true);
-                                    findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                                })
-                                .addOnFailureListener(failTask -> {
-                                    if (mAuthAttempts < 5) {
-                                        launchAuthDialog();
-                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        mAuthAttempts = 0;
-                                        Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
+
+                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                        if (user == null) return;
+                        user.linkWithCredential(credential)
+                            .addOnSuccessListener(authTask -> {
+                                isAnonymous = false;
+                                Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+                                ConfigActivity.changeSummary(emailPreference, mEmailInput);
+                                ConfigActivity.changeUser(emailPreference, mEmailInput);
+                                emailPreference.setEnabled(true);
+                                findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
+                            })
+                            .addOnFailureListener(failTask -> {
+                                if (mAuthAttempts < 5) {
+                                    launchAuthDialog();
+                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    mAuthAttempts = 0;
+                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            });
+
                             break;
                 }
             } else if (dialog == mAuthDialog) {
@@ -471,34 +475,33 @@ public class ConfigActivity
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        if (sUser != null) {
-                            AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                            if (user == null) return;
-                            user.reauthenticate(credential).addOnCompleteListener(authTask -> {
-                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
-                                if (refreshedUser != null) {
-                                    refreshedUser.updateEmail(mRequestedEmail)
-                                            .addOnSuccessListener(failTask -> {
+
+                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                        if (user == null) return;
+                        user.reauthenticate(credential).addOnCompleteListener(authTask -> {
+                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                            Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
+                            if (refreshedUser != null) {
+                                refreshedUser.updateEmail(mRequestedEmail)
+                                        .addOnSuccessListener(failTask -> {
+                                            mAuthAttempts = 0;
+                                            ConfigActivity.changeSummary(emailPref, mRequestedEmail);
+                                            ConfigActivity.changeUser(emailPref, mRequestedEmail);
+                                            emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
+                                            Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
+                                        })
+                                        .addOnFailureListener(updateTask -> {
+                                            if (mAuthAttempts < 5) {
+                                                launchAuthDialog();
+                                                Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                            } else {
                                                 mAuthAttempts = 0;
-                                                ConfigActivity.changeSummary(emailPref, mRequestedEmail);
-                                                ConfigActivity.changeUser(emailPref, mRequestedEmail);
-                                                emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
-                                                Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-                                            })
-                                            .addOnFailureListener(updateTask -> {
-                                                if (mAuthAttempts < 5) {
-                                                    launchAuthDialog();
-                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                                } else {
-                                                    mAuthAttempts = 0;
-                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                }
-                            });
-                        }
+                                                Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                            }
+                        });
                         break;
                 }
             }
@@ -533,7 +536,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -578,7 +584,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -600,6 +606,7 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
+            if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -688,7 +695,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -712,7 +722,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -729,6 +739,7 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
+            if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
                 String magnitudeStr = sUser.getGiveMagnitude();
@@ -801,6 +812,7 @@ public class ConfigActivity
          * Defines behavior onClick of each DialogInterface option.
          */
         @Override public void onClick(DialogInterface dialog, int which) {
+            if (sUser == null) return;
             if (dialog == mMagnitudeDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -877,7 +889,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -906,7 +921,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -976,7 +991,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -992,7 +1010,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -1019,7 +1037,10 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+            if (savedInstanceState != null) {
+                User user = savedInstanceState.getParcelable(USER_STATE);
+                if (user != null) sUser = user;
+            }
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -1047,7 +1068,7 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
