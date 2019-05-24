@@ -546,9 +546,7 @@ public class ConfigActivity
         }
 
         @Override
-        public void onStart() {
-            super.onStart();
-        }
+        public void onStart() { super.onStart(); }
 
         /**
          * Initializes preferences with defaults and listeners for value changes and view clicks.

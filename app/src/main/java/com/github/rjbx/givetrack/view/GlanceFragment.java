@@ -263,6 +263,7 @@ public class GlanceFragment extends Fragment implements
      */
     @Override
     public void onClick(DialogInterface dialog, int which) {
+        if (sUser == null) return;
         if (dialog == mTimeDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -310,6 +311,7 @@ public class GlanceFragment extends Fragment implements
 
     @OnClick(R.id.header_bar)
     void toggleColor() {
+        if (sUser == null) return;
         sThemeIndex++;
         if (sThemeIndex == 7) sThemeIndex = 0;
         mAmountWrapper.setBackgroundColor(getResources().getColor(COLORS[sThemeIndex], null));
@@ -322,6 +324,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_amount_label)
     void toggleTracked() {
+        if (sUser == null) return;
         mViewTracked = !mViewTracked;
         sUser.setGlanceSince(mViewTracked);
         DatabaseManager.startActionUpdateUser(getContext(), sUser);
@@ -333,6 +336,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.interval_text)
     void toggleTime() {
+        if (sUser == null) return;
         if (mInterval < 3) mInterval++;
         else mInterval = 1;
         updateTime();
@@ -353,6 +357,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.type_text)
     void toggleGraphType() {
+        if (sUser == null) return;
         if (mGraphType < 3) mGraphType++;
         else mGraphType = 0;
         updateGraphTyoe();
@@ -374,6 +379,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_type_label)
     void toggleHomeType() {
+        if (sUser == null) return;
         if (mHomeType < 3) mHomeType++;
         else mHomeType = 0;
         updateHomeType();
@@ -395,6 +401,7 @@ public class GlanceFragment extends Fragment implements
      */
     @OnClick(R.id.home_config_button)
     void trackAmount() {
+        if (sUser == null) return;
         Calendar calendar = Calendar.getInstance();
         if (sUser.getGlanceAnchor() != 0) calendar.setTimeInMillis(sUser.getGlanceAnchor());
         DatePickerDialog datePicker = new DatePickerDialog(
@@ -467,7 +474,7 @@ public class GlanceFragment extends Fragment implements
      */
     private void renderCharts() {
 
-        if (mContext == null) return;
+        if (mContext == null || sUser == null) return;
 
         mIntervalText.setText(mIntervalContent + "ly");
         mTypeText.setText(mGraphTypeContent);

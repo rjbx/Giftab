@@ -179,6 +179,7 @@ public class HomeActivity extends AppCompatActivity implements
                 AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
+                if (mUser == null) return false;
                 if (mUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(mUser.getGiveAnchor())) {
                     mUser.setGiveAnchor(System.currentTimeMillis());
                     DatabaseManager.startActionUpdateUser(this, mUser);
@@ -349,6 +350,7 @@ public class HomeActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
+        if (mUser == null) return;
         if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:

@@ -314,6 +314,7 @@ public class GiveFragment extends Fragment implements
      * Listens for and persists changes to text editor value.
      */
     @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (sUser == null) return false;
         switch (actionId) {
             case EditorInfo.IME_ACTION_DONE:
                 try {
@@ -346,6 +347,7 @@ public class GiveFragment extends Fragment implements
      * Defines behavior on click of decrement amount button.
      */
     @OnClick(R.id.donation_decrement_button) void clickDecrementImpact() {
+        if (sUser == null) return;
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
             sUser.setGiveImpact(String.valueOf(mAmountTotal));
@@ -362,7 +364,7 @@ public class GiveFragment extends Fragment implements
      * Defines behavior on click of increment amount button.
      */
     @OnClick(R.id.donation_increment_button) void clickIncrementImpact() {
-        if (mTotalText == null) return;
+        if (sUser == null || mTotalText == null) return;
         mAmountTotal += mMagnitude;
         sUser.setGiveImpact(String.valueOf(mAmountTotal));
         DatabaseManager.startActionUpdateUser(mContext, sUser);
@@ -635,6 +637,7 @@ public class GiveFragment extends Fragment implements
 //            for (int i = 0; i < sPercentages.length; i++) {
 //                sPercentages[i] = sValuesArray[i].getPercent();
 //            }
+            if (sUser == null) return;
             mTargetList = targetList;
             if (sUser.getGiveReset()) {
                 // Occurs before percent sync to prevent callback with reset still set to true
