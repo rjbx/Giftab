@@ -247,7 +247,7 @@ public class JournalActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            /*if (mValuesArray == null) */getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
                             if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
@@ -388,7 +388,7 @@ public class JournalActivity extends AppCompatActivity implements
         ListAdapter(Record[] valuesArray) {
             super();
             mValuesArray = valuesArray;
-//            mLock = true;
+            mLock = true;
         }
 
         /**
