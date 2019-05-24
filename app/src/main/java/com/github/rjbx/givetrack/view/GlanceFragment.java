@@ -190,6 +190,11 @@ public class GlanceFragment extends Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_glance, container, false);
         mUnbinder = ButterKnife.bind(this, rootView);
 
+        if (savedInstanceState != null) {
+            int scrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
+            mScrollView.setScrollY(scrollState);
+        }
+
         mIntervalText.setPaintFlags(mIntervalText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mTypeText.setPaintFlags(mTypeText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
