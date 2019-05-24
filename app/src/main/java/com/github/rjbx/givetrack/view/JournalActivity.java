@@ -64,6 +64,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+// TODO: Refresh list item on type update
 /**
  * Presents a list of editable giving records with toggleable detail pane.
  */
@@ -384,7 +385,7 @@ public class JournalActivity extends AppCompatActivity implements
         ListAdapter(Record[] valuesArray) {
             super();
             mValuesArray = valuesArray;
-            mLock = true;
+//            mLock = true;
         }
 
         /**
