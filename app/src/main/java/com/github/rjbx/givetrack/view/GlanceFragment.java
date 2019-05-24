@@ -170,11 +170,7 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            sUser = savedInstanceState.getParcelable(USER_STATE);
-            int scrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
-            mScrollView.setScrollY(scrollState);
-        }
+        if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
     }
 
     /**
