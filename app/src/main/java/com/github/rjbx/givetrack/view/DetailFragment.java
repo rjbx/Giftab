@@ -40,6 +40,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+// TODO: Replace static references with instance state save and restore
 /**
  * Provides the logic and views for a single detail screen.
  */
