@@ -294,9 +294,16 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
             changeSummaries(this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -526,6 +533,7 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -566,6 +574,12 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_reset_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -674,6 +688,7 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -693,6 +708,12 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_giveCurrent_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -856,6 +877,7 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -880,6 +902,12 @@ public class ConfigActivity
             handlePreferenceChange(findPreference(getString(R.string.pref_journalOrder_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_clear_key)), this);
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -948,6 +976,7 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -959,6 +988,12 @@ public class ConfigActivity
         @Override public void onResume() {
             super.onResume();
             handlePreferenceChange(findPreference("notifications_new_message_ringtone"), this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -984,6 +1019,7 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -1007,6 +1043,12 @@ public class ConfigActivity
 
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 //            handlePreferenceChange(findPreference("sync_frequency"), this);
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            outState.putParcelable(ConfigActivity.USER_STATE, sUser);
+            super.onSaveInstanceState(outState);
         }
 
         /**

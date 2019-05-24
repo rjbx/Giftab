@@ -166,6 +166,17 @@ public class GlanceFragment extends Fragment implements
 //        super.onCreate(savedInstanceState);
 //    }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            sUser = savedInstanceState.getParcelable(USER_STATE);
+            int scrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
+            mScrollView.setScrollY(scrollState);
+        }
+    }
+
     /**
      * Generates a Layout for the Fragment.
      */
@@ -181,11 +192,6 @@ public class GlanceFragment extends Fragment implements
 
         mIntervalText.setPaintFlags(mIntervalText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mTypeText.setPaintFlags(mTypeText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-        if (savedInstanceState != null) {
-            int scrollState = savedInstanceState.getInt(SCROLL_STATE, 0);
-            mScrollView.setScrollY(scrollState);
-        }
 
         Bundle args = getArguments();
         if (args != null) {
@@ -247,6 +253,7 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(SCROLL_STATE, mScrollView.getScrollY());
+        outState.putParcelable(USER_STATE, sUser);
         super.onSaveInstanceState(outState);
     }
 

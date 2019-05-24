@@ -124,6 +124,7 @@ public class GiveFragment extends Fragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
+            sUser = savedInstanceState.getParcelable(USER_STATE);
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
@@ -259,6 +260,7 @@ public class GiveFragment extends Fragment implements
         outState.putBoolean(PANE_STATE, sDualPane);
         outState.putBoolean(ADJUST_STATE, sPercentagesAdjusted);
         outState.putInt(POSITION_STATE, mPanePosition);
+        outState.putParcelable(USER_STATE, sUser);
     }
 
     /**
