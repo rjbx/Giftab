@@ -637,9 +637,9 @@ public class GiveFragment extends Fragment implements
 //            for (int i = 0; i < sPercentages.length; i++) {
 //                sPercentages[i] = sValuesArray[i].getPercent();
 //            }
-            if (sUser == null) return;
             mTargetList = targetList;
             if (sUser.getGiveReset()) {
+                if (sUser == null) return;
                 // Occurs before percent sync to prevent callback with reset still set to true
                 sUser.setGiveReset(false);
                 DatabaseManager.startActionUpdateUser(mContext, sUser);

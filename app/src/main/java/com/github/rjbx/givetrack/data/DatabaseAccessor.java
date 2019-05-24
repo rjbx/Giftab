@@ -294,8 +294,13 @@ final class DatabaseAccessor {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
 
-        String uid =  entries == null || entries.length == 0 || entries[0] == null ?
-                getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid() : entries[0].getUid();
+        String uid = "";
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
+        } else {
+            if (entries[0] == null) return;
+            uid = entries[0].getUid();
+        }
 
         if (uid == null || uid.isEmpty()) return;
 //        if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
@@ -319,8 +324,13 @@ final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference typeReference = remote.getReference(entryPath);
 
-        String uid = entries == null || entries.length == 0 || entries[0] == null ?
-                getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
+        String uid = "";
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid();
+        } else {
+            if (entries[0] == null) return;
+            uid = entries[0].getUid();
+        }
 
         if (uid == null || uid.isEmpty()) return;
 
@@ -343,12 +353,13 @@ final class DatabaseAccessor {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
         String uid;
-        if (entries == null || entries.length == 0 || entries[0] == null) {
+        if (entries == null || entries.length == 0) {
             uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
             if (uid == null || uid.isEmpty()) return;
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
             local.notifyChange(contentUri, null);
         } else {
+            if (entries[0] == null) return;
             uid = entries[0].getUid();
             for (Entry entry : entries) {
                 Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
@@ -367,9 +378,13 @@ final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference typeReference = remote.getReference(entryPath);
 
-        String uid = entries == null || entries.length == 0 || entries[0] == null ?
-                getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
-
+        String uid = "";
+        if (entries == null || entries.length == 0) {
+            uid = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid();
+        } else {
+            if (entries[0] == null) return;
+            uid = entries[0].getUid();
+        }
         DatabaseReference userReference = typeReference.child(uid);
 
         DatabaseReference entryReference;
