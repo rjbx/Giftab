@@ -67,6 +67,7 @@ public class IndexActivity extends AppCompatActivity implements
     private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.PANE_POSITION";
     private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.SPAWN_ARRAY";
     private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.LOADER_LOCK";
+    private static final String STATE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
     private ListAdapter mAdapter;
@@ -98,6 +99,7 @@ public class IndexActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
 
         if (savedInstanceState != null) {
+            mUser = savedInstanceState.getParcelable(STATE_USER);
             mLock = savedInstanceState.getBoolean(STATE_LOCK);
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             sDialogShown = savedInstanceState.getBoolean(STATE_SHOWN);
@@ -131,6 +133,7 @@ public class IndexActivity extends AppCompatActivity implements
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable(STATE_USER, mUser);
         outState.putBoolean(STATE_LOCK, mLock);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putBoolean(STATE_SHOWN, sDialogShown);
