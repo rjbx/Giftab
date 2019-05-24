@@ -74,12 +74,13 @@ public class JournalActivity extends AppCompatActivity implements
         DialogInterface.OnClickListener {
 
     public static final String ACTION_JOURNAL_INTENT = "com.github.rjbx.givetrack.ui.action.JOURNAL_INTENT";
-    private static final String POSITION_STATE = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
+    private static final String STATE_POSITION = "com.github.rjbx.givetrack.ui.state.GIVE_POSITION";
     private static final String STATE_PANE = "com.github.rjbx.givetrack.ui.state.RECORD_PANE";
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
     private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.LOADER_LOCK";
+    private static final String STATE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
     private long mDeletedTime;
     private static boolean sDualPane;
     private DetailFragment mDetailFragment;
@@ -110,9 +111,10 @@ public class JournalActivity extends AppCompatActivity implements
         if (savedInstanceState != null) {
             mLock = savedInstanceState.getBoolean(STATE_LOCK);
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
-            mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            mPanePosition = savedInstanceState.getInt(STATE_POSITION);
             mAddedName = savedInstanceState.getString(STATE_ADDED);
             mRemovedName = savedInstanceState.getString(STATE_REMOVED);
+            mUser = savedInstanceState.getParcelable(STATE_USER);
             Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_ARRAY);
             if (pRecords != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
@@ -140,9 +142,10 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable(STATE_USER, mUser);
         outState.putBoolean(STATE_LOCK, mLock);
         outState.putBoolean(STATE_PANE, sDualPane);
-        outState.putInt(POSITION_STATE, mPanePosition);
+        outState.putInt(STATE_POSITION, mPanePosition);
         outState.putString(STATE_ADDED, mAddedName);
         outState.putString(STATE_REMOVED, mRemovedName);
         outState.putParcelableArray(STATE_ARRAY, mValuesArray);
@@ -244,7 +247,7 @@ public class JournalActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+                            /*if (mValuesArray == null) */getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
                             if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             break;
                         }
