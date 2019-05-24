@@ -118,7 +118,6 @@ public class JournalActivity extends AppCompatActivity implements
             Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_ARRAY);
             if (pRecords != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
-        if (mUser != null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
 
         setSupportActionBar(mToolbar);
         mToolbar.setTitle(getTitle());
