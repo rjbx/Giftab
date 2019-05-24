@@ -68,7 +68,6 @@ import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 
-// TODO: Refresh tracked indicator on date update
 /**
  * Provides the logic and views for a user activity overview screen.
  */
