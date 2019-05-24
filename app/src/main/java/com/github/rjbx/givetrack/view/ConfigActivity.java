@@ -151,7 +151,7 @@ public class ConfigActivity
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {  }
 
     /**
      * Fragment bound to preference header for updating advanced settings.

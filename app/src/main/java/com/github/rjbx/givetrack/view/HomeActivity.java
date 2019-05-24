@@ -293,9 +293,7 @@ public class HomeActivity extends AppCompatActivity implements
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mTargetArray = null;
-        mRecordArray = null;
-        mUser = null;
+
     }
 
     /**
