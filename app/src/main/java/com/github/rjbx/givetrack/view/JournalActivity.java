@@ -79,6 +79,7 @@ public class JournalActivity extends AppCompatActivity implements
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
+    private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.STATE_LOCK";
     private long mDeletedTime;
     private static boolean sDualPane;
     private DetailFragment mDetailFragment;
@@ -107,6 +108,7 @@ public class JournalActivity extends AppCompatActivity implements
         getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
 
         if (savedInstanceState != null) {
+            mLock = savedInstanceState.getBoolean(STATE_LOCK);
             sDualPane = savedInstanceState.getBoolean(STATE_PANE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
             mAddedName = savedInstanceState.getString(STATE_ADDED);
@@ -138,6 +140,7 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @Override public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_LOCK, mLock);
         outState.putBoolean(STATE_PANE, sDualPane);
         outState.putInt(POSITION_STATE, mPanePosition);
         outState.putString(STATE_ADDED, mAddedName);
