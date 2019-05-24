@@ -319,7 +319,7 @@ final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference typeReference = remote.getReference(entryPath);
 
-        String uid = entries == null || entries.length == 0 ?
+        String uid = entries == null || entries.length == 0 || entries[0] == null ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
         if (uid == null || uid.isEmpty()) return;
@@ -367,7 +367,7 @@ final class DatabaseAccessor {
         String entryPath = entryType.getSimpleName().toLowerCase();
         DatabaseReference typeReference = remote.getReference(entryPath);
 
-        String uid = entries == null || entries.length == 0 ?
+        String uid = entries == null || entries.length == 0 || entries[0] == null ?
                 getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid() : entries[0].getUid();
 
         DatabaseReference userReference = typeReference.child(uid);
