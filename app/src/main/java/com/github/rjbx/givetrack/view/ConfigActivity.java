@@ -294,19 +294,9 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_user);
             setHasOptionsMenu(true);
             changeSummaries(this);
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
-            super.onSaveInstanceState(outState);
         }
 
         /**
@@ -536,10 +526,6 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_index);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -582,7 +568,6 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -693,10 +678,6 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_home);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -720,7 +701,6 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -887,10 +867,6 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_journal);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -919,7 +895,6 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -989,10 +964,6 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -1008,7 +979,6 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 
@@ -1035,10 +1005,6 @@ public class ConfigActivity
          */
         @Override public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            if (savedInstanceState != null) {
-                User user = savedInstanceState.getParcelable(USER_STATE);
-                if (user != null) sUser = user;
-            }
             addPreferencesFromResource(R.xml.pref_advanced);
             setHasOptionsMenu(true);
             changeSummaries(this);
@@ -1066,7 +1032,6 @@ public class ConfigActivity
 
         @Override
         public void onSaveInstanceState(Bundle outState) {
-            if (sUser != null) outState.putParcelable(ConfigActivity.USER_STATE, sUser);
             super.onSaveInstanceState(outState);
         }
 

@@ -196,7 +196,6 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
-            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
             Parcelable[] parcelables = args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES);
             if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
         }
@@ -254,7 +253,6 @@ public class GlanceFragment extends Fragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt(SCROLL_STATE, mScrollView.getScrollY());
-        outState.putParcelable(USER_STATE, sUser);
         super.onSaveInstanceState(outState);
     }
 
