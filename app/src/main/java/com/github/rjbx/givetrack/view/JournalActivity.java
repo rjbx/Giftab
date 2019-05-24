@@ -79,7 +79,7 @@ public class JournalActivity extends AppCompatActivity implements
     private static final String STATE_ADDED = "com.github.rjbx.givetrack.ui.state.ADDED_TARGET";
     private static final String STATE_REMOVED = "com.github.rjbx.givetrack.ui.state.REMOVED_TARGET";
     private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.RECORD_ARRAY";
-    private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.STATE_LOCK";
+    private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.LOADER_LOCK";
     private long mDeletedTime;
     private static boolean sDualPane;
     private DetailFragment mDetailFragment;
