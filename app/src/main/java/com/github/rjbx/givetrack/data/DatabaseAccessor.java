@@ -294,7 +294,7 @@ final class DatabaseAccessor {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
 
-        String uid =  entries == null || entries.length == 0 ?
+        String uid =  entries == null || entries.length == 0 || entries[0] == null ?
                 getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid() : entries[0].getUid();
 
         if (uid == null || uid.isEmpty()) return;
