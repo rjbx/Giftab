@@ -155,7 +155,6 @@ public class IndexActivity extends AppCompatActivity implements
      * Defines behavior onClick of each MenuItem.
      */
     @Override public boolean onOptionsItemSelected(MenuItem item) {
-        if (mUser == null) return false;
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
@@ -318,7 +317,6 @@ public class IndexActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
-        if (mUser == null) return;
         if (dialog == mSpawnDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -339,7 +337,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Populates {@link IndexActivity} {@link RecyclerView}.
      */
     @OnClick(R.id.spawn_fab) public void refreshResults() {
-        if (mUser == null) return;
+
         int remainingFetches = mUser.getIndexCount();
         if (remainingFetches <= 0) {
             mSnackbarMessage = getString(R.string.message_spawn_exhausted);

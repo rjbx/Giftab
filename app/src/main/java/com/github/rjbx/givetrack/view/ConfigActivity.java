@@ -151,7 +151,7 @@ public class ConfigActivity
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
-    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {  }
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) { sUser = null; }
 
     /**
      * Fragment bound to preference header for updating advanced settings.
@@ -380,7 +380,7 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
-            if (sUser == null) return false;
+
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_userEmail_key).equals(preferenceKey)) {
                 ((EditTextPreference) preference).getEditText().setText("");
@@ -411,7 +411,6 @@ public class ConfigActivity
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            if (sUser == null) return;
             if (isAnonymous) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEGATIVE:
@@ -426,29 +425,29 @@ public class ConfigActivity
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
                         }
-
-                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        if (user == null) return;
-                        user.linkWithCredential(credential)
-                            .addOnSuccessListener(authTask -> {
-                                isAnonymous = false;
-                                Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
-                                ConfigActivity.changeSummary(emailPreference, mEmailInput);
-                                ConfigActivity.changeUser(emailPreference, mEmailInput);
-                                emailPreference.setEnabled(true);
-                                findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
-                            })
-                            .addOnFailureListener(failTask -> {
-                                if (mAuthAttempts < 5) {
-                                    launchAuthDialog();
-                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    mAuthAttempts = 0;
-                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                }
-                            });
-
+                        if (sUser != null) {
+                            AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if (user == null) return;
+                            user.linkWithCredential(credential)
+                                .addOnSuccessListener(authTask -> {
+                                    isAnonymous = false;
+                                    Preference emailPreference = findPreference(getString(R.string.pref_userEmail_key));
+                                    ConfigActivity.changeSummary(emailPreference, mEmailInput);
+                                    ConfigActivity.changeUser(emailPreference, mEmailInput);
+                                    emailPreference.setEnabled(true);
+                                    findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
+                                })
+                                .addOnFailureListener(failTask -> {
+                                    if (mAuthAttempts < 5) {
+                                        launchAuthDialog();
+                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        mAuthAttempts = 0;
+                                        Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
                             break;
                 }
             } else if (dialog == mAuthDialog) {
@@ -465,33 +464,34 @@ public class ConfigActivity
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
                         }
-
-                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
-                        FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                        if (user == null) return;
-                        user.reauthenticate(credential).addOnCompleteListener(authTask -> {
-                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                            Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
-                            if (refreshedUser != null) {
-                                refreshedUser.updateEmail(mRequestedEmail)
-                                        .addOnSuccessListener(failTask -> {
-                                            mAuthAttempts = 0;
-                                            ConfigActivity.changeSummary(emailPref, mRequestedEmail);
-                                            ConfigActivity.changeUser(emailPref, mRequestedEmail);
-                                            emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
-                                            Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-                                        })
-                                        .addOnFailureListener(updateTask -> {
-                                            if (mAuthAttempts < 5) {
-                                                launchAuthDialog();
-                                                Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                            } else {
+                        if (sUser != null) {
+                            AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
+                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                            if (user == null) return;
+                            user.reauthenticate(credential).addOnCompleteListener(authTask -> {
+                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
+                                if (refreshedUser != null) {
+                                    refreshedUser.updateEmail(mRequestedEmail)
+                                            .addOnSuccessListener(failTask -> {
                                                 mAuthAttempts = 0;
-                                                Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                            }
-                                        });
-                            }
-                        });
+                                                ConfigActivity.changeSummary(emailPref, mRequestedEmail);
+                                                ConfigActivity.changeUser(emailPref, mRequestedEmail);
+                                                emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
+                                                Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
+                                            })
+                                            .addOnFailureListener(updateTask -> {
+                                                if (mAuthAttempts < 5) {
+                                                    launchAuthDialog();
+                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                                } else {
+                                                    mAuthAttempts = 0;
+                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                }
+                                            });
+                                }
+                            });
+                        }
                         break;
                 }
             }
@@ -532,7 +532,9 @@ public class ConfigActivity
         }
 
         @Override
-        public void onStart() { super.onStart(); }
+        public void onStart() {
+            super.onStart();
+        }
 
         /**
          * Initializes preferences with defaults and listeners for value changes and view clicks.
@@ -566,11 +568,6 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-        }
-
         /**
          * Defines behavior on change of each preference value.
          */
@@ -589,7 +586,6 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
-            if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_reset_key).equals(preferenceKey)) {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
@@ -699,11 +695,6 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-        }
-
         /**
          * Defines behavior on change of each preference value.
          */
@@ -717,7 +708,6 @@ public class ConfigActivity
          * Defines behavior on click of each preference view.
          */
         @Override public boolean onPreferenceClick(Preference preference) {
-            if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
                 String magnitudeStr = sUser.getGiveMagnitude();
@@ -790,7 +780,6 @@ public class ConfigActivity
          * Defines behavior onClick of each DialogInterface option.
          */
         @Override public void onClick(DialogInterface dialog, int which) {
-            if (sUser == null) return;
             if (dialog == mMagnitudeDialog) {
                 switch (which) {
                     case AlertDialog.BUTTON_NEUTRAL:
@@ -893,11 +882,6 @@ public class ConfigActivity
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
         }
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-        }
-
         /**
          * Defines behavior on change of each preference value.
          */
@@ -977,11 +961,6 @@ public class ConfigActivity
             handlePreferenceChange(findPreference("notifications_new_message_ringtone"), this);
         }
 
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
-        }
-
         /**
          * Defines behavior on change of each preference value.
          */
@@ -1028,11 +1007,6 @@ public class ConfigActivity
 
             handlePreferenceClick(findPreference(getString(R.string.pref_show_key)), this);
 //            handlePreferenceChange(findPreference("sync_frequency"), this);
-        }
-
-        @Override
-        public void onSaveInstanceState(Bundle outState) {
-            super.onSaveInstanceState(outState);
         }
 
         /**
