@@ -124,7 +124,7 @@ public class HomeActivity extends AppCompatActivity implements
             if (pTargets != null) mTargetArray = AppUtilities.getTypedArrayFromParcelables(pTargets, Target.class);
             if (pRecords != null) mRecordArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
             mInstanceStateRestored = true;
-            savedInstanceState.clear();
+//            savedInstanceState.clear();
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -273,8 +273,8 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            if (mTargetArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-                            if (mRecordArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            if (mTargetArray == null/* || mInstanceStateRestored*/) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+                            if (mRecordArray == null/* || mInstanceStateRestored*/) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
                         }
                     } while (data.moveToNext());
@@ -283,7 +283,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         if (!mUserLock && !mTargetLock && !mRecordLock) {
             Intent intent = getIntent();
-            if ((intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS)) && !mInstanceStateRestored) {
+            if ((intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS))/* && !mInstanceStateRestored*/) {
                 mPagerAdapter.notifyDataSetChanged();
             }
             else {
@@ -291,7 +291,7 @@ public class HomeActivity extends AppCompatActivity implements
                 mTargetLock = true;
                 mRecordLock = true;
                 intent.setAction(null);
-                mInstanceStateRestored = false;
+//                mInstanceStateRestored = false;
             }
         }
     }
