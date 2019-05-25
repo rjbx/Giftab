@@ -517,37 +517,41 @@ public class JournalActivity extends AppCompatActivity implements
             }
 
             @Optional @OnClick(R.id.record_memo_text) void editMemo(View v) {
-                togglePane(v);
-                int position = (int) v.getTag();
-                Record record = mValuesArray[position];
+                if (isDualPane()) togglePane(v);
+                else {
+                    int position = (int) v.getTag();
+                    Record record = mValuesArray[position];
 
-                String memo = record.getMemo();
-                mDetailView = new EditText(JournalActivity.this);
-                mMemoDialog = new AlertDialog.Builder(JournalActivity.this).create();
-                mDetailView.setText(memo);
-                mMemoDialog.setView(mDetailView);
-                mMemoDialog.setMessage("Edit Memo");
-                mMemoDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
-                mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
-                mMemoDialog.show();
-                mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
-                Button button = mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                button.setTextColor(getResources().getColor(R.color.colorConversion, null));
-                button.setTag(position);
+                    String memo = record.getMemo();
+                    mDetailView = new EditText(JournalActivity.this);
+                    mMemoDialog = new AlertDialog.Builder(JournalActivity.this).create();
+                    mDetailView.setText(memo);
+                    mMemoDialog.setView(mDetailView);
+                    mMemoDialog.setMessage("Edit Memo");
+                    mMemoDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
+                    mMemoDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
+                    mMemoDialog.show();
+                    mMemoDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
+                    Button button = mMemoDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                    button.setTextColor(getResources().getColor(R.color.colorConversion, null));
+                    button.setTag(position);
+                }
             }
 
             /**
              * Defines behavior on click of type button.
              */
             @Optional @OnClick(R.id.record_type_text) void toggleType(View v) {
-                togglePane(v);
-                int position = (int) v.getTag();
-                Record record = mValuesArray[position];
+                if (isDualPane()) togglePane(v);
+                else {
+                    int position = (int) v.getTag();
+                    Record record = mValuesArray[position];
 
-                int type = record.getType() + 1;
-                if (type > 2) type = 0;
-                record.setType(type);
-                DatabaseManager.startActionUpdateRecord(JournalActivity.this, mValuesArray);
+                    int type = record.getType() + 1;
+                    if (type > 2) type = 0;
+                    record.setType(type);
+                    DatabaseManager.startActionUpdateRecord(JournalActivity.this, mValuesArray);
+                }
             }
 
             /**
@@ -568,20 +572,22 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of stats view.
              */
             @OnClick(R.id.record_time_text) void editTime(View v) {
-                togglePane(v);
-                int position = (int) v.getTag();
-                long time = mValuesArray[position].getTime();
-                Context context = v.getContext();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(time);
-                DatePickerDialog datePicker = new DatePickerDialog(
-                        context,
-                        this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH));
-                datePicker.getDatePicker().setTag(v.getTag());
-                datePicker.show();
+                if (isDualPane()) togglePane(v);
+                else {
+                    int position = (int) v.getTag();
+                    long time = mValuesArray[position].getTime();
+                    Context context = v.getContext();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(time);
+                    DatePickerDialog datePicker = new DatePickerDialog(
+                            context,
+                            this,
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH));
+                    datePicker.getDatePicker().setTag(v.getTag());
+                    datePicker.show();
+                }
             }
 
             /**
