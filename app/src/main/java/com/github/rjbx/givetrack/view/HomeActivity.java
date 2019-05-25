@@ -283,7 +283,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         if (!mUserLock && !mTargetLock && !mRecordLock) {
             Intent intent = getIntent();
-            if (intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS) && !mInstanceStateRestored) {
+            if ((intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS)) && !mInstanceStateRestored) {
                 mPagerAdapter.notifyDataSetChanged();
             }
             else {
