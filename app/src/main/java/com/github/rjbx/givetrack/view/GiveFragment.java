@@ -123,11 +123,13 @@ public class GiveFragment extends Fragment implements
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
             Parcelable[] parcelableArray = savedInstanceState.getParcelableArray(TARGETS_STATE);
+//            savedInstanceState.clear();
             if (mListAdapter == null && parcelableArray != null) {
                 Target[] valuesArray = AppUtilities.getTypedArrayFromParcelables(parcelableArray, Target.class);
                 List<Target> targetList = new ArrayList<>(Arrays.asList(valuesArray));
@@ -137,9 +139,7 @@ public class GiveFragment extends Fragment implements
                 mRecyclerView.setAdapter(mListAdapter);
                 mListAdapter.swapValues(targetList);
             }
-            savedInstanceState.clear();
         }
-        super.onCreate(savedInstanceState);
     }
 
     /**
@@ -185,7 +185,7 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
-            savedInstanceState.clear();
+//            savedInstanceState.clear();
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         renderActionBar();
