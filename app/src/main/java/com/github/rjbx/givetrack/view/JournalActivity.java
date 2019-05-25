@@ -429,6 +429,7 @@ public class JournalActivity extends AppCompatActivity implements
             }
 
             Record values = mValuesArray[position];
+            if (values == null) return;
             int type = values.getType();
             switch (type) {
                 case 0: holder.mTypeView.setText("M"); break;

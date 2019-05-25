@@ -458,6 +458,8 @@ public class IndexActivity extends AppCompatActivity implements
             if (mValuesArray == null || mValuesArray.length == 0) return;
 
             Spawn values = mValuesArray[position];
+            if (values == null) return;
+
             String ein = values.getEin();
             String name = values.getName();
             String city = values.getLocationCity();
