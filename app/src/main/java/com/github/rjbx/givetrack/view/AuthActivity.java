@@ -132,9 +132,9 @@ public class AuthActivity extends AppCompatActivity implements
                 if (user == null) return;
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
+                // Block sign-in to prevent overwriting existing remote with default data
                 DatabaseManager.startActionFetchUser(this);
             } else {
-                // Block sign-in to prevent overwriting existing remote with default data
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
                 String message;
