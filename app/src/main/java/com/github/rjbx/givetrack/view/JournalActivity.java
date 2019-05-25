@@ -682,6 +682,7 @@ public class JournalActivity extends AppCompatActivity implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_POSITIVE:
+                            showSinglePane();
                             int position = (int) mDateDialog.getButton(DialogInterface.BUTTON_POSITIVE).getTag();
                             Record record = mValuesArray[position];
                             record.setTime(mTime);
