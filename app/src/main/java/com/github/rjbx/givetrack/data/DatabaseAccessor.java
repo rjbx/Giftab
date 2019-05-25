@@ -297,10 +297,8 @@ final class DatabaseAccessor {
         String uid = "";
         if (entries == null || entries.length == 0) {
             uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
-        } else {
-            if (entries[0] == null) return;
-            uid = entries[0].getUid();
-        }
+        } else if (entries[0] != null) uid = entries[0].getUid();
+
 
         if (uid == null || uid.isEmpty()) return;
 //        if (reset) local.delete(contentUri, UserEntry.COLUMN_UID + " = ? ", new String[] { uid });
@@ -308,6 +306,7 @@ final class DatabaseAccessor {
         if (entries != null && entries.length > 0) {
             ContentValues[] values = new ContentValues[entries.length];
             for (int i = 0; i < values.length; i++) {
+                if (entries[i] == null) continue;
                 values[i] = entries[i].toContentValues();
             }
             local.bulkInsert(contentUri, values);
@@ -327,10 +326,7 @@ final class DatabaseAccessor {
         String uid = "";
         if (entries == null || entries.length == 0) {
             uid = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid();
-        } else {
-            if (entries[0] == null) return;
-            uid = entries[0].getUid();
-        }
+        } else if (entries[0] != null) uid = entries[0].getUid();
 
         if (uid == null || uid.isEmpty()) return;
 
@@ -341,6 +337,7 @@ final class DatabaseAccessor {
         DatabaseReference entryReference;
         if (entries != null && entries.length > 0) {
             for (T entry : entries) {
+                if (entry == null) continue;
                 entryReference = userReference;
                 if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
                 entryReference.updateChildren(entry.toParameterMap());
@@ -359,12 +356,12 @@ final class DatabaseAccessor {
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
             local.notifyChange(contentUri, null);
         } else {
-            if (entries[0] == null) return;
-            uid = entries[0].getUid();
-            for (Entry entry : entries) {
-                Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
-                local.delete(rowUri, null, null);
-                local.notifyChange(rowUri, null);
+                uid = entries[0].getUid();
+                for (Entry entry : entries) {
+                    if (entry == null) continue;
+                    Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
+                    local.delete(rowUri, null, null);
+                    local.notifyChange(rowUri, null);
             }
         }
         // Do not update user stamp to prevent recreating user entry on account deletion
@@ -381,10 +378,8 @@ final class DatabaseAccessor {
         String uid = "";
         if (entries == null || entries.length == 0) {
             uid = getActiveUserFromRemote(FirebaseAuth.getInstance(), remote).getUid();
-        } else {
-            if (entries[0] == null) return;
-            uid = entries[0].getUid();
-        }
+        } else if (entries[0] != null) uid = entries[0].getUid();
+
         DatabaseReference userReference = typeReference.child(uid);
 
         DatabaseReference entryReference;
@@ -395,6 +390,7 @@ final class DatabaseAccessor {
             userReference.removeValue();
         } else {
             for (T entry : entries) {
+                if (entry == null) continue;
                 entryReference = userReference;
                 if (entry instanceof Company) entryReference = entryReference.child(entry.getId());
                 entryReference.removeValue();
