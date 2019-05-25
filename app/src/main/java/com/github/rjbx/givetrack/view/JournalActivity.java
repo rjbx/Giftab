@@ -91,6 +91,7 @@ public class JournalActivity extends AppCompatActivity implements
     private String mAddedName;
     private String mRemovedName;
     private int mPanePosition;
+    private boolean mInstanceStateRestored;
     private boolean mLock = true;
     @BindView(R.id.record_toolbar) Toolbar mToolbar;
     @BindView(R.id.record_list) RecyclerView mRecyclerView;
@@ -116,6 +117,7 @@ public class JournalActivity extends AppCompatActivity implements
             mUser = savedInstanceState.getParcelable(STATE_USER);
             Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_ARRAY);
             if (pRecords != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
+            mInstanceStateRestored = true;
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         setSupportActionBar(mToolbar);
@@ -245,8 +247,9 @@ public class JournalActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
-                            if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            if (mValuesArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+                            if ((mAddedName == null && mRemovedName == null) || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());

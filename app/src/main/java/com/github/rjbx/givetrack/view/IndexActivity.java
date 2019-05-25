@@ -79,6 +79,7 @@ public class IndexActivity extends AppCompatActivity implements
     private String mRemovedName;
     private int mPanePosition;
     private boolean sDialogShown;
+    private boolean mInstanceStateRestored;
     private boolean mFetching = false;
     private boolean mLock = true;
     @BindView(R.id.spawn_progress) View mSpawnProgress;
@@ -108,6 +109,7 @@ public class IndexActivity extends AppCompatActivity implements
             mPanePosition = savedInstanceState.getInt(STATE_POSITION);
             Parcelable[] pSpawns = savedInstanceState.getParcelableArray(STATE_ARRAY);
             if (pSpawns != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pSpawns, Spawn.class);
+            mInstanceStateRestored = true;
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         setSupportActionBar(mToolbar);
@@ -155,6 +157,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Defines behavior onClick of each MenuItem.
      */
     @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (mUser == null) return false;
         int id = item.getItemId();
         switch(id) {
             case (android.R.id.home):
@@ -246,8 +249,9 @@ public class IndexActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
-                            if (mAddedName == null && mRemovedName == null) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            if (mValuesArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
+                            if ((mAddedName == null && mRemovedName == null) || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
+                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());
@@ -317,6 +321,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
+        if (mUser == null) return;
         if (dialog == mSpawnDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
@@ -337,7 +342,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Populates {@link IndexActivity} {@link RecyclerView}.
      */
     @OnClick(R.id.spawn_fab) public void refreshResults() {
-
+        if (mUser == null) return;
         int remainingFetches = mUser.getIndexCount();
         if (remainingFetches <= 0) {
             mSnackbarMessage = getString(R.string.message_spawn_exhausted);

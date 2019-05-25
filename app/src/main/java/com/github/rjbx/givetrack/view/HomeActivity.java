@@ -91,6 +91,7 @@ public class HomeActivity extends AppCompatActivity implements
     private boolean mTargetLock = true;
     private boolean mRecordLock = true;
 
+    private boolean mInstanceStateRestored;
     private long mAnchorTime;
     private SectionsPagerAdapter mPagerAdapter;
     private Target[] mTargetArray;
@@ -122,6 +123,7 @@ public class HomeActivity extends AppCompatActivity implements
             Parcelable[] pRecords = savedInstanceState.getParcelableArray(STATE_RECORD_ARRAY);
             if (pTargets != null) mTargetArray = AppUtilities.getTypedArrayFromParcelables(pTargets, Target.class);
             if (pRecords != null) mRecordArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
+            mInstanceStateRestored = true;
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
@@ -179,6 +181,7 @@ public class HomeActivity extends AppCompatActivity implements
                 AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
+                if (mUser == null) return false;
                 if (mUser.getGiveTiming() == 0 && !AppUtilities.dateIsCurrent(mUser.getGiveAnchor())) {
                     mUser.setGiveAnchor(System.currentTimeMillis());
                     DatabaseManager.startActionUpdateUser(this, mUser);
@@ -267,8 +270,9 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            if (mTargetArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+                            if (mRecordArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());
@@ -293,9 +297,7 @@ public class HomeActivity extends AppCompatActivity implements
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
     @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        mTargetArray = null;
-        mRecordArray = null;
-        mUser = null;
+
     }
 
     /**
@@ -351,6 +353,7 @@ public class HomeActivity extends AppCompatActivity implements
      * Defines behaviors on click of DialogInterface buttons.
      */
     @Override public void onClick(DialogInterface dialog, int which) {
+        if (mUser == null) return;
         if (dialog == mAnchorDialog) {
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:

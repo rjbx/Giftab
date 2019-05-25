@@ -132,9 +132,9 @@ public class AuthActivity extends AppCompatActivity implements
                 if (user == null) return;
                 mProcessStage++;
                 mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
-                // Block sign-in to prevent overwriting existing remote with default data
                 DatabaseManager.startActionFetchUser(this);
             } else {
+                // Block sign-in to prevent overwriting existing remote with default data
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 mProgressbar.setVisibility(View.VISIBLE);
                 String message;
@@ -219,7 +219,7 @@ public class AuthActivity extends AppCompatActivity implements
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
                 mFirebaseAuth.signOut();
                 mUsers = null;
-                mActiveUser = null;
+                mActiveUser = User.getDefault();
                 mProcessStage = 0;
                 finish();
                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
@@ -339,7 +339,7 @@ public class AuthActivity extends AppCompatActivity implements
                     DatabaseManager.startActionRemoveUser(this, u);
                     Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                 }
-                mActiveUser = null;
+                mActiveUser = User.getDefault();
                 mProcessStage = -1;
                 break;
             default:
