@@ -166,6 +166,13 @@ public class GlanceFragment extends Fragment implements
 //        super.onCreate(savedInstanceState);
 //    }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+    }
+
     /**
      * Generates a Layout for the Fragment.
      */
@@ -189,6 +196,7 @@ public class GlanceFragment extends Fragment implements
 
         Bundle args = getArguments();
         if (args != null) {
+            sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
             Parcelable[] parcelables = args.getParcelableArray(HomeActivity.ARGS_RECORD_ATTRIBUTES);
             if (parcelables != null) sValuesArray = AppUtilities.getTypedArrayFromParcelables(parcelables, Record.class);
         }
