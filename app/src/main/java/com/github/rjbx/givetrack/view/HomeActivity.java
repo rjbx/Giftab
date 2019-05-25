@@ -235,7 +235,7 @@ public class HomeActivity extends AppCompatActivity implements
                 if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
                     DatabaseManager.startActionFetchTarget(this);
-                } else if (!mInstanceStateRestored) {
+                } else {
                     mTargetLock = false;
                     mTargetArray = new Target[data.getCount()];
                     if (data.moveToFirst()) {
@@ -246,13 +246,13 @@ public class HomeActivity extends AppCompatActivity implements
                             mTargetArray[i++] = target;
                         } while (data.moveToNext());
                     }
-                } else mInstanceStateRestored = false;
+                }
                 break;
             case DatabaseContract.LOADER_ID_RECORD:
                 if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseManager.startActionFetchRecord(this);
-                } else if (!mInstanceStateRestored) {
+                } else {
                     mRecordLock = false;
                     mRecordArray = new Record[data.getCount()];
                     if (data.moveToFirst()) {
@@ -263,7 +263,7 @@ public class HomeActivity extends AppCompatActivity implements
                             mRecordArray[i++] = record;
                         } while (data.moveToNext());
                     }
-                } else mInstanceStateRestored = false;
+                }
                 break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
@@ -275,7 +275,6 @@ public class HomeActivity extends AppCompatActivity implements
                             mUser = user;
                             if (mTargetArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
                             if (mRecordArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
-                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());
@@ -284,7 +283,7 @@ public class HomeActivity extends AppCompatActivity implements
         }
         if (!mUserLock && !mTargetLock && !mRecordLock) {
             Intent intent = getIntent();
-            if (intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS)) {
+            if (intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS) && !mInstanceStateRestored) {
                 mPagerAdapter.notifyDataSetChanged();
             }
             else {
@@ -292,6 +291,7 @@ public class HomeActivity extends AppCompatActivity implements
                 mTargetLock = true;
                 mRecordLock = true;
                 intent.setAction(null);
+                mInstanceStateRestored = false;
             }
         }
     }
