@@ -218,15 +218,17 @@ public class JournalActivity extends AppCompatActivity implements
             case DatabaseContract.LOADER_ID_RECORD:
                 if (mLock) break;
                 mValuesArray = new Record[data.getCount()];
-                if (data.moveToFirst()) {
-                    int i = 0;
-                    do {
-                        Record record = new Record();
-                        AppUtilities.cursorRowToEntry(data, record);
-                        mValuesArray[i++] = record;
-                    } while (data.moveToNext());
-                    mAdapter.swapValues(mValuesArray);
-                }
+                if (!mInstanceStateRestored) {
+                    if (data.moveToFirst()) {
+                        int i = 0;
+                        do {
+                            Record record = new Record();
+                            AppUtilities.cursorRowToEntry(data, record);
+                            mValuesArray[i++] = record;
+                        } while (data.moveToNext());
+                        mAdapter.swapValues(mValuesArray);
+                    }
+                } else mInstanceStateRestored = false;
                 if (sDualPane) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(DetailFragment.ARG_ITEM_COMPANY, mValuesArray[mPanePosition]);
@@ -248,7 +250,7 @@ public class JournalActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mLock = false;
                             mUser = user;
-                            if (mValuesArray == null) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
+                            if (mValuesArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_RECORD, null, this);
                             if ((mAddedName == null && mRemovedName == null) || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
                             mInstanceStateRestored = false;
                             break;
