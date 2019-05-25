@@ -409,7 +409,7 @@ final class DatabaseAccessor {
         String uid = auth.getUid();
         User u = User.getDefault();
         Cursor data = local.query(UserEntry.CONTENT_URI_USER, null, UserEntry.COLUMN_UID + " = ?", new String[] { uid }, null);
-        if (data == null || data.getCount() == 0) return u;
+        if (data == null) return u;
         if (data.moveToFirst()) AppUtilities.cursorRowToEntry(data, u);
         return u;
     }
