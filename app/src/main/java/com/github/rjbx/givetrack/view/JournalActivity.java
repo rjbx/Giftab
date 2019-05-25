@@ -682,7 +682,6 @@ public class JournalActivity extends AppCompatActivity implements
                             dialog.dismiss();
                             break;
                         case AlertDialog.BUTTON_POSITIVE:
-                            showSinglePane();
                             int position = (int) mDateDialog.getButton(DialogInterface.BUTTON_POSITIVE).getTag();
                             Record record = mValuesArray[position];
                             record.setTime(mTime);
@@ -722,7 +721,7 @@ public class JournalActivity extends AppCompatActivity implements
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values.getSuper());
                 if (sDualPane) showDualPane(arguments);
-                else if (isDualPane()) showSinglePane();
+                else showSinglePane();
             }
         }
     }

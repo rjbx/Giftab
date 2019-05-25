@@ -539,7 +539,7 @@ public class IndexActivity extends AppCompatActivity implements
                 Bundle arguments = new Bundle();
                 arguments.putParcelable(DetailFragment.ARG_ITEM_COMPANY, values);
                 if (sDualPane) showDualPane(arguments);
-                else if (isDualPane()) showSinglePane();
+                else showSinglePane();
             }
         }
     }
