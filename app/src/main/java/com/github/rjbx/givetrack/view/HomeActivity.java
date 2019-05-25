@@ -267,8 +267,8 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            if (mTargetArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-                            if (mRecordArray == null) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+                            getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
                             break;
                         }
                     } while (data.moveToNext());
