@@ -235,7 +235,7 @@ public class HomeActivity extends AppCompatActivity implements
                 if (!mUserLock && mTargetArray == null) {
                     mTargetArray = new Target[data.getCount()];
                     DatabaseManager.startActionFetchTarget(this);
-                } else {
+                } else if (!mInstanceStateRestored) {
                     mTargetLock = false;
                     mTargetArray = new Target[data.getCount()];
                     if (data.moveToFirst()) {
@@ -246,12 +246,13 @@ public class HomeActivity extends AppCompatActivity implements
                             mTargetArray[i++] = target;
                         } while (data.moveToNext());
                     }
-                } break;
+                } else mInstanceStateRestored = false;
+                break;
             case DatabaseContract.LOADER_ID_RECORD:
                 if (!mUserLock && mRecordArray == null) {
                     mRecordArray = new Record[data.getCount()];
                     DatabaseManager.startActionFetchRecord(this);
-                } else {
+                } else if (!mInstanceStateRestored) {
                     mRecordLock = false;
                     mRecordArray = new Record[data.getCount()];
                     if (data.moveToFirst()) {
@@ -262,7 +263,8 @@ public class HomeActivity extends AppCompatActivity implements
                             mRecordArray[i++] = record;
                         } while (data.moveToNext());
                     }
-                } break;
+                } else mInstanceStateRestored = false;
+                break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
                     do {
