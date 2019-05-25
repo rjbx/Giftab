@@ -137,6 +137,7 @@ public class GiveFragment extends Fragment implements
                 mRecyclerView.setAdapter(mListAdapter);
                 mListAdapter.swapValues(targetList);
             }
+            savedInstanceState.clear();
         }
         super.onCreate(savedInstanceState);
     }
@@ -184,6 +185,7 @@ public class GiveFragment extends Fragment implements
             sDualPane = savedInstanceState.getBoolean(PANE_STATE);
             sPercentagesAdjusted = savedInstanceState.getBoolean(ADJUST_STATE);
             mPanePosition = savedInstanceState.getInt(POSITION_STATE);
+            savedInstanceState.clear();
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         renderActionBar();

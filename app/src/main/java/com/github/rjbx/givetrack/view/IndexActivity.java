@@ -110,6 +110,7 @@ public class IndexActivity extends AppCompatActivity implements
             Parcelable[] pSpawns = savedInstanceState.getParcelableArray(STATE_ARRAY);
             if (pSpawns != null) mValuesArray = AppUtilities.getTypedArrayFromParcelables(pSpawns, Spawn.class);
             mInstanceStateRestored = true;
+            savedInstanceState.clear();
         } else sDualPane = mDetailContainer.getVisibility() == View.VISIBLE;
 
         setSupportActionBar(mToolbar);
@@ -216,13 +217,15 @@ public class IndexActivity extends AppCompatActivity implements
                 if (mLock) break;
                 mSpawnProgress.setVisibility(View.GONE);
                 mValuesArray = new Spawn[data.getCount()];
-                int i = 0;
-                do {
-                    Spawn spawn = Spawn.getDefault();
-                    AppUtilities.cursorRowToEntry(data, spawn);
-                    mValuesArray[i++] = spawn;
-                } while (data.moveToNext());
-                mAdapter.swapValues(mValuesArray);
+                if (!mInstanceStateRestored) {
+                    int i = 0;
+                    do {
+                        Spawn spawn = Spawn.getDefault();
+                        AppUtilities.cursorRowToEntry(data, spawn);
+                        mValuesArray[i++] = spawn;
+                    } while (data.moveToNext());
+                    mAdapter.swapValues(mValuesArray);
+                } else mInstanceStateRestored = false;
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
                     mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
@@ -251,7 +254,6 @@ public class IndexActivity extends AppCompatActivity implements
                             mUser = user;
                             if (mValuesArray == null || !mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
                             if ((mAddedName == null && mRemovedName == null) || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
-                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());

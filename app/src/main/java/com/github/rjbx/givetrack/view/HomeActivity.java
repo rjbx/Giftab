@@ -124,6 +124,7 @@ public class HomeActivity extends AppCompatActivity implements
             if (pTargets != null) mTargetArray = AppUtilities.getTypedArrayFromParcelables(pTargets, Target.class);
             if (pRecords != null) mRecordArray = AppUtilities.getTypedArrayFromParcelables(pRecords, Record.class);
             mInstanceStateRestored = true;
+            savedInstanceState.clear();
         }
 
         mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));

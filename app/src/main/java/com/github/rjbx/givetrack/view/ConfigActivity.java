@@ -77,7 +77,10 @@ public class ConfigActivity
      */
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) sUser = savedInstanceState.getParcelable(USER_STATE);
+        if (savedInstanceState != null) {
+            sUser = savedInstanceState.getParcelable(USER_STATE);
+            savedInstanceState.clear();
+        }
         getLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
         setupActionBar();
     }

@@ -85,8 +85,10 @@ public class AuthActivity extends AppCompatActivity implements
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        if (savedInstanceState != null)
+        if (savedInstanceState != null) {
             mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
+            savedInstanceState.clear();
+        }
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
