@@ -273,8 +273,9 @@ public class HomeActivity extends AppCompatActivity implements
                         if (user.getUserActive()) {
                             mUserLock = false;
                             mUser = user;
-                            if (mTargetArray == null /*|| mInstanceStateRestored*/) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
-                            if (mRecordArray == null /*|| mInstanceStateRestored*/) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            if (mTargetArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+                            if (mRecordArray == null || mInstanceStateRestored) getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_RECORD, null, this);
+                            mInstanceStateRestored = false;
                             break;
                         }
                     } while (data.moveToNext());
@@ -285,13 +286,11 @@ public class HomeActivity extends AppCompatActivity implements
             Intent intent = getIntent();
             if ((intent.getAction() == null || !intent.getAction().equals(DetailFragment.ACTION_CUSTOM_TABS))/* && !mInstanceStateRestored*/) {
                 mPagerAdapter.notifyDataSetChanged();
-            }
-            else {
+            } else {
                 mUserLock = true;
                 mTargetLock = true;
                 mRecordLock = true;
                 intent.setAction(null);
-//                mInstanceStateRestored = false;
             }
         }
     }
