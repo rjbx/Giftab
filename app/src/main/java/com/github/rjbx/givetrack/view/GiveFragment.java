@@ -555,6 +555,7 @@ public class GiveFragment extends Fragment implements
             }
 
             Target target = mTargetList.get(position);
+            if (target == null) return;
 
             int type = target.getType();
             if (typeButton != null) {
