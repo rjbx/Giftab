@@ -278,6 +278,7 @@ public class JournalActivity extends AppCompatActivity implements
      */
     @Override public void showDualPane(@NonNull Bundle args) {
 
+        sDualPane = true;
         if (mDetailFragment == null) {
             mDetailFragment = DetailFragment.newInstance(args);
             JournalActivity.this.getSupportFragmentManager().beginTransaction()
@@ -294,6 +295,8 @@ public class JournalActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
+
+        sDualPane = false;
         if (mDetailFragment != null) getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
         mDetailFragment = null;
         sDualPane = false;
@@ -514,6 +517,7 @@ public class JournalActivity extends AppCompatActivity implements
             }
 
             @Optional @OnClick(R.id.record_memo_text) void editMemo(View v) {
+                togglePane(v);
                 int position = (int) v.getTag();
                 Record record = mValuesArray[position];
 
@@ -536,7 +540,7 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of type button.
              */
             @Optional @OnClick(R.id.record_type_text) void toggleType(View v) {
-
+                togglePane(v);
                 int position = (int) v.getTag();
                 Record record = mValuesArray[position];
 
@@ -564,22 +568,20 @@ public class JournalActivity extends AppCompatActivity implements
              * Defines behavior on click of stats view.
              */
             @OnClick(R.id.record_time_text) void editTime(View v) {
+                togglePane(v);
                 int position = (int) v.getTag();
                 long time = mValuesArray[position].getTime();
-                if (isDualPane()) togglePane(v);
-                else {
-                    Context context = v.getContext();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(time);
-                    DatePickerDialog datePicker = new DatePickerDialog(
-                            context,
-                            this,
-                            calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH),
-                            calendar.get(Calendar.DAY_OF_MONTH));
-                    datePicker.getDatePicker().setTag(v.getTag());
-                    datePicker.show();
-                }
+                Context context = v.getContext();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(time);
+                DatePickerDialog datePicker = new DatePickerDialog(
+                        context,
+                        this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH));
+                datePicker.getDatePicker().setTag(v.getTag());
+                datePicker.show();
             }
 
             /**

@@ -280,7 +280,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items and item details side-by-side using two vertical panes.
      */
     @Override public void showDualPane(@NonNull Bundle args) {
-
+        sDualPane = true;
         if (mDetailFragment == null) {
             mDetailFragment = DetailFragment.newInstance(args);
             IndexActivity.this.getSupportFragmentManager().beginTransaction()
@@ -297,6 +297,7 @@ public class IndexActivity extends AppCompatActivity implements
      * Presents the list of items in a single vertical pane, hiding the item details.
      */
     @Override public void showSinglePane() {
+        sDualPane = false;
         if (mDetailFragment != null) getSupportFragmentManager().beginTransaction().remove(mDetailFragment);
         mDetailFragment = null;
         sDualPane = false;
