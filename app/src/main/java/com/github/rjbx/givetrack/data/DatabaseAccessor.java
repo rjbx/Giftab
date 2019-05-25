@@ -349,14 +349,14 @@ final class DatabaseAccessor {
     @SafeVarargs private static <T extends Entry> void removeEntriesFromLocal(ContentResolver local, Class<T> entryType, long stamp, T... entries) {
 
         Uri contentUri = DataUtilities.getContentUri(entryType);
-        String uid;
+        String uid = "";
         if (entries == null || entries.length == 0) {
             uid = getActiveUserFromLocal(FirebaseAuth.getInstance(), local).getUid();
             if (uid == null || uid.isEmpty()) return;
             local.delete(contentUri, UserEntry.COLUMN_UID + " = ?", new String[] { uid });
             local.notifyChange(contentUri, null);
         } else {
-                uid = entries[0].getUid();
+                if (entries[0] != null) uid = entries[0].getUid();
                 for (Entry entry : entries) {
                     if (entry == null) continue;
                     Uri rowUri = contentUri.buildUpon().appendPath(String.valueOf(entry.getId())).build();
