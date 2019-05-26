@@ -186,12 +186,22 @@ public class AuthActivity extends AppCompatActivity implements
                             credential = GoogleAuthProvider.getCredential(/*id, token*/token, null);
                         }
                         if (credential == null) return;
-                        FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
-                            mAction = ACTION_SIGN_IN;
-                            DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                            Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
-                            mActiveUser = null;
-                        });
+                        FirebaseAuth.getInstance().signInWithCredential(credential)
+                            .addOnSuccessListener(signedOutTask -> {
+                                mAction = ACTION_SIGN_IN;
+                                DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                                Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                                mActiveUser = null;
+                            })
+                            .addOnFailureListener(signedOutTask -> {
+                                if (mReauthAttempts < 5) {
+                                    launchAuthDialog();
+                                    Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    mReauthAttempts = 0;
+                                    Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                     } else {
                         mAction = ACTION_SIGN_IN;
                         DatabaseManager.startActionRemoveUser(this, mActiveUser);
@@ -297,29 +307,39 @@ public class AuthActivity extends AppCompatActivity implements
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
                         if (retryUser == null) return;
-                        retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
-                            mAction = ACTION_SIGN_IN;
-                            DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                            Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
-                            mActiveUser = null;
-                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                            if (refreshedUser != null) refreshedUser.delete()
-                                    .addOnSuccessListener(deleteTask -> {
-                                        mReauthAttempts = 0;
-                                        finish();
-                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                    })
-                                    .addOnFailureListener(failTask -> {
-                                        if (mReauthAttempts < 5) {
-                                            launchAuthDialog();
-                                            Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                        } else {
+                        retryUser.reauthenticate(credential)
+                            .addOnSuccessListener(signedOutTask -> {
+                                mAction = ACTION_SIGN_IN;
+                                DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                                Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                                mActiveUser = null;
+                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                if (refreshedUser != null) refreshedUser.delete()
+                                        .addOnSuccessListener(deleteTask -> {
                                             mReauthAttempts = 0;
-                                            Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                        });
+                                            finish();
+                                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+                                            Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+                                        })
+                                        .addOnFailureListener(failTask -> {
+                                            if (mReauthAttempts < 5) {
+                                                launchAuthDialog();
+                                                Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                            } else {
+                                                mReauthAttempts = 0;
+                                                Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                            })
+                            .addOnFailureListener(signedOutTask -> {
+                                if (mReauthAttempts < 5) {
+                                    launchAuthDialog();
+                                    Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                } else {
+                                    mReauthAttempts = 0;
+                                    Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            });
                     }
                     break;
                 default:
