@@ -187,14 +187,13 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                         if (credential == null) return;
                         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
+                            DatabaseManager.startActionRemoveUser(this, mActiveUser);
+                            Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                             FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(retryDeleteTask -> {
                                         mReauthAttempts = 0;
-
-                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
-                                        Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
-//                                                mFirebaseAuth.signOut();
+                                        mFirebaseAuth.signOut();
                                         finish();
                                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
@@ -293,8 +292,6 @@ public class AuthActivity extends AppCompatActivity implements
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {
                                         mReauthAttempts = 0;
-//                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
-//                                        mFirebaseAuth.signOut();
                                         finish();
                                         startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
