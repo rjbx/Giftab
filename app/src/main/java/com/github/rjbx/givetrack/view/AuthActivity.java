@@ -187,6 +187,7 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                         if (credential == null) return;
                         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
+                            mAction = ACTION_SIGN_IN;
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                             FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -211,6 +212,7 @@ public class AuthActivity extends AppCompatActivity implements
                     }
             } else if (mAction.equals(ACTION_SIGN_OUT)) {
                 if (!mActiveUser.getUid().equals(user.getUid())) return;
+                mAction = ACTION_SIGN_IN;
                 mFirebaseAuth.signOut();
                 mUsers = null;
                 mActiveUser = null;
@@ -281,11 +283,11 @@ public class AuthActivity extends AppCompatActivity implements
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
-                        DatabaseManager.startActionResetData(AuthActivity.this);
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
                         if (retryUser == null) return;
                         retryUser.reauthenticate(credential).addOnCompleteListener(signedOutTask -> {
+                            mAction = ACTION_SIGN_IN;
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
