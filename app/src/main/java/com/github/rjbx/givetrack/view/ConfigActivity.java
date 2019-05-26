@@ -358,19 +358,21 @@ public class ConfigActivity
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                if (firebaseUser == null) return false;
-                firebaseUser.updateEmail(mRequestedEmail)
+                if (firebaseUser != null) {
+                    firebaseUser.updateEmail(mRequestedEmail)
                         .addOnSuccessListener(updateTask -> {
                             ConfigActivity.changeSummary(preference, mRequestedEmail);
                             ConfigActivity.changeUser(preference, mRequestedEmail);
                             preference.getEditor().putString(preference.getKey(), mRequestedEmail).apply();
+                            preference.setSummary(mRequestedEmail);
                             Toast.makeText(getContext(), "Your email has been set to " + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
                         })
                         .addOnFailureListener(failTask -> {
                             Toast.makeText(getContext(), "Enter your credentials.", Toast.LENGTH_SHORT).show();
                             launchAuthDialog();
                         });
-                return true;
+                }
+                return false;
             } else if (getString(R.string.pref_userConvert_key).equals(preference.getKey())) { return true;
             } else {
                 ConfigActivity.changeSummary(preference, newValue);
@@ -482,6 +484,7 @@ public class ConfigActivity
                                             ConfigActivity.changeSummary(emailPref, mRequestedEmail);
                                             ConfigActivity.changeUser(emailPref, mRequestedEmail);
                                             emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
+                                            emailPref.setSummary(mRequestedEmail);
                                             Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
                                         })
                                         .addOnFailureListener(updateTask -> {
