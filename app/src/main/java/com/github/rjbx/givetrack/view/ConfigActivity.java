@@ -417,7 +417,7 @@ public class ConfigActivity
             if (sUser == null) return;
             if (isAnonymous) {
                 switch (which) {
-                    case AlertDialog.BUTTON_NEGATIVE:
+                    case AlertDialog.BUTTON_NEUTRAL:
                         mAuthAttempts = 0;
                         dialog.dismiss();
                         break;
@@ -456,7 +456,7 @@ public class ConfigActivity
                 }
             } else if (dialog == mAuthDialog) {
                 switch (which) {
-                    case AlertDialog.BUTTON_NEGATIVE:
+                    case AlertDialog.BUTTON_NEUTRAL:
                         mAuthAttempts = 0;
                         dialog.dismiss();
                         break;
