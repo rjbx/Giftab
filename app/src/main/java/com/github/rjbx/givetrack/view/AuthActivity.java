@@ -171,11 +171,10 @@ public class AuthActivity extends AppCompatActivity implements
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
                 if (user == null) return;
                 if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
-                    FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
-                    if (retryUser == null) return;
+                    FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
+                    if (firebaseUser == null) return;
                     List<String> providers = new ArrayList<>();
-                    for (UserInfo uInfo : retryUser.getProviderData())
-                        providers.add(uInfo.getProviderId());
+                    for (UserInfo uInfo : firebaseUser.getProviderData()) providers.add(uInfo.getProviderId());
                     if (providers.contains("password")) {
                         Toast.makeText(this, "Enter your credentials.", Toast.LENGTH_SHORT).show();
                         launchAuthDialog();
@@ -340,6 +339,7 @@ public class AuthActivity extends AppCompatActivity implements
             case ACTION_DELETE_ACCOUNT:
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
+                    mActiveUser = u;
                     DatabaseManager.startActionUpdateUser(this, u);
                 }
                 mProcessStage = -1;
