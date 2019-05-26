@@ -442,6 +442,8 @@ public class ConfigActivity
                                 ConfigActivity.changeSummary(emailPreference, mEmailInput);
                                 ConfigActivity.changeUser(emailPreference, mEmailInput);
                                 emailPreference.setEnabled(true);
+                                emailPreference.getEditor().putString(emailPreference.getKey(), mEmailInput).apply();
+                                emailPreference.setSummary(mEmailInput);
                                 findPreference(getString(R.string.pref_userConvert_key)).setEnabled(false);
                             })
                             .addOnFailureListener(failTask -> {
