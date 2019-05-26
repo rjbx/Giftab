@@ -209,6 +209,7 @@ public class AuthActivity extends AppCompatActivity implements
                 FirebaseUser refreshedUser = FirebaseAuth.getInstance().getCurrentUser();
                 if (refreshedUser != null) refreshedUser.delete()
                         .addOnSuccessListener(retryDeleteTask -> {
+                            mProcessStage = 0;
                             mReauthAttempts = 0;
                             mFirebaseAuth.signOut();
                             finish();
