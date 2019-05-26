@@ -14,7 +14,7 @@
         android:inputType="textEmailAddress"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
-        android:hint=""/>
+        android:hint="Account email address"/>
 
     <EditText
         android:id="@+id/reauth_password"
@@ -27,6 +27,6 @@
         android:inputType="textPassword"
         android:imeOptions="actionDone"
         android:importantForAutofill="no"
-        android:hint=""/>
+        android:hint="Account password"/>
 
 </LinearLayout>
