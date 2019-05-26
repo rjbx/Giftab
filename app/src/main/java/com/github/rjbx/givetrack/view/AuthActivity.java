@@ -275,17 +275,19 @@ public class AuthActivity extends AppCompatActivity implements
         if (dialog == mAuthDialog) {
             String email = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
             String password = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-            if (email.isEmpty() || password.isEmpty()) {
-                launchAuthDialog();
-                Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                return;
-            }
             switch (which) {
                 case AlertDialog.BUTTON_NEUTRAL:
                     mReauthAttempts = 0;
                     dialog.dismiss();
+                    finish();
+                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
+                    if (email.isEmpty() || password.isEmpty()) {
+                        launchAuthDialog();
+                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
                         FirebaseUser retryUser = mFirebaseAuth.getCurrentUser();
