@@ -283,7 +283,7 @@ public class AuthActivity extends AppCompatActivity implements
                 return;
             }
             switch (which) {
-                case AlertDialog.BUTTON_NEGATIVE: dialog.dismiss(); break;
+                case AlertDialog.BUTTON_NEUTRAL: dialog.dismiss(); break;
                 case AlertDialog.BUTTON_POSITIVE:
                     if (mAction.equals(ACTION_DELETE_ACCOUNT)) {
                         DatabaseManager.startActionResetData(AuthActivity.this);
