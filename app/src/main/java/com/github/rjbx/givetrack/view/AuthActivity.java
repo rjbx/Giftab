@@ -297,6 +297,10 @@ public class AuthActivity extends AppCompatActivity implements
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {
+                                        for (User u : mUsers) if (u.getUid().equals(refreshedUser.getUid())) {
+                                            DatabaseManager.startActionRemoveUser(this, u);
+                                            Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                                        }
                                         mReauthAttempts = 0;
 //                                        DatabaseManager.startActionRemoveUser(this, mActiveUser);
 //                                        mFirebaseAuth.signOut();
@@ -341,8 +345,7 @@ public class AuthActivity extends AppCompatActivity implements
             case ACTION_DELETE_ACCOUNT:
                 if (firebaseUser == null) return;
                 for (User u : mUsers) if (u.getUid().equals(firebaseUser.getUid())) {
-                    DatabaseManager.startActionRemoveUser(this, u);
-                    Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                    DatabaseManager.startActionUpdateUser(this, u);
                 }
                 mActiveUser = null;
                 mProcessStage = -1;
