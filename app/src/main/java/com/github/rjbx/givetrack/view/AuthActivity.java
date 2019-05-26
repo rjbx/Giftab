@@ -187,16 +187,16 @@ public class AuthActivity extends AppCompatActivity implements
                         }
                         if (credential == null) return;
                         FirebaseAuth.getInstance().signInWithCredential(credential).addOnCompleteListener(signedOutTask -> {
-                            mActiveUser = null;
                             mAction = ACTION_SIGN_IN;
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                            mActiveUser = null;
                         });
                     } else {
-                        mActiveUser = null;
                         mAction = ACTION_SIGN_IN;
                         DatabaseManager.startActionRemoveUser(this, mActiveUser);
                         Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                        mActiveUser = null;
                     }
                 } else if (mAction.equals(ACTION_SIGN_OUT)) {
                     if (!mActiveUser.getUid().equals(user.getUid())) return;
@@ -301,6 +301,7 @@ public class AuthActivity extends AppCompatActivity implements
                             mAction = ACTION_SIGN_IN;
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
+                            mActiveUser = null;
                             FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
                             if (refreshedUser != null) refreshedUser.delete()
                                     .addOnSuccessListener(deleteTask -> {
