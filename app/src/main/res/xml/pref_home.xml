@@ -9,10 +9,6 @@
         <!--android:summaryOn="Process donations when adding money to charities"-->
         <!--android:summaryOff="Don't process donations when adding money to charities"/>-->
 
-    <Preference
-        android:key="@string/pref_giveReset_key"
-        android:title="@string/pref_giveReset_label"
-        android:summary="Allocate the same percentage of donations to each organization"/>
 
     <Preference
         android:key="@string/pref_giveMagnitude_key"
@@ -21,10 +17,6 @@
         android:title="@string/pref_magnitude_label"
         android:defaultValue="0.01"/>
 
-    <Preference
-        android:key="@string/pref_giveCurrent_key"
-        android:title="@string/pref_giveCurrent_label"
-        android:summary="Set the date applied to new records as today"/>
 
     <ListPreference
         android:entries="@array/list_preference_giveRounding"
@@ -34,6 +26,16 @@
         android:positiveButtonText="OK"
         android:title="@string/pref_giveRounding_label"
         android:defaultValue="0"/>
+
+    <Preference
+        android:key="@string/pref_giveReset_key"
+        android:title="@string/pref_giveReset_label"
+        android:summary="Allocate the same percentage of donations to each organization"/>
+
+    <Preference
+        android:key="@string/pref_giveCurrent_key"
+        android:title="@string/pref_giveCurrent_label"
+        android:summary="Set the date applied to new records as today"/>
 
     <Preference
         android:key="@string/pref_clear_key"
