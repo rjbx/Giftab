@@ -358,7 +358,7 @@ public class ConfigActivity
             if (getString(R.string.pref_userEmail_key).equals(preference.getKey())) {
                 mRequestedEmail = newValue.toString();
                 FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
-                if (firebaseUser != null) {
+                if (firebaseUser != null && !mRequestedEmail.isEmpty()) {
                     firebaseUser.updateEmail(mRequestedEmail)
                         .addOnSuccessListener(updateTask -> {
                             ConfigActivity.changeSummary(preference, mRequestedEmail);
