@@ -193,6 +193,8 @@ public class AuthActivity extends AppCompatActivity implements
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                         });
                     } else {
+                        mActiveUser = null;
+                        mAction = ACTION_SIGN_IN;
                         DatabaseManager.startActionRemoveUser(this, mActiveUser);
                         Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                     }
