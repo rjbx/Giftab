@@ -520,6 +520,8 @@ public class ConfigActivity
             mAuthDialog = new AlertDialog.Builder(getActivity()).create();
             mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
             mAuthDialog.setView(mDialogView);
+            mAuthDialog.setCancelable(false);
+            mAuthDialog.setCanceledOnTouchOutside(false);
             mAuthDialog.setMessage(getString(R.string.message_update_email));
             mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
             mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
