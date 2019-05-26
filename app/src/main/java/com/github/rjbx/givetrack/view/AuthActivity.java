@@ -232,12 +232,8 @@ public class AuthActivity extends AppCompatActivity implements
                         })
                         .addOnFailureListener(retryFailTask -> {
                             Timber.e(retryFailTask);
-                            if (mReauthAttempts < 5) {
-                                Toast.makeText(AuthActivity.this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                            } else {
-                                mReauthAttempts = 0;
-                                Toast.makeText(AuthActivity.this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                            }
+                            Toast.makeText(AuthActivity.this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                         });
             }
             AppWidget.refresh(this);
@@ -327,6 +323,7 @@ public class AuthActivity extends AppCompatActivity implements
                                                 Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                             } else {
                                                 mReauthAttempts = 0;
+                                                startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                                 Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                             }
                                         });
@@ -337,6 +334,7 @@ public class AuthActivity extends AppCompatActivity implements
                                     Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                                 } else {
                                     mReauthAttempts = 0;
+                                    startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                                     Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                 }
                             });
