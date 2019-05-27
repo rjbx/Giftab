@@ -170,7 +170,7 @@ public class GiveFragment extends Fragment implements
                     mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
                     mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
                     if (mAmountTotal < mListLength * .3f) {
-                        mAmountTotal = mListLength * 3f;
+                        mAmountTotal = mListLength * .3f;
                         sUser.setGiveImpact(String.valueOf(mAmountTotal));
                         DatabaseManager.startActionUpdateUser(getContext(), sUser);
                     }
