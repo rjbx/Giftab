@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.database.DatabaseUtils;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -166,8 +167,13 @@ public class GiveFragment extends Fragment implements
                 sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
                 if (sUser == null) mParentActivity.recreate();
                 else {
-                    mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
                     mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
+                    mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
+                    if (mAmountTotal < mListLength * .3f) {
+                        mAmountTotal = mListLength * 3f;
+                        sUser.setGiveImpact(String.valueOf(mAmountTotal));
+                        DatabaseManager.startActionUpdateUser(getContext(), sUser);
+                    }
                     if (mListAdapter == null) {
                         mListAdapter = new ListAdapter(targetList);
                         mRecyclerView.setAdapter(mListAdapter);
