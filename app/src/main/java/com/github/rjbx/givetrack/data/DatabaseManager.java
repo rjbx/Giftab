@@ -733,13 +733,13 @@ public final class DatabaseManager extends IntentService {
                     offsetIndex = i;
                 }
         }
-        if (offset == 1) {
+        if (targets.length == 0) DatabaseAccessor.removeTarget(this);
+        else if (offset > 1) DatabaseAccessor.addTarget(this, targets);
+        else {
             Target removedTarget = persistedList.get(offsetIndex);
             DatabaseAccessor.removeTarget(this, removedTarget);
             DatabaseAccessor.addTarget(this, targets);
         }
-        else if (targets.length == 0) DatabaseAccessor.removeTarget(this);
-        else DatabaseAccessor.addTarget(this, targets);
     }
 
     /**
