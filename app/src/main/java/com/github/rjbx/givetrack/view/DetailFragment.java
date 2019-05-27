@@ -1,6 +1,7 @@
 package com.github.rjbx.givetrack.view;
 
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -276,6 +277,13 @@ public class DetailFragment extends Fragment {
             mProgress.setVisibility(View.GONE);
             mWebview.setScrollY(sScrollState);
             super.onPageFinished(view, url);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+            if (request.getUrl().toString().startsWith("https://www.charitynavigator.org/"))
+                return super.shouldOverrideUrlLoading(view, request);
+            else return false;
         }
     }
 
