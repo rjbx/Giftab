@@ -736,7 +736,7 @@ public final class DatabaseManager extends IntentService {
         if (offset == 1) {
             Target removedTarget = persistedList.get(offsetIndex);
             DatabaseAccessor.removeTarget(this, removedTarget);
-            DatabaseAccessor.addTarget(this, targets);
+//            DatabaseAccessor.addTarget(this, targets);
         }
         else if (targets.length == 0) DatabaseAccessor.removeTarget(this);
         else DatabaseAccessor.addTarget(this, targets);
