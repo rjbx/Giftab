@@ -62,7 +62,6 @@ import java.util.TimerTask;
 import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.AppUtilities.PERCENT_FORMATTER;
 
-// TODO: Prevent list adapter from reloading removed element before syncing changes
 /**
  * Provides the logic and views for a user activity management screen.
  */
