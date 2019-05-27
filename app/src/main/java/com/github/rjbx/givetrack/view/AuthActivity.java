@@ -194,13 +194,9 @@ public class AuthActivity extends AppCompatActivity implements
                                 mActiveUser = null;
                             })
                             .addOnFailureListener(signedOutTask -> {
-                                if (mReauthAttempts < 5) {
-                                    launchAuthDialog();
-                                    Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    mReauthAttempts = 0;
-                                    Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                }
+                                Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                if (mReauthAttempts < 5) launchAuthDialog();
+                                else mReauthAttempts = 0;
                             });
                     } else {
                         mAction = ACTION_SIGN_IN;
@@ -317,24 +313,20 @@ public class AuthActivity extends AppCompatActivity implements
                                         Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
                                     })
                                     .addOnFailureListener(failTask -> {
-                                        if (mReauthAttempts < 5) {
-                                            launchAuthDialog();
-                                            Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                        } else {
+                                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                        if (mReauthAttempts < 5) launchAuthDialog();
+                                        else {
                                             mReauthAttempts = 0;
                                             startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                            Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                                         }
                                     });
                         })
                         .addOnFailureListener(signedOutTask -> {
-                            if (mReauthAttempts < 5) {
-                                launchAuthDialog();
-                                Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                            } else {
+                            Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                            if (mReauthAttempts < 5) launchAuthDialog();
+                            else {
                                 mReauthAttempts = 0;
                                 startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                Toast.makeText(this, "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
                             }
                         });
                     break;

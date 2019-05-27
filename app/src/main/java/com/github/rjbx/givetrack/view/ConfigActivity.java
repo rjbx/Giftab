@@ -502,13 +502,9 @@ public class ConfigActivity
                                 }
                             })
                             .addOnFailureListener(authTask -> {
-                                if (mReauthAttempts < 5) {
-                                    launchAuthDialog();
-                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                } else {
-                                    mReauthAttempts = 0;
-                                    Toast.makeText(getContext(), "While your app data has been erased, your account could not be erased because your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                }
+                                Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                if (mReauthAttempts < 5) launchAuthDialog();
+                                else mReauthAttempts = 0;
                             });
                         break;
                 }
