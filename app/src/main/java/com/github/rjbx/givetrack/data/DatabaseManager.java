@@ -735,7 +735,7 @@ public final class DatabaseManager extends IntentService {
             }
         // TODO: Migrate to single accessor call to prevent multiple callbacks
         if (targets.length == 0) DatabaseAccessor.removeTarget(this);
-        else if (offset > 1 || targets.length == persistedList.size()) DatabaseAccessor.addTarget(this, targets);
+        else if (offset > 1) DatabaseAccessor.addTarget(this, targets);
         else {
             Target removedTarget = persistedList.get(offsetIndex);
             DatabaseAccessor.removeTarget(this, removedTarget);
