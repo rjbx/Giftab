@@ -169,11 +169,6 @@ public class GiveFragment extends Fragment implements
                 else {
                     mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
                     mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
-                    if (mAmountTotal < mListLength * .3f) {
-                        mAmountTotal = mListLength * .3f;
-                        sUser.setGiveImpact(String.valueOf(mAmountTotal));
-                        DatabaseManager.startActionUpdateUser(getContext(), sUser);
-                    }
                     if (mListAdapter == null) {
                         mListAdapter = new ListAdapter(targetList);
                         mRecyclerView.setAdapter(mListAdapter);

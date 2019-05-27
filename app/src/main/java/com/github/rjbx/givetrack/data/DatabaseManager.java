@@ -503,6 +503,16 @@ public final class DatabaseManager extends IntentService {
         String socialHandle = DataUtilities.urlToSocialHandle(target);
         target.setSocial(socialHandle);
 
+        List<User> users = DatabaseAccessor.getUser(this);
+        for (User u : users) if (u.getUserActive()) {
+            float totalImpact = Float.parseFloat(u.getGiveImpact());
+            float threshhold = targets.size() * .3f;
+            if (totalImpact < threshhold) {
+                u.setGiveImpact(String.valueOf(threshhold));
+                DatabaseAccessor.addUser(this, u);
+            }
+        }
+
         DatabaseAccessor.addTarget(this, target);
     }
 
