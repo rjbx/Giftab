@@ -385,12 +385,12 @@ public class GiveFragment extends Fragment implements
         if (sPercentagesAdjusted) {
             if (mListAdapter != null) mListAdapter.syncPercentages();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorCheerDark, null)));
-            mActionBar.setImageResource(R.drawable.action_sync);
         } else if (mAmountTotal > 0) {
             if (mListAdapter != null) mListAdapter.syncDonations();
             mActionBar.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversion, null)));
-            mActionBar.setImageResource(R.drawable.action_sync);
         }
+        mActionBar.setImageResource(R.drawable.action_sync);
+        if (mRemoveDialog != null) mRemoveDialog.dismiss();
     }
 
     /**
