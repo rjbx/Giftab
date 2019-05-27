@@ -733,14 +733,15 @@ public final class DatabaseManager extends IntentService {
                     offsetIndex = i;
                 }
             }
-        // TODO: Migrate to single accessor call to prevent multiple callbacks
+            // TODO: Migrate to single accessor call to prevent multiple callbacks
+
         if (targets.length == 0) DatabaseAccessor.removeTarget(this);
-        else if (offset > 1) DatabaseAccessor.addTarget(this, targets);
-        else {
+        else if (offset == 1) {
             Target removedTarget = persistedList.get(offsetIndex);
             DatabaseAccessor.removeTarget(this, removedTarget);
             DatabaseAccessor.addTarget(this, targets);
         }
+        else DatabaseAccessor.addTarget(this, targets);
     }
 
     /**
