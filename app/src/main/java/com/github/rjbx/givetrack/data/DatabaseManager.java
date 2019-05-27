@@ -506,9 +506,9 @@ public final class DatabaseManager extends IntentService {
         List<User> users = DatabaseAccessor.getUser(this);
         for (User u : users) if (u.getUserActive()) {
             float totalImpact = Float.parseFloat(u.getGiveImpact());
-            float threshhold = targets.size() * .3f;
-            if (totalImpact < threshhold) {
-                u.setGiveImpact(String.valueOf(threshhold));
+            float threshold = (size + 1) * .3f;
+            if (totalImpact < threshold) {
+                u.setGiveImpact(String.valueOf(threshold));
                 DatabaseAccessor.addUser(this, u);
             }
         }
