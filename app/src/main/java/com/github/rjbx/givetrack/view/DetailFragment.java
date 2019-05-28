@@ -249,7 +249,7 @@ public class DetailFragment extends Fragment {
     @OnClick(R.id.detail_fab) void toggleSaved() {
 //        if (!mEnabled) return;
         sCurrentState = !sCurrentState;
-        mFab.setVisibility(View.GONE);
+//        mFab.setVisibility(View.GONE);
 //        drawActionButton();
 //        drawSnackbar();
         if (sInitialState != sCurrentState) {
