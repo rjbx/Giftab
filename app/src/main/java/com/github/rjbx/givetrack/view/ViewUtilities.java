@@ -17,10 +17,7 @@ import com.github.rjbx.givetrack.data.entry.Company;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.browser.customtabs.CustomTabsClient;
 import androidx.browser.customtabs.CustomTabsIntent;
-import androidx.browser.customtabs.CustomTabsService;
-import androidx.browser.customtabs.CustomTabsServiceConnection;
 import androidx.core.app.ShareCompat.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,9 +36,11 @@ final class ViewUtilities {
                 .addDefaultShareMenuItem()
                 .enableUrlBarHiding()
                 .build();
+
         tabsIntent.intent.putExtra(
                         Intent.EXTRA_REFERRER,
-                        Uri.parse(String.format("android-app://%s", context.getString(R.string.app_name)));
+                        Uri.parse(String.format("android-app://%s", context.getString(R.string.app_name))));
+
         tabsIntent.launchUrl(context, webUrl);
 
     }
