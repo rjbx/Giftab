@@ -359,7 +359,7 @@ public class JournalActivity extends AppCompatActivity implements
                 Record values = mAdapter.mValuesArray[position];
                 switch (direction) {
                     case ItemTouchHelper.LEFT:
-                        String amount = values.getImpact();
+                        double amount = values.getImpact();
                         String name = values.getName();
                         String formattedDate = DATE_FORMATTER.format(mDeletedTime);
                         mDeletedTime = values.getTime();
@@ -440,7 +440,7 @@ public class JournalActivity extends AppCompatActivity implements
 
             String ein = values.getEin();
             String name = values.getName();
-            final float impact = Float.parseFloat(values.getImpact());
+            final double impact = values.getImpact();
             final long time = values.getTime();
 
             if (name.length() > 35) { name = name.substring(0, 35);
@@ -456,7 +456,7 @@ public class JournalActivity extends AppCompatActivity implements
             if (impact > 99999f &&
                 getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 float scaleFactor = .9f;
-                float impactDividend = impact;
+                double impactDividend = impact;
                 while (impactDividend > 999999) {
                     impactDividend /= 10;
                     scaleFactor *= .90f;
@@ -606,7 +606,7 @@ public class JournalActivity extends AppCompatActivity implements
                 Record values = mValuesArray[(int) v.getTag()];
                 String name = values.getName().replace(" ", "");
                 long time = values.getTime();
-                float impact = Float.parseFloat(values.getImpact());
+                double impact = values.getImpact();
 
                 String textMessage = String.format("My donation on %s totaling %s to #%s have been added to my personal record with #%s App!",
                         DATE_FORMATTER.format(new Date(time)), CURRENCY_FORMATTER.format(impact), name, getString(R.string.app_name));
@@ -642,7 +642,7 @@ public class JournalActivity extends AppCompatActivity implements
                                 Timber.e(e);
                                 return false;
                             }
-                            record.setImpact(String.valueOf(amountTotal));
+                            record.setImpact(amountTotal);
                             DatabaseManager.startActionUpdateRecord(JournalActivity.this, record);
                             DatabaseManager.startActionTargetRecord(JournalActivity.this, record);
                             String formattedAmount = CURRENCY_FORMATTER.format(amountTotal);

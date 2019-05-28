@@ -585,7 +585,7 @@ public class GiveFragment extends Fragment implements
                     amountLength > 10 ? "" : "." + amountStr.substring(amountLength - 6, amountLength - 4));
             else if (amountLength > 6) amountStr = amountStr.substring(0, amountLength - 3);
 
-            final float impact = Float.parseFloat(target.getImpact());
+            final double impact = target.getImpact();
             String impactStr = CURRENCY_FORMATTER.format(impact);
             int impactLength = impactStr.length();
 
@@ -752,7 +752,7 @@ public class GiveFragment extends Fragment implements
                 Target values = mTargetList.get((int) v.getTag());
                 String name = values.getName().replace(" ", "");
                 int frequency = values.getFrequency();
-                float impact = Float.parseFloat(values.getImpact());
+                double impact = values.getImpact();
 
                 String textMessage =
                         String.format("My %s donations totaling %s to #%s have been added to my personal record with #%s App!",

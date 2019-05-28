@@ -416,6 +416,9 @@ final class DatabaseAccessor {
 
         TaskCompletionSource<User> taskSource = new TaskCompletionSource<>();
 
+        User u = User.getDefault();
+        if (uid == null) return u;
+
         DatabaseReference entryReference = remote.getReference(User.class.getSimpleName().toLowerCase()).child(uid);
         entryReference.addValueEventListener(new ValueEventListener() {
             @Override public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -431,7 +434,6 @@ final class DatabaseAccessor {
         try { Tasks.await(task, 2, TimeUnit.SECONDS); }
         catch (ExecutionException|InterruptedException|TimeoutException e) { task = Tasks.forException(e); }
 
-        User u = User.getDefault();
         if (task.isSuccessful()) u = task.getResult();
         return u;
     }

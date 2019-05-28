@@ -481,7 +481,7 @@ public final class DatabaseManager extends IntentService {
         List<Record> records = DatabaseAccessor.getRecord(this);
         for (Record record : records) {
             if (record.getEin().equals(spawn.getEin())) {
-                impact += Float.parseFloat(record.getImpact());
+                impact += record.getImpact();
                 frequency++;
             }
         }
@@ -492,7 +492,7 @@ public final class DatabaseManager extends IntentService {
         Target target = Target.fromSuper(spawn);
         target.setFrequency(frequency);
         target.setPercent(percent);
-        target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+        target.setImpact(impact);
 
         String phoneNumber = DataUtilities.urlToPhoneNumber(target);
         target.setPhone(phoneNumber);
@@ -526,12 +526,12 @@ public final class DatabaseManager extends IntentService {
         List<Record> recordList = DatabaseAccessor.getRecord(this);
 
         for (Record r : recordList)
-            if (r.getEin().equals(ein)) impact += Double.parseDouble(r.getImpact());
+            if (r.getEin().equals(ein)) impact += r.getImpact();
 
         List<Target> targetList = DatabaseAccessor.getTarget(this);
         for (Target t : targetList)
             if (t.getEin().equals(ein)) {
-                t.setImpact(String.valueOf(impact));
+                t.setImpact(impact);
                 DatabaseAccessor.addTarget(this, t);
                 return;
             }
@@ -558,7 +558,7 @@ public final class DatabaseManager extends IntentService {
             if (t.getPercent() == 0d) continue;
             t.setFrequency(t.getFrequency() + 1);
             double transactionImpact = t.getPercent() * giveImpact;
-            double totalImpact = Float.parseFloat(t.getImpact()) + transactionImpact;
+            double totalImpact = t.getImpact() + transactionImpact;
             int round = activeUser.getGiveRounding();
             String impactStr;
             switch (round) {
@@ -566,7 +566,7 @@ public final class DatabaseManager extends IntentService {
                 case 1: impactStr = String.format(Locale.getDefault(), "%.2f", totalImpact); break;
                 default: impactStr = String.valueOf(totalImpact);
             }
-            t.setImpact(impactStr);
+            t.setImpact(Double.parseDouble(impactStr));
         } DatabaseAccessor.addTarget(this, target);
 
         List<Record> records = new ArrayList<>();
@@ -585,7 +585,7 @@ public final class DatabaseManager extends IntentService {
                 case 1: impactStr = String.format(Locale.getDefault(), "%.2f", transactionImpact); break;
                 default: impactStr = String.valueOf(transactionImpact);
             }
-            record.setImpact(impactStr);
+            record.setImpact(Double.parseDouble(impactStr));
             records.add(record);
         } DatabaseAccessor.addRecord(this, records.toArray(new Record[0]));
 
@@ -646,8 +646,8 @@ public final class DatabaseManager extends IntentService {
             for (Record record : records) {
                 if (record.getEin().equals(target.getEin())) {
                     target.setFrequency(target.getFrequency() - 1);
-                    float impact = Float.parseFloat(target.getImpact()) - Float.parseFloat(record.getImpact());
-                    target.setImpact(String.format(Locale.getDefault(), "%.2f", impact));
+                    double impact = target.getImpact() - record.getImpact();
+                    target.setImpact(impact);
                     DatabaseAccessor.addTarget(this, target);
                     break;
                 }
@@ -700,7 +700,7 @@ public final class DatabaseManager extends IntentService {
         DatabaseAccessor.removeRecord(this);
         List<Target> targets = DatabaseAccessor.getTarget(this);
         for (Target target : targets) {
-            target.setImpact("0");
+            target.setImpact(0);
             target.setFrequency(0);
         }
         DatabaseAccessor.addTarget(this, targets.toArray(new Target[0]));

@@ -182,7 +182,7 @@ final class DataUtilities {
         String homepageUrl = charityObject.getString(DatasourceContract.KEY_WEBSITE_URL);
         String navigatorUrl = charityObject.getString(DatasourceContract.KEY_CHARITY_NAVIGATOR_URL);
 
-        return new Spawn(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "", "0", 0);
+        return new Spawn(uid, ein, System.currentTimeMillis(), name, street, detail, city, state, zip, homepageUrl, navigatorUrl, "", "", "", 0, 0);
     }
 
     /**
