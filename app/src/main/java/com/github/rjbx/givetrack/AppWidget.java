@@ -124,7 +124,7 @@ public class AppWidget extends AppWidgetProvider {
                 name = name.concat("...");
             }
 
-            Float amount = Float.parseFloat(target.getImpact());
+            double amount = target.getImpact();
             String amountStr = CURRENCY_FORMATTER.format(amount);
             int amountLength = amountStr.length();
             if (amountLength > 12) amountStr = String.format("%s%sM", amountStr.substring(0, amountLength - 11),
