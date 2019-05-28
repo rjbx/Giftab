@@ -114,7 +114,7 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
     @Override public Map<String, Object> toParameterMap() {
         Map<String, Object> map = super.toParameterMap();
         map.put(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY, frequency);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, percent);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_PERCENT, String.valueOf(percent));
         return map;
     }
 
