@@ -51,7 +51,7 @@ public final class DatabaseContract {
         public static final String COLUMN_SOCIAL = "social";
         public static final String COLUMN_IMPACT = "impact";
         public static final String COLUMN_TYPE = "type";
-        public static final String COLUMN_SHARE = "share";
+        public static final String COLUMN_PERCENT = "share";
         public static final String COLUMN_FREQUENCY = "frequency";
         public static final String COLUMN_MEMO = "memo";
         public static final String COLUMN_TIME = "time";

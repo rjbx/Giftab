@@ -76,7 +76,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
-                        CompanyEntry.COLUMN_SHARE + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_PERCENT + " TEXT NOT NULL,"                 +
                         CompanyEntry.COLUMN_FREQUENCY + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
