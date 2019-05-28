@@ -104,8 +104,10 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
 
     public int getFrequency() { return frequency; }
     public void setFrequency(int frequency) { this.frequency = frequency; }
-    @Override public void setPercent(double percent) { this.percent = percent; }
-    @Override public double getPercent() { return percent; }
+    public void setPercentFormatted(String percentStr) { this.percent = Double.parseDouble(percentStr); }
+    public String getPercentFormatted() { return String.valueOf(percent); }
+    @Exclude @Override public void setPercent(double percent) { this.percent = percent; }
+    @Exclude @Override public double getPercent() { return percent; }
     @Override public String getId() { return super.getId(); }
     @Exclude @Override public Target getObject() { return this; }
 
