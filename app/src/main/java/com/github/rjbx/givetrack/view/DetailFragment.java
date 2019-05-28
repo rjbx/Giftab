@@ -285,12 +285,7 @@ public class DetailFragment extends Fragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            if (request.getUrl().toString().equals(sCompany.getNavigatorUrl()))
-                return super.shouldOverrideUrlLoading(view, request);
-            else {
-                mWebview.loadUrl(sCompany.getNavigatorUrl());
-                return true;
-            }
+            return true;
         }
     }
 
