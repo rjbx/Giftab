@@ -1,7 +1,9 @@
 package com.github.rjbx.givetrack.view;
 
+import android.view.KeyEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -284,6 +286,11 @@ public class DetailFragment extends Fragment {
             if (request.getUrl().toString().startsWith(sCompany.getNavigatorUrl()))
                 return super.shouldOverrideUrlLoading(view, request);
             else return false;
+        }
+
+        @Override
+        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
+            return false;
         }
     }
 
