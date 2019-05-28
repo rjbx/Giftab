@@ -59,6 +59,7 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options
@@ -516,13 +517,17 @@ public class ConfigActivity
             mAuthDialog = new AlertDialog.Builder(getActivity()).create();
             mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
             mAuthDialog.setView(mDialogView);
-            mAuthDialog.setCancelable(false);
+            mAuthDialog.setCanceledOnTouchOutside(false);
             mAuthDialog.setMessage(getString(R.string.message_update_email));
             mAuthDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
             mAuthDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
             mAuthDialog.show();
             mAuthDialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
             mAuthDialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
+            mAuthDialog.setOnCancelListener(dialog -> {
+                mReauthAttempts = 0;
+                dialog.dismiss();
+            });
         }
     }
 

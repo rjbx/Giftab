@@ -388,13 +388,20 @@ public class AuthActivity extends AppCompatActivity implements
         mDialogView = getLayoutInflater().inflate(R.layout.dialog_reauth, null);
         mAuthDialog = new AlertDialog.Builder(this).create();
         mAuthDialog.setView(mDialogView);
-        mAuthDialog.setCancelable(false);
+        mAuthDialog.setCanceledOnTouchOutside(false);
         mAuthDialog.setMessage(getString(R.string.message_update_email));
         mAuthDialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_option_cancel), this);
         mAuthDialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_option_confirm), this);
         mAuthDialog.show();
         mAuthDialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark, null));
         mAuthDialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversion, null));
+        mAuthDialog.setOnCancelListener((dialog) -> {
+            mReauthAttempts = 0;
+            dialog.dismiss();
+            finish();
+            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+
+        });
     }
 
     private String getGreeting(FirebaseUser firebaseUser) {
