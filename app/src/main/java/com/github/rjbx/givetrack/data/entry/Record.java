@@ -75,7 +75,7 @@ public class Record extends Spawn implements Company, Parcelable, Cloneable {
              String phone,
              String email,
              String social,
-             String impact,
+             double impact,
              int type,
              String memo,
              long time) {
@@ -160,7 +160,7 @@ public class Record extends Spawn implements Company, Parcelable, Cloneable {
         record.setNavigatorUrl("");
         record.setPhone("");
         record.setEmail("");
-        record.setImpact("");
+        record.setImpact(0);
         record.setType(0);
         record.memo = "";
         record.time = 0;

@@ -32,124 +32,124 @@ public class DatabaseOpener extends SQLiteOpenHelper {
 
         final String SQL_CREATE_SPAWN_TABLE =
 
-                "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_SPAWN + " ("                              +
+                "CREATE TABLE IF NOT EXISTS "                       +
+                        CompanyEntry.TABLE_NAME_SPAWN               + " ("                              +
 
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
-                        CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STATE         + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_STAMP                   + " INTEGER PRIMARY KEY NOT NULL,"  +
+                        CompanyEntry.COLUMN_UID                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_EIN                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STREET         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_DETAIL         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_CITY           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STATE          + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_ZIP            + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_HOMEPAGE_URL            + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_NAVIGATOR_URL           + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_PHONE                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE                    + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_GIVE_TABLE =
 
-                "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_TARGET + " ("                              +
+                "CREATE TABLE IF NOT EXISTS "                       +
+                        CompanyEntry.TABLE_NAME_TARGET              + " ("                              +
 
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
-                        CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STATE         + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
-                        CompanyEntry.COLUMN_PERCENT + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_FREQUENCY + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_STAMP                   + " INTEGER PRIMARY KEY NOT NULL,"  +
+                        CompanyEntry.COLUMN_UID                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_EIN                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STREET         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_DETAIL         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_CITY           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STATE          + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_ZIP            + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_HOMEPAGE_URL            + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_NAVIGATOR_URL           + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_PHONE                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE                    + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_PERCENT                 + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_FREQUENCY               + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_RECORD_TABLE =
 
-                "CREATE TABLE IF NOT EXISTS " +
-                        CompanyEntry.TABLE_NAME_RECORD             + " ("                              +
+                "CREATE TABLE IF NOT EXISTS "                       +
+                        CompanyEntry.TABLE_NAME_RECORD              + " ("                              +
 
-                        CompanyEntry.COLUMN_STAMP                  + " INTEGER PRIMARY KEY NOT NULL,"  +
-                        CompanyEntry.COLUMN_UID                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_EIN                    + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_NAME + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STREET        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_DETAIL        + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_CITY          + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_STATE         + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_LOCATION_ZIP           + " TEXT NOT NULL, "                +
-                        CompanyEntry.COLUMN_HOMEPAGE_URL           + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_NAVIGATOR_URL          + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_PHONE + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_EMAIL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_SOCIAL + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_IMPACT + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_TYPE + " INTEGER NOT NULL,"              +
-                        CompanyEntry.COLUMN_MEMO + " TEXT NOT NULL,"                 +
-                        CompanyEntry.COLUMN_TIME + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_STAMP                   + " INTEGER PRIMARY KEY NOT NULL,"  +
+                        CompanyEntry.COLUMN_UID                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_EIN                     + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_NAME                    + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STREET         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_DETAIL         + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_CITY           + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_STATE          + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_LOCATION_ZIP            + " TEXT NOT NULL, "                +
+                        CompanyEntry.COLUMN_HOMEPAGE_URL            + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_NAVIGATOR_URL           + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_PHONE                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_EMAIL                   + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_SOCIAL                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_IMPACT                  + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TYPE                    + " INTEGER NOT NULL,"              +
+                        CompanyEntry.COLUMN_MEMO                    + " TEXT NOT NULL,"                 +
+                        CompanyEntry.COLUMN_TIME                    + " INTEGER NOT NULL,"              +
 
                         "UNIQUE (" + CompanyEntry.COLUMN_STAMP +
                         ") ON CONFLICT REPLACE" + ");";
 
         final String SQL_CREATE_USER_TABLE =
 
-               "CREATE TABLE IF NOT EXISTS " +
+               "CREATE TABLE IF NOT EXISTS "                        +
                         UserEntry.TABLE_NAME_USER                   + " ("                              +
 
                         UserEntry.COLUMN_UID                        + " TEXT PRIMARY KEY NOT NULL, "    +
-                        UserEntry.COLUMN_USER_EMAIL + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_USER_ACTIVE + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_USER_BIRTHDATE + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_USER_GENDER + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GIVE_IMPACT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GIVE_MAGNITUDE + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GIVE_ANCHOR + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GIVE_TIMING + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GIVE_ROUNDING + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_ANCHOR + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_SINCE + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_HOMETYPE + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_GRAPHTYPE + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_INTERVAL + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_GLANCE_THEME + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_ANCHOR + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_COUNT + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_DIALOG + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_FOCUS + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_FILTER + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_COMPANY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_TERM + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_CITY + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_STATE + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_ZIP + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_MINRATING + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_PAGES + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_INDEX_ROWS + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_GIVE_RESET + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_INDEX_RANKED + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_JOURNAL_SORT + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_JOURNAL_ORDER + " TEXT NOT NULL, "                +
-                        UserEntry.COLUMN_TARGET_STAMP + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_RECORD_STAMP + " INTEGER NOT NULL, "             +
-                        UserEntry.COLUMN_USER_STAMP + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_EMAIL                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_USER_ACTIVE                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_BIRTHDATE             + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_USER_GENDER                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_IMPACT                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_MAGNITUDE             + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_ANCHOR                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GIVE_TIMING                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GIVE_ROUNDING              + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_ANCHOR              + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_SINCE               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_HOMETYPE            + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_GRAPHTYPE           + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_INTERVAL            + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_GLANCE_THEME               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_ANCHOR               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_COUNT                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_DIALOG               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_FOCUS                + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_FILTER               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_COMPANY              + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_TERM                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_CITY                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_STATE                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_ZIP                  + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_MINRATING            + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_PAGES                + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_INDEX_ROWS                 + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_GIVE_RESET                 + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_INDEX_RANKED               + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_JOURNAL_SORT               + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_JOURNAL_ORDER              + " TEXT NOT NULL, "                +
+                        UserEntry.COLUMN_TARGET_STAMP               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_RECORD_STAMP               + " INTEGER NOT NULL, "             +
+                        UserEntry.COLUMN_USER_STAMP                 + " INTEGER NOT NULL, "             +
 
                         "UNIQUE (" + UserEntry.COLUMN_USER_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";

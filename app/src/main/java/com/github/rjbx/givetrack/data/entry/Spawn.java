@@ -34,7 +34,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
     private String phone;
     private String email;
     private String social;
-    private String impact;
+    private double impact;
     private int type;
 
     @Exclude public static final Parcelable.Creator<Spawn> CREATOR = new Parcelable.Creator<Spawn>() {
@@ -57,7 +57,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         dest.writeString(phone);
         dest.writeString(email);
         dest.writeString(social);
-        dest.writeString(impact);
+        dest.writeDouble(impact);
         dest.writeInt(type);
     }
 
@@ -78,7 +78,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         phone = source.readString();
         email = source.readString();
         social = source.readString();
-        impact = source.readString();
+        impact = source.readDouble();
         type = source.readInt();
     }
 
@@ -124,7 +124,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
             String phone,
             String email,
             String social,
-            String impact,
+            double impact,
             int type) {
         this.uid = uid;
         this.ein = ein;
@@ -172,8 +172,8 @@ public class Spawn implements Company, Parcelable, Cloneable {
     @Override public void setEmail(String email) { this.email = email; }
     @Override public String getSocial() { return social; }
     @Override public void setSocial(String social) { this.social = social; }
-    @Override public String getImpact() { return impact; }
-    @Override public void setImpact(String impact) { this.impact = impact; }
+    @Override public double getImpact() { return impact; }
+    @Override public void setImpact(double impact) { this.impact = impact; }
     @Override public int getType() { return type; }
     @Override public void setType(int type) { this.type = type; }
     @Override public String getId() { return String.valueOf(stamp); }
@@ -195,7 +195,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         map.put(DatabaseContract.CompanyEntry.COLUMN_PHONE, phone);
         map.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL, email);
         map.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL, social);
-        map.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, impact);
+        map.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, String.valueOf(impact));
         map.put(DatabaseContract.CompanyEntry.COLUMN_TYPE, type);
         return map;
     }
@@ -214,7 +214,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         phone = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PHONE);
         email = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EMAIL);
         social = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SOCIAL);
-        impact = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_IMPACT);
+        impact = Double.parseDouble((String) map.get(DatabaseContract.CompanyEntry.COLUMN_IMPACT));
         type = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_TYPE);
 
     }
@@ -235,7 +235,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         values.put(DatabaseContract.CompanyEntry.COLUMN_PHONE, phone);
         values.put(DatabaseContract.CompanyEntry.COLUMN_EMAIL, email);
         values.put(DatabaseContract.CompanyEntry.COLUMN_SOCIAL, social);
-        values.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, impact);
+        values.put(DatabaseContract.CompanyEntry.COLUMN_IMPACT, String.valueOf(impact));
         values.put(DatabaseContract.CompanyEntry.COLUMN_TYPE, type);
         return values;
     }
@@ -255,7 +255,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         phone = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PHONE);
         email = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_EMAIL);
         social = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_SOCIAL);
-        impact = values.getAsString(DatabaseContract.CompanyEntry.COLUMN_IMPACT);
+        impact = Double.parseDouble(values.getAsString(DatabaseContract.CompanyEntry.COLUMN_IMPACT));
         type = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_TYPE);
     }
 
@@ -288,7 +288,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         spawn.phone = "";
         spawn.email = "";
         spawn.social = "";
-        spawn.impact = "";
+        spawn.impact = 0;
         spawn.type = 0;
         return spawn;
     }

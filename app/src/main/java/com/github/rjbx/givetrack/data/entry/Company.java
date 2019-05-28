@@ -32,8 +32,8 @@ public interface Company extends Entry, Parcelable, Cloneable {
     void setEmail(String email);
     String getSocial();
     void setSocial(String social);
-    String getImpact();
-    void setImpact(String impact);
+    double getImpact();
+    void setImpact(double impact);
     int getType();
     void setType(int type);
 }

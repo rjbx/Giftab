@@ -76,7 +76,7 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
             String phone,
             String email,
             String social,
-            String impact,
+            double impact,
             int type,
             int frequency,
             double percent) {
@@ -159,7 +159,7 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
         target.setNavigatorUrl("");
         target.setPhone("");
         target.setEmail("");
-        target.setImpact("");
+        target.setImpact(0);
         target.setType(0);
         target.setFrequency(0);
         target.setPercent(0);
