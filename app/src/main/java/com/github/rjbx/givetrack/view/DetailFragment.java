@@ -281,7 +281,7 @@ public class DetailFragment extends Fragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            if (request.getUrl().toString().startsWith("https://www.charitynavigator.org/"))
+            if (request.getUrl().toString().startsWith(sCompany.getNavigatorUrl()))
                 return super.shouldOverrideUrlLoading(view, request);
             else return false;
         }
