@@ -1,6 +1,7 @@
 package com.github.rjbx.givetrack.view;
 
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -158,6 +159,7 @@ public class DetailFragment extends Fragment {
         mWebview = new WebView(inflater.getContext().getApplicationContext());
         mWebview.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         int padding = (int) getResources().getDimension(R.dimen.text_margin);
+
         mWebview.setPadding(padding, padding, padding, padding);
         mWebview.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
 
@@ -290,7 +292,8 @@ public class DetailFragment extends Fragment {
 
         @Override
         public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-            return false;
+            if (event.getAction() == KeyEvent.ACTION_UP) return true;
+            else return super.shouldOverrideKeyEvent(view, event);
         }
     }
 
