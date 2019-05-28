@@ -665,7 +665,7 @@ public class GiveFragment extends Fragment implements
             if (isDualPane()) showSinglePane();
             DatabaseManager.startActionUpdateTarget(mContext, mTargetList.toArray(new Target[0])); // Locks UI on signout and remote launch
             sPercentagesAdjusted = false;
-            mRemoveDialog.dismiss();
+            if (mRemoveDialog != null) mRemoveDialog.dismiss();
         }
 
         /**
