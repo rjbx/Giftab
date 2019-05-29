@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    android:fitsSystemWindows="true"
+    tools:context=".view.RewardActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/reward_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/reward_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="end|center_vertical"
+                android:textSize="@dimen/text_size_paragraph_title"
+                android:textColor="#fff"
+                android:text="@string/title_activity_reward"
+                style="@style/AppTheme.AppBarOverlay"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/ad_button_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:background="@color/colorCheerDark"
+        android:padding="5dp">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ad_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/fab_margin"/>
+
+
+    </LinearLayout>
+    <ProgressBar
+        android:id="@+id/ad_progress"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorChalk"
+        android:visibility="gone"
+        app:layout_anchor="@id/ad_button_wrapper"
+        app:layout_anchorGravity="top|center_horizontal"
+        style="?android:attr/progressBarStyleHorizontal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+
+        <LinearLayout
+            android:id="@+id/credit_toggle_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_gravity="center_horizontal|bottom"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/credit_toggle"
+                android:layout_width="70dp"
+                android:layout_height="match_parent"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:gravity="top"
+                android:background="@drawable/rounded_rectangle"
+                android:src="@drawable/baseline_card_giftcard_24"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAttentionDark"
+            android:padding="3dp"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/payment_balance_frame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".35"
+                android:padding="2dp"
+                android:background="@color/colorAttentionDark">
+
+                <TextView
+                    android:id="@+id/payment_balance_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="#000"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size_paragraph_title"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:text="0"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/wallet_balance_text"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".35"
+                android:layout_gravity="center"
+                android:background="@color/colorAttention"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_paragraph_title"
+                android:textStyle="bold"
+                android:textColor="#fff"
+                android:text="0"/>
+
+            <FrameLayout
+                android:id="@+id/reward_balance_frame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".35"
+                android:padding="2dp"
+                android:background="@color/colorAttention">
+
+                <TextView
+                    android:id="@+id/reward_balance_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="3dp"
+                    android:layout_gravity="center"
+                    android:background="@color/colorSlate"
+                    android:gravity="center"
+                    android:textSize="@dimen/text_size_paragraph_title"
+                    android:textStyle="bold"
+                    android:textColor="#fff"
+                    android:text="0"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

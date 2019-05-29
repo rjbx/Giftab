@@ -59,6 +59,7 @@
     <string name="title_activity_journal">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_config">Settings</string>
+    <string name="title_activity_reward">Reward Generator</string>
 
     <!-- Main -->
     <string name="nav_header_title">Giftab</string>
@@ -98,6 +99,19 @@
     <string name="message_data_erase">Your account has been erased</string>
     <string name="message_login">You successfully logged in as %s</string>
     <string name="message_password_request">Please confirm your password to proceed.</string>
+
+    <string name="interstitial_ad_sample">Interstitial Ad Sample</string>
+    <string name="start_level">Level 1</string>
+    <string name="next_level">Next Level</string>
+    <string name="message_billing_client">Billing client is ready</string>
+    <string name="dialog_balance_preview">You can add to your total credit balance available for donations in one of two ways: by earning reward, or by making a payment. Your rewarded credit appears in the red border box on the bottom right, and your paid credit appears in the red border box on the bottom left.\n\nLaunch either an ad to earn reward or a billing client to make a payment by pressing the big circle button. Toggle whether the button launches an ad or a billing client by pressing the tab above red filled box in the bottom center that shows the total credit balance.\n\nDonations always use up your rewarded credit before using any of your paid credit.</string>
+    <string name="reward_response">earning reward</string>
+    <string name="payment_response">making a payment</string>
+    <string name="description_reward_text">Your available rewarded credit is %s</string>
+    <string name="description_payment_text">Your available paid credit is %s</string>
+    <string name="description_wallet_text">Your total available credit is %s</string>
+    <string name="dialog_later">REMIND ME LATER</string>
+    <string name="dialog_start">GET STARTED</string>
 
     <!-- Widget -->
     <string name="appwidget_text">EXAMPLE</string>
