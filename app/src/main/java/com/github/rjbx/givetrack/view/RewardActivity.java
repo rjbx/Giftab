@@ -48,7 +48,7 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Start glance count at 5, add option to toggle between Rewarded (collect points) or Glance Banner ad (boosts min to 20)
+// TODO: Start glance count at 3, removable Glance Banner ad boosts min to 10, Rewarded ad adds 1
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
