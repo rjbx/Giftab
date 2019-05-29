@@ -267,7 +267,7 @@ public class RewardActivity extends AppCompatActivity implements
         int wrapperColorResId = convert ? R.color.colorConversionDark : R.color.colorCheerDark;
         mCreditButtonWrapper.setBackgroundColor(getResources().getColor(wrapperColorResId));
 
-        int buttonColorResId = convert ? R.color.colorConversion : R.color.colorAccent;
+        int buttonColorResId = convert ? R.color.colorConversion : R.color.colorCheer;
         mCreditButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(buttonColorResId)));
         mCreditButton.setEnabled(!convert);
     }
