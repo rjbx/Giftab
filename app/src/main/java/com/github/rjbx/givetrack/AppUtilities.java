@@ -82,7 +82,6 @@ public final class AppUtilities {
         }
     }
 
-
     public static Object preferenceValueToNumerical(Object value, Class type) {
         if (value instanceof String) {
             if (type == Boolean.class) return Boolean.valueOf((String) value);
@@ -96,7 +95,7 @@ public final class AppUtilities {
     public static String[] getArgs(String... strings) {
         int arrayLength = strings.length;
         String[] stringArray = new String[arrayLength];
-        for (int i = 0; i < arrayLength; i++) stringArray[i] = strings[i];
+        System.arraycopy(strings, 0, stringArray, 0, arrayLength);
         return stringArray;
     }
 
