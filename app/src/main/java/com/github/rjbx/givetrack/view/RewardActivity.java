@@ -120,6 +120,7 @@ public class RewardActivity extends AppCompatActivity implements
             dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
         }
 
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
     }
 
     private void initializeAds() {
@@ -170,7 +171,7 @@ public class RewardActivity extends AppCompatActivity implements
         mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
         mCreditButton = findViewById(R.id.ad_button);
         mCreditButton.setOnClickListener(clickedView -> {
-            if (mShowAd) {
+//            if (mShowAd) {
                 updateRewardButton(true);
                 mRewardedAd.loadAd(getString(R.string.am_ad_id), new AdRequest.Builder()
                         .setGender(mUserGender)
@@ -178,26 +179,26 @@ public class RewardActivity extends AppCompatActivity implements
                         .build());
                 mProgressBar.setVisibility(View.VISIBLE);
                 mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
-            } else {
-                String defaultProducttId = "android.test.purchased";
-                List<String> skus = new ArrayList<>();
-                skus.add(defaultProducttId);
-                SkuDetailsParams skuParams = SkuDetailsParams.newBuilder()
-                        .setSkusList(skus).setType(BillingClient.SkuType.INAPP).build();
-
-                mBillingClient.querySkuDetailsAsync(skuParams, (skuDetailsResponseCode, skuDetailsList) -> {
-                    if (skuDetailsResponseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
-                        for (SkuDetails skuDetails : skuDetailsList) {
-                            if (skuDetails.getSku().equals(defaultProducttId)) {
-                                BillingFlowParams billingParams = BillingFlowParams.newBuilder()
-                                        .setSku(BillingClient.SkuType.INAPP).build();
-                                mBillingClient.launchBillingFlow(RewardActivity.this, billingParams);
-                                mPurchaseAmount = skuDetails.getPriceAmountMicros();
-                            }
-                        }
-                    }
-                });
-            }
+//            } else {
+//                String defaultProducttId = "android.test.purchased";
+//                List<String> skus = new ArrayList<>();
+//                skus.add(defaultProducttId);
+//                SkuDetailsParams skuParams = SkuDetailsParams.newBuilder()
+//                        .setSkusList(skus).setType(BillingClient.SkuType.INAPP).build();
+//
+//                mBillingClient.querySkuDetailsAsync(skuParams, (skuDetailsResponseCode, skuDetailsList) -> {
+//                    if (skuDetailsResponseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
+//                        for (SkuDetails skuDetails : skuDetailsList) {
+//                            if (skuDetails.getSku().equals(defaultProducttId)) {
+//                                BillingFlowParams billingParams = BillingFlowParams.newBuilder()
+//                                        .setSku(BillingClient.SkuType.INAPP).build();
+//                                mBillingClient.launchBillingFlow(RewardActivity.this, billingParams);
+//                                mPurchaseAmount = skuDetails.getPriceAmountMicros();
+//                            }
+//                        }
+//                    }
+//                });
+//            }
         });
 
         mRewardedAmount = mUser.getGiveImpact();
