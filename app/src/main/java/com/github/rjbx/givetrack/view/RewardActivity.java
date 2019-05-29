@@ -48,7 +48,7 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Start glance count at 3, removable Glance Banner ad boosts min to 10, Rewarded ad adds 3, Pro version provides unlimited
+// TODO: Start index count at 3, removable Glance Banner ad boosts min to 10, Rewarded ad adds 3, Pro version provides unlimited
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
