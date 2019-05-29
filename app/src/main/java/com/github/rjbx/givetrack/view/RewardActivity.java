@@ -48,8 +48,15 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Start count at 1, enabling index banner starts count at 2, pro version ($0.99, unlock customizations) starts count to 10, rewarded view launched by index refresh button after exhausting count adds 5
-// TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
+// TODO: Configure to award additional uses of features beyond daily limit
+//  A. Index count:
+//      1. Start count at 1 by default
+//      2. Start count at 2 if index banner is enabled
+//      3. Start count at 10 with Pro version ($0.99, unlock customizations)
+//      4. Rewarded view launched by index refresh button after exhausting count adds 5
+//  B. Payment processing
+//      1. Remove app processing fee
+
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
