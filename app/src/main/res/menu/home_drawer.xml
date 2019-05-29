@@ -20,6 +20,12 @@
                     android:id="@+id/nav_record"
                     android:icon="@drawable/history"
                     android:title="@string/nav_item_journal" />
+
+                <item
+                    android:id="@+id/nav_reward"
+                    android:icon="@drawable/baseline_card_giftcard_24"
+                    android:title="@string/nav_item_journal" />
+
             </menu>
 
         </item>
