@@ -128,7 +128,7 @@ public class RewardActivity extends AppCompatActivity implements
         MobileAds.initialize(this, getString(R.string.am_app_id));
 
         String genderStr = mUser.getUserGender();
-        mUserGender = genderStr != null ? Integer.parseInt(genderStr) : 0;
+        mUserGender = genderStr != null && !genderStr.isEmpty() ? Integer.parseInt(genderStr) : 0;
 
         String birthdate = mUser.getUserBirthdate();
         String[] birthdateParams = birthdate.split("/");
