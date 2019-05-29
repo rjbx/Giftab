@@ -238,7 +238,7 @@ public class RewardActivity extends AppCompatActivity implements
     @Override public void onRewardedVideoAdClosed() { updateRewardButton(false); }
     @Override public void onRewardedVideoAdLeftApplication() { }
     @Override public void onRewardedVideoAdFailedToLoad(int i) { updateRewardButton(false); }
-    @Override public void onRewardedVideoCompleted() {}
+    @Override public void onRewardedVideoCompleted() { mRewardedAmount++; }
 
     /**
      * Generates an options Menu.
