@@ -56,6 +56,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String uid;
     private boolean userActive;
     private String userBirthdate;
+    private int userCredit;
     private String userEmail;
     private String userGender;
     private long userStamp; // Time of most recent change (save those to target or record stamps) to user table
@@ -70,6 +71,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeString(userEmail);
         dest.writeInt(userActive ? 1 : 0);
         dest.writeString(userBirthdate);
+        dest.writeInt(userCredit);
         dest.writeString(userGender);
         dest.writeDouble(giveImpact);
         dest.writeDouble(giveMagnitude);
@@ -111,6 +113,7 @@ public class User implements Entry, Parcelable, Cloneable {
         userEmail = source.readString();
         userActive = source.readInt() == 1;
         userBirthdate = source.readString();
+        userCredit = source.readInt();
         userGender = source.readString();
         giveImpact = source.readDouble();
         giveMagnitude = source.readDouble();
@@ -150,6 +153,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.userEmail = user.userEmail;
         this.userActive = user.userActive;
         this.userBirthdate = user.userBirthdate;
+        this.userCredit = user.userCredit;
         this.userGender = user.userGender;
         this.giveImpact = user.giveImpact;
         this.giveMagnitude = user.giveMagnitude;
@@ -197,6 +201,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String userEmail,
             boolean userActive,
             String userBirthdate,
+            int userCredit,
             String userGender,
             long giveAnchor,
             int giveTiming,
@@ -233,6 +238,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.userEmail = userEmail;
         this.userActive = userActive;
         this.userBirthdate = userBirthdate;
+        this.userCredit = userCredit;
         this.userGender = userGender;
         this.giveImpact = giveImpact;
         this.giveMagnitude = giveMagnitude;
@@ -275,6 +281,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setUserActive(boolean userActive) { this.userActive = userActive; }
     public String getUserBirthdate() { return userBirthdate; }
     public void setUserBirthdate(String birthday) { this.userBirthdate = birthday; }
+    public int getUserCredit() { return userCredit; }
+    public void setUserCredit(int userCredit) { this.userCredit = userCredit; }
     public String getUserGender() { return userGender; }
     public void setUserGender(String userGender) { this.userGender = userGender; }
     @Exclude public double getGiveImpact() { return giveImpact; }
@@ -348,6 +356,7 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_USER_EMAIL, userEmail);
         map.put(COLUMN_USER_ACTIVE, userActive);
         map.put(COLUMN_USER_BIRTHDATE, userBirthdate);
+        map.put(COLUMN_USER_CREDIT, userCredit);
         map.put(COLUMN_USER_GENDER, userGender);
         map.put(COLUMN_GIVE_ANCHOR, giveAnchor);
         map.put(COLUMN_GIVE_TIMING, giveTiming);
@@ -419,6 +428,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_USER_EMAIL)) userEmail = (String) map.get(COLUMN_USER_EMAIL);
         if (map.containsKey(COLUMN_USER_ACTIVE)) userActive = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_USER_ACTIVE), Boolean.class);
         if (map.containsKey(COLUMN_USER_BIRTHDATE)) userBirthdate = (String) map.get(COLUMN_USER_BIRTHDATE);
+        if (map.containsKey(COLUMN_GIVE_TIMING)) userCredit = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
         if (map.containsKey(COLUMN_USER_GENDER)) userGender = (String) map.get(COLUMN_USER_GENDER);
     }
 
@@ -460,6 +470,7 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_TARGET_STAMP, targetStamp);
         values.put(COLUMN_RECORD_STAMP, recordStamp);
         values.put(COLUMN_USER_STAMP, userStamp);
+        values.put(COLUMN_USER_CREDIT, userCredit);
         return values;
     }
 
@@ -500,6 +511,7 @@ public class User implements Entry, Parcelable, Cloneable {
         targetStamp = values.getAsLong(COLUMN_TARGET_STAMP);
         recordStamp = values.getAsLong(COLUMN_RECORD_STAMP);
         userStamp = values.getAsLong(COLUMN_USER_STAMP);
+        userCredit = values.getAsInteger(COLUMN_USER_CREDIT);
     }
 
     @Override public User clone() {
@@ -548,6 +560,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.targetStamp = 0; // Resets User stamps
         user.recordStamp = 0; // Resets User stamps
         user.userStamp = 0; // Resets User stamps
+        user.userCredit = 0;
         return user;
     }
 }

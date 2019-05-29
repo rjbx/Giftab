@@ -172,13 +172,16 @@ public class RewardActivity extends AppCompatActivity implements
         mCreditButton = findViewById(R.id.ad_button);
         mCreditButton.setOnClickListener(clickedView -> {
 //            if (mShowAd) {
-                updateRewardButton(true);
-                mRewardedAd.loadAd(getString(R.string.am_ad_id), new AdRequest.Builder()
-                        .setGender(mUserGender)
-                        .setBirthday(rewardedBirthday)
-                        .build());
-                mProgressBar.setVisibility(View.VISIBLE);
-                mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
+        updateRewardButton(true);
+        AdRequest request = new AdRequest.Builder()
+                .setGender(mUserGender)
+                .setBirthday(rewardedBirthday)
+                .build();
+        Timber.e(String.valueOf(request.isTestDevice(this)));
+        mRewardedAd.loadAd(getString(R.string.am_ad_id), request);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
 //            } else {
 //                String defaultProducttId = "android.test.purchased";
 //                List<String> skus = new ArrayList<>();
@@ -313,7 +316,9 @@ public class RewardActivity extends AppCompatActivity implements
         mProgressBar.setVisibility(View.GONE);
         mToggleContainer.setPadding(0,0,0,0);
     }
-    @Override public void onRewardedVideoAdClosed() { updateRewardButton(false); }
+    @Override public void onRewardedVideoAdClosed() {
+        updateRewardButton(false);
+    }
     @Override public void onRewardedVideoAdLeftApplication() {
 
     }

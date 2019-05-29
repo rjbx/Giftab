@@ -101,6 +101,7 @@
       "uid" : "",
       "userActive" : false,
       "userBirthdate" : "0/0/2000",
+      "userCredit" : 0,
       "userEmail" : "",
       "userGender" : "0",
       "userStamp" : 0
