@@ -59,7 +59,6 @@ import java.util.Set;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Fully implement removed and add other options

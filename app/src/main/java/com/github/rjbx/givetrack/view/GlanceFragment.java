@@ -479,7 +479,7 @@ public class GlanceFragment extends Fragment implements
 
         if (mContext == null || sUser == null) return;
 
-        mIntervalText.setText(mIntervalContent + "ly");
+        mIntervalText.setText(String.format("%sly", mIntervalContent));
         mTypeText.setText(mGraphTypeContent);
         mTypeLabel.setText(mHomeTypeContent);
 

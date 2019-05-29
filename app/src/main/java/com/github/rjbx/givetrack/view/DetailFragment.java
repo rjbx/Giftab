@@ -1,10 +1,7 @@
 package com.github.rjbx.givetrack.view;
 
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

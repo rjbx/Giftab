@@ -13,7 +13,6 @@ import android.widget.RemoteViewsService;
 
 import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.entry.Target;
-import com.github.rjbx.givetrack.view.AuthActivity;
 import com.github.rjbx.givetrack.view.HomeActivity;
 import com.github.rjbx.givetrack.view.JournalActivity;
 import com.github.rjbx.givetrack.view.IndexActivity;
