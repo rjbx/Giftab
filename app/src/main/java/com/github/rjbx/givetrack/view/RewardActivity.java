@@ -42,10 +42,12 @@ import java.util.List;
 import timber.log.Timber;
 
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
+// TODO: Decide whether to implement as Fragment with args or Activity with Loader callback
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
-public class RewardActivity extends AppCompatActivity implements RewardedVideoAdListener, PurchasesUpdatedListener {
+public class RewardActivity extends AppCompatActivity
+        implements RewardedVideoAdListener, PurchasesUpdatedListener {
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final float MULTIPLIER_REWARD_ESTIMATE = 0.01f;
