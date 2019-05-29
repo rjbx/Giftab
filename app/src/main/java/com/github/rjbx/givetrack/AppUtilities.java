@@ -40,35 +40,6 @@ public final class AppUtilities {
         return typedArray;
     }
 
-    /**
-     * Defines and launches Intent for displaying a {@link android.preference.PreferenceFragment}.
-     */
-    public static void launchPreferenceFragment(Context context, String action) {
-        Intent filterIntent = new Intent(context, ConfigActivity.class);
-        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, getPreferenceFragmentName(action));
-        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
-        filterIntent.setAction(action);
-        context.startActivity(filterIntent);
-    }
-
-    public static String getPreferenceFragmentName(String action) {
-        switch (action) {
-            case HomeActivity.ACTION_HOME_INTENT:
-                return ConfigActivity.HomePreferenceFragment.class.getName();
-            case IndexActivity.ACTION_INDEX_INTENT:
-                return ConfigActivity.IndexPreferenceFragment.class.getName();
-            case JournalActivity.ACTION_JOURNAL_INTENT:
-                return ConfigActivity.JournalPreferenceFragment.class.getName();
-            default:
-                throw new IllegalArgumentException(
-                        String.format("Action must derive from %s, %s or %s",
-                                HomeActivity.ACTION_HOME_INTENT,
-                                IndexActivity.ACTION_INDEX_INTENT,
-                                JournalActivity.ACTION_JOURNAL_INTENT
-                        ));
-        }
-    }
-
     public static void mapToSharedPreferences(Map<String, Object> map, SharedPreferences sp) {
 
         Set<Map.Entry<String, Object>> entrySet = map.entrySet();

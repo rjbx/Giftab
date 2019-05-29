@@ -166,7 +166,7 @@ public class IndexActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_filter):
-                AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
+                ViewUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
                 sDialogShown = true;
                 mUser.setIndexDialog(sDialogShown);
                 DatabaseManager.startActionUpdateUser(this, mUser);
@@ -334,7 +334,7 @@ public class IndexActivity extends AppCompatActivity implements
                     sDialogShown = true;
                     mUser.setIndexDialog(sDialogShown);
                     DatabaseManager.startActionUpdateUser(this, mUser);
-                    AppUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
+                    ViewUtilities.launchPreferenceFragment(this, ACTION_INDEX_INTENT);
                     break;
                 default:
             }

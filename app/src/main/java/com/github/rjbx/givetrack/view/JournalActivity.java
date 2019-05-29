@@ -170,7 +170,7 @@ public class JournalActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, HomeActivity.class));
                 return true;
             case (R.id.action_record):
-                AppUtilities.launchPreferenceFragment(this, ACTION_JOURNAL_INTENT);
+                ViewUtilities.launchPreferenceFragment(this, ACTION_JOURNAL_INTENT);
                 return true;
         }
         return super.onOptionsItemSelected(item);

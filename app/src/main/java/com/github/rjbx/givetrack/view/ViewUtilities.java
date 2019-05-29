@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +69,35 @@ final class ViewUtilities {
         View view = toast.getView().findViewById(android.R.id.message);
         if (view != null) view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         return toast;
+    }
+
+    /**
+     * Defines and launches Intent for displaying a {@link android.preference.PreferenceFragment}.
+     */
+    static void launchPreferenceFragment(Context context, String action) {
+        Intent filterIntent = new Intent(context, ConfigActivity.class);
+        filterIntent.putExtra(PreferenceActivity.EXTRA_SHOW_FRAGMENT, getPreferenceFragmentName(action));
+        filterIntent.putExtra(PreferenceActivity.EXTRA_NO_HEADERS, true);
+        filterIntent.setAction(action);
+        context.startActivity(filterIntent);
+    }
+
+    static String getPreferenceFragmentName(String action) {
+        switch (action) {
+            case HomeActivity.ACTION_HOME_INTENT:
+                return ConfigActivity.HomePreferenceFragment.class.getName();
+            case IndexActivity.ACTION_INDEX_INTENT:
+                return ConfigActivity.IndexPreferenceFragment.class.getName();
+            case JournalActivity.ACTION_JOURNAL_INTENT:
+                return ConfigActivity.JournalPreferenceFragment.class.getName();
+            default:
+                throw new IllegalArgumentException(
+                        String.format("Action must derive from %s, %s or %s",
+                                HomeActivity.ACTION_HOME_INTENT,
+                                IndexActivity.ACTION_INDEX_INTENT,
+                                JournalActivity.ACTION_JOURNAL_INTENT
+                        ));
+        }
     }
 
     /**

@@ -179,7 +179,7 @@ public class HomeActivity extends AppCompatActivity implements
         int id = item.getItemId();
         switch (id) {
             case R.id.action_settings:
-                AppUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
+                ViewUtilities.launchPreferenceFragment(this, ACTION_HOME_INTENT);
                 return true;
             case R.id.action_date:
                 if (mUser == null) return false;
