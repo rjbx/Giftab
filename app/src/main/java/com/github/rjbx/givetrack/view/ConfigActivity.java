@@ -816,7 +816,7 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        double magnitude = (mSeekProgress + 10d) / 1000d;
+                        double magnitude = ((int) ((mSeekProgress + 10d) / 10d)) / 10d;
                         sUser.setGiveMagnitude(magnitude);
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
                         magnitudePreference.getEditor().putString(magnitudePreference.getKey(), String.valueOf(magnitude)).apply();
