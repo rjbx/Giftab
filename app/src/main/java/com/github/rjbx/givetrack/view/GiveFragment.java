@@ -327,7 +327,7 @@ public class GiveFragment extends Fragment implements
                         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                         return false;
                     }
-                    sUser.setGiveImpact(mAmountTotal);
+                    sUser.setGiveImpact(Double.parseDouble(mTotalText.getText().toString().replace("$", "")));
                     DatabaseManager.startActionUpdateUser(mContext, sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
