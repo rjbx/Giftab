@@ -59,6 +59,21 @@ final class ViewUtilities {
         }
     }
 
+    static void launchPhoneIntent(Context context, String number) {
+        Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
+        phoneIntent.setData(Uri.parse("tel:" + number));
+        if (phoneIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(phoneIntent);
+        }
+    }
+
+    static void launchMapIntent(Context context, String location) {
+        Uri intentUri = Uri.parse("geo:0,0?q=" + location);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        context.startActivity(mapIntent);
+    }
+
     static void launchDetailPane(Activity launchingActivity, View master, View detail) {
 
         DisplayMetrics metrics = new DisplayMetrics();
@@ -205,11 +220,7 @@ final class ViewUtilities {
          * Defines behavior on click of phone launch button.
          */
         @Optional @OnClick(R.id.phone_button) void launchPhone() {
-            Intent phoneIntent = new Intent(Intent.ACTION_DIAL);
-            phoneIntent.setData(Uri.parse("tel:" + mPhone));
-            if (phoneIntent.resolveActivity(mContext.getPackageManager()) != null) {
-                mContext.startActivity(phoneIntent);
-            }
+            launchPhoneIntent(mContext, mPhone);
         }
 
         /**
@@ -230,10 +241,7 @@ final class ViewUtilities {
          * Defines behavior on click of map launch button.
          */
         @Optional @OnClick(R.id.location_button) void launchMap() {
-            Uri intentUri = Uri.parse("geo:0,0?q=" + mLocation);
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, intentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            mContext.startActivity(mapIntent);
+            launchMapIntent(mContext, mLocation);
         }
     }
 }
