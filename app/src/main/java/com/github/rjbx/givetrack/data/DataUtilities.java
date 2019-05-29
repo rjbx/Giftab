@@ -106,7 +106,7 @@ final class DataUtilities {
         String response = null;
         try {
             urlConnection = (HttpURLConnection) url.openConnection();
-//            TODO: Replace network API with Retrofit
+//
 //
 //            if (password != null) {
 //                urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -192,7 +192,7 @@ final class DataUtilities {
         return (str.equals("null")) ? DatasourceContract.DEFAULT_VALUE_STR : str;
     }
 
-    // TODO Retrieve from Clearbit Enrichment API
+    // TODO Retrieve from Clearbit Enrichment data API with Retrofit network connection API
     static String urlToSocialHandle(Target target) {
         String socialHandle = DatasourceContract.DEFAULT_VALUE_STR;
         String url = target.getHomepageUrl();
