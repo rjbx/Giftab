@@ -41,7 +41,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-// TODO: Replace BillingClient and RewardedAd with API that enables ad revenue sharing with app users
+// TODO: Configure to award a search for each ad view
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
