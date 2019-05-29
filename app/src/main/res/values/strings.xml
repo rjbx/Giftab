@@ -45,7 +45,6 @@
     <string name="description_detect_location">Press this button to detect your current location</string>
     <string name="description_credit_button">Press this button to add to your credit by %s</string>
     <string name="description_credit_toggle_button">Press this button to change the response of the big circle button. The current response is to add credit by %s</string>
-    <string name="description_payment_text">Your available paid credit is %s</string>
     <string name="description_donation_text">Press this button to add to your total donation amount. The total amount that will be allocated among your charities on each converted smile or stride is %s</string>
     <string name="description_decrement_donation_text">Press this button to decrease your total donation amount</string>
     <string name="description_increment_donation_text">Press this button to increase your total donation amount</string>
