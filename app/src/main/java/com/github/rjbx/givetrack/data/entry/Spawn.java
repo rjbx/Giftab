@@ -214,7 +214,7 @@ public class Spawn implements Company, Parcelable, Cloneable {
         phone = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_PHONE);
         email = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_EMAIL);
         social = (String) map.get(DatabaseContract.CompanyEntry.COLUMN_SOCIAL);
-        impact = Double.parseDouble((String) map.get(DatabaseContract.CompanyEntry.COLUMN_IMPACT));
+        impact = Double.parseDouble(String.valueOf(map.get(DatabaseContract.CompanyEntry.COLUMN_IMPACT)));
         type = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_TYPE);
 
     }
