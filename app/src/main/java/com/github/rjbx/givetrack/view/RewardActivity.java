@@ -3,7 +3,6 @@ package com.github.rjbx.givetrack.view;
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,9 +20,6 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
 import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -38,7 +34,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import timber.log.Timber;
 
@@ -63,25 +58,18 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  */
 public class RewardActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        RewardedVideoAdListener,
-        PurchasesUpdatedListener {
+        RewardedVideoAdListener{
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final float MULTIPLIER_REWARD_ESTIMATE = 0.01f;
     private RewardedVideoAd mRewardedAd;
-    private BillingClient mBillingClient;
     private View mCreditButtonWrapper;
     private FloatingActionButton mCreditButton;
     private View mProgressBar;
     private View mToggleContainer;
     private TextView mRewardedView;
-    private TextView mPaidView;
-    private TextView mWalletView;
     private User mUser;
-    private float mPurchaseAmount;
-    private float mPaidAmount;
-    private double mRewardedAmount;
-    private double mWalletAmount;
+    private int mRewardedAmount;
     private int mUserGender;
     private boolean mShowAd = true;
     private static boolean sDialogShown;
@@ -142,91 +130,32 @@ public class RewardActivity extends AppCompatActivity implements
         View paymentFrame = findViewById(R.id.payment_balance_frame);
 
         toggle.setOnClickListener(clickedView -> {
-            mShowAd = !mShowAd;
             toggle.setImageResource(mShowAd ? R.drawable.baseline_card_giftcard_24 : R.drawable.baseline_credit_card_24);
-            if (mShowAd) {
-                String response = getString(R.string.reward_response);
-                toggle.setContentDescription(getString(R.string.description_credit_button, response));
-                mCreditButton.setContentDescription(getString(R.string.description_credit_toggle_button, response));
-                rewardFrame.setBackgroundColor(getResources().getColor(R.color.colorAttention));
-                paymentFrame.setBackgroundColor(getResources().getColor(R.color.colorAttentionDark));
-                mRewardedView.setBackgroundColor(getResources().getColor(R.color.colorSlate));
-                mPaidView.setBackgroundColor(Color.BLACK);
-            } else {
-                String response = getString(R.string.payment_response);
-                toggle.setContentDescription(getString(R.string.description_credit_toggle_button, response));
-                mCreditButton.setContentDescription(getString(R.string.description_credit_button, response));
-                rewardFrame.setBackgroundColor(getResources().getColor(R.color.colorAttentionDark));
-                paymentFrame.setBackgroundColor(getResources().getColor(R.color.colorAttention));
-                mRewardedView.setBackgroundColor(Color.BLACK);
-                mPaidView.setBackgroundColor(getResources().getColor(R.color.colorSlate));
-            }
+            String response = getString(R.string.reward_response);
+            toggle.setContentDescription(getString(R.string.description_credit_button, response));
+            mCreditButton.setContentDescription(getString(R.string.description_credit_toggle_button, response));
+            rewardFrame.setBackgroundColor(getResources().getColor(R.color.colorAttention));
+            paymentFrame.setBackgroundColor(getResources().getColor(R.color.colorAttentionDark));
+            mRewardedView.setBackgroundColor(getResources().getColor(R.color.colorSlate));
         });
 
         // Create the next level button, which tries to show an rewarded when clicked.
         mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
         mCreditButton = findViewById(R.id.ad_button);
         mCreditButton.setOnClickListener(clickedView -> {
-//            if (mShowAd) {
-        updateRewardButton(true);
-        AdRequest request = new AdRequest.Builder()
-                .setGender(mUserGender)
-                .setBirthday(rewardedBirthday)
-                .build();
-        Timber.e(String.valueOf(request.isTestDevice(this)));
-        mRewardedAd.loadAd(getString(R.string.am_ad_id), request);
+            updateRewardButton(true);
+            AdRequest request = new AdRequest.Builder()
+                    .setGender(mUserGender)
+                    .setBirthday(rewardedBirthday)
+                    .build();
+            Timber.e(String.valueOf(request.isTestDevice(this)));
+            mRewardedAd.loadAd(getString(R.string.am_ad_id), request);
 
-        mProgressBar.setVisibility(View.VISIBLE);
-        mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
-//            } else {
-//                String defaultProducttId = "android.test.purchased";
-//                List<String> skus = new ArrayList<>();
-//                skus.add(defaultProducttId);
-//                SkuDetailsParams skuParams = SkuDetailsParams.newBuilder()
-//                        .setSkusList(skus).setType(BillingClient.SkuType.INAPP).build();
-//
-//                mBillingClient.querySkuDetailsAsync(skuParams, (skuDetailsResponseCode, skuDetailsList) -> {
-//                    if (skuDetailsResponseCode == BillingClient.BillingResponse.OK && skuDetailsList != null) {
-//                        for (SkuDetails skuDetails : skuDetailsList) {
-//                            if (skuDetails.getSku().equals(defaultProducttId)) {
-//                                BillingFlowParams billingParams = BillingFlowParams.newBuilder()
-//                                        .setSku(BillingClient.SkuType.INAPP).build();
-//                                mBillingClient.launchBillingFlow(RewardActivity.this, billingParams);
-//                                mPurchaseAmount = skuDetails.getPriceAmountMicros();
-//                            }
-//                        }
-//                    }
-//                });
-//            }
+            mProgressBar.setVisibility(View.VISIBLE);
+            mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
         });
 
         mRewardedAmount = mUser.getUserCredit();
-        mPaidAmount = /*mUser.getPaid(this)*/ 0;
-
-        mPaidView = findViewById(R.id.payment_balance_text);
-        mPaidView.setText(CURRENCY_FORMATTER.format(mPaidAmount));
-        mPaidView.setContentDescription(getString(R.string.description_payment_text, CURRENCY_FORMATTER.format(mPaidAmount)));
-
-        mRewardedView = findViewById(R.id.reward_balance_text);
-        mRewardedView.setText(CURRENCY_FORMATTER.format(mRewardedAmount));
-        mRewardedView.setContentDescription(getString(R.string.description_reward_text, CURRENCY_FORMATTER.format(mRewardedAmount)));
-
-        mWalletAmount = mRewardedAmount + mPaidAmount;
-        mWalletView = findViewById(R.id.wallet_balance_text);
-        mWalletView.setText(CURRENCY_FORMATTER.format(mWalletAmount));
-        mWalletView.setContentDescription(getString(R.string.description_wallet_text, CURRENCY_FORMATTER.format(mWalletAmount)));
-
-        mBillingClient = BillingClient.newBuilder(this).setListener(this).build();
-        mBillingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(int responseCode) {
-                if (responseCode == BillingClient.BillingResponse.OK)
-                    Timber.v(getString(R.string.message_billing_client));
-            }
-
-            @Override public void onBillingServiceDisconnected() {}
-        });
-
         mRewardedAd.resume(this);
     }
 
@@ -292,10 +221,6 @@ public class RewardActivity extends AppCompatActivity implements
         mRewardedView.setText(CURRENCY_FORMATTER.format(mRewardedAmount));
         mRewardedView.setContentDescription(getString(R.string.description_reward_text, CURRENCY_FORMATTER.format(mRewardedAmount)));
 
-        mWalletAmount += reward;
-        mWalletView.setText(CURRENCY_FORMATTER.format(mWalletAmount));
-        mWalletView.setContentDescription(getString(R.string.description_wallet_text, CURRENCY_FORMATTER.format(mWalletAmount)));
-
         mUser.setUserCredit(mRewardedAmount);
         DatabaseManager.startActionUpdateUser(this, mUser);
     }
@@ -304,50 +229,16 @@ public class RewardActivity extends AppCompatActivity implements
         if (mRewardedAd != null) mRewardedAd.destroy(this);
         super.onDestroy();
     }
-    @Override public void onRewardedVideoAdLoaded() {
-        mRewardedAd.show();
-    }
+    @Override public void onRewardedVideoAdLoaded() { mRewardedAd.show(); }
     @Override public void onRewardedVideoAdOpened() {}
     @Override public void onRewardedVideoStarted() {
         mProgressBar.setVisibility(View.GONE);
         mToggleContainer.setPadding(0,0,0,0);
     }
-    @Override public void onRewardedVideoAdClosed() {
-        updateRewardButton(false);
-    }
-    @Override public void onRewardedVideoAdLeftApplication() {
-
-    }
-    @Override public void onRewardedVideoAdFailedToLoad(int i) {
-        updateRewardButton(false);
-    }
-    @Override public void onRewardedVideoCompleted() {
-
-    }
-
-    /**
-     * Syncs the updated balance toward donations on completion of purchase.
-     */
-    @Override
-    public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
-        if (responseCode ==  BillingClient.BillingResponse.OK) {
-            if (purchases != null)
-                for (Purchase purchase : purchases)
-                    if (purchase.getSku().equals("android.test.purchased")) {
-
-                        mPaidAmount += mPurchaseAmount;
-                        mPaidView.setText(CURRENCY_FORMATTER.format(mPaidAmount));
-                        mPaidView.setContentDescription(getString(R.string.description_payment_text, CURRENCY_FORMATTER.format(mPaidAmount)));
-
-                        mWalletAmount += mPurchaseAmount;
-                        mWalletView.setText(CURRENCY_FORMATTER.format(mWalletAmount));
-                        mWalletView.setContentDescription(getString(R.string.description_wallet_text, CURRENCY_FORMATTER.format(mWalletAmount)));
-
-//                        mUser.setPaid(this, mPaidAmount);
-                        DatabaseManager.startActionUpdateUser(this, mUser);
-                    }
-        }
-    }
+    @Override public void onRewardedVideoAdClosed() { updateRewardButton(false); }
+    @Override public void onRewardedVideoAdLeftApplication() { }
+    @Override public void onRewardedVideoAdFailedToLoad(int i) { updateRewardButton(false); }
+    @Override public void onRewardedVideoCompleted() {}
 
     /**
      * Generates an options Menu.
