@@ -739,7 +739,7 @@ public class ConfigActivity
             if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
-                String magnitudeStr = String.valueOf(sUser.getGiveMagnitude());
+                String magnitudeStr = String.format(Locale.getDefault(), "%.2f", sUser.getGiveMagnitude());
                 mSeekProgress = Math.round((Float.parseFloat(magnitudeStr) - 0.01f) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
