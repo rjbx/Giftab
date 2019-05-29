@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.database.DatabaseUtils;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -352,7 +351,7 @@ public class GiveFragment extends Fragment implements
         if (sUser == null) return;
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
-            sUser.setGiveImpact(mAmountTotal);
+            sUser.setGiveImpact(((int) (mAmountTotal * 100d)) / 100d);
             DatabaseManager.startActionUpdateUser(mContext, sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
@@ -368,7 +367,7 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void clickIncrementImpact() {
         if (sUser == null || mTotalText == null) return;
         mAmountTotal += mMagnitude;
-        sUser.setGiveImpact(mAmountTotal);
+        sUser.setGiveImpact(((int) (mAmountTotal * 100d)) / 100d);
         DatabaseManager.startActionUpdateUser(mContext, sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);
