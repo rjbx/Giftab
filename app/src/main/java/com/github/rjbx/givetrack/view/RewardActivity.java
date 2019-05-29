@@ -100,7 +100,7 @@ public class RewardActivity extends AppCompatActivity implements RewardedVideoAd
         MobileAds.initialize(this, getString(R.string.am_app_id));
 
         String genderStr = mUser.getUserGender();
-        mUserGender = Integer.parseInt(genderStr);
+        mUserGender = genderStr != null ? Integer.parseInt(genderStr) : 0;
 
         String birthdate = mUser.getUserBirthdate();
         String[] birthdateParams = birthdate.split("/");
