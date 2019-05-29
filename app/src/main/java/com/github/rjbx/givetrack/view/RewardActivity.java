@@ -48,7 +48,7 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Start count at 3, rewarded view adds 3, pro version ($0.99, add color customization) boosts start count to 10
+// TODO: Start count at 1, enabling banner starts count at 2, pro version ($0.99, unlock customizations) starts count to 10, rewarded view adds 5
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
