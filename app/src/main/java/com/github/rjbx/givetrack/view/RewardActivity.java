@@ -110,6 +110,7 @@ public class RewardActivity extends AppCompatActivity implements
     }
 
     private void initializeAds() {
+
         MobileAds.initialize(this, getString(R.string.am_app_id));
 
         String genderStr = mUser.getUserGender();
@@ -212,6 +213,8 @@ public class RewardActivity extends AppCompatActivity implements
 
             @Override public void onBillingServiceDisconnected() {}
         });
+
+        mRewardedAd.resume(this);
     }
 
     /**
@@ -219,7 +222,7 @@ public class RewardActivity extends AppCompatActivity implements
      */
     @Override
     protected void onResume() {
-        mRewardedAd.resume(this);
+        if (mUser != null) mRewardedAd.resume(this);
         super.onResume();
     }
 
