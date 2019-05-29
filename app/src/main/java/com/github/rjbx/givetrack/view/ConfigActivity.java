@@ -820,7 +820,7 @@ public class ConfigActivity
                         sUser.setGiveMagnitude(magnitude);
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
                         magnitudePreference.getEditor().putString(magnitudePreference.getKey(), String.valueOf(magnitude)).apply();
-                        onPreferenceChange(magnitudePreference, magnitude);
+                        onPreferenceChange(magnitudePreference, String.valueOf(magnitude));
                         break;
                     default:
                 }
