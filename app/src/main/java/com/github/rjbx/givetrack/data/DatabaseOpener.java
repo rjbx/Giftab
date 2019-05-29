@@ -150,7 +150,7 @@ public class DatabaseOpener extends SQLiteOpenHelper {
                         UserEntry.COLUMN_TARGET_STAMP               + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_RECORD_STAMP               + " INTEGER NOT NULL, "             +
                         UserEntry.COLUMN_USER_STAMP                 + " INTEGER NOT NULL, "             +
-
+                        UserEntry.COLUMN_USER_CREDIT                + " INTEGER NOT NULL, "             +
                         "UNIQUE (" + UserEntry.COLUMN_USER_EMAIL +
                         ") ON CONFLICT REPLACE" + ");";
 
