@@ -120,7 +120,7 @@ public class RewardActivity extends AppCompatActivity implements
             dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
         }
 
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_TARGET, null, this);
+        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
     private void initializeAds() {
