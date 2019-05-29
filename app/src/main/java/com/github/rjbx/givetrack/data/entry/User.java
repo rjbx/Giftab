@@ -276,10 +276,10 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setUserBirthdate(String birthday) { this.userBirthdate = birthday; }
     public String getUserGender() { return userGender; }
     public void setUserGender(String userGender) { this.userGender = userGender; }
-    public double getGiveImpact() { return giveImpact; }
-    public void setGiveImpact(double giveImpact) { this.giveImpact = giveImpact; }
-    public double getGiveMagnitude() { return giveMagnitude; }
-    public void setGiveMagnitude(double giveMagnitude) { this.giveMagnitude = giveMagnitude; }
+    @Exclude public double getGiveImpact() { return giveImpact; }
+    @Exclude public void setGiveImpact(double giveImpact) { this.giveImpact = giveImpact; }
+    @Exclude public double getGiveMagnitude() { return giveMagnitude; }
+    @Exclude public void setGiveMagnitude(double giveMagnitude) { this.giveMagnitude = giveMagnitude; }
     public long getGiveAnchor() { return giveAnchor; }
     public void setGiveAnchor(long giveAnchor) { this.giveAnchor = giveAnchor; }
     public int getGiveTiming() { return giveTiming; }
@@ -517,7 +517,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.userBirthdate = "0/0/2000";
         user.userGender = "";
         user.giveImpact = 0;
-        user.giveMagnitude = 0.01d;
+        user.giveMagnitude = 0.01;
         user.giveAnchor = 0;
         user.giveTiming = 0;
         user.giveRounding = 0;
