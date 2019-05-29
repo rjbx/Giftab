@@ -4,6 +4,7 @@ package com.github.rjbx.givetrack.view;
 
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,10 +13,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -24,7 +29,9 @@ import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
+import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
+import com.github.rjbx.givetrack.data.DatabaseContract;
 import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.ads.AdRequest;
@@ -41,13 +48,17 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
+
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
 // TODO: Decide whether to implement as Fragment with args or Activity with Loader callback
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
-public class RewardActivity extends AppCompatActivity
-        implements RewardedVideoAdListener, PurchasesUpdatedListener {
+public class RewardActivity extends AppCompatActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        RewardedVideoAdListener,
+        PurchasesUpdatedListener {
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final float MULTIPLIER_REWARD_ESTIMATE = 0.01f;
@@ -220,6 +231,38 @@ public class RewardActivity extends AppCompatActivity
         mRewardedAd.pause(this);
         super.onPause();
     }
+
+    /**
+     * Defines the data to be returned from {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
+     */
+    @NonNull
+    @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
+        switch (id) {
+            case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_USER_ACTIVE + " = ? ", new String[] { "1" }, null);
+            default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
+        }
+    }
+
+    /**
+     * Replaces old data that is to be subsequently released from the {@link androidx.loader.content.Loader}.
+     */
+    @Override public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            do {
+                User user = User.getDefault();
+                AppUtilities.cursorRowToEntry(data, user);
+                if (user.getUserActive()) {
+                    mUser = user;
+                    break;
+                }
+            } while (data.moveToNext());
+        }
+    }
+
+    /**
+     * Tells the application to remove any stored references to the {@link android.content.Loader} data.
+     */
+    @Override public void onLoaderReset(@NonNull Loader<Cursor> loader) {  }
 
     /**
      * Syncs the updated balance toward donations on completion of RewardedAd.
