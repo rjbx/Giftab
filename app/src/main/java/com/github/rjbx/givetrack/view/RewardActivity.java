@@ -215,7 +215,7 @@ public class RewardActivity extends AppCompatActivity implements
      */
     @Override public void onRewarded(RewardItem rewardItem) {
 
-        float reward = rewardItem.getAmount() * MULTIPLIER_REWARD_ESTIMATE;
+        int reward = rewardItem.getAmount();
 
         mRewardedAmount += reward; // Converts points to cash amount
         mRewardedView.setText(CURRENCY_FORMATTER.format(mRewardedAmount));
@@ -238,7 +238,7 @@ public class RewardActivity extends AppCompatActivity implements
     @Override public void onRewardedVideoAdClosed() { updateRewardButton(false); }
     @Override public void onRewardedVideoAdLeftApplication() { }
     @Override public void onRewardedVideoAdFailedToLoad(int i) { updateRewardButton(false); }
-    @Override public void onRewardedVideoCompleted() { mRewardedAmount++; }
+    @Override public void onRewardedVideoCompleted() {}
 
     /**
      * Generates an options Menu.
