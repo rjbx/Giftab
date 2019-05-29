@@ -48,14 +48,18 @@ import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
-// TODO: Configure to award additional uses of features beyond daily limit
+// TODO: Configure to store one credit per view redeemable to enhance certain features:
 //  A. Index count:
 //      1. Start count at 1 by default
-//      2. Start count at 2 if index banner is enabled
+//      2. Start count at 2 if index banner is enabled (accessible from index settings)
 //      3. Start count at 10 with Pro version ($0.99, unlock customizations)
-//      4. Add 5 to count after viewing rewarded (accessed by index refresh button when count is 0)
+//      4. Add 5 to count after viewing rewarded accessed from: i
+//          a. Index refresh button when count is 0
+//          b. Home navigation menu
 //  B. Payment processing
-//      1. Remove app processing fee after viewing rewarded (accessed by button during checkout)
+//      1. Remove app processing fee after viewing rewarded accessed from:
+//          a. Button displayed on checkout or
+//          b. Home navigation menu
 
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
