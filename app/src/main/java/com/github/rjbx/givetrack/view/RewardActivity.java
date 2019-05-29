@@ -91,6 +91,7 @@ public class RewardActivity extends AppCompatActivity implements
 
         mProgressBar = findViewById(R.id.ad_progress);
         mToggleContainer = findViewById(R.id.credit_toggle_container);
+        mRewardedView = findViewById(R.id.reward_balance_text);
 
         if (!sDialogShown && mRewardedAmount == 0) {
             AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
