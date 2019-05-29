@@ -231,7 +231,7 @@ public class RewardActivity extends AppCompatActivity implements
      */
     @Override
     protected void onPause() {
-        mRewardedAd.pause(this);
+        if (mUser != null) mRewardedAd.pause(this);
         super.onPause();
     }
 
@@ -288,7 +288,7 @@ public class RewardActivity extends AppCompatActivity implements
     }
 
     @Override protected void onDestroy() {
-        mRewardedAd.destroy(this);
+        if (mRewardedAd != null) mRewardedAd.destroy(this);
         super.onDestroy();
     }
     @Override public void onRewardedVideoAdLoaded() {
