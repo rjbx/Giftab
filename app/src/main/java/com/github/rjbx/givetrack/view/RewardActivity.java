@@ -107,6 +107,9 @@ public class RewardActivity extends AppCompatActivity implements
             dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
         }
 
+    }
+
+    private void initializeAds() {
         MobileAds.initialize(this, getString(R.string.am_app_id));
 
         String genderStr = mUser.getUserGender();
@@ -250,6 +253,7 @@ public class RewardActivity extends AppCompatActivity implements
                 AppUtilities.cursorRowToEntry(data, user);
                 if (user.getUserActive()) {
                     mUser = user;
+                    initializeAds();
                     break;
                 }
             } while (data.moveToNext());
