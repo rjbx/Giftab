@@ -121,7 +121,7 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
     @Override public void fromParameterMap(Map<String, Object> map) {
         super.fromParameterMap(map);
         frequency = (int) map.get(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        percent = Double.parseDouble((String) map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT));
+        percent = Double.parseDouble(String.valueOf(map.get(DatabaseContract.CompanyEntry.COLUMN_PERCENT)));
     }
 
     @Override public ContentValues toContentValues() {
@@ -134,7 +134,7 @@ public class Target extends Spawn implements Company, Rateraid.Rateable<Target>,
     @Override public void fromContentValues(ContentValues values) {
         super.fromContentValues(values);
         frequency = values.getAsInteger(DatabaseContract.CompanyEntry.COLUMN_FREQUENCY);
-        percent = Float.parseFloat(values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT));
+        percent = Double.parseDouble(values.getAsString(DatabaseContract.CompanyEntry.COLUMN_PERCENT));
     }
 
     public Spawn getSuper() { return super.clone(); }
