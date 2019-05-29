@@ -23,8 +23,8 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.UserEntry.*;
 public class User implements Entry, Parcelable, Cloneable {
 
     private long giveAnchor;
-    private String giveImpact;
-    private String giveMagnitude;
+    private double giveImpact;
+    private double giveMagnitude;
     private boolean giveReset;
     private int giveRounding;
     private long targetStamp; // Time of most recent change to target table
@@ -70,8 +70,8 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeInt(userActive ? 1 : 0);
         dest.writeString(userBirthdate);
         dest.writeString(userGender);
-        dest.writeString(giveImpact);
-        dest.writeString(giveMagnitude);
+        dest.writeDouble(giveImpact);
+        dest.writeDouble(giveMagnitude);
         dest.writeLong(giveAnchor);
         dest.writeInt(giveTiming);
         dest.writeInt(giveRounding);
@@ -111,8 +111,8 @@ public class User implements Entry, Parcelable, Cloneable {
         userActive = source.readInt() == 1;
         userBirthdate = source.readString();
         userGender = source.readString();
-        giveImpact = source.readString();
-        giveMagnitude = source.readString();
+        giveImpact = source.readDouble();
+        giveMagnitude = source.readDouble();
         giveAnchor = source.readLong();
         giveTiming = source.readInt();
         giveRounding = source.readInt();
@@ -202,8 +202,8 @@ public class User implements Entry, Parcelable, Cloneable {
             int giveRounding,
             long glanceAnchor,
             boolean glanceSince,
-            String giveImpact,
-            String giveMagnitude,
+            double giveImpact,
+            double giveMagnitude,
             int glanceHometype,
             int glanceGraphtype,
             int glanceInterval,
@@ -276,10 +276,10 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setUserBirthdate(String birthday) { this.userBirthdate = birthday; }
     public String getUserGender() { return userGender; }
     public void setUserGender(String userGender) { this.userGender = userGender; }
-    public String getGiveImpact() { return giveImpact; }
-    public void setGiveImpact(String giveImpact) { this.giveImpact = giveImpact; }
-    public String getGiveMagnitude() { return giveMagnitude; }
-    public void setGiveMagnitude(String giveMagnitude) { this.giveMagnitude = giveMagnitude; }
+    public double getGiveImpact() { return giveImpact; }
+    public void setGiveImpact(double giveImpact) { this.giveImpact = giveImpact; }
+    public double getGiveMagnitude() { return giveMagnitude; }
+    public void setGiveMagnitude(double giveMagnitude) { this.giveMagnitude = giveMagnitude; }
     public long getGiveAnchor() { return giveAnchor; }
     public void setGiveAnchor(long giveAnchor) { this.giveAnchor = giveAnchor; }
     public int getGiveTiming() { return giveTiming; }
@@ -363,8 +363,8 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_INDEX_FOCUS, indexFocus);
         map.put(COLUMN_INDEX_FILTER, indexFilter);
         map.put(COLUMN_INDEX_COMPANY, indexCompany);
-        map.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
-        map.put(COLUMN_GIVE_IMPACT, giveImpact);
+        map.put(COLUMN_GIVE_MAGNITUDE, String.valueOf(giveMagnitude));
+        map.put(COLUMN_GIVE_IMPACT, String.valueOf(giveImpact));
         map.put(COLUMN_INDEX_TERM, indexTerm);
         map.put(COLUMN_INDEX_CITY, indexCity);
         map.put(COLUMN_INDEX_STATE, indexState);
@@ -383,8 +383,8 @@ public class User implements Entry, Parcelable, Cloneable {
     }
 
     @Override public void fromParameterMap(Map<String, Object> map) {
-        if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = (String) map.get(COLUMN_GIVE_IMPACT);
-        if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = (String) map.get(COLUMN_GIVE_MAGNITUDE);
+        if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = Double.valueOf(String.valueOf(map.get(COLUMN_GIVE_IMPACT)));
+        if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = Double.valueOf(String.valueOf(map.get(COLUMN_GIVE_MAGNITUDE)));
         if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_TIMING), Integer.class);
         if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_ROUNDING), Integer.class);
@@ -442,8 +442,8 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_INDEX_FOCUS, indexFocus);
         values.put(COLUMN_INDEX_FILTER, indexFilter);
         values.put(COLUMN_INDEX_COMPANY, indexCompany);
-        values.put(COLUMN_GIVE_MAGNITUDE, giveMagnitude);
-        values.put(COLUMN_GIVE_IMPACT, giveImpact);
+        values.put(COLUMN_GIVE_MAGNITUDE, String.valueOf(giveMagnitude));
+        values.put(COLUMN_GIVE_IMPACT, String.valueOf(giveImpact));
         values.put(COLUMN_INDEX_ANCHOR, indexAnchor);
         values.put(COLUMN_INDEX_TERM, indexTerm);
         values.put(COLUMN_INDEX_CITY, indexCity);
@@ -468,8 +468,8 @@ public class User implements Entry, Parcelable, Cloneable {
         userActive = values.getAsBoolean(COLUMN_USER_ACTIVE);
         userBirthdate = values.getAsString(COLUMN_USER_BIRTHDATE);
         userGender = values.getAsString(COLUMN_USER_GENDER);
-        giveImpact = values.getAsString(COLUMN_GIVE_IMPACT);
-        giveMagnitude = values.getAsString(COLUMN_GIVE_MAGNITUDE);
+        giveImpact = Double.parseDouble(values.getAsString(COLUMN_GIVE_IMPACT));
+        giveMagnitude = Double.parseDouble(values.getAsString(COLUMN_GIVE_MAGNITUDE));
         giveAnchor = values.getAsLong(COLUMN_GIVE_ANCHOR);
         giveTiming = values.getAsInteger(COLUMN_GIVE_TIMING);
         giveRounding = values.getAsInteger(COLUMN_GIVE_ROUNDING);
@@ -516,8 +516,8 @@ public class User implements Entry, Parcelable, Cloneable {
         user.userActive = true;
         user.userBirthdate = "0/0/2000";
         user.userGender = "";
-        user.giveImpact = "0";
-        user.giveMagnitude = "0.01";
+        user.giveImpact = 0;
+        user.giveMagnitude = 0.01d;
         user.giveAnchor = 0;
         user.giveTiming = 0;
         user.giveRounding = 0;
