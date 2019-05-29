@@ -22,11 +22,8 @@ import androidx.loader.content.Loader;
 
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
@@ -39,7 +36,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -204,7 +200,7 @@ public class RewardActivity extends AppCompatActivity implements
 //            }
         });
 
-        mRewardedAmount = mUser.getGiveImpact();
+        mRewardedAmount = mUser.getUserCredit();
         mPaidAmount = /*mUser.getPaid(this)*/ 0;
 
         mPaidView = findViewById(R.id.payment_balance_text);
@@ -300,7 +296,7 @@ public class RewardActivity extends AppCompatActivity implements
         mWalletView.setText(CURRENCY_FORMATTER.format(mWalletAmount));
         mWalletView.setContentDescription(getString(R.string.description_wallet_text, CURRENCY_FORMATTER.format(mWalletAmount)));
 
-        mUser.setGiveImpact(mRewardedAmount);
+        mUser.setUserCredit(mRewardedAmount);
         DatabaseManager.startActionUpdateUser(this, mUser);
     }
 
