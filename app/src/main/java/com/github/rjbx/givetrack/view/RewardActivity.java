@@ -53,9 +53,9 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 //      1. Start count at 1 by default
 //      2. Start count at 2 if index banner is enabled
 //      3. Start count at 10 with Pro version ($0.99, unlock customizations)
-//      4. Rewarded view launched by index refresh button after exhausting count adds 5
+//      4. Add 5 to count after viewing rewarded (accessed by index refresh button when count is 0)
 //  B. Payment processing
-//      1. Remove app processing fee
+//      1. Remove app processing fee after viewing rewarded (accessed by button during checkout)
 
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
