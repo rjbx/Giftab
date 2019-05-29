@@ -3,6 +3,7 @@ package com.github.rjbx.givetrack.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.preference.PreferenceActivity;
 import android.util.DisplayMetrics;
@@ -24,6 +25,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Optional;
+import timber.log.Timber;
 
 final class ViewUtilities {
 
@@ -43,7 +45,18 @@ final class ViewUtilities {
                         Uri.parse(String.format("android-app://%s", context.getString(R.string.app_name))));
 
         tabsIntent.launchUrl(context, webUrl);
+    }
 
+    static void launchSocialIntent(Context context, String handle) {
+        try {
+            context.getPackageManager().getPackageInfo("com.android.twitter", 0);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format("twitter://user?user_id=%s", handle)));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (PackageManager.NameNotFoundException e) {
+            Timber.e(e);
+            launchBrowserIntent(context, Uri.parse(String.format("https://twitter.com/%s", handle)));
+        }
     }
 
     static void launchDetailPane(Activity launchingActivity, View master, View detail) {
@@ -203,7 +216,7 @@ final class ViewUtilities {
          * Defines behavior on click of social launch button.
          */
         @Optional @OnClick(R.id.social_button) void launchSocial() {
-            launchBrowserIntent(mContext, Uri.parse("https://twitter.com/" + mSocial));
+            launchSocialIntent(mContext, mSocial);
         }
 
         /**
