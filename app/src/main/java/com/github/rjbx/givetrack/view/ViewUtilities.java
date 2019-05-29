@@ -168,7 +168,6 @@ final class ViewUtilities {
                 if (mWebsite.isEmpty()) mWebsiteButton.setVisibility(View.GONE);
                 else mWebsiteButton.setText(mWebsite.toLowerCase());
 
-                // TODO: Launch with social app intent
             if (mSocialButton != null)
                 if (mSocial.isEmpty()) mSocialButton.setVisibility(View.GONE);
                 else mSocialButton.setText(mSocial.toLowerCase());
