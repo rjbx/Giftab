@@ -1,7 +1,5 @@
 package com.github.rjbx.givetrack.view;
 
-// TODO: Implement Rewarded Products
-
 import android.app.AlertDialog;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
@@ -51,7 +49,6 @@ import timber.log.Timber;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Configure to award additional uses of features beyond daily limit e.g. search for each ad view
-// TODO: Decide whether to implement as Fragment with args or Activity with Loader callback
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
