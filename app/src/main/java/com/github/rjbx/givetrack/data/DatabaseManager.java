@@ -505,10 +505,10 @@ public final class DatabaseManager extends IntentService {
 
         List<User> users = DatabaseAccessor.getUser(this);
         for (User u : users) if (u.getUserActive()) {
-            float totalImpact = Float.parseFloat(u.getGiveImpact());
+            double totalImpact = u.getGiveImpact();
             float threshold = (size + 1) * .3f;
             if (totalImpact < threshold) {
-                u.setGiveImpact(String.valueOf(threshold));
+                u.setGiveImpact(threshold);
                 DatabaseAccessor.addUser(this, u);
             }
         }
@@ -552,7 +552,7 @@ public final class DatabaseManager extends IntentService {
             DatabaseManager.startActionUpdateUser(this, activeUser);
         }
 
-        double giveImpact = Double.parseDouble(activeUser.getGiveImpact());
+        double giveImpact = activeUser.getGiveImpact();
 
         for (Target t : target) {
             if (t.getPercent() == 0d) continue;

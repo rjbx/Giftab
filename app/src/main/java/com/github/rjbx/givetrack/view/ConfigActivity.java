@@ -739,7 +739,7 @@ public class ConfigActivity
             if (sUser == null) return false;
             String preferenceKey = preference.getKey();
             if (getString(R.string.pref_giveMagnitude_key).equals(preferenceKey)) {
-                String magnitudeStr = sUser.getGiveMagnitude();
+                String magnitudeStr = String.valueOf(sUser.getGiveMagnitude());
                 mSeekProgress = Math.round((Float.parseFloat(magnitudeStr) - 0.01f) * 1000f);
                 View view = getActivity().getLayoutInflater().inflate(R.layout.seekbar_home, new LinearLayout(getActivity()));
                 SeekBar seekbar = view.findViewById(R.id.main_seekbar);
@@ -816,10 +816,10 @@ public class ConfigActivity
                         dialog.dismiss();
                         break;
                     case AlertDialog.BUTTON_POSITIVE:
-                        String magnitude = percentIntToDecimalString(mSeekProgress + 10);
+                        double magnitude = (mSeekProgress + 10d) / 1000d;
                         sUser.setGiveMagnitude(magnitude);
                         Preference magnitudePreference = findPreference(getString(R.string.pref_giveMagnitude_key));
-                        magnitudePreference.getEditor().putString(magnitudePreference.getKey(), magnitude).apply();
+                        magnitudePreference.getEditor().putString(magnitudePreference.getKey(), String.valueOf(magnitude)).apply();
                         onPreferenceChange(magnitudePreference, magnitude);
                         break;
                     default:

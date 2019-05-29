@@ -87,8 +87,8 @@ public class GiveFragment extends Fragment implements
     private Unbinder mUnbinder;
     private Context mContext;
     private Timer mTimer;
-    private float mAmountTotal;
-    private float mMagnitude;
+    private double mAmountTotal;
+    private double mMagnitude;
     private int mPanePosition;
     private int mListLength;
     @BindView(R.id.give_progress_bar) ProgressBar mProgress;
@@ -167,8 +167,8 @@ public class GiveFragment extends Fragment implements
                 sUser = args.getParcelable(HomeActivity.ARGS_USER_ATTRIBUTES);
                 if (sUser == null) mParentActivity.recreate();
                 else {
-                    mMagnitude = Float.parseFloat(sUser.getGiveMagnitude());
-                    mAmountTotal = Float.parseFloat(sUser.getGiveImpact());
+                    mMagnitude = sUser.getGiveMagnitude();
+                    mAmountTotal = sUser.getGiveImpact();
                     if (mListAdapter == null) {
                         mListAdapter = new ListAdapter(targetList);
                         mRecyclerView.setAdapter(mListAdapter);
@@ -327,7 +327,7 @@ public class GiveFragment extends Fragment implements
                         mTotalText.setText(CURRENCY_FORMATTER.format(mAmountTotal));
                         return false;
                     }
-                    sUser.setGiveImpact(String.valueOf(mAmountTotal));
+                    sUser.setGiveImpact(mAmountTotal);
                     DatabaseManager.startActionUpdateUser(mContext, sUser);
                 } catch (ParseException e) {
                     Timber.e(e);
@@ -352,7 +352,7 @@ public class GiveFragment extends Fragment implements
         if (sUser == null) return;
         if (mAmountTotal > 0f) {
             mAmountTotal -= mMagnitude;
-            sUser.setGiveImpact(String.valueOf(mAmountTotal));
+            sUser.setGiveImpact(mAmountTotal);
             DatabaseManager.startActionUpdateUser(mContext, sUser);
         }
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
@@ -368,7 +368,7 @@ public class GiveFragment extends Fragment implements
     @OnClick(R.id.donation_increment_button) void clickIncrementImpact() {
         if (sUser == null || mTotalText == null) return;
         mAmountTotal += mMagnitude;
-        sUser.setGiveImpact(String.valueOf(mAmountTotal));
+        sUser.setGiveImpact(mAmountTotal);
         DatabaseManager.startActionUpdateUser(mContext, sUser);
         String formattedTotal = CURRENCY_FORMATTER.format(mAmountTotal);
         mTotalText.setText(formattedTotal);

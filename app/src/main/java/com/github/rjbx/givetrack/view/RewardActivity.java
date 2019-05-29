@@ -63,8 +63,8 @@ public class RewardActivity extends AppCompatActivity
     private User mUser;
     private float mPurchaseAmount;
     private float mPaidAmount;
-    private float mRewardedAmount;
-    private float mWalletAmount;
+    private double mRewardedAmount;
+    private double mWalletAmount;
     private int mUserGender;
     private boolean mShowAd = true;
     private static boolean sDialogShown;
@@ -175,7 +175,7 @@ public class RewardActivity extends AppCompatActivity
             }
         });
 
-        mRewardedAmount = Float.parseFloat(mUser.getGiveImpact());
+        mRewardedAmount = mUser.getGiveImpact();
         mPaidAmount = /*mUser.getPaid(this)*/ 0;
 
         mPaidView = findViewById(R.id.payment_balance_text);
@@ -236,7 +236,7 @@ public class RewardActivity extends AppCompatActivity
         mWalletView.setText(CURRENCY_FORMATTER.format(mWalletAmount));
         mWalletView.setContentDescription(getString(R.string.description_wallet_text, CURRENCY_FORMATTER.format(mWalletAmount)));
 
-        mUser.setGiveImpact(String.valueOf(mRewardedAmount));
+        mUser.setGiveImpact(mRewardedAmount);
         DatabaseManager.startActionUpdateUser(this, mUser);
     }
 
