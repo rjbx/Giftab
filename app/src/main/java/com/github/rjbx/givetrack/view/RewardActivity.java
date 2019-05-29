@@ -41,7 +41,7 @@ import java.util.List;
 
 import timber.log.Timber;
 
-// TODO: Configure to award a search for each ad view
+// TODO: Configure to award additional uses of features beyond deaily limit e.g. search for each ad view
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
