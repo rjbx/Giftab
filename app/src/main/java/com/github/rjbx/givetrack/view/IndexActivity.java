@@ -354,13 +354,14 @@ public class IndexActivity extends AppCompatActivity implements
         int userCredit = mUser.getUserCredit();
         int remainingFetches = indexCount + userCredit;
         if (remainingFetches <= 0) {
+            finish();
+            startActivity(new Intent(this, RewardActivity.class));
+            return;
+        } else if (remainingFetches == 1) {
             mSnackbarMessage = getString(R.string.message_spawn_exhausted);
             Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
             sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
             sb.show();
-            finish();
-            startActivity(new Intent(this, RewardActivity.class));
-            return;
         }
 
         long currentTime = System.currentTimeMillis();
