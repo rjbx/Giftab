@@ -4,4 +4,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="Edit Settings"
+        android:icon="@drawable/arrow_expand_horizontal"
+        app:showAsAction="always"/>
+
 </menu>
