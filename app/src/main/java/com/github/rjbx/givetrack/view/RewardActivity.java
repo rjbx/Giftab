@@ -44,6 +44,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 //  A. Index refresh:
 //      1. Start refresh count at 1 daily by default
 //      2. Start refresh count at 2 daily if index banner is enabled (accessible from index settings)
+//      2a. Disable index banner if credit exists
 //      3. Start refresh count at 10 daily with Pro version ($0.99, unlock customizations)
 //      4. Access rewarded locally from index refresh button click when refresh count is 0
 //      5. Increment refresh count for each credit
