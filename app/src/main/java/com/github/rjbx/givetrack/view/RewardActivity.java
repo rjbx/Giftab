@@ -38,6 +38,7 @@ import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -128,17 +129,6 @@ public class RewardActivity extends AppCompatActivity implements
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
         mRewardedAd.setRewardedVideoAdListener(RewardActivity.this);
 
-
-        // Create the next level button, which tries to show an rewarded when clicked.
-
-        mCreditButton.setOnClickListener(clickedView -> {
-            loadReward();
-        });
-
-        mCreditToggle.setOnClickListener(clickedView -> {
-            loadReward();
-        });
-
         mRewardedAmount = mUser.getUserCredit();
         mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedAd.resume(this);
@@ -177,6 +167,14 @@ public class RewardActivity extends AppCompatActivity implements
         super.onBackPressed();
         finish();
         startActivity(new Intent(this, HomeActivity.class));
+    }
+
+    @OnClick(R.id.ad_button) void clickButton() {
+        loadReward();
+    }
+
+    @OnClick(R.id.credit_toggle) void clickToggle() {
+        loadReward();
     }
 
     /**
