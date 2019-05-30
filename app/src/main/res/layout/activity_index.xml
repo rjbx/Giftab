@@ -77,15 +77,6 @@
                     app:srcCompat="@drawable/action_sync"
                     android:contentDescription="@string/description_refresh_button"/>
 
-                <com.google.android.gms.ads.AdView
-
-                    xmlns:ads="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/index_banner"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal|bottom"
-                    ads:adSize="SMART_BANNER"
-                    ads:adUnitId="@string/am_banner_id"/>
 
             </FrameLayout>
 
@@ -98,6 +89,16 @@
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
+
+        <com.google.android.gms.ads.AdView
+
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/index_banner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="@string/am_banner_id"/>
 
     </FrameLayout>
 
