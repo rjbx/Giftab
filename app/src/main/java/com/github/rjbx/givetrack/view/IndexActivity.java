@@ -70,7 +70,7 @@ public class IndexActivity extends AppCompatActivity implements
     private static final String STATE_ARRAY = "com.github.rjbx.givetrack.ui.state.SPAWN_ARRAY";
     private static final String STATE_LOCK = "com.github.rjbx.givetrack.ui.state.LOADER_LOCK";
     private static final String STATE_USER = "com.github.rjbx.givetrack.ui.state.ACTIVE_USER";
-    private static final int DAILY_LIMIT = 5;
+    private static final int DAILY_LIMIT = 3;
     private static boolean sDualPane;
     private Spawn[] mValuesArray;
     private ListAdapter mAdapter;

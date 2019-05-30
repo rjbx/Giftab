@@ -104,7 +104,7 @@
     <string name="start_level">Level 1</string>
     <string name="next_level">Next Level</string>
     <string name="message_billing_client">Billing client is ready</string>
-    <string name="dialog_balance_preview">Earn ten coins by viewing a promotion. Each coin can be redeemed generate one search request.</string>
+    <string name="dialog_balance_preview">Earn ten coins by viewing a promotion. Each coin can be redeemed to generate one search request. Coins never expire.</string>
     <string name="reward_response">earning reward</string>
     <string name="payment_response">making a payment</string>
     <string name="description_reward_text">Your available rewarded credit is %s</string>

@@ -541,7 +541,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.glanceInterval = 1;
         user.glanceTheme = 0;
         user.indexAnchor = 0;
-        user.indexCount = 20;
+        user.indexCount = 3;
         user.indexDialog = false;
         user.indexFocus = false;
         user.indexFilter = true;
