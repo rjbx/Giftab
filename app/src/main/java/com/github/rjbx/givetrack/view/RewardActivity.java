@@ -61,7 +61,7 @@ public class RewardActivity extends AppCompatActivity implements
         RewardedVideoAdListener{
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
-    private static final float MULTIPLIER_REWARD_ESTIMATE = 0.01f;
+    private static final float TEST_REWARD_MULTIPLIER = 0.1f;
     private RewardedVideoAd mRewardedAd;
     private View mCreditButtonWrapper;
     private FloatingActionButton mCreditButton;
@@ -91,7 +91,6 @@ public class RewardActivity extends AppCompatActivity implements
 
         mProgressBar = findViewById(R.id.ad_progress);
         mToggleContainer = findViewById(R.id.credit_toggle_container);
-        mRewardedView = findViewById(R.id.reward_balance_text);
 
         if (!sDialogShown && mRewardedAmount == 0) {
             AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
@@ -123,22 +122,11 @@ public class RewardActivity extends AppCompatActivity implements
         final Date rewardedBirthday = calendar.getTime();
 
         // Create the RewardedAd and set the adUnitId (defined in values/strings.xml).
+        mRewardedView = findViewById(R.id.reward_balance_text);
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
         mRewardedAd.setRewardedVideoAdListener(RewardActivity.this);
 
         ImageButton toggle = findViewById(R.id.credit_toggle);
-        View rewardFrame = findViewById(R.id.reward_balance_frame);
-        View paymentFrame = findViewById(R.id.payment_balance_frame);
-
-        toggle.setOnClickListener(clickedView -> {
-            toggle.setImageResource(mShowAd ? R.drawable.baseline_card_giftcard_24 : R.drawable.baseline_credit_card_24);
-            String response = getString(R.string.reward_response);
-            toggle.setContentDescription(getString(R.string.description_credit_button, response));
-            mCreditButton.setContentDescription(getString(R.string.description_credit_toggle_button, response));
-            rewardFrame.setBackgroundColor(getResources().getColor(R.color.colorAttention));
-            paymentFrame.setBackgroundColor(getResources().getColor(R.color.colorAttentionDark));
-            mRewardedView.setBackgroundColor(getResources().getColor(R.color.colorSlate));
-        });
 
         // Create the next level button, which tries to show an rewarded when clicked.
         mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
@@ -157,6 +145,7 @@ public class RewardActivity extends AppCompatActivity implements
         });
 
         mRewardedAmount = mUser.getUserCredit();
+        mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedAd.resume(this);
     }
 
@@ -216,10 +205,10 @@ public class RewardActivity extends AppCompatActivity implements
      */
     @Override public void onRewarded(RewardItem rewardItem) {
 
-        int reward = rewardItem.getAmount();
+        int reward = (int) (rewardItem.getAmount() * TEST_REWARD_MULTIPLIER);
 
         mRewardedAmount += reward; // Converts points to cash amount
-        mRewardedView.setText(CURRENCY_FORMATTER.format(mRewardedAmount));
+        mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedView.setContentDescription(getString(R.string.description_reward_text, CURRENCY_FORMATTER.format(mRewardedAmount)));
 
         mUser.setUserCredit(mRewardedAmount);

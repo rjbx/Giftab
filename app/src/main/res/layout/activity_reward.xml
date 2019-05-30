@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
+    android:background="@color/colorSlate"
     android:fitsSystemWindows="true"
     tools:context=".view.RewardActivity">
 
@@ -41,8 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:background="@color/colorCheerDark"
-        android:padding="5dp">
+        android:background="@color/colorCheerDark">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/ad_button"
@@ -51,8 +50,8 @@
             android:layout_gravity="center"
             android:layout_margin="@dimen/fab_margin"/>
 
-
     </LinearLayout>
+
     <ProgressBar
         android:id="@+id/ad_progress"
         android:layout_width="match_parent"
@@ -62,7 +61,7 @@
         android:indeterminateTint="@color/colorChalk"
         android:visibility="gone"
         app:layout_anchor="@id/ad_button_wrapper"
-        app:layout_anchorGravity="top|center_horizontal"
+        app:layout_anchorGravity="bottom|center_horizontal"
         style="?android:attr/progressBarStyleHorizontal" />
 
     <LinearLayout
@@ -95,7 +94,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorAttentionDark"
+            android:background="@color/colorCheerDark"
             android:padding="3dp"
             android:orientation="horizontal">
 
@@ -105,50 +104,14 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".35"
                 android:padding="2dp"
-                android:background="@color/colorAttentionDark">
-
-                <TextView
-                    android:id="@+id/payment_balance_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:background="#000"
-                    android:gravity="center"
-                    android:textSize="@dimen/text_size_paragraph_title"
-                    android:textStyle="bold"
-                    android:textColor="#fff"
-                    android:text="0"/>
-
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/wallet_balance_text"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".35"
-                android:layout_gravity="center"
-                android:background="@color/colorAttention"
-                android:gravity="center"
-                android:textSize="@dimen/text_size_paragraph_title"
-                android:textStyle="bold"
-                android:textColor="#fff"
-                android:text="0"/>
-
-            <FrameLayout
-                android:id="@+id/reward_balance_frame"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight=".35"
-                android:padding="2dp"
-                android:background="@color/colorAttention">
+                android:background="@color/colorCheerDark">
 
                 <TextView
                     android:id="@+id/reward_balance_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="3dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:background="@color/colorSlate"
+                    android:background="#000"
                     android:gravity="center"
                     android:textSize="@dimen/text_size_paragraph_title"
                     android:textStyle="bold"
