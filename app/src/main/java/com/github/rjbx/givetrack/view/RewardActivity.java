@@ -97,16 +97,6 @@ public class RewardActivity extends AppCompatActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (mRewardedAmount == 0) {
-            AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
-            dialog.setMessage(getString(R.string.dialog_balance_preview));
-            dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
-                    (onClickDialog, onClickPosition) -> dialog.dismiss());
-            dialog.show();
-            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        }
-
         getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
     }
 
@@ -119,6 +109,17 @@ public class RewardActivity extends AppCompatActivity implements
         mRewardedAd.setRewardedVideoAdListener(RewardActivity.this);
 
         mRewardedAmount = mUser.getUserCredit();
+
+        if (mRewardedAmount == 0) {
+            AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
+            dialog.setMessage(getString(R.string.dialog_balance_preview));
+            dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
+                    (onClickDialog, onClickPosition) -> dialog.dismiss());
+            dialog.show();
+            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+            dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
+        }
+
         mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedAd.resume(this);
     }
