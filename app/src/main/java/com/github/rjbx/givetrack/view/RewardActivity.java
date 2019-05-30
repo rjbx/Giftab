@@ -41,7 +41,7 @@ import timber.log.Timber;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
 // TODO: Add three credits per view, tallied in the bottom bar counter, retained until used and redeemable to enhance any of the following features:
-//  A. Index refresh:
+//  A. Index refresh
 //  B. Processing fee waiver:
 //      1. Start fee waiver count at 0 daily by default
 //      2. Display checkout dialog or activity on clicking conversion button with payments preference set to true
@@ -49,6 +49,14 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 //      4. Increment fee waiver count for each credit
 //      5. Display fee waiver count locally from text beside fee checkout line item
 //      6. Process transaction with batch payment processing service
+//          a. Charity Navigator website
+//              i. Start WebViewClient session
+//              ii. Open links to add to cart followed by cart
+//              iii. Listen for submission link open
+//              iv. If no credits, open dialog providing option to waive transaction fee
+//              v. Indicate number of transactions as well as fee per transaction ($0.10)
+//              vi. Indicate that after ten transactions $0.99 will be billed
+//              vii. Each credit covers ten transaction fee waivers
 
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
