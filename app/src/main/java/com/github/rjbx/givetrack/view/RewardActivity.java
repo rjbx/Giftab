@@ -70,9 +70,6 @@ public class RewardActivity extends AppCompatActivity implements
     private RewardedVideoAd mRewardedAd;
     private User mUser;
     private int mRewardedAmount;
-    private int mUserGender;
-    private boolean mShowAd = true;
-    private static boolean sDialogShown;
     @BindView(R.id.reward_toolbar) Toolbar mToolbar;
     @BindView(R.id.ad_button_wrapper) View mCreditButtonWrapper;
     @BindView(R.id.ad_progress) View mProgressBar;
@@ -96,12 +93,10 @@ public class RewardActivity extends AppCompatActivity implements
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
-        if (!sDialogShown && mRewardedAmount == 0) {
+        if (mRewardedAmount == 0) {
             AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
             dialog.setMessage(getString(R.string.dialog_balance_preview));
             dialog.setButton(android.app.AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
-                    (onClickDialog, onClickPosition) -> sDialogShown = true);
-            dialog.setButton(android.app.AlertDialog.BUTTON_NEUTRAL, getString(R.string.dialog_later),
                     (onClickDialog, onClickPosition) -> dialog.dismiss());
             dialog.show();
             dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
@@ -114,16 +109,6 @@ public class RewardActivity extends AppCompatActivity implements
     private void initializeAds() {
 
         MobileAds.initialize(this, getString(R.string.am_app_id));
-
-        String genderStr = mUser.getUserGender();
-        mUserGender = genderStr != null && !genderStr.isEmpty() ? Integer.parseInt(genderStr) : 0;
-
-        String birthdate = mUser.getUserBirthdate();
-        String[] birthdateParams = birthdate.split("/");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Integer.parseInt(birthdateParams[0]), Integer.parseInt(birthdateParams[1]), Integer.parseInt(birthdateParams[2]));
-
-        final Date rewardedBirthday = calendar.getTime();
 
         // Create the RewardedAd and set the adUnitId (defined in values/strings.xml).
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
