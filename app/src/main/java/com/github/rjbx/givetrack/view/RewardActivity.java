@@ -44,9 +44,11 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 //  A. Index refresh:
 //  B. Processing fee waiver:
 //      1. Start fee waiver count at 0 daily by default
-//      2. Access rewarded locally from button click displayed beside fee checkout line item
-//      3. Increment fee waiver count for each credit
-//      4. Display fee waiver count locally from text beside fee checkout line item
+//      2. Display checkout dialog or activity on clicking conversion button with payments preference set to true
+//      3. Access rewarded locally from button click displayed beside fee checkout line item
+//      4. Increment fee waiver count for each credit
+//      5. Display fee waiver count locally from text beside fee checkout line item
+//      6. Process transaction with batch payment processing service
 
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
