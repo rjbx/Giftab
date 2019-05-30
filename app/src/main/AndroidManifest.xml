@@ -38,7 +38,7 @@
         </activity>
         <activity
             android:name=".view.JournalActivity"
-            android:label="History"
+            android:label="@string/title_activity_journal"
             android:parentActivityName=".view.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

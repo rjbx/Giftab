@@ -154,8 +154,8 @@ public class RewardActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
-        startActivity(new Intent(this, HomeActivity.class));
+//        finish();
+//        startActivity(new Intent(this, HomeActivity.class));
     }
 
     @OnClick(R.id.ad_button) void clickButton() {
