@@ -128,16 +128,16 @@ public class RewardActivity extends AppCompatActivity implements
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
         mRewardedAd.setRewardedVideoAdListener(RewardActivity.this);
 
-        ImageButton toggle = findViewById(R.id.credit_toggle);
 
         // Create the next level button, which tries to show an rewarded when clicked.
         mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
         mCreditButton = findViewById(R.id.ad_button);
         mCreditButton.setOnClickListener(clickedView -> {
-           loadReward();
+            loadReward();
         });
 
-        mToggleContainer.setOnClickListener(clickedView -> {
+        ImageButton toggle = findViewById(R.id.credit_toggle);
+        toggle.setOnClickListener(clickedView -> {
             loadReward();
         });
 
