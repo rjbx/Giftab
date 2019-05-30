@@ -134,7 +134,6 @@ public class IndexActivity extends AppCompatActivity implements
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
                 )).attachToRecyclerView(mRecyclerView);
 
-
         if (isDualPane()) ViewUtilities.launchDetailPane(this, mListContainer, mDetailContainer);
     }
 
