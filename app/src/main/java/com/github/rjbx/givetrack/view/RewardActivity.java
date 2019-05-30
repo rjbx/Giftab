@@ -36,6 +36,8 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import timber.log.Timber;
 
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -60,21 +62,23 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
  */
 public class RewardActivity extends AppCompatActivity implements
         LoaderManager.LoaderCallbacks<Cursor>,
-        RewardedVideoAdListener{
+        RewardedVideoAdListener {
 
     private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance();
     private static final float TEST_REWARD_MULTIPLIER = 0.1f;
     private RewardedVideoAd mRewardedAd;
-    private View mCreditButtonWrapper;
-    private FloatingActionButton mCreditButton;
-    private View mProgressBar;
-    private View mToggleContainer;
-    private TextView mRewardedView;
     private User mUser;
     private int mRewardedAmount;
     private int mUserGender;
     private boolean mShowAd = true;
     private static boolean sDialogShown;
+    @BindView(R.id.reward_toolbar) private Toolbar mToolbar;
+    @BindView(R.id.ad_button_wrapper) private View mCreditButtonWrapper;
+    @BindView(R.id.ad_progress) private View mProgressBar;
+    @BindView(R.id.credit_toggle_container) private View mToggleContainer;
+    @BindView(R.id.ad_button) private FloatingActionButton mCreditButton;
+    @BindView(R.id.reward_balance_text) private TextView mRewardedView;
+    @BindView(R.id.credit_toggle) private View mCreditToggle;
 
     /**
      * Initializes the {@link RewardedVideoAd} and {@link BillingClient}.
@@ -83,16 +87,13 @@ public class RewardActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reward);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = findViewById(R.id.reward_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getTitle());
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
-
-        mProgressBar = findViewById(R.id.ad_progress);
-        mToggleContainer = findViewById(R.id.credit_toggle_container);
 
         if (!sDialogShown && mRewardedAmount == 0) {
             AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
@@ -124,20 +125,17 @@ public class RewardActivity extends AppCompatActivity implements
         final Date rewardedBirthday = calendar.getTime();
 
         // Create the RewardedAd and set the adUnitId (defined in values/strings.xml).
-        mRewardedView = findViewById(R.id.reward_balance_text);
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
         mRewardedAd.setRewardedVideoAdListener(RewardActivity.this);
 
 
         // Create the next level button, which tries to show an rewarded when clicked.
-        mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
-        mCreditButton = findViewById(R.id.ad_button);
+
         mCreditButton.setOnClickListener(clickedView -> {
             loadReward();
         });
 
-        ImageButton toggle = findViewById(R.id.credit_toggle);
-        toggle.setOnClickListener(clickedView -> {
+        mCreditToggle.setOnClickListener(clickedView -> {
             loadReward();
         });
 
