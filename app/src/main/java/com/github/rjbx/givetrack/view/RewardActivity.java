@@ -53,6 +53,15 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 //      4. Increment fee waiver count for each credit
 //      5. Display fee waiver count locally from text beside fee checkout line item
 //      6. Process transaction with batch payment processing service
+//          A. Network for Good
+//                i. With HTML parser:
+//                  -Navigate to each organization donate page appending EIN to default URL
+//                  -Change amount input field value attribute to amount
+//                  -Select add to cart
+//                  - Open checkout page
+//                ii. Start WebViewClient session
+//                iii. Open links to add to cart followed by cart
+//                iv. Listen for submission link open
 /**
  * Provides a RewardedAd by which to augment balance toward donations.
  */
