@@ -139,7 +139,7 @@ public class RewardActivity extends AppCompatActivity implements
                     .setBirthday(rewardedBirthday)
                     .build();
             Timber.e(String.valueOf(request.isTestDevice(this)));
-            mRewardedAd.loadAd(getString(R.string.am_ad_id), request);
+            mRewardedAd.loadAd(getString(R.string.am_rewarded_id), request);
 
             mProgressBar.setVisibility(View.VISIBLE);
             mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);

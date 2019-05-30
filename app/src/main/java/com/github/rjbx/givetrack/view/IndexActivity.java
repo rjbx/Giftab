@@ -42,6 +42,9 @@ import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -89,6 +92,7 @@ public class IndexActivity extends AppCompatActivity implements
     @BindView(R.id.spawn_list) RecyclerView mRecyclerView;
     @BindView(R.id.spawn_list_container) View mListContainer;
     @BindView(R.id.spawn_detail_container) View mDetailContainer;
+    @BindView(R.id.index_banner) AdView mAdBanner;
 
     /**
      * Instantiates a swipeable RecyclerView and FloatingActionButton.
@@ -119,6 +123,8 @@ public class IndexActivity extends AppCompatActivity implements
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mAdBanner.loadAd(new AdRequest.Builder().build());
 
         assert mRecyclerView != null;
         mAdapter = new ListAdapter(mValuesArray);
