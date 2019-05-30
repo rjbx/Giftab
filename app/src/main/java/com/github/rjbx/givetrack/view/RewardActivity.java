@@ -134,21 +134,26 @@ public class RewardActivity extends AppCompatActivity implements
         mCreditButtonWrapper = findViewById(R.id.ad_button_wrapper);
         mCreditButton = findViewById(R.id.ad_button);
         mCreditButton.setOnClickListener(clickedView -> {
-            updateRewardButton(true);
-            AdRequest request = new AdRequest.Builder()
-                    .setGender(mUserGender)
-                    .setBirthday(rewardedBirthday)
-                    .build();
-            Timber.e(String.valueOf(request.isTestDevice(this)));
-            mRewardedAd.loadAd(getString(R.string.am_rewarded_id), request);
+           loadReward();
+        });
 
-            mProgressBar.setVisibility(View.VISIBLE);
-            mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
+        mToggleContainer.setOnClickListener(clickedView -> {
+            loadReward();
         });
 
         mRewardedAmount = mUser.getUserCredit();
         mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedAd.resume(this);
+    }
+
+    private void loadReward() {
+        updateRewardButton(true);
+        AdRequest request = new AdRequest.Builder().build();
+        Timber.e(String.valueOf(request.isTestDevice(this)));
+        mRewardedAd.loadAd(getString(R.string.am_rewarded_id), request);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
     }
 
     /**

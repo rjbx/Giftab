@@ -86,8 +86,7 @@
                 android:padding="10dp"
                 android:layout_gravity="center"
                 android:gravity="top"
-                android:background="@drawable/rounded_rectangle"
-                android:src="@drawable/baseline_card_giftcard_24"/>
+                android:background="@drawable/rounded_rectangle"/>
 
         </LinearLayout>
 
