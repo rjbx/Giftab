@@ -43,7 +43,6 @@ import com.github.rjbx.givetrack.data.entry.Company;
 import com.github.rjbx.givetrack.data.entry.Spawn;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -359,6 +358,8 @@ public class IndexActivity extends AppCompatActivity implements
             Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
             sb.getView().setBackgroundColor(getResources().getColor(R.color.colorPrimary, null));
             sb.show();
+            finish();
+            startActivity(new Intent(this, RewardActivity.class));
             return;
         }
 
