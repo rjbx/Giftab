@@ -258,7 +258,7 @@ public class IndexActivity extends AppCompatActivity implements
                             mUser = user;
                             if (mValuesArray == null || !mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_SPAWN, null, this);
                             if ((mAddedName == null && mRemovedName == null) || mInstanceStateRestored) getSupportLoaderManager().initLoader(LOADER_ID_TARGET, null, this);
-                            if (mUser.getUserCredit() > 0) mAdBanner.loadAd(new AdRequest.Builder().build());
+                            if (mUser.getUserCredit() == 0) mAdBanner.loadAd(new AdRequest.Builder().build());
                             break;
                         }
                     } while (data.moveToNext());
