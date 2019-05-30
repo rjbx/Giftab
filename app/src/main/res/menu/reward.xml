@@ -8,7 +8,7 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="Edit Settings"
-        android:icon="@drawable/arrow_expand_horizontal"
+        android:icon="@android:drawable/ic_menu_more"
         app:showAsAction="always"/>
 
 </menu>
