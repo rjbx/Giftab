@@ -73,13 +73,13 @@ public class RewardActivity extends AppCompatActivity implements
     private int mUserGender;
     private boolean mShowAd = true;
     private static boolean sDialogShown;
-    @BindView(R.id.reward_toolbar) private Toolbar mToolbar;
-    @BindView(R.id.ad_button_wrapper) private View mCreditButtonWrapper;
-    @BindView(R.id.ad_progress) private View mProgressBar;
-    @BindView(R.id.credit_toggle_container) private View mToggleContainer;
-    @BindView(R.id.ad_button) private FloatingActionButton mCreditButton;
-    @BindView(R.id.reward_balance_text) private TextView mRewardedView;
-    @BindView(R.id.credit_toggle) private View mCreditToggle;
+    @BindView(R.id.reward_toolbar) Toolbar mToolbar;
+    @BindView(R.id.ad_button_wrapper) View mCreditButtonWrapper;
+    @BindView(R.id.ad_progress) View mProgressBar;
+    @BindView(R.id.credit_toggle_container) View mToggleContainer;
+    @BindView(R.id.ad_button) FloatingActionButton mCreditButton;
+    @BindView(R.id.reward_balance_text) TextView mRewardedView;
+    @BindView(R.id.credit_toggle) View mCreditToggle;
 
     /**
      * Initializes the {@link RewardedVideoAd} and {@link BillingClient}.
