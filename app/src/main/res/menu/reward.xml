@@ -7,7 +7,7 @@
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:title="Edit Settings"
+        android:title="Help"
         app:showAsAction="never"/>
 
 </menu>

@@ -110,15 +110,7 @@ public class RewardActivity extends AppCompatActivity implements
 
         mRewardedAmount = mUser.getUserCredit();
 
-        if (mRewardedAmount == 0) {
-            AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
-            dialog.setMessage(getString(R.string.dialog_balance_preview));
-            dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
-                    (onClickDialog, onClickPosition) -> dialog.dismiss());
-            dialog.show();
-            dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
-            dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
-        }
+        if (mRewardedAmount == 0) launchDialog();
 
         mRewardedView.setText(String.valueOf(mRewardedAmount));
         mRewardedAd.resume(this);
@@ -132,6 +124,16 @@ public class RewardActivity extends AppCompatActivity implements
 
         mProgressBar.setVisibility(View.VISIBLE);
         mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
+    }
+
+    private void launchDialog() {
+        AlertDialog dialog = new android.app.AlertDialog.Builder(this).create();
+        dialog.setMessage(getString(R.string.dialog_balance_preview));
+        dialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dialog_start),
+                (onClickDialog, onClickPosition) -> dialog.dismiss());
+        dialog.show();
+        dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorConversionDark));
+        dialog.getButton(android.app.AlertDialog.BUTTON_NEUTRAL).setTextColor(getResources().getColor(R.color.colorNeutralDark));
     }
 
     /**
@@ -155,8 +157,8 @@ public class RewardActivity extends AppCompatActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        finish();
-//        startActivity(new Intent(this, HomeActivity.class));
+        finish();
+        startActivity(new Intent(this, HomeActivity.class));
     }
 
     @OnClick(R.id.ad_button) void clickButton() {
@@ -245,10 +247,14 @@ public class RewardActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == android.R.id.home) {
-            finish();
-            startActivity(new Intent(this, HomeActivity.class));
-            return true;
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                startActivity(new Intent(this, HomeActivity.class));
+                return true;
+            case R.id.action_settings:
+                launchDialog();
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
