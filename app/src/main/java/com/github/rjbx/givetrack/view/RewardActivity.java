@@ -1,6 +1,7 @@
 package com.github.rjbx.givetrack.view;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -167,6 +168,13 @@ public class RewardActivity extends AppCompatActivity implements
         super.onPause();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        startActivity(new Intent(this, HomeActivity.class));
+    }
+
     /**
      * Defines the data to be returned from {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
      */
@@ -245,7 +253,11 @@ public class RewardActivity extends AppCompatActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_settings) return true;
+        if (id == R.id.home) {
+            finish();
+            startActivity(new Intent(this, HomeActivity.class));
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

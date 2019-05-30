@@ -229,7 +229,7 @@ public class IndexActivity extends AppCompatActivity implements
                 } else mInstanceStateRestored = false;
                 if (mFetching) {
                     if (isDualPane()) showSinglePane();
-                    mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount());
+                    mSnackbarMessage = getString(R.string.message_spawn_refresh, mUser.getIndexCount() + mUser.getUserCredit());
                     sb.setText(mSnackbarMessage).show();
                     mFetching = false;
                     sDialogShown = mUser.getIndexDialog();
@@ -347,7 +347,9 @@ public class IndexActivity extends AppCompatActivity implements
      */
     @OnClick(R.id.spawn_fab) public void refreshResults() {
         if (mUser == null) return;
-        int remainingFetches = mUser.getIndexCount();
+        int indexCount = mUser.getIndexCount();
+        int userCredit = mUser.getUserCredit();
+        int remainingFetches = indexCount + userCredit;
         if (remainingFetches <= 0) {
             mSnackbarMessage = getString(R.string.message_spawn_exhausted);
             Snackbar sb = Snackbar.make(mFab, mSnackbarMessage, Snackbar.LENGTH_LONG);
@@ -361,7 +363,10 @@ public class IndexActivity extends AppCompatActivity implements
         if (days > 0) {
             mUser.setIndexAnchor(currentTime);
             mUser.setIndexCount(DAILY_LIMIT);
-        } else mUser.setIndexCount(--remainingFetches);
+        } else {
+            if (indexCount > 0) mUser.setIndexCount(--indexCount);
+            else mUser.setUserCredit(--userCredit);
+        }
         DatabaseManager.startActionUpdateUser(this, mUser);
 
         fetchResults();
