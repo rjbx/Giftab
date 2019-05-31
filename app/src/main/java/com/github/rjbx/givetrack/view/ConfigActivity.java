@@ -512,6 +512,7 @@ public class ConfigActivity
         }
 
         private void launchAuthDialog() {
+            if (getActivity() == null) return;
             mReauthAttempts++;
             mAuthDialog = new AlertDialog.Builder(getActivity()).create();
             mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
