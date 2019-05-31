@@ -512,10 +512,10 @@ public class ConfigActivity
         }
 
         private void launchAuthDialog() {
-            if (getActivity() == null) return;
+            if (getContext() == null) return;
             mReauthAttempts++;
-            mAuthDialog = new AlertDialog.Builder(getActivity()).create();
-            mDialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_reauth, null);
+            mAuthDialog = new AlertDialog.Builder(getContext()).create();
+            mDialogView = mAuthDialog.getLayoutInflater().inflate(R.layout.dialog_reauth, null);
             mAuthDialog.setView(mDialogView);
             mAuthDialog.setCanceledOnTouchOutside(false);
             mAuthDialog.setMessage(getString(R.string.message_update_email));
