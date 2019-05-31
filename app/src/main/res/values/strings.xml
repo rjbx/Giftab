@@ -58,7 +58,7 @@
     <string name="title_activity_journal">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_config">Settings</string>
-    <string name="title_activity_reward">Coin Dispenser</string>
+    <string name="title_activity_reward">Coin Generator</string>
 
     <!-- Main -->
     <string name="nav_header_title">Giftab</string>
