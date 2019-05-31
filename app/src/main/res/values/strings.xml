@@ -58,7 +58,7 @@
     <string name="title_activity_journal">Past Activity</string>
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_config">Settings</string>
-    <string name="title_activity_reward">Reward Generator</string>
+    <string name="title_activity_reward">Coin Dispenser</string>
 
     <!-- Main -->
     <string name="nav_header_title">Giftab</string>
@@ -70,7 +70,7 @@
     <string name="nav_menu_manage">Manage</string>
     <string name="nav_menu_learn">Learn</string>
     <string name="nav_item_index">Search</string>
-    <string name="nav_item_reward">Rewards</string>
+    <string name="nav_item_reward">Credit</string>
     <string name="nav_item_journal">History</string>
     <string name="nav_item_settings">Settings</string>
     <string name="nav_item_logout">Logout</string>
