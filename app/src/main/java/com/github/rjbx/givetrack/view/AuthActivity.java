@@ -304,23 +304,22 @@ public class AuthActivity extends AppCompatActivity implements
                             DatabaseManager.startActionRemoveUser(this, mActiveUser);
                             Toast.makeText(this, "Your app data has been erased.", Toast.LENGTH_SHORT).show();
                             mActiveUser = null;
-                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                            if (refreshedUser != null) refreshedUser.delete()
-                                    .addOnSuccessListener(deleteTask -> {
-                                        mReauthAttempts = 0;
-                                        mProcessStage = 0;
-                                        finish();
-                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
-                                    })
-                                    .addOnFailureListener(failTask -> {
-                                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                        if (mReauthAttempts < 5) launchAuthDialog();
-                                        else {
-                                            mReauthAttempts = 0;
-                                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
-                                        }
-                                    });
+//                            FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+//                            if (refreshedUser != null) refreshedUser.delete()
+//                                    .addOnSuccessListener(deleteTask -> {
+//                                        mReauthAttempts = 0;
+//                                        finish();
+//                                        startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+//                                        Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
+//                                    })
+//                                    .addOnFailureListener(failTask -> {
+//                                        Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+//                                        if (mReauthAttempts < 5) launchAuthDialog();
+//                                        else {
+//                                            mReauthAttempts = 0;
+//                                            startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
+//                                        }
+//                                    });
                         })
                         .addOnFailureListener(signedOutTask -> {
                             Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
