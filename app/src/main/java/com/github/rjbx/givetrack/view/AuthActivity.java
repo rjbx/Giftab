@@ -89,7 +89,7 @@ public class AuthActivity extends AppCompatActivity implements
             mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
             savedInstanceState.clear();
         }
-        getSupportLoaderManager().initLoader(DatabaseContract.LOADER_ID_USER, null, this);
+        handleAction(getIntent().getAction());
     }
 
     @Override
@@ -132,9 +132,7 @@ public class AuthActivity extends AppCompatActivity implements
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = mFirebaseAuth.getCurrentUser();
                 if (user == null) return;
-                mProcessStage++;
-                mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
-                DatabaseManager.startActionFetchUser(this);
+                getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
             } else {
                 // Block sign-in to prevent overwriting existing remote with default data
                 IdpResponse response = IdpResponse.fromResultIntent(data);
@@ -155,7 +153,7 @@ public class AuthActivity extends AppCompatActivity implements
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_USER:
-                return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, null, null, null);
+                return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_UID + " = ? ", new String[]{mFirebaseAuth.getCurrentUser().getUid()}, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
@@ -236,8 +234,13 @@ public class AuthActivity extends AppCompatActivity implements
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
             switch (mProcessStage) {
-                case 0:
-                    handleAction(getIntent().getAction());
+                case 1:
+                    FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                    if (user == null) return;
+                    mProcessStage++;
+                    mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
+                    DatabaseManager.startActionFetchUser(this);
+                    ++mProcessStage;
                     break;
                 case 2:
                     // Reached from validation guaranteed callback
