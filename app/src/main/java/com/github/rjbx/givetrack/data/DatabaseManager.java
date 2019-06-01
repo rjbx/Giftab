@@ -666,13 +666,13 @@ public final class DatabaseManager extends IntentService {
 
         for (User user : users) {
             for (Spawn spawn : spawns)
-                if (!spawn.getUid().equals(user.getUid()))
+                if (spawn.getUid().equals(user.getUid()))
                     DatabaseAccessor.removeSpawn(this, spawn);
             for (Target target : targets)
-                if (!target.getUid().equals(user.getUid()))
+                if (target.getUid().equals(user.getUid()))
                     DatabaseAccessor.removeTarget(this, target);
             for (Record record : records)
-                if (!record.getUid().equals(user.getUid()))
+                if (record.getUid().equals(user.getUid()))
                     DatabaseAccessor.removeRecord(this, record);
         }
         DatabaseAccessor.removeUser(this, users);
