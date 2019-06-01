@@ -153,7 +153,7 @@ public class AuthActivity extends AppCompatActivity implements
     public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_USER:
-                return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_UID + " = ? ", new String[]{mFirebaseAuth.getCurrentUser().getUid()}, null);
+                return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_UID + " = ?", new String[]{mFirebaseAuth.getCurrentUser().getUid()}, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
     }
@@ -240,7 +240,6 @@ public class AuthActivity extends AppCompatActivity implements
                     mProcessStage++;
                     mActiveUser = AppUtilities.convertRemoteToLocalUser(user);
                     DatabaseManager.startActionFetchUser(this);
-                    ++mProcessStage;
                     break;
                 case 2:
                     // Reached from validation guaranteed callback
