@@ -221,7 +221,6 @@ public class AuthActivity extends AppCompatActivity implements
                         .addOnSuccessListener(retryDeleteTask -> {
                             mProcessStage = 0;
                             mReauthAttempts = 0;
-                            mFirebaseAuth.signOut();
                             finish();
                             startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                             Toast.makeText(AuthActivity.this, getString(R.string.message_data_erase), Toast.LENGTH_LONG).show();
