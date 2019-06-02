@@ -467,14 +467,14 @@ public class ConfigActivity
                     case AlertDialog.BUTTON_POSITIVE:
                         mEmailInput = ((EditText) mDialogView.findViewById(R.id.reauth_user)).getText().toString();
                         mPasswordInput = ((EditText) mDialogView.findViewById(R.id.reauth_password)).getText().toString();
-                        if (mEmailInput.isEmpty() || mPasswordInput.isEmpty()) {
+                        if (mEmailInput.isEmpty() || mPasswordInput.isEmpty() || !mEmailInput.equals(sUser.getUserEmail())) {
                             launchAuthDialog();
                             Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                             return;
                         }
 
-                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                        AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                         if (user == null) return;
                         user.reauthenticate(credential)
                             .addOnSuccessListener(authTask -> {
