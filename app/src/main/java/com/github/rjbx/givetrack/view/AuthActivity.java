@@ -48,6 +48,8 @@ import java.util.List;
 import static android.content.Intent.ACTION_MAIN;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
+// TODO: Resolve crash on sign up with previously used email
+//  Bug report : https://github.com/firebase/FirebaseUI-Android/issues/1644
 /**
  * Provides a UI for and manages user authentication interfacing with {@link FirebaseAuth}.
  */
