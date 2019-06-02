@@ -34,7 +34,7 @@ dependencies {
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'com.android.billingclient:billing:1.1'
     implementation 'com.google.android.gms:play-services-ads:17.2.1'
-    implementation 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-database:17.0.0'
     implementation 'com.google.firebase:firebase-auth:17.0.0'
