@@ -89,7 +89,8 @@ public class AuthActivity extends AppCompatActivity implements
             mUsers = savedInstanceState.getParcelableArrayList(USERS_STATE);
             savedInstanceState.clear();
         }
-        handleAction(getIntent().getAction());
+        if (mFirebaseAuth.getCurrentUser() != null) getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
+        else handleAction(getIntent().getAction());
     }
 
     @Override
@@ -234,6 +235,9 @@ public class AuthActivity extends AppCompatActivity implements
             mUsers = AppUtilities.getEntryListFromCursor(data, User.class);
             FirebaseUser firebaseUser = mFirebaseAuth.getCurrentUser();
             switch (mProcessStage) {
+                case 0:
+                    handleAction(getIntent().getAction());
+                    break;
                 case 1:
                     FirebaseUser user = mFirebaseAuth.getCurrentUser();
                     if (user == null) return;
