@@ -297,7 +297,7 @@ public class AuthActivity extends AppCompatActivity implements
                     startActivity(new Intent(AuthActivity.this, AuthActivity.class).setAction(ACTION_MAIN));
                     break;
                 case AlertDialog.BUTTON_POSITIVE:
-                    if (email.isEmpty() || password.isEmpty()) {
+                    if (email.isEmpty() || password.isEmpty() || !email.equals(mActiveUser.getUserEmail())) {
                         launchAuthDialog();
                         Toast.makeText(this, "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
                         return;
