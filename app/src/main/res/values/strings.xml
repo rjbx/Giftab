@@ -76,7 +76,7 @@
     <string name="nav_item_logout">Logout</string>
     <string name="nav_item_cn">About Charity Navigator API</string>
     <string name="nav_item_clearbit">About Clearbit API</string>
-    <string name="url_cn">https://charitynavigator.org/</string>
+    <string name="url_cn">https://www.charitynavigator.org/index.cfm?bay=content.view&amp;cpid=1397</string>
     <string name="url_clearbit">https://clearbit.com/</string>
     <string name="tab_text_1">Give</string>
     <string name="tab_text_2">Glance</string>
