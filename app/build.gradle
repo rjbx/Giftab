@@ -29,7 +29,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
-    implementation 'androidx.test.espresso:espresso-idling-resource:3.1.1'
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.2.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'com.android.billingclient:billing:1.1'
