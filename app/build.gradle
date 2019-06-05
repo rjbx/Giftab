@@ -6,8 +6,8 @@ android {
         applicationId "com.github.rjbx.givetrack"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 61
-        versionName "0.6.1"
+        versionCode 62
+        versionName "0.6.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
