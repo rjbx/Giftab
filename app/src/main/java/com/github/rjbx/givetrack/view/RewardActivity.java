@@ -139,13 +139,9 @@ public class RewardActivity extends AppCompatActivity implements
         startActivity(new Intent(this, HomeActivity.class));
     }
 
-    @OnClick(R.id.ad_button) void clickButton() {
-        loadReward();
-    }
+    @OnClick(R.id.ad_button) void clickButton() { if (mRewardedAd != null) loadReward(); }
 
-    @OnClick(R.id.credit_toggle) void clickToggle() {
-        loadReward();
-    }
+    @OnClick(R.id.credit_toggle) void clickToggle() { if (mRewardedAd != null) loadReward(); }
 
     /**
      * Defines the data to be returned from {@link androidx.loader.app.LoaderManager.LoaderCallbacks}.
