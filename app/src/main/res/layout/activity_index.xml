@@ -34,89 +34,90 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:id="@+id/index_attribution"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:paddingStart="40dp"
+            android:paddingEnd="40dp"
+            android:gravity="center"
+            android:background="@color/colorChalk"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/text_size_paragraph"
+                android:padding="5dp"
+                android:textStyle="italic|bold"
+                android:text="Powered by"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/text_size_paragraph"
+                android:padding="5dp"
+                android:textStyle="bold"
+                android:textColor="#336699"
+                android:text="Charity Navigator API"/>
+
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/spawn_list_container"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:paddingStart="40dp"
-                android:paddingEnd="40dp"
-                android:gravity="center"
-                android:background="@color/colorChalk"
-                android:orientation="horizontal">
+                android:layout_height="match_parent">
 
-                <TextView
-                    android:layout_width="wrap_content"
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/spawn_list"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="@dimen/text_size_paragraph"
-                    android:padding="5dp"
-                    android:textStyle="italic|bold"
-                    android:text="Powered by"/>
+                    android:background="@color/colorChalk"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:context=".view.IndexActivity"
+                    tools:listitem="@layout/item_index"/>
 
-                <TextView
+                <ProgressBar
+                    android:id="@+id/spawn_progress"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/spawn_fab"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:textSize="@dimen/text_size_paragraph"
-                    android:padding="5dp"
-                    android:textStyle="bold"
-                    android:textColor="#336699"
-                    android:text="Charity Navigator API"/>
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:backgroundTint="@color/colorCheer"
+                    app:srcCompat="@drawable/action_sync"
+                    android:contentDescription="@string/description_refresh_button"/>
+            </FrameLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/spawn_detail_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <FrameLayout
-                    android:id="@+id/spawn_list_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/spawn_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorChalk"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:context=".view.IndexActivity"
-                        tools:listitem="@layout/item_index"/>
-
-                    <ProgressBar
-                        android:id="@+id/spawn_progress"
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:visibility="gone"/>
-
-                    <com.google.android.material.floatingactionbutton.FloatingActionButton
-                        android:id="@+id/spawn_fab"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical|end"
-                        android:layout_marginEnd="@dimen/fab_margin"
-                        android:backgroundTint="@color/colorCheer"
-                        app:srcCompat="@drawable/action_sync"
-                        android:contentDescription="@string/description_refresh_button"/>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/spawn_detail_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:background="@color/colorNeutralLight"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-            </LinearLayout>
+                android:visibility="gone"
+                android:background="@color/colorNeutralLight"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
+
+    </LinearLayout>
 
     <com.google.android.gms.ads.AdView
 

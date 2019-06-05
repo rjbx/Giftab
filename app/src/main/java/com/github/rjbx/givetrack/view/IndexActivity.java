@@ -378,6 +378,10 @@ public class IndexActivity extends AppCompatActivity implements
         fetchResults();
     }
 
+    @OnClick(R.id.index_attribution) public void launchAttribution() {
+        ViewUtilities.launchBrowserIntent(this, Uri.parse(getString(R.string.url_cn)));
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
