@@ -476,36 +476,46 @@ public class ConfigActivity
                         FirebaseUser user = mFirebaseAuth.getCurrentUser();
                         AuthCredential credential = EmailAuthProvider.getCredential(mEmailInput, mPasswordInput);
                         if (user == null) return;
-                        user.reauthenticate(credential)
-                            .addOnSuccessListener(authTask -> {
-                                FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
-                                Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
-                                if (refreshedUser != null) {
-                                    refreshedUser.updateEmail(mRequestedEmail)
-                                            .addOnSuccessListener(failTask -> {
-                                                mReauthAttempts = 0;
-                                                ConfigActivity.changeSummary(emailPref, mRequestedEmail);
-                                                ConfigActivity.changeUser(emailPref, mRequestedEmail);
-                                                emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
-                                                emailPref.setSummary(mRequestedEmail);
-                                                Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
-                                            })
-                                            .addOnFailureListener(updateTask -> {
-                                                if (mReauthAttempts < 5) {
-                                                    launchAuthDialog();
-                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                                } else {
-                                                    mReauthAttempts = 0;
-                                                    Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
-                                                }
-                                            });
-                                }
-                            })
-                            .addOnFailureListener(authTask -> {
+                        try {
+                            user.reauthenticate(credential)
+                                    .addOnSuccessListener(authTask -> {
+                                        FirebaseUser refreshedUser = mFirebaseAuth.getCurrentUser();
+                                        Preference emailPref = findPreference(getString(R.string.pref_userEmail_key));
+                                        if (refreshedUser != null) {
+                                            refreshedUser.updateEmail(mRequestedEmail)
+                                                    .addOnSuccessListener(failTask -> {
+                                                        mReauthAttempts = 0;
+                                                        ConfigActivity.changeSummary(emailPref, mRequestedEmail);
+                                                        ConfigActivity.changeUser(emailPref, mRequestedEmail);
+                                                        emailPref.getEditor().putString(emailPref.getKey(), mRequestedEmail).apply();
+                                                        emailPref.setSummary(mRequestedEmail);
+                                                        Toast.makeText(getContext(), "Your email has been set to " + refreshedUser.getEmail(), Toast.LENGTH_LONG).show();
+                                                    })
+                                                    .addOnFailureListener(updateTask -> {
+                                                        if (mReauthAttempts < 5) {
+                                                            launchAuthDialog();
+                                                            Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                                            mReauthAttempts = 0;
+                                                            Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                                                        }
+                                                    });
+                                        }
+                                    })
+                                    .addOnFailureListener(authTask -> {
+                                        Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
+                                        if (mReauthAttempts < 5) launchAuthDialog();
+                                        else mReauthAttempts = 0;
+                                    });
+                        } catch (IllegalStateException e) {
+                            if (mReauthAttempts < 5) {
+                                launchAuthDialog();
                                 Toast.makeText(getContext(), "Your credentials could not be validated.\nTry again.", Toast.LENGTH_LONG).show();
-                                if (mReauthAttempts < 5) launchAuthDialog();
-                                else mReauthAttempts = 0;
-                            });
+                            } else {
+                                mReauthAttempts = 0;
+                                Toast.makeText(getContext(), "Your credentials could not be validated.\n\nEnsure that you have a valid connection to the Internet and that your password is correct,\n\nIf so, the server may not be responding at the moment; please try again later.", Toast.LENGTH_LONG).show();
+                            }
+                        }
                         break;
                 }
             }
