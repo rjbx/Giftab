@@ -276,6 +276,11 @@ public class AuthActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode) {
+        super.startActivityForResult(intent, requestCode);
+    }
+
     /**
      * Tells the application to remove any stored references to the {@link Loader} data.
      */
