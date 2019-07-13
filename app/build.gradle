@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:18.0.0'
     implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:5.0.0'
+    implementation 'com.stripe:stripe-android:9.3.6'
     implementation 'org.jsoup:jsoup:1.11.2'
     implementation 'com.jakewharton:butterknife:10.0.0'
     implementation 'com.jakewharton.timber:timber:4.7.1'
