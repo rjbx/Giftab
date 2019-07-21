@@ -2,13 +2,12 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<SwitchPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="@string/pref_payments_key"-->
-        <!--android:title="@string/pref_payments_label"-->
-        <!--android:summaryOn="Process donations when adding money to charities"-->
-        <!--android:summaryOff="Don't process donations when adding money to charities"/>-->
-
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="@string/pref_remit_key"
+        android:title="@string/pref_payments_label"
+        android:summaryOn="Process gifts to selected charities when creating new records"
+        android:summaryOff="Don't process gifts when creating new records"/>
 
     <Preference
         android:key="@string/pref_giveMagnitude_key"
@@ -16,7 +15,6 @@
         android:positiveButtonText="@null"
         android:title="@string/pref_magnitude_label"
         android:defaultValue="0.01"/>
-
 
     <ListPreference
         android:entries="@array/list_preference_giveRounding"

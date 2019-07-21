@@ -71,6 +71,7 @@
       "giveAnchor" : 0,
       "giveImpact" : "0",
       "giveMagnitude" : "0.1",
+      "givePayment" : false,
       "giveReset" : false,
       "giveRounding" : 0,
       "giveTiming" : "0",

@@ -26,9 +26,9 @@ public class User implements Entry, Parcelable, Cloneable {
     private long giveAnchor;
     private double giveImpact;
     private double giveMagnitude;
+    private boolean givePayment;
     private boolean giveReset;
     private int giveRounding;
-    private long targetStamp; // Time of most recent change to target table
     private int giveTiming;
     private long glanceAnchor;
     private boolean glanceSince;
@@ -53,6 +53,7 @@ public class User implements Entry, Parcelable, Cloneable {
     private String indexState;
     private String indexTerm;
     private String indexZip;
+    private long targetStamp; // Time of most recent change to target table
     private String uid;
     private boolean userActive;
     private String userBirthdate;
@@ -76,6 +77,7 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeDouble(giveImpact);
         dest.writeDouble(giveMagnitude);
         dest.writeLong(giveAnchor);
+        dest.writeInt(givePayment ? 1 : 0);
         dest.writeInt(giveTiming);
         dest.writeInt(giveRounding);
         dest.writeLong(glanceAnchor);
@@ -119,6 +121,7 @@ public class User implements Entry, Parcelable, Cloneable {
         giveMagnitude = source.readDouble();
         giveAnchor = source.readLong();
         giveTiming = source.readInt();
+        givePayment = source.readInt() == 1;
         giveRounding = source.readInt();
         glanceAnchor = source.readLong();
         glanceSince = source.readInt() == 1;
@@ -159,6 +162,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.giveMagnitude = user.giveMagnitude;
         this.giveAnchor = user.giveAnchor;
         this.giveTiming = user.giveTiming;
+        this.givePayment = user.givePayment;
         this.giveRounding = user.giveRounding;
         this.glanceAnchor = user.glanceAnchor;
         this.glanceSince = user.glanceSince;
@@ -205,6 +209,7 @@ public class User implements Entry, Parcelable, Cloneable {
             String userGender,
             long giveAnchor,
             int giveTiming,
+            boolean givePayment,
             int giveRounding,
             long glanceAnchor,
             boolean glanceSince,
@@ -244,6 +249,7 @@ public class User implements Entry, Parcelable, Cloneable {
         this.giveMagnitude = giveMagnitude;
         this.giveAnchor = giveAnchor;
         this.giveTiming = giveTiming;
+        this.givePayment = givePayment;
         this.giveRounding = giveRounding;
         this.glanceAnchor = glanceAnchor;
         this.glanceSince = glanceSince;
@@ -293,6 +299,8 @@ public class User implements Entry, Parcelable, Cloneable {
     public void setGiveAnchor(long giveAnchor) { this.giveAnchor = giveAnchor; }
     public int getGiveTiming() { return giveTiming; }
     public void setGiveTiming(int giveTiming) { this.giveTiming = giveTiming; }
+    public boolean getGivePayment() { return givePayment; }
+    public void setGivePayment(boolean givePayment) { this.givePayment = givePayment; }
     public int getGiveRounding() { return giveRounding; }
     public void setGiveRounding(int giveRounding) { this.giveRounding = giveRounding; }
     public long getGlanceAnchor() { return glanceAnchor; }
@@ -360,6 +368,7 @@ public class User implements Entry, Parcelable, Cloneable {
         map.put(COLUMN_USER_GENDER, userGender);
         map.put(COLUMN_GIVE_ANCHOR, giveAnchor);
         map.put(COLUMN_GIVE_TIMING, giveTiming);
+        map.put(COLUMN_GIVE_PAYMENT, givePayment);
         map.put(COLUMN_GIVE_ROUNDING, giveRounding);
         map.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         map.put(COLUMN_GLANCE_SINCE, glanceSince);
@@ -406,7 +415,8 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GLANCE_INTERVAL)) glanceInterval = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_INTERVAL), Integer.class);
         if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
         if (map.containsKey(COLUMN_INDEX_ANCHOR)) indexAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_ANCHOR), Long.class);
-        if (map.containsKey(COLUMN_GIVE_TIMING)) indexCount = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
+        if (map.containsKey(COLUMN_INDEX_COUNT)) indexCount = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
+        if (map.containsKey(COLUMN_GIVE_PAYMENT)) givePayment = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_PAYMENT), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FILTER), Boolean.class);
@@ -441,6 +451,7 @@ public class User implements Entry, Parcelable, Cloneable {
         values.put(COLUMN_USER_GENDER, userGender);
         values.put(COLUMN_GIVE_ANCHOR, giveAnchor);
         values.put(COLUMN_GIVE_TIMING, giveTiming);
+        values.put(COLUMN_GIVE_PAYMENT, givePayment);
         values.put(COLUMN_GIVE_ROUNDING, giveRounding);
         values.put(COLUMN_GLANCE_ANCHOR, glanceAnchor);
         values.put(COLUMN_GLANCE_SINCE, glanceSince);
@@ -484,6 +495,7 @@ public class User implements Entry, Parcelable, Cloneable {
         giveMagnitude = Double.parseDouble(values.getAsString(COLUMN_GIVE_MAGNITUDE));
         giveAnchor = values.getAsLong(COLUMN_GIVE_ANCHOR);
         giveTiming = values.getAsInteger(COLUMN_GIVE_TIMING);
+        givePayment = values.getAsBoolean(COLUMN_GIVE_PAYMENT);
         giveRounding = values.getAsInteger(COLUMN_GIVE_ROUNDING);
         glanceAnchor = values.getAsLong(COLUMN_GLANCE_ANCHOR);
         glanceSince = values.getAsBoolean(COLUMN_GLANCE_SINCE);
@@ -533,6 +545,7 @@ public class User implements Entry, Parcelable, Cloneable {
         user.giveMagnitude = 0.01;
         user.giveAnchor = 0;
         user.giveTiming = 0;
+        user.givePayment = false;
         user.giveRounding = 0;
         user.glanceAnchor = 0;
         user.glanceSince = false;
