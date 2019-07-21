@@ -10,4 +10,3 @@ class PaymentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_payment)
     }
 }
-
