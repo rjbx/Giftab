@@ -2,6 +2,7 @@ package com.github.rjbx.givetrack.view;
 
 import android.os.Bundle;
 import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,35 +13,53 @@ import com.google.android.gms.common.api.*;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 
 /**
  * Provides a UI for and manages payment confirmation and processing.
  */
 public class RemitActivity extends AppCompatActivity {
 
+    private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 1;
     private float mPrice;
+    private PaymentsClient mPaymentsClient;
+    @BindView(R.id.remit_action_bar) Button mConfirmButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remit);
+        ButterKnife.bind(this);
 
-        PaymentsClient paymentsClient
+        mPaymentsClient
                 = Wallet.getPaymentsClient(this, new Wallet
                         .WalletOptions.Builder()
                         .setEnvironment(WalletConstants.ENVIRONMENT_TEST)
                         .build()
         );
 
-        isReadyToPay(paymentsClient);
+        isReadyToPay();
     }
 
-    private void isReadyToPay(PaymentsClient client) {
+    @OnClick(R.id.remit_action_bar) void confirmPayment() {
+            PaymentDataRequest request = createPaymentDataRequest();
+            if (request != null) {
+                AutoResolveHelper.resolveTask(
+                        mPaymentsClient.loadPaymentData(request),
+                        this,
+                        LOAD_PAYMENT_DATA_REQUEST_CODE);
+            }
+    }
+
+    private void isReadyToPay() {
         IsReadyToPayRequest request = IsReadyToPayRequest.newBuilder()
                 .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
                 .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_TOKENIZED_CARD)
                 .build();
-        client.isReadyToPay(request).addOnCompleteListener((task) -> {
+        mPaymentsClient.isReadyToPay(request).addOnCompleteListener((task) -> {
                         try {
                             final Boolean result = task.getResult(ApiException.class);
                             if (result != null && result) createPaymentDataRequest();
