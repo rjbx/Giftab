@@ -1,5 +1,6 @@
 package com.github.rjbx.givetrack.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.widget.Button;
@@ -10,12 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.rjbx.givetrack.R;
 import com.google.android.gms.wallet.*;
 import com.google.android.gms.common.api.*;
+import com.google.android.gms.identity.intents.model.*;
+
+import com.stripe.android.exception.StripeException;
+import com.stripe.android.model.PaymentMethod;
+import com.stripe.android.model.Token;
 
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 
 /**
@@ -52,6 +60,52 @@ public class RemitActivity extends AppCompatActivity {
                         this,
                         LOAD_PAYMENT_DATA_REQUEST_CODE);
             }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode == LOAD_PAYMENT_DATA_REQUEST_CODE) {
+                switch (resultCode) {
+
+                    case RESULT_OK:
+                        if (data == null) throw new DataFormatException();
+                        PaymentData paymentData = PaymentData.getFromIntent(data);
+
+                        if (paymentData == null) throw new DataFormatException();
+                        PaymentMethodToken paymentMethodToken = paymentData.getPaymentMethodToken();
+
+                        if (paymentMethodToken == null) throw new DataFormatException();
+                        String rawToken = paymentMethodToken.getToken();
+
+                        Token stripeToken = Token.fromString(rawToken);
+                        if (stripeToken != null) {
+                            chargeToken(stripeToken.getId());
+                        }
+                        break;
+
+                    case RESULT_CANCELED:
+                        Timber.d("Payment was cancelled");
+                        break;
+
+                    case AutoResolveHelper.RESULT_ERROR:
+                        Status status = AutoResolveHelper.getStatusFromIntent(data);
+                        String statusMessage
+                                = status != null ? status.getStatusMessage() : "Status unavailable";
+                        Timber.e(statusMessage);
+                        break;
+
+                    default: Timber.d("Payment could not be processed");
+                }
+            }
+        } catch (DataFormatException e) {
+            Timber.e("Payment data is unavailable");
+        }
+    }
+
+    private void chargeToken(String tokenId) {
+
     }
 
     private void isReadyToPay() {
