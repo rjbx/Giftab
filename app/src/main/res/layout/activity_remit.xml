@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/remit_activity"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".8"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/remit_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorChalk"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_index"/>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/remit_progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:indeterminate="true"
+        android:indeterminateTintMode="src_atop"
+        android:indeterminateTint="@color/colorCheer"
+        android:visibility="gone"
+        app:layout_anchor="@id/give_action_wrapper"
+        app:layout_anchorGravity="top|center_horizontal"
+        style="?android:attr/progressBarStyleHorizontal" />
+
+    <FrameLayout
+        android:id="@+id/remit_action_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/remit_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="start|center_vertical"
+            android:gravity="center"
+            android:src="@drawable/action_save"
+            style="@style/Widget.AppCompat.Button"/>
+
+    </FrameLayout>
+
+</FrameLayout>

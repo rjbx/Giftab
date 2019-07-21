@@ -16,14 +16,14 @@ import java.util.Arrays;
 /**
  * Provides a UI for and manages payment confirmation and processing.
  */
-public class PaymentActivity extends AppCompatActivity {
+public class RemitActivity extends AppCompatActivity {
 
     private float mPrice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment);
+        setContentView(R.layout.activity_remit);
 
         PaymentsClient paymentsClient
                 = Wallet.getPaymentsClient(this, new Wallet

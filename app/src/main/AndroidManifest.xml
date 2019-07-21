@@ -74,7 +74,7 @@
         </activity>
 
         <activity
-            android:name=".view.PaymentActivity"
+            android:name=".view.RemitActivity"
             android:label="@string/title_activity_payment"
             android:parentActivityName=".view.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
