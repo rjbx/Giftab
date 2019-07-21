@@ -4,7 +4,7 @@
 
     <SwitchPreference
         android:defaultValue="false"
-        android:key="@string/pref_remit_key"
+        android:key="@string/pref_payment_key"
         android:title="@string/pref_payments_label"
         android:summaryOn="Process gifts to selected charities when creating new records"
         android:summaryOff="Don't process gifts when creating new records"/>
