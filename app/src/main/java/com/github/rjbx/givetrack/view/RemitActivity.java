@@ -11,10 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.github.rjbx.givetrack.R;
 import com.google.android.gms.wallet.*;
 import com.google.android.gms.common.api.*;
-import com.google.android.gms.identity.intents.model.*;
-
-import com.stripe.android.exception.StripeException;
-import com.stripe.android.model.PaymentMethod;
 import com.stripe.android.model.Token;
 
 import java.util.Arrays;
