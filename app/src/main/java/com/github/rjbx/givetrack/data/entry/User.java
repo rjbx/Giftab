@@ -77,8 +77,8 @@ public class User implements Entry, Parcelable, Cloneable {
         dest.writeDouble(giveImpact);
         dest.writeDouble(giveMagnitude);
         dest.writeLong(giveAnchor);
-        dest.writeInt(givePayment ? 1 : 0);
         dest.writeInt(giveTiming);
+        dest.writeInt(givePayment ? 1 : 0);
         dest.writeInt(giveRounding);
         dest.writeLong(glanceAnchor);
         dest.writeInt(glanceSince ? 1 : 0);
@@ -405,6 +405,7 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GIVE_IMPACT)) giveImpact = Double.valueOf(String.valueOf(map.get(COLUMN_GIVE_IMPACT)));
         if (map.containsKey(COLUMN_GIVE_MAGNITUDE)) giveMagnitude = Double.valueOf(String.valueOf(map.get(COLUMN_GIVE_MAGNITUDE)));
         if (map.containsKey(COLUMN_GIVE_ANCHOR)) giveAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_ANCHOR), Long.class);
+        if (map.containsKey(COLUMN_GIVE_PAYMENT)) givePayment = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_PAYMENT), Boolean.class);
         if (map.containsKey(COLUMN_GIVE_TIMING)) giveTiming = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_TIMING), Integer.class);
         if (map.containsKey(COLUMN_GIVE_ROUNDING)) giveRounding = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_ROUNDING), Integer.class);
         if (map.containsKey(COLUMN_GIVE_RESET)) giveReset = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_RESET), Boolean.class);
@@ -416,7 +417,6 @@ public class User implements Entry, Parcelable, Cloneable {
         if (map.containsKey(COLUMN_GLANCE_THEME)) glanceTheme = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GLANCE_THEME), Integer.class);
         if (map.containsKey(COLUMN_INDEX_ANCHOR)) indexAnchor = (long) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_ANCHOR), Long.class);
         if (map.containsKey(COLUMN_INDEX_COUNT)) indexCount = (int) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_COUNT), Integer.class);
-        if (map.containsKey(COLUMN_GIVE_PAYMENT)) givePayment = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_GIVE_PAYMENT), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_DIALOG)) indexDialog = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_DIALOG), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FOCUS)) indexFocus = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FOCUS), Boolean.class);
         if (map.containsKey(COLUMN_INDEX_FILTER)) indexFilter = (boolean) AppUtilities.preferenceValueToNumerical(map.get(COLUMN_INDEX_FILTER), Boolean.class);
