@@ -7,6 +7,7 @@
     <!-- Errors -->
     <string name="removal_error_message">An unexpected error occurred; could not remove %s from your search results.</string>
     <string name="network_error_message">There is a problem with the network. Please check your connection and try again.</string>
+    <string name="payment_error_message">The request could not be processed. Please check that your method of payment is valid and try again.</string>
     <string name="provider_error_message">"Unable to establish a connection with %s. Please try again later.</string>
     <string name="create_error_message">%s: Failed to create file from path</string>
     <string name="output_error_message">%s: Failed to generate output stream from file directory</string>
