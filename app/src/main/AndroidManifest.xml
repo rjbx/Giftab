@@ -67,6 +67,16 @@
                 android:value="com.github.rjbx.givetrack.view.HomeActivity" />
         </activity>
 
+        <activity
+            android:name=".view.PaymentActivity"
+            android:label="@string/title_activity_payment"
+            android:parentActivityName=".view.HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.github.rjbx.givetrack.view.HomeActivity" />
+        </activity>
+
         <receiver android:name=".AppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
