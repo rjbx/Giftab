@@ -1,21 +1,38 @@
 package com.github.rjbx.givetrack.view;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
+import com.github.rjbx.givetrack.data.DatabaseManager;
 import com.github.rjbx.givetrack.data.entry.Record;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.wallet.*;
@@ -23,14 +40,20 @@ import com.google.android.gms.common.api.*;
 import com.google.android.material.snackbar.Snackbar;
 import com.stripe.android.model.Token;
 
+import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.zip.DataFormatException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import timber.log.Timber;
 
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
+import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -168,7 +191,6 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
         }
     }
 
-
     private void chargeToken(String tokenId) {
 
     }
@@ -222,6 +244,60 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                                 .build())
                 .setPaymentMethodTokenizationParameters(createTokenizationParameters())
                 .build();
+    }
+
+    /**
+     * Populates {@link JournalActivity} {@link RecyclerView}.
+     */
+    class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
+
+
+        ListAdapter() {
+            super();
+            mLock = true;
+        }
+
+
+
+        /**
+         * Generates a Layout for the ViewHolder based on its Adapter position and orientation
+         */
+        @Override public @NonNull
+        ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_journal, parent, false);
+            return new ViewHolder(view);
+        }
+
+        /**
+         * Updates contents of the {@code ViewHolder} to displays movie data at the specified position.
+         */
+        @Override
+        public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+
+        }
+
+        /**
+         * Returns the number of items to display.
+         */
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
+
+        /**
+         * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
+         */
+        class ViewHolder extends RecyclerView.ViewHolder {
+
+            /**
+             * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
+             */
+            ViewHolder(View view) {
+                super(view);
+                ButterKnife.bind(this, view);
+            }
+        }
     }
 }
 
