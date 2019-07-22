@@ -245,7 +245,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                         try {
                             final Boolean result = task.getResult(ApiException.class);
                             if (result != null && result) createPaymentDataRequest();
-                            mConfirmButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversion, null)));
+                            mConfirmButton.setBackgroundColor(getResources().getColor(R.color.colorConversion, null));
                             mButtonWrapper.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorConversionDark, null)));
                         } catch (NullPointerException|ApiException e) {
                             Toast.makeText(

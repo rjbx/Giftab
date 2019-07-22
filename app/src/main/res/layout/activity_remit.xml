@@ -69,8 +69,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight=".1"
-                android:padding="8dp"
-                android:backgroundTint="@color/colorAttentionDark">
+                android:padding="1dp"
+                android:background="@color/colorAttentionDark">
 
                 <ImageButton
                     android:id="@+id/remit_action_bar"
