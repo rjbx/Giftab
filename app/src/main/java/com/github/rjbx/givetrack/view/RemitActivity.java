@@ -261,7 +261,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                 .setPaymentMethodTokenizationType(
                         WalletConstants.PAYMENT_METHOD_TOKENIZATION_TYPE_PAYMENT_GATEWAY)
                 .addParameter("gateway", "stripe")
-                .addParameter("stripe:key", getString(R.string.sp_api_key))
+                .addParameter("stripe:publishableKey", getString(R.string.sp_api_key))
                 .addParameter("stripe:version", "2019-05-16") // Changelog: https://stripe.com/docs/upgrades
                 .build();
     }
