@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 import android.database.Cursor;
@@ -34,7 +35,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
+import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 
@@ -45,7 +46,7 @@ import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
 public class RemitActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 1;
-    private float mPrice;
+    private double mAmount;
     private User mUser;
     private PaymentsClient mPaymentsClient;
     private ListAdapter mAdapter;
@@ -121,7 +122,6 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         switch (id) {
             case LOADER_ID_TARGET: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_TARGET, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, null);
-            case LOADER_ID_RECORD: return new CursorLoader(this, DatabaseContract.CompanyEntry.CONTENT_URI_RECORD, null, DatabaseContract.CompanyEntry.COLUMN_UID + " = ? ", new String[] { mUser.getUid() }, mUser.getJournalSort() + " " + mUser.getJournalOrder());
             case LOADER_ID_USER: return new CursorLoader(this, DatabaseContract.UserEntry.CONTENT_URI_USER, null, DatabaseContract.UserEntry.COLUMN_USER_ACTIVE + " = ? ", new String[] { "1" }, null);
             default: throw new RuntimeException(this.getString(R.string.loader_error_message, id));
         }
@@ -155,7 +155,10 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                     do {
                         User user = User.getDefault();
                         AppUtilities.cursorRowToEntry(data, user);
-                        if (user.getUserActive()) mUser = user;
+                        if (user.getUserActive()) {
+                            mUser = user;
+                            mAmount = mUser.getGiveImpact();
+                        }
                     } while (data.moveToNext());
                 }
                 break;
@@ -218,7 +221,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                 .setTransactionInfo(
                         TransactionInfo.newBuilder()
                                 .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                                .setTotalPrice(String.valueOf(mPrice))
+                                .setTotalPrice(String.valueOf(mAmount))
                                 .setCurrencyCode("USD")
                                 .build())
                 .addAllowedPaymentMethod(WalletConstants.PAYMENT_METHOD_CARD)
@@ -263,7 +266,23 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
          */
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+            Target values = mValuesArray[position];
+            if (values == null) return;
 
+            String ein = values.getEin();
+            String name = values.getName();
+            final double percent = values.getPercent();
+            final double amount = percent * mAmount;
+
+            if (name.length() > 35) { name = name.substring(0, 35);
+                name = name.substring(0, name.lastIndexOf(" ")).concat("..."); }
+
+            holder.mNameView.setText(name);
+            holder.mIdView.setText(String.format("EIN: %s", ein));
+            holder.mAmountView.setText(CURRENCY_FORMATTER.format(amount));
+
+            holder.itemView.setTag(position);
+            for (View view : holder.itemView.getTouchables()) view.setTag(position);
         }
 
         /**
@@ -283,6 +302,10 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
          * Provides ViewHolders for binding Adapter list items to the presentable area in {@link RecyclerView}.
          */
         class ViewHolder extends RecyclerView.ViewHolder {
+
+            @BindView(R.id.remit_primary) TextView mNameView;
+            @BindView(R.id.remit_secondary) TextView mIdView;
+            @BindView(R.id.remit_amount) TextView mAmountView;
 
             /**
              * Constructs this instance with the list item Layout generated from Adapter onCreateViewHolder.
