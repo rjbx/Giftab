@@ -59,7 +59,7 @@
         android:indeterminateTintMode="src_atop"
         android:indeterminateTint="@color/colorCheer"
         android:visibility="gone"
-        app:layout_anchor="@id/give_action_wrapper"
+        app:layout_anchor="@id/remit_action_wrapper"
         app:layout_anchorGravity="top|center_horizontal"
         style="?android:attr/progressBarStyleHorizontal" />
 
