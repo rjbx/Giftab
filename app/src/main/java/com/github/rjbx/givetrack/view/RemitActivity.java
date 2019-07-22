@@ -3,6 +3,8 @@ package com.github.rjbx.givetrack.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -82,6 +84,33 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
 
             isReadyToPay();
         }
+    }
+
+    /**
+     * Generates an options Menu.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.remit, menu);
+        return true;
+    }
+
+    /**
+     * Defines behavior onClick of each MenuItem.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                startActivity(new Intent(this, HomeActivity.class));
+                return true;
+            case R.id.action_settings:
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
