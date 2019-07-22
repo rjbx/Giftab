@@ -55,6 +55,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
     @BindView(R.id.remit_toolbar) Toolbar mToolbar;
     @BindView(R.id.remit_list) RecyclerView mRecyclerView;
     @BindView(R.id.remit_action_bar) ImageButton mConfirmButton;
+    @BindView(R.id.remit_action_wrapper) View mButtonWrapper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -214,6 +215,8 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                         try {
                             final Boolean result = task.getResult(ApiException.class);
                             if (result != null && result) createPaymentDataRequest();
+                            mConfirmButton.setBackgroundColor(getColor(R.color.colorConversion));
+                            mButtonWrapper.setBackgroundColor(getColor(R.color.colorConversionDark));
                         } catch (NullPointerException|ApiException e) {
                             Toast.makeText(
                                     this,

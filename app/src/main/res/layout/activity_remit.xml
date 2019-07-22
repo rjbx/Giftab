@@ -6,8 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorSlate"
     android:fitsSystemWindows="true"
+    android:background="@color/colorChalk"
     tools:context=".view.RemitActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -35,47 +35,56 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".8"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/remit_list"
+        <ProgressBar
+            android:id="@+id/remit_progress_bar"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="@color/colorCheer"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            style="?android:attr/progressBarStyleHorizontal" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorChalk"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_index"/>
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/remit_list"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".8"
+                android:background="fff"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_index" />
 
-    <ProgressBar
-        android:id="@+id/remit_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:indeterminate="true"
-        android:indeterminateTintMode="src_atop"
-        android:indeterminateTint="@color/colorCheer"
-        android:visibility="gone"
-        app:layout_anchor="@id/remit_action_wrapper"
-        app:layout_anchorGravity="top|center_horizontal"
-        style="?android:attr/progressBarStyleHorizontal" />
+            <FrameLayout
+                android:id="@+id/remit_action_wrapper"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight=".1"
+                android:background="@color/colorAttentionDark">
 
-    <FrameLayout
-        android:id="@+id/remit_action_wrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <ImageButton
+                    android:id="@+id/remit_action_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start|center_vertical"
+                    android:background="@color/colorAttention"
+                    android:gravity="center"
+                    android:src="@drawable/baseline_credit_card_24"
+                    style="@style/Widget.AppCompat.Button"/>
 
-        <ImageButton
-            android:id="@+id/remit_action_bar"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_gravity="start|center_vertical"
-            android:gravity="center"
-            android:src="@drawable/action_save"
-            style="@style/Widget.AppCompat.Button"/>
+            </FrameLayout>
+
+        </LinearLayout>
 
     </FrameLayout>
 
