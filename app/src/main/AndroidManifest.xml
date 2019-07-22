@@ -75,7 +75,7 @@
 
         <activity
             android:name=".view.RemitActivity"
-            android:label="@string/title_activity_payment"
+            android:label="@string/title_activity_remit"
             android:parentActivityName=".view.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

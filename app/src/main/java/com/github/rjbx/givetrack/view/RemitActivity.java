@@ -12,7 +12,9 @@ import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -50,6 +52,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
     private User mUser;
     private PaymentsClient mPaymentsClient;
     private ListAdapter mAdapter;
+    @BindView(R.id.remit_toolbar) Toolbar mToolbar;
     @BindView(R.id.remit_list) RecyclerView mRecyclerView;
     @BindView(R.id.remit_action_bar) ImageButton mConfirmButton;
 
@@ -58,6 +61,13 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_remit);
         ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
+        mToolbar.setTitle(getTitle());
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+
 
         getSupportLoaderManager().initLoader(LOADER_ID_USER, null, this);
 

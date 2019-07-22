@@ -60,7 +60,7 @@
     <string name="title_charity_detail">Charity Detail</string>
     <string name="title_activity_config">Settings</string>
     <string name="title_activity_reward">Coin Generator</string>
-    <string name="title_activity_payment">Remit Gift</string>
+    <string name="title_activity_remit">Remit Gift</string>
 
     <!-- Main -->
     <string name="nav_header_title">Giftab</string>
