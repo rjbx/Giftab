@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
@@ -51,7 +51,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
     private PaymentsClient mPaymentsClient;
     private ListAdapter mAdapter;
     @BindView(R.id.remit_list) RecyclerView mRecyclerView;
-    @BindView(R.id.remit_action_bar) Button mConfirmButton;
+    @BindView(R.id.remit_action_bar) ImageButton mConfirmButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
