@@ -251,12 +251,10 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-
         ListAdapter() {
             super();
             mLock = true;
         }
-
 
 
         /**
@@ -265,7 +263,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
         @Override public @NonNull
         ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_journal, parent, false);
+                    .inflate(R.layout.item_remit, parent, false);
             return new ViewHolder(view);
         }
 
