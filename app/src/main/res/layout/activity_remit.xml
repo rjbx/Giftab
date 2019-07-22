@@ -70,14 +70,14 @@
                 android:layout_height="0dp"
                 android:layout_weight=".1"
                 android:padding="8dp"
-                android:background="@color/colorAttentionDark">
+                android:backgroundTint="@color/colorAttentionDark">
 
                 <ImageButton
                     android:id="@+id/remit_action_bar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="start|center_vertical"
-                    android:background="@color/colorAttention"
+                    android:backgroundTint="@color/colorAttention"
                     android:gravity="center"
                     android:src="@drawable/baseline_credit_card_24"
                     style="@style/Widget.AppCompat.Button"/>
