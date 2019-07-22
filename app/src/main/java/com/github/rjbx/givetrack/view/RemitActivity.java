@@ -50,7 +50,7 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
     private User mUser;
     private PaymentsClient mPaymentsClient;
     private ListAdapter mAdapter;
-    @BindView(R.id.remit_list) private RecyclerView mRecyclerView;
+    @BindView(R.id.remit_list) RecyclerView mRecyclerView;
     @BindView(R.id.remit_action_bar) Button mConfirmButton;
 
     @Override
