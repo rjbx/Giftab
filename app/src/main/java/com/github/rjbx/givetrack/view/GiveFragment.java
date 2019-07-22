@@ -30,6 +30,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.transition.Slide;
 import butterknife.ButterKnife;
@@ -380,6 +381,21 @@ public class GiveFragment extends Fragment implements
      * Defines behavior on click of sync adjustments button.
      */
     @OnClick(R.id.give_action_bar) void syncAdjustments() {
+
+        if (sUser.getGivePayment()) {
+            for (Target t : mListAdapter.mTargetList)  {
+                if (t.getType() != 0 && t.getPercent() > 0) {
+                    Toast.makeText(
+                            mContext,
+                            "Either toggle types of all non-zero gifts to monetary, or disable payments",
+                            Toast.LENGTH_LONG)
+                        .show();
+                    return;
+                }
+            }
+            startActivity(new Intent(mContext, RemitActivity.class));
+        }
+
         // Prevents multithreading issues on simultaneous sync operations due to constant stream of database updates.
         if (sPercentagesAdjusted) {
             if (mListAdapter != null) mListAdapter.syncPercentages();
@@ -462,7 +478,7 @@ public class GiveFragment extends Fragment implements
         private static final int VIEW_TYPE_CHARITY = 0;
         private static final int VIEW_TYPE_BUTTON = 1;
         private ImageButton mLastClicked;
-        private List<Target> mTargetList;
+        List<Target> mTargetList;
 
         /**
          * Initializes percentage array and percentage button click mRepeatHandler and view updater.

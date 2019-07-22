@@ -148,6 +148,14 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                         mAdapter = new ListAdapter(targets);
                         mRecyclerView.setAdapter(mAdapter);
                     } else mAdapter.swapValues(targets);
+                    mPaymentsClient
+                            = Wallet.getPaymentsClient(this, new Wallet
+                            .WalletOptions.Builder()
+                            .setEnvironment(WalletConstants.ENVIRONMENT_TEST)
+                            .build()
+                    );
+
+                    isReadyToPay();
                 }
                 break;
             case DatabaseContract.LOADER_ID_USER:
@@ -249,7 +257,6 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
             super();
             mValuesArray = targets;
         }
-
 
         /**
          * Generates a Layout for the ViewHolder based on its Adapter position and orientation
