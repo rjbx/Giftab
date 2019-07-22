@@ -1,28 +1,16 @@
 package com.github.rjbx.givetrack.view;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Button;
 import android.database.Cursor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -32,28 +20,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.rjbx.givetrack.AppUtilities;
 import com.github.rjbx.givetrack.R;
 import com.github.rjbx.givetrack.data.DatabaseContract;
-import com.github.rjbx.givetrack.data.DatabaseManager;
-import com.github.rjbx.givetrack.data.entry.Record;
+import com.github.rjbx.givetrack.data.entry.Target;
 import com.github.rjbx.givetrack.data.entry.User;
 import com.google.android.gms.wallet.*;
 import com.google.android.gms.common.api.*;
-import com.google.android.material.snackbar.Snackbar;
 import com.stripe.android.model.Token;
 
-import java.text.ParseException;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.zip.DataFormatException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Optional;
 import timber.log.Timber;
 
-import static com.github.rjbx.givetrack.AppUtilities.CURRENCY_FORMATTER;
-import static com.github.rjbx.givetrack.AppUtilities.DATE_FORMATTER;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_RECORD;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_TARGET;
 import static com.github.rjbx.givetrack.data.DatabaseContract.LOADER_ID_USER;
@@ -66,9 +46,10 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
 
     private static final int LOAD_PAYMENT_DATA_REQUEST_CODE = 1;
     private float mPrice;
-    private boolean mLock;
     private User mUser;
     private PaymentsClient mPaymentsClient;
+    private ListAdapter mAdapter;
+    @BindView(R.id.remit_list) private RecyclerView mRecyclerView;
     @BindView(R.id.remit_action_bar) Button mConfirmButton;
 
     @Override
@@ -154,19 +135,27 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
         int id = loader.getId();
         switch (id) {
             case DatabaseContract.LOADER_ID_TARGET:
-                break;
-            case DatabaseContract.LOADER_ID_RECORD:
-                if (mLock) break;
+                Target[] targets = new Target[data.getCount()];
+                if (data.moveToFirst()) {
+                    int i = 0;
+                    do {
+                        Target target = new Target();
+                        AppUtilities.cursorRowToEntry(data, target);
+                        targets[i++] = target;
+                    } while (data.moveToNext());
+                    assert mRecyclerView != null;
+                    if (mAdapter == null) {
+                        mAdapter = new ListAdapter(targets);
+                        mRecyclerView.setAdapter(mAdapter);
+                    } else mAdapter.swapValues(targets);
+                }
                 break;
             case DatabaseContract.LOADER_ID_USER:
                 if (data.moveToFirst()) {
                     do {
                         User user = User.getDefault();
                         AppUtilities.cursorRowToEntry(data, user);
-                        if (user.getUserActive()) {
-                            mLock = false;
-                            mUser = user;
-                        }
+                        if (user.getUserActive()) mUser = user;
                     } while (data.moveToNext());
                 }
                 break;
@@ -251,9 +240,11 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
      */
     class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
-        ListAdapter() {
+        Target[] mValuesArray;
+
+        ListAdapter(Target[] targets) {
             super();
-            mLock = true;
+            mValuesArray = targets;
         }
 
 
@@ -280,7 +271,12 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
          */
         @Override
         public int getItemCount() {
-            return 0;
+            return mValuesArray != null ? mValuesArray.length : 0;
+        }
+
+        private void swapValues(Target[] targets) {
+            mValuesArray = targets;
+            notifyDataSetChanged();
         }
 
         /**
