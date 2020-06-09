@@ -231,6 +231,8 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
                     LOAD_PAYMENT_DATA_REQUEST_CODE);
         } else {
             Toast.makeText(this, R.string.remit_error, Toast.LENGTH_LONG).show();
+            finish();
+            startActivity(new Intent(this, HomeActivity.class));
         }
     }
 
