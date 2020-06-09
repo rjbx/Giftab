@@ -8,4 +8,5 @@ Try the beta release: https://play.google.com/store/apps/details?id=com.github.r
 
 ## Author
 
-**Robert (Bob) Basmaji**
+Robert John
+**bob@coded.art**
