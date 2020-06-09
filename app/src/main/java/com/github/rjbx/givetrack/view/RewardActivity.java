@@ -80,7 +80,7 @@ public class RewardActivity extends AppCompatActivity implements
 
     private void initializeAds() {
 
-//        MobileAds.initialize(this, getString(R.string.am_app_id));
+        MobileAds.initialize(this, getString(R.string.am_app_id));
 
         // Create the RewardedAd and set the adUnitId (defined in values/strings.xml).
         mRewardedAd = MobileAds.getRewardedVideoAdInstance(RewardActivity.this);
@@ -98,7 +98,7 @@ public class RewardActivity extends AppCompatActivity implements
         updateRewardButton(true);
         AdRequest request = new AdRequest.Builder().build();
         Timber.e(String.valueOf(request.isTestDevice(this)));
-//        mRewardedAd.loadAd(getString(R.string.am_rewarded_id), request);
+        mRewardedAd.loadAd(getString(R.string.am_rewarded_id), request);
 
         mProgressBar.setVisibility(View.VISIBLE);
         mToggleContainer.setPadding(0, (int) getResources().getDimension(R.dimen.toggle_padding), 0, 0);
