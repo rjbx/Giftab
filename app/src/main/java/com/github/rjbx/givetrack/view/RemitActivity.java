@@ -224,11 +224,13 @@ public class RemitActivity extends AppCompatActivity implements LoaderManager.Lo
 
     @OnClick(R.id.remit_action_bar) void confirmPayment() {
         PaymentDataRequest request = createPaymentDataRequest();
-        if (request != null) {
+        if (request != null && mPaymentsClient != null) {
             AutoResolveHelper.resolveTask(
                     mPaymentsClient.loadPaymentData(request),
                     this,
                     LOAD_PAYMENT_DATA_REQUEST_CODE);
+        } else {
+            Toast.makeText(this, R.string.remit_error, Toast.LENGTH_LONG).show();
         }
     }
 

@@ -14,7 +14,7 @@
     <string name="location_error_message">Response from location update permission request generated a Security Exception: %s</string>
     <string name="loader_error_message">Loader Not Implemented: %d</string>
     <string name="invalid_swipe_message">Unhandled swipe direction</string>
-    <string name="rewards_error">Rewards have been temporarily removed.</string>
+    <string name="remit_error">The payment feature is not available at this time..</string>
 
     <!-- Options -->
     <string name="action_settings">Settings</string>
