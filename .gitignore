@@ -2,7 +2,7 @@
 
 # Configuration
 *.jks
-google-services.json
+app/google-services.json
 givetrack-schema.json
 
 # Library

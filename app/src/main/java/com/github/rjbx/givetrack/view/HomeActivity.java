@@ -36,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Optional;
@@ -311,7 +312,7 @@ public class HomeActivity extends AppCompatActivity implements
         switch (id) {
             case (R.id.nav_spawn): finish(); startActivity(new Intent(this, IndexActivity.class)); break;
             case (R.id.nav_record): finish(); startActivity(new Intent(this, JournalActivity.class)); break;
-            case (R.id.nav_reward): finish(); startActivity(new Intent(this, RewardActivity.class)); break;
+            case (R.id.nav_reward): finish(); /*startActivity(new Intent(this, RewardActivity.class));*/ Toast.makeText(this, R.string.rewards_error, Toast.LENGTH_LONG).show(); break;
             case (R.id.nav_settings): finish(); startActivity(new Intent(this, ConfigActivity.class).setAction(ACTION_HOME_INTENT).putExtra(ConfigActivity.ARG_ITEM_USER, mUser)); break;
             case (R.id.nav_logout): finish(); startActivity(new Intent(this, AuthActivity.class).setAction(AuthActivity.ACTION_SIGN_OUT)); break;
             case (R.id.nav_cn): ViewUtilities.launchBrowserIntent(this, Uri.parse(getString(R.string.url_cn))); break;
