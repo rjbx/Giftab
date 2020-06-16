@@ -81,7 +81,7 @@ public class GlanceFragment extends Fragment implements
     private static final String RECORDS_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_RECORDS";
     private static final String SINCE_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_SINCE";
     private static final String THEME_STATE = "com.github.rjbx.givetrack.ui.state.GLANCE_THEME";
-    private static String[] GIFT_TYPES = { "monetary", "goods", "service" };
+    private static String[] GIFT_TYPES = { "monetary", "service", "goods" };
     private static final int[] COLORS = new int[]{
             R.color.colorAttention,
             R.color.colorCheer,
@@ -372,8 +372,8 @@ public class GlanceFragment extends Fragment implements
         switch (mGraphType) {
             case 0: mGraphTypeContent = "Total"; break;
             case 1: mGraphTypeContent = "Monetary"; break;
-            case 2: mGraphTypeContent = "Goods"; break;
-            case 3: mGraphTypeContent = "Service"; break;
+            case 2: mGraphTypeContent = "Service"; break;
+            case 3: mGraphTypeContent = "Goods"; break;
         }
     }
 
@@ -394,8 +394,8 @@ public class GlanceFragment extends Fragment implements
         switch (mHomeType) {
             case 0: mHomeTypeContent = "TOTAL"; break;
             case 1: mHomeTypeContent = "MONETARY"; break;
-            case 2: mHomeTypeContent = "GOODS"; break;
-            case 3: mHomeTypeContent = "SERVICE"; break;
+            case 2: mHomeTypeContent = "SERVICE"; break;
+            case 3: mHomeTypeContent = "GOODS"; break;
         }
     }
 
